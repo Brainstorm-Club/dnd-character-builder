@@ -1,0 +1,3 @@
+[submodule "src/design-system"]
+	path = src/design-system
+	url = https://github.com/Brainstorm-Club/design-system.git

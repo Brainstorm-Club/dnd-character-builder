@@ -38,6 +38,10 @@ export function useTheme() {
   watchEffect(() => {
     if (typeof document !== 'undefined') {
       document.documentElement.setAttribute('data-theme', effectiveTheme.value)
+      // Unificazione cross-app: persiste il tema EFFETTIVO nella chiave condivisa del
+      // design system e notifica, così sito/harp-forge/tracker restano allineati.
+      try { localStorage.setItem('bsc-theme', effectiveTheme.value) } catch { /* no storage */ }
+      document.dispatchEvent(new CustomEvent('bsc:themechange', { detail: { theme: effectiveTheme.value } }))
     }
   })
 

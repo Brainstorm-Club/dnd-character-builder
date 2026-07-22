@@ -1,4 +1,6 @@
 @import "tailwindcss";
+/* Token del design system (submodule) → unica fonte dei colori del brand */
+@import "./design-system/tokens.css";
 
 /* ==========================================================================
    Brainstorm Club — Design System applied as a brand skin
@@ -58,27 +60,27 @@
   --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  /* Neutrals → warm carbone scale (from the logo's charcoal) */
-  --color-stone-50:  #f4f1ec;
-  --color-stone-100: #e6e0da;
-  --color-stone-200: #cfc8c4;
-  --color-stone-300: #aba3a1;
-  --color-stone-400: #8a8180;
-  --color-stone-500: #726b6a;
-  --color-stone-600: #3b3636;
-  --color-stone-700: #2a2626;
-  --color-stone-800: #1e1b1c;
-  --color-stone-900: #181617;
-  --color-stone-950: #131112;
+  /* Neutrals → scala carbone del brand (token DS, submodule) */
+  --color-stone-50:  var(--bsc-neutro-50);
+  --color-stone-100: var(--bsc-neutro-100);
+  --color-stone-200: var(--bsc-neutro-200);
+  --color-stone-300: var(--bsc-neutro-300);
+  --color-stone-400: var(--bsc-neutro-400);
+  --color-stone-500: var(--bsc-neutro-500);
+  --color-stone-600: var(--bsc-neutro-700);
+  --color-stone-700: var(--bsc-neutro-800);
+  --color-stone-800: var(--bsc-neutro-900);
+  --color-stone-900: var(--bsc-carbone);
+  --color-stone-950: var(--bsc-neutro-950);
 
-  /* Primary accent → rosso mattone "brainstorm" */
-  --color-red-300: #eb9b95;
-  --color-red-400: #d9584e;
-  --color-red-500: #c2332b;
-  --color-red-600: #c2332b;
-  --color-red-700: #9e2820;
-  --color-red-800: #7e2019;
-  --color-red-900: #6e1c16;
+  /* Primary accent → rosso mattone "brainstorm" (token DS) */
+  --color-red-300: var(--bsc-rosso-200);
+  --color-red-400: var(--bsc-rosso-400);
+  --color-red-500: var(--bsc-rosso-600);
+  --color-red-600: var(--bsc-rosso-600);
+  --color-red-700: var(--bsc-rosso-700);
+  --color-red-800: #7e2019; /* fra 700 e 900: nessun token DS dedicato */
+  --color-red-900: var(--bsc-rosso-900);
 
   /* Secondary accent → oro (DS "attenzione"), the app's gold highlights */
   --color-amber-300: #e8c36b;
