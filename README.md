@@ -2,7 +2,7 @@
 
 A free, open-source character builder for **D&D 5th Edition**, **Brancalonia**, and **Apocalisse**. Runs entirely in your browser — no server, no account, no tracking.
 
-**[Try it live](https://fullo.github.io/dnd-character-builder/)**
+**[Try it live](https://brainstorm-club.github.io/dnd-character-builder/)**
 
 ## Features
 
@@ -21,12 +21,12 @@ A free, open-source character builder for **D&D 5th Edition**, **Brancalonia**, 
 
 ### Use online
 
-Visit **https://fullo.github.io/dnd-character-builder/** — that's it!
+Visit **https://brainstorm-club.github.io/dnd-character-builder/** — that's it!
 
 ### Run locally
 
 ```bash
-git clone https://github.com/fullo/dnd-character-builder.git
+git clone https://github.com/Brainstorm-Club/dnd-character-builder.git
 cd dnd-character-builder
 npm install
 npm run dev
@@ -78,7 +78,7 @@ Click **"Save Character"** on the review page. Characters are stored in your bro
 - [vue-i18n](https://vue-i18n.intlify.dev/) for translations
 - [TailwindCSS v4](https://tailwindcss.com/) for styling
 - [pdf-lib](https://pdf-lib.js.org/) for PDF AcroForm filling
-- [Cinzel](https://fonts.google.com/specimen/Cinzel) gothic serif font for headings
+- [Courier Prime](https://fonts.google.com/specimen/Courier+Prime) (headings) and [Atkinson Hyperlegible](https://fonts.google.com/specimen/Atkinson+Hyperlegible) (body), self-hosted — from the [Brainstorm Club design system](https://github.com/Brainstorm-Club/design-system)
 
 ## Game Variants
 
@@ -133,6 +133,10 @@ This app collects **zero data**. Everything runs in your browser. No cookies, no
 
 MIT
 
+## Design
+
+The interface wears the **[Brainstorm Club design system](https://github.com/Brainstorm-Club/design-system)** — the warm *carbone* / *rosso mattone* / *carta* palette and the Courier Prime + Atkinson Hyperlegible typography — applied as a theme-level brand skin over TailwindCSS. Dark ("carbone") is the default; a light ("carta") theme mirrors a printed game manual.
+
 ## Credits
 
-Built with Vue 3 and Anthropic Claude. D&D 5e content from the [Systems Reference Document 5.1](https://dnd.wizards.com/resources/systems-reference-document) under the Open Gaming License. Brancalonia and Apocalisse are products of [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games?affiliate_id=2960765).
+A [Brainstorm Club](https://github.com/Brainstorm-Club) project — the tabletop gaming association of Faenza. Built with Vue 3 and Anthropic Claude. D&D 5e content from the [Systems Reference Document 5.1](https://dnd.wizards.com/resources/systems-reference-document) under the Open Gaming License. Brancalonia and Apocalisse are products of [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games?affiliate_id=2960765).

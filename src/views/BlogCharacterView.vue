@@ -500,7 +500,7 @@ onUnmounted(() => {
       '@type': 'Article',
       'name': char.name,
       'description': t(`blog.characters.${slug}.description`).slice(0, 160),
-      'url': `https://fullo.github.io/dnd-character-builder/blog/${slug}`,
+      'url': `https://brainstorm-club.github.io/dnd-character-builder/blog/${slug}`,
       'author': { '@type': 'Person', 'name': 'fullo' },
       'publisher': { '@type': 'Organization', 'name': 'D&D Character Builder' },
     })" />

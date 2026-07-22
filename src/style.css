@@ -1,5 +1,93 @@
 @import "tailwindcss";
 
+/* ==========================================================================
+   Brainstorm Club — Design System applied as a brand skin
+   Palette (carbone / rosso mattone / oro / carta) e tipografia (Courier Prime
+   display, Atkinson Hyperlegible body) rimappano le scale Tailwind usate
+   dall'app senza riscrivere i componenti. Fonte del sistema:
+   github.com/Brainstorm-Club/design-system
+   ========================================================================== */
+
+/* ─── Self-hosted web fonts (WSG 2.13: no third-party font CDN) ───────────── */
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/atkinson-hyperlegible-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/atkinson-hyperlegible-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Atkinson Hyperlegible';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/atkinson-hyperlegible-700.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Courier Prime';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/courier-prime-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Courier Prime';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./assets/fonts/courier-prime-400-italic.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Courier Prime';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./assets/fonts/courier-prime-700.woff2') format('woff2');
+}
+
+/* ─── Brand palette → Tailwind theme (dark "carbone" is the default) ──────── */
+@theme {
+  /* Body font stack (Atkinson Hyperlegible, then system fallback) */
+  --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system,
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+
+  /* Neutrals → warm carbone scale (from the logo's charcoal) */
+  --color-stone-50:  #f4f1ec;
+  --color-stone-100: #e6e0da;
+  --color-stone-200: #cfc8c4;
+  --color-stone-300: #aba3a1;
+  --color-stone-400: #8a8180;
+  --color-stone-500: #726b6a;
+  --color-stone-600: #3b3636;
+  --color-stone-700: #2a2626;
+  --color-stone-800: #1e1b1c;
+  --color-stone-900: #181617;
+  --color-stone-950: #131112;
+
+  /* Primary accent → rosso mattone "brainstorm" */
+  --color-red-300: #eb9b95;
+  --color-red-400: #d9584e;
+  --color-red-500: #c2332b;
+  --color-red-600: #c2332b;
+  --color-red-700: #9e2820;
+  --color-red-800: #7e2019;
+  --color-red-900: #6e1c16;
+
+  /* Secondary accent → oro (DS "attenzione"), the app's gold highlights */
+  --color-amber-300: #e8c36b;
+  --color-amber-400: #dca83e;
+  --color-amber-500: #d19a2e;
+  --color-amber-600: #b4801f;
+  --color-amber-700: #8c6115;
+}
+
 /* WSG 3.12: Use sustainability beneficial user preference media queries */
 
 /* Respect reduced motion preference */
@@ -51,24 +139,25 @@
   }
 }
 
-/* WSG 2.13: Use optimized web typography — system font stack for body text */
+/* WSG 2.13: Use optimized web typography — Atkinson Hyperlegible for body */
 body {
-  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: var(--font-sans);
   text-rendering: optimizeSpeed;
 }
 
-/* Gothic serif font for headings — medieval/fantasy theme */
+/* Display / headings — Courier Prime (the DS typewriter face) */
 .font-gothic {
-  font-family: 'Cinzel', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+  font-family: 'Courier Prime', 'Courier New', ui-monospace, monospace;
+  letter-spacing: -0.01em;
 }
 
-/* Accessibility: visible focus indicators (WSG 2.2) */
+/* Accessibility: visible focus indicators (WSG 2.2) — rosso mattone */
 :focus-visible {
-  outline: 2px solid #f59e0b;
+  outline: 2px solid #c2332b;
   outline-offset: 2px;
 }
 
-/* ─── Light Theme Override ────────────────────────────────────────────────── */
+/* ─── Light Theme "carta" Override ─────────────────────────────────────────── */
 /* Specificity: html[data-theme="light"] .class = (0,2,1) > Tailwind (0,1,0) */
 /* Smooth transition for theme switching */
 html[data-theme="light"] *,
@@ -77,53 +166,53 @@ html[data-theme="light"] *::after {
   transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-/* Backgrounds: dark → light */
-html[data-theme="light"] .bg-stone-900 { background-color: #ffffff; }
-html[data-theme="light"] .bg-stone-800 { background-color: #f5f5f4; }
-html[data-theme="light"] .bg-stone-700 { background-color: #e7e5e4; }
-html[data-theme="light"] .bg-stone-600 { background-color: #d6d3d1; }
+/* Backgrounds: carbone → carta (warm paper) */
+html[data-theme="light"] .bg-stone-900 { background-color: #efeae1; }
+html[data-theme="light"] .bg-stone-800 { background-color: #fbf8f2; }
+html[data-theme="light"] .bg-stone-700 { background-color: #f3eee4; }
+html[data-theme="light"] .bg-stone-600 { background-color: #e6e0da; }
 
-/* Text: light → dark */
-html[data-theme="light"] .text-stone-100 { color: #1c1917; }
-html[data-theme="light"] .text-stone-200 { color: #292524; }
-html[data-theme="light"] .text-stone-300 { color: #44403c; }
-html[data-theme="light"] .text-stone-400 { color: #57534e; }
-html[data-theme="light"] .text-stone-500 { color: #78716c; }
-html[data-theme="light"] .text-stone-600 { color: #57534e; }
-html[data-theme="light"] .text-stone-900 { color: #1c1917; }
+/* Text: light → warm ink */
+html[data-theme="light"] .text-stone-100 { color: #131112; }
+html[data-theme="light"] .text-stone-200 { color: #1e1b1c; }
+html[data-theme="light"] .text-stone-300 { color: #3b3636; }
+html[data-theme="light"] .text-stone-400 { color: #55504f; }
+html[data-theme="light"] .text-stone-500 { color: #726b6a; }
+html[data-theme="light"] .text-stone-600 { color: #55504f; }
+html[data-theme="light"] .text-stone-900 { color: #131112; }
 
-/* Borders: dark → light */
-html[data-theme="light"] .border-stone-800 { border-color: #e7e5e4; }
-html[data-theme="light"] .border-stone-700 { border-color: #d6d3d1; }
-html[data-theme="light"] .border-stone-600 { border-color: #a8a29e; }
+/* Borders: dark → light warm neutrals */
+html[data-theme="light"] .border-stone-800 { border-color: #e6e0da; }
+html[data-theme="light"] .border-stone-700 { border-color: #cfc8c4; }
+html[data-theme="light"] .border-stone-600 { border-color: #aba3a1; }
 
-/* Amber accent — darker for contrast on light background */
-html[data-theme="light"] .text-amber-400 { color: #b45309; }
-html[data-theme="light"] .text-amber-500 { color: #d97706; }
-html[data-theme="light"] .text-amber-300 { color: #b45309; }
-html[data-theme="light"] .border-amber-500 { border-color: #d97706; }
-html[data-theme="light"] .border-amber-600 { border-color: #d97706; }
+/* Gold accent — darker for contrast on carta */
+html[data-theme="light"] .text-amber-400 { color: #8c6115; }
+html[data-theme="light"] .text-amber-500 { color: #8c6115; }
+html[data-theme="light"] .text-amber-300 { color: #8c6115; }
+html[data-theme="light"] .border-amber-500 { border-color: #b4801f; }
+html[data-theme="light"] .border-amber-600 { border-color: #b4801f; }
 
-/* Amber accent borders with opacity */
-html[data-theme="light"] .border-amber-700\/30 { border-color: rgba(180, 83, 9, 0.25); }
-html[data-theme="light"] .border-amber-700\/20 { border-color: rgba(180, 83, 9, 0.15); }
-html[data-theme="light"] .border-amber-600\/50 { border-color: rgba(217, 119, 6, 0.35); }
+/* Gold accent borders with opacity */
+html[data-theme="light"] .border-amber-700\/30 { border-color: rgba(140, 97, 21, 0.28); }
+html[data-theme="light"] .border-amber-700\/20 { border-color: rgba(140, 97, 21, 0.18); }
+html[data-theme="light"] .border-amber-600\/50 { border-color: rgba(180, 128, 31, 0.4); }
 
-/* Red accent — darker for light bg */
-html[data-theme="light"] .text-red-400 { color: #dc2626; }
-html[data-theme="light"] .text-red-300 { color: #dc2626; }
-html[data-theme="light"] .border-red-700 { border-color: #dc2626; }
-html[data-theme="light"] .border-red-700\/30 { border-color: rgba(220, 38, 38, 0.25); }
-html[data-theme="light"] .border-red-700\/20 { border-color: rgba(220, 38, 38, 0.15); }
+/* Rosso accent — deeper for light bg */
+html[data-theme="light"] .text-red-400 { color: #9e2820; }
+html[data-theme="light"] .text-red-300 { color: #9e2820; }
+html[data-theme="light"] .border-red-700 { border-color: #9e2820; }
+html[data-theme="light"] .border-red-700\/30 { border-color: rgba(194, 51, 43, 0.28); }
+html[data-theme="light"] .border-red-700\/20 { border-color: rgba(194, 51, 43, 0.18); }
 
 /* Green accent */
-html[data-theme="light"] .text-green-400 { color: #15803d; }
-html[data-theme="light"] .text-green-300 { color: #15803d; }
-html[data-theme="light"] .border-green-700 { border-color: #15803d; }
+html[data-theme="light"] .text-green-400 { color: #356248; }
+html[data-theme="light"] .text-green-300 { color: #356248; }
+html[data-theme="light"] .border-green-700 { border-color: #356248; }
 
 /* Blue accent */
-html[data-theme="light"] .text-blue-300 { color: #1d4ed8; }
-html[data-theme="light"] .border-blue-700 { border-color: #1d4ed8; }
+html[data-theme="light"] .text-blue-300 { color: #3a5f6d; }
+html[data-theme="light"] .border-blue-700 { border-color: #3a5f6d; }
 
 /* Purple accent */
 html[data-theme="light"] .text-purple-400 { color: #7e22ce; }
@@ -133,21 +222,21 @@ html[data-theme="light"] .border-purple-700 { border-color: #9333ea; }
 html[data-theme="light"] .border-purple-700\/30 { border-color: rgba(147, 51, 234, 0.25); }
 
 /* Status / alert backgrounds with opacity */
-html[data-theme="light"] .bg-amber-900\/30 { background-color: rgba(217, 119, 6, 0.1); }
-html[data-theme="light"] .bg-red-900\/30 { background-color: rgba(220, 38, 38, 0.08); }
-html[data-theme="light"] .bg-red-900\/40 { background-color: rgba(220, 38, 38, 0.1); }
-html[data-theme="light"] .bg-red-900\/60 { background-color: rgba(220, 38, 38, 0.12); }
-html[data-theme="light"] .bg-green-900\/30 { background-color: rgba(21, 128, 61, 0.08); }
-html[data-theme="light"] .bg-blue-900\/30 { background-color: rgba(29, 78, 216, 0.08); }
+html[data-theme="light"] .bg-amber-900\/30 { background-color: rgba(180, 128, 31, 0.12); }
+html[data-theme="light"] .bg-red-900\/30 { background-color: rgba(194, 51, 43, 0.09); }
+html[data-theme="light"] .bg-red-900\/40 { background-color: rgba(194, 51, 43, 0.11); }
+html[data-theme="light"] .bg-red-900\/60 { background-color: rgba(194, 51, 43, 0.14); }
+html[data-theme="light"] .bg-green-900\/30 { background-color: rgba(76, 140, 99, 0.1); }
+html[data-theme="light"] .bg-blue-900\/30 { background-color: rgba(78, 122, 140, 0.1); }
 html[data-theme="light"] .bg-purple-900\/30 { background-color: rgba(147, 51, 234, 0.08); }
 
 /* Spell selected state */
-html[data-theme="light"] .bg-amber-600\/20 { background-color: rgba(217, 119, 6, 0.12); }
+html[data-theme="light"] .bg-amber-600\/20 { background-color: rgba(180, 128, 31, 0.14); }
 
 /* Solid accent buttons — slightly adjusted */
-html[data-theme="light"] .bg-red-600 { background-color: #dc2626; }
-html[data-theme="light"] .bg-green-700 { background-color: #15803d; }
-html[data-theme="light"] .bg-blue-700 { background-color: #1d4ed8; }
+html[data-theme="light"] .bg-red-600 { background-color: #c2332b; }
+html[data-theme="light"] .bg-green-700 { background-color: #356248; }
+html[data-theme="light"] .bg-blue-700 { background-color: #4e7a8c; }
 html[data-theme="light"] .bg-purple-700 { background-color: #7e22ce; }
 html[data-theme="light"] .bg-purple-600 { background-color: #9333ea; }
 
@@ -156,33 +245,33 @@ html[data-theme="light"] .bg-black\/60 { background-color: rgba(0, 0, 0, 0.35); 
 
 /* Shadows — softer on light */
 html[data-theme="light"] .shadow-lg {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(24, 22, 23, 0.08), 0 2px 4px -2px rgba(24, 22, 23, 0.05);
 }
-html[data-theme="light"] .shadow-amber-500\/20 { --tw-shadow-color: rgba(217, 119, 6, 0.1); }
-html[data-theme="light"] .shadow-amber-600\/30 { --tw-shadow-color: rgba(217, 119, 6, 0.15); }
+html[data-theme="light"] .shadow-amber-500\/20 { --tw-shadow-color: rgba(180, 128, 31, 0.12); }
+html[data-theme="light"] .shadow-amber-600\/30 { --tw-shadow-color: rgba(180, 128, 31, 0.16); }
 
-/* Focus outline — slightly darker for light bg */
+/* Focus outline — rosso holds on light too */
 html[data-theme="light"] :focus-visible {
-  outline-color: #d97706;
+  outline-color: #9e2820;
 }
 
 /* Hover states */
-html[data-theme="light"] .hover\:bg-stone-600:hover { background-color: #d6d3d1; }
-html[data-theme="light"] .hover\:bg-stone-700:hover { background-color: #e7e5e4; }
-html[data-theme="light"] .hover\:text-amber-400:hover { color: #b45309; }
-html[data-theme="light"] .hover\:text-amber-300:hover { color: #b45309; }
-html[data-theme="light"] .hover\:text-red-300:hover { color: #dc2626; }
-html[data-theme="light"] .hover\:text-stone-300:hover { color: #44403c; }
-html[data-theme="light"] .hover\:text-stone-400:hover { color: #57534e; }
-html[data-theme="light"] .hover\:border-stone-600:hover { border-color: #a8a29e; }
-html[data-theme="light"] .hover\:border-amber-600\/50:hover { border-color: rgba(217, 119, 6, 0.35); }
-html[data-theme="light"] .hover\:border-amber-700\/50:hover { border-color: rgba(180, 83, 9, 0.35); }
-html[data-theme="light"] .hover\:bg-amber-500:hover { background-color: #f59e0b; }
-html[data-theme="light"] .hover\:bg-red-500:hover { background-color: #ef4444; }
-html[data-theme="light"] .hover\:bg-red-800:hover { background-color: rgba(220, 38, 38, 0.2); }
-html[data-theme="light"] .hover\:bg-green-600:hover { background-color: #16a34a; }
-html[data-theme="light"] .hover\:bg-blue-600:hover { background-color: #2563eb; }
+html[data-theme="light"] .hover\:bg-stone-600:hover { background-color: #e6e0da; }
+html[data-theme="light"] .hover\:bg-stone-700:hover { background-color: #f3eee4; }
+html[data-theme="light"] .hover\:text-amber-400:hover { color: #8c6115; }
+html[data-theme="light"] .hover\:text-amber-300:hover { color: #8c6115; }
+html[data-theme="light"] .hover\:text-red-300:hover { color: #9e2820; }
+html[data-theme="light"] .hover\:text-stone-300:hover { color: #3b3636; }
+html[data-theme="light"] .hover\:text-stone-400:hover { color: #55504f; }
+html[data-theme="light"] .hover\:border-stone-600:hover { border-color: #aba3a1; }
+html[data-theme="light"] .hover\:border-amber-600\/50:hover { border-color: rgba(180, 128, 31, 0.4); }
+html[data-theme="light"] .hover\:border-amber-700\/50:hover { border-color: rgba(140, 97, 21, 0.4); }
+html[data-theme="light"] .hover\:bg-amber-500:hover { background-color: #d19a2e; }
+html[data-theme="light"] .hover\:bg-red-500:hover { background-color: #d9584e; }
+html[data-theme="light"] .hover\:bg-red-800:hover { background-color: rgba(194, 51, 43, 0.2); }
+html[data-theme="light"] .hover\:bg-green-600:hover { background-color: #4c8c63; }
+html[data-theme="light"] .hover\:bg-blue-600:hover { background-color: #4e7a8c; }
 html[data-theme="light"] .hover\:bg-purple-600:hover { background-color: #9333ea; }
 html[data-theme="light"] .hover\:shadow-lg:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 6px -1px rgba(24, 22, 23, 0.08), 0 2px 4px -2px rgba(24, 22, 23, 0.05);
 }

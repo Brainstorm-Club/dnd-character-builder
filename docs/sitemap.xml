@@ -1,350 +1,350 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/</loc>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/builder</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/builder</loc>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/characters</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/characters</loc>
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog</loc>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>
   <!-- D&D 5e Characters -->
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/ranger-elf-elara-nightwhisper</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/ranger-elf-elara-nightwhisper</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/barbarian-halforc-grokk-ironfang</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/barbarian-halforc-grokk-ironfang</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/bard-halfelf-lyra-silvertongue</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/bard-halfelf-lyra-silvertongue</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/cleric-dwarf-thordin-stoneheart</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/cleric-dwarf-thordin-stoneheart</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/druid-human-rowan-ashwood</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/druid-human-rowan-ashwood</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/fighter-dwarf-bera-battlehammer</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/fighter-dwarf-bera-battlehammer</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/monk-elf-kael-windwalker</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/monk-elf-kael-windwalker</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/paladin-dragonborn-varek-brightscale</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/paladin-dragonborn-varek-brightscale</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/rogue-halfling-pip-shadowfoot</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/rogue-halfling-pip-shadowfoot</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/sorcerer-tiefling-zara-hellfire</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/sorcerer-tiefling-zara-hellfire</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/warlock-elf-vex-nightpact</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/warlock-elf-vex-nightpact</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/wizard-elf-aldric-spellweaver</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/wizard-elf-aldric-spellweaver</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/wizard-gnome-fizzle-gearspark</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/wizard-gnome-fizzle-gearspark</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/fighter-halfling-bram-thickfoot</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/fighter-halfling-bram-thickfoot</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/ranger-gnome-thistle-mossheart</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/ranger-gnome-thistle-mossheart</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/cleric-elf-arael-dawnwhisper</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/cleric-elf-arael-dawnwhisper</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/rogue-elf-nyx-shadowcloak</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/rogue-elf-nyx-shadowcloak</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/paladin-human-ser-roland-the-bold</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/paladin-human-ser-roland-the-bold</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/sorcerer-halfelf-cassara-starbloom</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/sorcerer-halfelf-cassara-starbloom</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/warlock-tiefling-morthos-grimsoul</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/warlock-tiefling-morthos-grimsoul</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/druid-elf-fern-wildbloom</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/druid-elf-fern-wildbloom</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/barbarian-dragonborn-skar-flamerage</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/barbarian-dragonborn-skar-flamerage</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/bard-human-marco-fortunato</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/bard-human-marco-fortunato</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- Brancalonia Characters -->
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/barbarian-morgant-ruggo-testagrossa</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/barbarian-morgant-ruggo-testagrossa</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/bard-human-pulcinella-linguadoro</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/bard-human-pulcinella-linguadoro</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/cleric-human-fra-benedetto-miracolaro</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/cleric-human-fra-benedetto-miracolaro</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/druid-sylvan-quercia-verdecuore</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/druid-sylvan-quercia-verdecuore</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/fighter-malebranche-scorza-lamadinferno</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/fighter-malebranche-scorza-lamadinferno</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/monk-human-fra-anselmo-pugnodivino</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/monk-human-fra-anselmo-pugnodivino</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/paladin-human-ser-galeazzo-senzamacchia</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/paladin-human-ser-galeazzo-senzamacchia</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/ranger-morgant-rocco-domabelve</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/ranger-morgant-rocco-domabelve</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/rogue-gifted-volpe-manolesta</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/rogue-gifted-volpe-manolesta</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/sorcerer-gifted-strega-malocchio</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/sorcerer-gifted-strega-malocchio</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/warlock-malebranche-fosco-occhiomaligno</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/warlock-malebranche-fosco-occhiomaligno</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/wizard-marionette-legno-sapiente</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/wizard-marionette-legno-sapiente</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/burattinaio-human-mastro-geppetto</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/burattinaio-human-mastro-geppetto</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/barbarian-human-tonio-rivoltoso</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/barbarian-human-tonio-rivoltoso</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/bard-marionette-cantastorie-legnetto</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/bard-marionette-cantastorie-legnetto</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/cleric-sylvan-padre-radice</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/cleric-sylvan-padre-radice</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/druid-human-nonna-erba</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/druid-human-nonna-erba</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/fighter-morgant-capitan-bracciodiferro</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/fighter-morgant-capitan-bracciodiferro</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/monk-malebranche-cornoduro</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/monk-malebranche-cornoduro</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/rogue-sylvan-volpina-delbosco</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/rogue-sylvan-volpina-delbosco</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/sorcerer-marionette-bambola-fatata</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/sorcerer-marionette-bambola-fatata</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <!-- Apocalisse Characters -->
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/barbarian-risen-hell-damien-cavaliere-nero</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/barbarian-risen-hell-damien-cavaliere-nero</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/bard-risen-limbo-profeta-canto</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/bard-risen-limbo-profeta-canto</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/cleric-risen-heaven-suora-cenere</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/cleric-risen-heaven-suora-cenere</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/druid-child-apocalypse-spina-veleno</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/druid-child-apocalypse-spina-veleno</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/fighter-child-old-world-marcus-ultimo</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/fighter-child-old-world-marcus-ultimo</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/monk-risen-purgatory-pellegrino-sigilli</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/monk-risen-purgatory-pellegrino-sigilli</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/paladin-risen-heaven-gabriel-rovina</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/paladin-risen-heaven-gabriel-rovina</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/ranger-child-apocalypse-sentinel-confine</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/ranger-child-apocalypse-sentinel-confine</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/rogue-risen-hell-ombra-assenzio</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/rogue-risen-hell-ombra-assenzio</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/sorcerer-risen-limbo-sangue-antico</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/sorcerer-risen-limbo-sangue-antico</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/warlock-risen-hell-figlia-lilith</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/warlock-risen-hell-figlia-lilith</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/wizard-child-old-world-salomone-ultimo</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/wizard-child-old-world-salomone-ultimo</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/barbarian-child-apocalypse-furia-tempesta</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/barbarian-child-apocalypse-furia-tempesta</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/cleric-risen-purgatory-penitente-cenere</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/cleric-risen-purgatory-penitente-cenere</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/druid-risen-purgatory-guardiano-monte</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/druid-risen-purgatory-guardiano-monte</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/fighter-risen-heaven-michele-caduto</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/fighter-risen-heaven-michele-caduto</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/rogue-child-old-world-ladro-ricordi</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/rogue-child-old-world-ladro-ricordi</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/sorcerer-risen-heaven-grazia-spezzata</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/sorcerer-risen-heaven-grazia-spezzata</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/warlock-risen-purgatory-anima-errante</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/warlock-risen-purgatory-anima-errante</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/blog/wizard-risen-limbo-cronista-oblio</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/blog/wizard-risen-limbo-cronista-oblio</loc>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://fullo.github.io/dnd-character-builder/privacy</loc>
+    <loc>https://brainstorm-club.github.io/dnd-character-builder/privacy</loc>
     <changefreq>yearly</changefreq>
     <priority>0.3</priority>
   </url>

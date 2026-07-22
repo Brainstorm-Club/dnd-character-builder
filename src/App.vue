@@ -51,7 +51,7 @@ function acceptGdpr() {
           <span aria-hidden="true">·</span>
           <router-link to="/privacy" class="hover:text-amber-400 transition-colors">{{ t('footer.privacy') }}</router-link>
           <span aria-hidden="true">·</span>
-          <a href="https://github.com/fullo/dnd-character-builder" target="_blank" rel="noopener noreferrer" class="hover:text-amber-400 transition-colors">{{ t('footer.license') }}</a>
+          <a href="https://github.com/Brainstorm-Club/dnd-character-builder" target="_blank" rel="noopener noreferrer" class="hover:text-amber-400 transition-colors">{{ t('footer.license') }}</a>
           <span aria-hidden="true">·</span>
           <a href="https://www.w3.org/TR/web-sustainability-guidelines/" target="_blank" rel="noopener noreferrer" class="hover:text-amber-400 transition-colors" :title="t('footer.wsgTitle')">{{ t('footer.wsg') }}</a>
           <span aria-hidden="true">·</span>

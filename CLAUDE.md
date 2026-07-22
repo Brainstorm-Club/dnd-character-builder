@@ -19,8 +19,18 @@ npm run audit:sci    # Run SCI carbon intensity benchmark
 - **Pinia 3** stores with localStorage persistence
 - **Client-only**: no backend, no API calls, no tracking
 - **PWA**: offline-capable with Workbox service worker
-- **Hosted**: GitHub Pages (static, CDN-served)
+- **Hosted**: GitHub Pages at https://brainstorm-club.github.io/dnd-character-builder/ (static, served from `/docs`)
+- **Org**: [Brainstorm-Club](https://github.com/Brainstorm-Club) — the repo lives under the organization
 - **Three game variants**: `dnd5e`, `brancalonia`, `apocalisse`
+
+## Brand / Design System
+
+The UI applies the [Brainstorm Club design system](https://github.com/Brainstorm-Club/design-system) as a **theme-level brand skin**, not a component rewrite:
+
+- Palette + typography live in `src/style.css`. A Tailwind v4 `@theme` block remaps the `stone` (→ warm *carbone* neutrals), `red` (→ *rosso mattone* primary), and `amber` (→ *oro* secondary) scales, so existing utility classes render in brand colors without touching components.
+- Fonts are **self-hosted** in `src/assets/fonts/` (Courier Prime for `.font-gothic` headings, Atkinson Hyperlegible for body) — no third-party font CDN.
+- Default theme is dark (*carbone*); `[data-theme="light"]` (*carta*) overrides are hand-tuned in `src/style.css`.
+- When restyling, prefer adjusting the `@theme` tokens over editing per-component classes.
 
 ## Key Paths
 
@@ -69,7 +79,7 @@ This project follows the [W3C Web Sustainability Guidelines 1.0](https://www.w3.
 - **Less is more** — zero tracking, zero ads, minimal dependencies
 - **Offline first** — PWA with service worker, works without network
 - **Dark mode default** — reduces OLED display energy
-- **System fonts** for body text (zero network cost)
+- **Self-hosted fonts** — brand web fonts (Courier Prime, Atkinson Hyperlegible), latin subset only, ~70KB total, `font-display: swap`, no third-party CDN
 - **SVG only** — no raster images (6 SVGs total, 6KB)
 - **Code splitting** — variant data, wizard steps, and pdf-lib loaded on demand
 - **Privacy by design** — no cookies, no analytics, localStorage only
