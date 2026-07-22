@@ -22,18 +22,15 @@ function closeMobile() {
         </div>
       </router-link>
 
-      <!-- Mobile menu button -->
+      <!-- Mobile menu button — hamburger unificato del design system -->
       <button
-        class="sm:hidden p-2 text-stone-300 hover:text-amber-400 cursor-pointer"
+        class="bsc-hamburger sm:hidden"
         @click="mobileOpen = !mobileOpen"
         :aria-expanded="mobileOpen"
         aria-controls="main-nav"
         :aria-label="mobileOpen ? 'Close menu' : 'Open menu'"
       >
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-          <path v-if="!mobileOpen" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-          <path v-else stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-        </svg>
+        <span class="bsc-hamburger__box"></span>
       </button>
 
       <!-- Desktop nav -->

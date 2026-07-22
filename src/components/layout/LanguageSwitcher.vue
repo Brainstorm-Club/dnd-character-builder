@@ -25,36 +25,35 @@ function handleBlur() {
 </script>
 
 <template>
-  <div class="relative">
+  <!-- Switch lingua unificato del design system (.bsc-dropdown / .bsc-langswitch) -->
+  <div class="bsc-dropdown bsc-langswitch" :class="{ 'is-open': open }">
     <button
+      class="bsc-dropdown__trigger"
       @click="open = !open"
       @blur="handleBlur"
-      class="flex items-center gap-1 px-2 py-1 rounded bg-stone-700 hover:bg-stone-600 text-sm font-medium text-stone-200 transition-colors cursor-pointer"
       :aria-expanded="open"
       aria-haspopup="listbox"
       :aria-label="locale === 'it' ? 'Cambia lingua' : 'Change language'"
     >
       {{ languages.find(l => l.code === locale)?.flag ?? 'EN' }}
-      <svg class="w-3 h-3 ml-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7" />
+      <svg class="bsc-dropdown__caret" width="12" height="8" viewBox="0 0 12 8" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M1 1.5 6 6.5 11 1.5" />
       </svg>
     </button>
     <ul
-      v-if="open"
+      class="bsc-dropdown__menu"
       role="listbox"
       :aria-label="locale === 'it' ? 'Lingue disponibili' : 'Available languages'"
-      class="absolute right-0 mt-1 bg-stone-700 border border-stone-600 rounded shadow-lg z-50 min-w-[140px] py-1"
     >
       <li
         v-for="lang in languages"
         :key="lang.code"
+        class="bsc-dropdown__item"
         role="option"
         :aria-selected="locale === lang.code"
         @click="selectLang(lang.code)"
-        class="px-3 py-1.5 text-sm cursor-pointer transition-colors"
-        :class="locale === lang.code ? 'text-amber-400 bg-stone-600' : 'text-stone-200 hover:bg-stone-600'"
       >
-        {{ lang.flag }} {{ lang.label }}
+        {{ lang.flag }} <span class="bsc-code-tag">{{ lang.label }}</span>
       </li>
     </ul>
   </div>

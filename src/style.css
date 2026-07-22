@@ -1,6 +1,9 @@
 @import "tailwindcss";
 /* Token del design system (submodule) → unica fonte dei colori del brand */
 @import "./design-system/tokens.css";
+/* Componenti .bsc-* del DS (hamburger, dropdown/langswitch) nel layer components
+   così le utility Tailwind (es. sm:hidden) restano prioritarie */
+@import "./design-system/components.css" layer(components);
 
 /* ==========================================================================
    Brainstorm Club — Design System applied as a brand skin
