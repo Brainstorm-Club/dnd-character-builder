@@ -42,7 +42,8 @@ describe('Step2Race — subrace selection (issue #1)', () => {
   function subraceButtons(wrapper: ReturnType<typeof mountStep>['wrapper']) {
     const groups = wrapper.findAll('[role="radiogroup"]')
     // The last radiogroup is the subrace picker
-    return groups[groups.length - 1].findAll('button')
+    const subGroup = groups[groups.length - 1]!
+    return subGroup.findAll('button')
   }
 
   it('defaults to the first subrace and applies its bonuses', async () => {
