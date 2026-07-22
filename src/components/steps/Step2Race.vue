@@ -15,16 +15,18 @@ const gt = useGameTerms()
 const races = computed(() => getRaces(characterStore.character.variant))
 const selectedRace = ref<Race | null>(null)
 const selectedSubrace = ref<string>('')
+const selectedSubraceObj = computed(
+  () => selectedRace.value?.subraces?.find(s => s.id === selectedSubrace.value) || null,
+)
 
-function selectRace(race: Race) {
-  selectedRace.value = race
-  selectedSubrace.value = race.subraces?.[0]?.id || ''
+// Apply race + chosen subrace to the character (bonuses, speed, languages).
+// Kept separate from selectRace so switching subrace does NOT reset the choice.
+function applyRace(race: Race, subraceId: string) {
   characterStore.character.race = race.id
-  characterStore.character.subrace = selectedSubrace.value
-  // Apply racial bonuses
+  characterStore.character.subrace = subraceId
   characterStore.character.racialBonuses = { ...race.abilityBonuses }
-  if (selectedSubrace.value && race.subraces) {
-    const sub = race.subraces.find(s => s.id === selectedSubrace.value)
+  if (subraceId && race.subraces) {
+    const sub = race.subraces.find(s => s.id === subraceId)
     if (sub?.abilityBonuses) {
       for (const [key, val] of Object.entries(sub.abilityBonuses)) {
         const k = key as keyof typeof characterStore.character.racialBonuses
@@ -36,11 +38,16 @@ function selectRace(race: Race) {
   characterStore.character.languages = [...race.languages]
 }
 
+function selectRace(race: Race) {
+  selectedRace.value = race
+  selectedSubrace.value = race.subraces?.[0]?.id || ''
+  applyRace(race, selectedSubrace.value)
+}
+
 function selectSubrace(subraceId: string) {
   selectedSubrace.value = subraceId
-  characterStore.character.subrace = subraceId
   if (selectedRace.value) {
-    selectRace(selectedRace.value)
+    applyRace(selectedRace.value, subraceId)
   }
 }
 
@@ -118,6 +125,20 @@ function bonusString(bonuses: Record<string, number>): string {
           >
             {{ gt.subraceName(sub.name) }}
           </button>
+        </div>
+
+        <!-- Selected subrace details -->
+        <div v-if="selectedSubraceObj" class="mt-3 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+          <div v-if="bonusString(selectedSubraceObj.abilityBonuses)">
+            <h4 class="font-semibold text-stone-300 mb-1">{{ t('race.abilityBonuses') }}</h4>
+            <p class="text-stone-400">{{ bonusString(selectedSubraceObj.abilityBonuses) }}</p>
+          </div>
+          <div v-if="selectedSubraceObj.traits.length">
+            <h4 class="font-semibold text-stone-300 mb-1">{{ t('race.traits') }}</h4>
+            <ul class="text-stone-400 space-y-1">
+              <li v-for="trait in selectedSubraceObj.traits" :key="trait">&bull; {{ gt.trait(trait) }}</li>
+            </ul>
+          </div>
         </div>
       </div>
     </div>
