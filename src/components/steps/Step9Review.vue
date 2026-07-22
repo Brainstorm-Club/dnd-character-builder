@@ -518,7 +518,7 @@ function handleImport(event: Event) {
         <span aria-hidden="true">⬆</span> {{ t('review.levelUp') }}
       </button>
       <button v-if="canLevelDown" @click="doLevelDown"
-        class="px-6 py-2 bg-purple-900 hover:bg-purple-800 text-white rounded-lg font-semibold transition-colors cursor-pointer">
+        class="px-6 py-2 bg-transparent border border-purple-700 text-purple-400 hover:bg-purple-900/20 rounded-lg transition-colors cursor-pointer">
         <span aria-hidden="true">⬇</span> {{ t('review.levelDown') }}
       </button>
     </div>
