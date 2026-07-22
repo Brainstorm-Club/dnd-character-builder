@@ -200,7 +200,6 @@
     "importJson": "Import JSON",
     "importError": "Invalid JSON file",
     "save": "Save Character",
-    "print": "Print Sheet",
     "hp": "Hit Points",
     "ac": "Armor Class",
     "initiative": "Initiative",
@@ -224,7 +223,8 @@
     "shareCopied": "Link copied to clipboard!",
     "shareManual": "Copy the link below to share your character:",
     "shareFailed": "Could not generate share link. Try again.",
-    "levelUp": "Level Up"
+    "levelUp": "Level Up",
+    "levelDown": "Level Down"
   },
   "share": {
     "error": "Invalid Share Link",
@@ -242,7 +242,9 @@
     "levelUp": "Level Up",
     "levelUpLabel": "Level up {name}",
     "levelUpSuccess": "Level Up! {details}",
-    "maxLevel": "Already at maximum level!"
+    "maxLevel": "Already at maximum level!",
+    "levelDownSuccess": "Level Down! {details}",
+    "minLevel": "Already at minimum level!"
   },
   "common": {
     "next": "Next",

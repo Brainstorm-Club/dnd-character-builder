@@ -200,7 +200,6 @@
     "importJson": "Importa JSON",
     "importError": "File JSON non valido",
     "save": "Salva Personaggio",
-    "print": "Stampa Scheda",
     "hp": "Punti Ferita",
     "ac": "Classe Armatura",
     "initiative": "Iniziativa",
@@ -224,7 +223,8 @@
     "shareCopied": "Link copiato negli appunti!",
     "shareManual": "Copia il link qui sotto per condividere il personaggio:",
     "shareFailed": "Impossibile generare il link. Riprova.",
-    "levelUp": "Sali di Livello"
+    "levelUp": "Sali di Livello",
+    "levelDown": "Scendi di Livello"
   },
   "share": {
     "error": "Link di Condivisione Non Valido",
@@ -242,7 +242,9 @@
     "levelUp": "Sali di Livello",
     "levelUpLabel": "Sali di livello {name}",
     "levelUpSuccess": "Salita di livello! {details}",
-    "maxLevel": "Gia' al livello massimo!"
+    "maxLevel": "Gia' al livello massimo!",
+    "levelDownSuccess": "Sceso di livello! {details}",
+    "minLevel": "Gia' al livello minimo!"
   },
   "common": {
     "next": "Avanti",

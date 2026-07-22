@@ -171,6 +171,7 @@ html[data-theme="light"] .bg-stone-900 { background-color: #efeae1; }
 html[data-theme="light"] .bg-stone-800 { background-color: #fbf8f2; }
 html[data-theme="light"] .bg-stone-700 { background-color: #f3eee4; }
 html[data-theme="light"] .bg-stone-600 { background-color: #e6e0da; }
+html[data-theme="light"] .bg-stone-800\/50 { background-color: rgba(243, 238, 228, 0.7); }
 
 /* Text: light → warm ink */
 html[data-theme="light"] .text-stone-100 { color: #131112; }
@@ -236,7 +237,7 @@ html[data-theme="light"] .bg-amber-600\/20 { background-color: rgba(180, 128, 31
 /* Solid accent buttons — slightly adjusted */
 html[data-theme="light"] .bg-red-600 { background-color: #c2332b; }
 html[data-theme="light"] .bg-green-700 { background-color: #356248; }
-html[data-theme="light"] .bg-blue-700 { background-color: #4e7a8c; }
+html[data-theme="light"] .bg-blue-700 { background-color: #3f6b7a; }
 html[data-theme="light"] .bg-purple-700 { background-color: #7e22ce; }
 html[data-theme="light"] .bg-purple-600 { background-color: #9333ea; }
 

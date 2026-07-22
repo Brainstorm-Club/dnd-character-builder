@@ -408,6 +408,85 @@ export const useCharacterStore = defineStore('character', () => {
     return { hpGained, newFeatures }
   }
 
+  function levelDown(classId?: string): { hpLost: number; removedFeatures: string[] } | null {
+    const char = character.value
+    if (char.level <= 1) return null
+
+    const conMod = modifier(
+      char.abilityScores.con + (char.racialBonuses.con || 0),
+    )
+    const allClasses = getClasses(char.variant)
+    let hitDieForLevel: number
+    let targetClassId: string
+    let targetSubclass: string
+    let removedClassLevel: number
+
+    if (char.classes.length >= 2 && classId) {
+      // Multiclass: level down specific class
+      const entry = char.classes.find(c => c.classId === classId)
+      if (!entry || entry.level <= 1) return null
+      removedClassLevel = entry.level
+      entry.level -= 1
+      char.level = char.classes.reduce((sum, c) => sum + c.level, 0)
+      hitDieForLevel = entry.hitDie
+      targetClassId = entry.classId
+      targetSubclass = entry.subclass
+    } else {
+      // Single class or multiclass without specific target
+      removedClassLevel = char.level
+      char.level -= 1
+      hitDieForLevel = char.hitDie
+      targetClassId = char.className
+      targetSubclass = char.subclass
+
+      // Also update classes array entry if populated
+      if (char.classes.length >= 1) {
+        const entry = char.classes.find(c => c.classId === char.className)
+        if (entry) entry.level -= 1
+      }
+    }
+
+    // Reverse the HP gained for the removed level (deterministic formula)
+    const hpLost = hpPerLevel(hitDieForLevel, conMod)
+    char.maxHp = Math.max(1, char.maxHp - hpLost)
+    char.currentHp = Math.min(char.currentHp, char.maxHp)
+
+    // Remove the features that were granted at the removed level
+    const removedFeatures: string[] = []
+    const cls = allClasses.find(c => c.id === targetClassId)
+    if (cls) {
+      const classFeats = cls.features.filter(f => f.level === removedClassLevel)
+      for (const feat of classFeats) {
+        const i = char.featuresTraits.indexOf(feat.name)
+        if (i >= 0) {
+          char.featuresTraits.splice(i, 1)
+          removedFeatures.push(feat.name)
+        }
+      }
+      if (targetSubclass) {
+        const sub = cls.subclasses.find(s => s.id === targetSubclass)
+        if (sub) {
+          const subFeats = sub.features.filter(f => f.level === removedClassLevel)
+          for (const feat of subFeats) {
+            const i = char.featuresTraits.indexOf(feat.name)
+            if (i >= 0) {
+              char.featuresTraits.splice(i, 1)
+              removedFeatures.push(feat.name)
+            }
+          }
+        }
+      }
+    }
+
+    // Auto-save if the character exists in saved list
+    const idx = savedCharacters.value.findIndex(c => c.id === char.id)
+    if (idx >= 0) {
+      savedCharacters.value[idx] = JSON.parse(JSON.stringify(char))
+    }
+
+    return { hpLost, removedFeatures }
+  }
+
   function exportJson(): string {
     return JSON.stringify(character.value, null, 2)
   }
@@ -560,6 +639,7 @@ export const useCharacterStore = defineStore('character', () => {
     addMulticlass,
     removeMulticlass,
     levelUp,
+    levelDown,
     exportJson,
     importJson,
   }

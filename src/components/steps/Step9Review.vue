@@ -168,10 +168,6 @@ function downloadJson() {
   URL.revokeObjectURL(url)
 }
 
-function printSheet() {
-  window.print()
-}
-
 const shareMessage = ref<{ type: 'success' | 'error'; text: string; url?: string } | null>(null)
 
 async function shareCharacter() {
@@ -191,6 +187,7 @@ async function shareCharacter() {
 }
 
 const canLevelUp = computed(() => char.value.level < getMaxLevel(char.value.variant))
+const canLevelDown = computed(() => char.value.level > 1)
 const levelUpMessage = ref<string | null>(null)
 
 function doLevelUp() {
@@ -203,6 +200,20 @@ function doLevelUp() {
       parts.push(result.newFeatures.join(', '))
     }
     levelUpMessage.value = t('characters.levelUpSuccess', { details: parts.join(' | ') })
+  }
+  setTimeout(() => { levelUpMessage.value = null }, 5000)
+}
+
+function doLevelDown() {
+  const result = characterStore.levelDown()
+  if (!result) {
+    levelUpMessage.value = t('characters.minLevel')
+  } else {
+    const parts = [`-${result.hpLost} HP`]
+    if (result.removedFeatures.length > 0) {
+      parts.push(result.removedFeatures.join(', '))
+    }
+    levelUpMessage.value = t('characters.levelDownSuccess', { details: parts.join(' | ') })
   }
   setTimeout(() => { levelUpMessage.value = null }, 5000)
 }
@@ -476,34 +487,39 @@ function handleImport(event: Event) {
 
     <!-- Export Buttons -->
     <div class="flex flex-wrap gap-3 mt-6 no-print" role="group" :aria-label="t('review.export')">
+      <!-- Persist -->
+      <button @click="saveChar"
+        class="px-6 py-2 bg-green-700 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors cursor-pointer">
+        <span aria-hidden="true">💾</span> {{ t('review.save') }}
+      </button>
+      <!-- Export -->
       <button @click="exportPdf" :disabled="exporting"
         class="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-stone-900 font-semibold rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
-        {{ exporting ? t('common.loading') : t('review.exportPdf') }}
+        <span aria-hidden="true">📄</span> {{ exporting ? t('common.loading') : t('review.exportPdf') }}
       </button>
       <button @click="downloadJson"
         class="px-6 py-2 bg-stone-700 hover:bg-stone-600 text-stone-200 rounded-lg transition-colors cursor-pointer">
-        {{ t('review.exportJson') }}
+        <span aria-hidden="true">📥</span> {{ t('review.exportJson') }}
       </button>
-      <button @click="saveChar"
-        class="px-6 py-2 bg-green-700 hover:bg-green-600 text-stone-200 rounded-lg transition-colors cursor-pointer">
-        {{ t('review.save') }}
-      </button>
-      <button @click="printSheet"
-        class="px-6 py-2 bg-stone-700 hover:bg-stone-600 text-stone-200 rounded-lg transition-colors cursor-pointer">
-        {{ t('review.print') }}
-      </button>
-      <button @click="shareCharacter"
-        class="px-6 py-2 bg-blue-700 hover:bg-blue-600 text-stone-200 rounded-lg transition-colors cursor-pointer">
-        <span aria-hidden="true">🔗</span> {{ t('review.shareUrl') }}
-      </button>
+      <!-- Import -->
       <input ref="fileInput" type="file" accept=".json" class="hidden" @change="handleImport" aria-hidden="true" tabindex="-1" />
       <button @click="triggerImport"
         class="px-6 py-2 bg-stone-700 hover:bg-stone-600 text-stone-200 rounded-lg transition-colors cursor-pointer">
-        {{ t('review.importJson') }}
+        <span aria-hidden="true">📤</span> {{ t('review.importJson') }}
       </button>
+      <!-- Share -->
+      <button @click="shareCharacter"
+        class="px-6 py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-lg transition-colors cursor-pointer">
+        <span aria-hidden="true">🔗</span> {{ t('review.shareUrl') }}
+      </button>
+      <!-- Level progression -->
       <button v-if="canLevelUp" @click="doLevelUp"
-        class="px-6 py-2 bg-purple-700 hover:bg-purple-600 text-purple-100 rounded-lg font-semibold transition-colors cursor-pointer">
+        class="px-6 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-lg font-semibold transition-colors cursor-pointer">
         <span aria-hidden="true">⬆</span> {{ t('review.levelUp') }}
+      </button>
+      <button v-if="canLevelDown" @click="doLevelDown"
+        class="px-6 py-2 bg-purple-900 hover:bg-purple-800 text-white rounded-lg font-semibold transition-colors cursor-pointer">
+        <span aria-hidden="true">⬇</span> {{ t('review.levelDown') }}
       </button>
     </div>
 
