@@ -47,6 +47,14 @@ function acceptGdpr() {
           <span aria-hidden="true">☕</span> Buy me a coffee
         </a>
         <nav class="flex flex-wrap items-center justify-center gap-3 text-xs text-stone-500" aria-label="Footer links">
+          <a
+            href="https://www.brainstormclub.it/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="font-gothic text-red-500 hover:text-red-400 transition-colors no-underline"
+            :title="t('footer.brainstormTitle')"
+          >{{ t('footer.brainstorm') }}</a>
+          <span aria-hidden="true">·</span>
           <span>🇪🇺 {{ t('footer.madeInEU') }}</span>
           <span aria-hidden="true">·</span>
           <router-link to="/privacy" class="hover:text-amber-400 transition-colors">{{ t('footer.privacy') }}</router-link>
