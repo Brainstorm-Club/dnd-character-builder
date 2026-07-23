@@ -157,7 +157,15 @@
     "notACasterMulticlass": "None of your classes have spellcasting abilities.",
     "pressNext": "Press Next to continue.",
     "pactMagic": "Pact Magic",
-    "allLevels": "All levels"
+    "allLevels": "All levels",
+    "knownCount": "How many spells do you know?",
+    "knownHint": "The number of spells known is independent from spell slots. Roll 1d4 per level, set it manually, or let the system choose.",
+    "rollPerLevel": "Roll 1d4 × level",
+    "auto": "Automatic",
+    "manual": "Manual",
+    "resetDefault": "use class default",
+    "noneForClass": "No cantrips for this class.",
+    "noneAtLevel": "No spells available at your level."
   },
   "details": {
     "title": "Character Details",

@@ -69,6 +69,13 @@ export interface CharacterData {
   spellcastingAbility: string
   cantrips: string[]
   spellsKnown: string[]
+  /**
+   * How many spells the character may know. 0 = use the class default.
+   * Decoupled from spell slots on purpose: a level-1 wizard can know more
+   * spells than they have slots to cast. Set via roll (1d4/level), manual
+   * entry, or auto-selection in the spells step. Optional/undefined = default.
+   */
+  spellsKnownLimit?: number
   spellsPrepared: string[]
   hitDie: number
   maxHp: number
@@ -136,6 +143,7 @@ function createEmptyCharacter(): CharacterData {
     spellcastingAbility: '',
     cantrips: [],
     spellsKnown: [],
+    spellsKnownLimit: 0,
     spellsPrepared: [],
     hitDie: 8,
     maxHp: 0,
@@ -166,6 +174,7 @@ export const useCharacterStore = defineStore('character', () => {
     for (const c of savedCharacters.value) {
       if ((c as any).sessionNotes === undefined) (c as any).sessionNotes = ''
       if (!Array.isArray((c as any).classes)) (c as any).classes = []
+      if (typeof (c as any).spellsKnownLimit !== 'number') (c as any).spellsKnownLimit = 0
     }
   }
   migrateCharacters()

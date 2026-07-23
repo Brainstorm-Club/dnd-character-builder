@@ -157,7 +157,15 @@
     "notACasterMulticlass": "Nessuna delle tue classi ha capacita' di incantesimi.",
     "pressNext": "Premi Avanti per continuare.",
     "pactMagic": "Magia del Patto",
-    "allLevels": "Tutti i livelli"
+    "allLevels": "Tutti i livelli",
+    "knownCount": "Quanti incantesimi conosci?",
+    "knownHint": "Il numero di incantesimi conosciuti è indipendente dagli slot di lancio. Tira 1d4 per livello, imposta a mano, o lascia scegliere al sistema.",
+    "rollPerLevel": "Tira 1d4 × livello",
+    "auto": "Automatico",
+    "manual": "Manuale",
+    "resetDefault": "usa il default della classe",
+    "noneForClass": "Nessun trucchetto per questa classe.",
+    "noneAtLevel": "Nessun incantesimo disponibile al tuo livello."
   },
   "details": {
     "title": "Dettagli del Personaggio",

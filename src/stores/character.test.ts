@@ -38,6 +38,11 @@ describe('useCharacterStore', () => {
       const store = useCharacterStore()
       expect(store.savedCharacters).toEqual([])
     })
+
+    it('starts with spellsKnownLimit 0 (use class default, decoupled from slots)', () => {
+      const store = useCharacterStore()
+      expect(store.character.spellsKnownLimit).toBe(0)
+    })
   })
 
   describe('resetCharacter', () => {

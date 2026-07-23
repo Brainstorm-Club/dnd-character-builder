@@ -361,6 +361,17 @@ export async function preloadVariantData(variant: GameVariant): Promise<void> {
   await ensureAllForVariant(variant)
 }
 
+/**
+ * Ensure the data needed by the Spells step is loaded (spells, rules, classes).
+ * Call this from the step so the list appears even if the step is reached
+ * without going through the sequential per-step loader (direct nav, reload,
+ * editing a saved character). Spells are dnd5e-only, so `variant` is accepted
+ * for API symmetry but not used to branch.
+ */
+export async function ensureSpellData(_variant: GameVariant): Promise<void> {
+  await Promise.all([ensureDnd5eSpells(), ensureDnd5eRules(), ensureDnd5eClasses()])
+}
+
 /** Check if variant data is already cached (all modules) */
 export function isVariantLoaded(variant: GameVariant): boolean {
   const dnd5eLoaded = !!_dnd5eRaces && !!_dnd5eClasses && !!_dnd5eBackgrounds
