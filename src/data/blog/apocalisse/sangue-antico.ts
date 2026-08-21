@@ -59,6 +59,7 @@ export const sangueAntico: CharacterData = {
     'Otherworldly Ancestor',
     'Otherworldly Sign',
     'Ancestor\'s Protection',
+    'New Metamagic Option',
   ],
   backstory: 'Sangue Antico was born in Limbo, or perhaps they were unmade there and rebuilt from the raw stuff of unreality. They have no memories before the grey void: no childhood, no family, no name. What they do have is blood that burns with arcane power, a crimson tide that pulses with the energy of realms that should not touch. When the Apocalypse ripped holes in the fabric of reality, Sangue was ejected into the mortal world like a foreign body. Now they wander the ruins, struggling to control magic that surges through their veins with terrifying unpredictability. They chose the name Sangue Antico because the blood is all they have, and it is older than anything they can remember.',
   age: 'Uncertain',

@@ -59,6 +59,7 @@ export const animaErrante: CharacterData = {
     'Pact Boon',
     'Shielding Veils',
     'Fierce Savagery of Lilith',
+    'Rebellion Against Fate',
   ],
   backstory: 'The Anima spent an eternity, or perhaps only a moment, in the purifying fires of Purgatory. Time has no meaning when you are burning. When the walls between worlds collapsed, the soul was expelled into the wasteland, raw and formless, unable to remember why it had been condemned. It was Lilith who found the wandering spirit, offering form and power in exchange for service. The pact was sealed in a language older than prayer, and the Anima Errante was born, neither living nor dead, neither damned nor saved, just endlessly wandering with eldritch fire at its fingertips.',
   age: 'Indeterminate',

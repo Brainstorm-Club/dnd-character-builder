@@ -18,42 +18,42 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     name: 'Path of Martyrdom',
     nameOriginal: 'Cammino del Martirio',
     description:
-      'Barbarians who walk the Path of the Horseman channel the fury of the Four Horsemen of the Apocalypse. They summon spectral steeds born from their rage and trample all who stand before them.',
+      'Those who follow this path are, to all intents and purposes, martyrs: devoted to battle and slaughter, penitents flailing their own flesh to gather more rage and determination and quash their opponents. Some wear iron masks lined with nails, others slide hooks into their powerful bodies. They do not love pain for its own sake, nor harm themselves out of folly — their torment is a conscious choice, aimed at meting out even more fury upon those who stand in their way.',
     features: [
       {
-        id: 'steed-of-the-apocalypse',
-        name: 'Steed of the Apocalypse',
+        id: 'martyrize-self',
+        name: 'Martyrize Self',
         level: 3,
         description:
-          'When you enter your rage, you can summon a spectral steed that appears in an unoccupied space within 5 feet of you. The steed takes the form of one of the Four Horsemen\'s mounts and lasts for the duration of your rage.',
+          'Once per turn while raging, before your first attack, you can wound yourself and take 1d4 damage of your choice among bludgeoning, piercing or slashing. That damage cannot be reduced. Until the end of the turn, every melee weapon attack you land deals that much extra damage — rising to 1d6 at 6th level, 1d8 at 10th and 1d10 at 15th. You also cannot become frightened while raging, and any existing fright is suspended for the duration of the rage. If you do not already own one, you gain a mask of the martyr as soon as possible.',
       },
       {
-        id: 'mounted-fury',
-        name: 'Mounted Fury',
+        id: 'salt-in-a-wound',
+        name: 'Salt in a Wound',
         level: 3,
         description:
-          'While mounted on your spectral steed and raging, you gain additional benefits. Your steed\'s movement does not provoke opportunity attacks, and your melee weapon attacks deal extra damage equal to your rage damage bonus.',
+          'You learn to identify your enemies\' weaknesses and the best way to inflict pain. When you score a critical hit, you add your proficiency bonus to the damage you deal.',
       },
       {
-        id: 'trampling-charge',
-        name: 'Trampling Charge',
+        id: 'endurance-martyrdom',
+        name: 'Endurance',
         level: 6,
         description:
-          'While mounted on your spectral steed and raging, if your steed moves at least 20 feet in a straight line toward a target and you hit it with a melee weapon attack, the target must make a Strength saving throw or be knocked prone.',
+          'You have learned to endure hits, assaults and afflictions of any kind without suffering their effects. While you are not at your maximum hit points, you can reroll a failed saving throw and must use the new roll.',
       },
       {
-        id: 'unyielding-rider',
-        name: 'Unyielding Rider',
+        id: 'an-eye-for-an-eye',
+        name: 'An Eye for An Eye',
         level: 10,
         description:
-          'You and your spectral steed become one in battle. You cannot be dismounted against your will while raging, and your steed gains temporary hit points equal to your barbarian level when summoned.',
+          'You can exploit the pain of a fresh wound to strike back at once. While raging, when you take damage you can use your reaction to make a melee weapon attack against a creature within reach.',
       },
       {
-        id: 'avatar-of-the-horseman',
-        name: 'Avatar of the Horseman',
+        id: 'relentless-martyrdom',
+        name: 'Relentless',
         level: 14,
         description:
-          'You embody the full power of one of the Four Horsemen. While raging and mounted, your steed gains a flying speed equal to its walking speed, and enemies within 10 feet of you have disadvantage on saving throws against being frightened.',
+          'Your pain threshold grows so high that while raging you cannot become incapacitated, stunned or paralyzed.',
       },
     ],
   },
@@ -65,35 +65,35 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     name: 'College of Revelation',
     nameOriginal: 'Collegio della Rivelazione',
     description:
-      'Bards of the College of Laments sing the sorrows of the Apocalypse, channeling grief and loss into hauntingly powerful magic. Their dirges can break the spirit of enemies and give solace to the dying.',
+      'The seer storytellers of the College of Revelation are evangelizers, visionaries and prophets whose task is to catch glimpses of the future — for themselves, for those around them, or against their enemies. They take their inspiration from the seer who penned the Book of Revelation centuries ago, though the gift itself cannot be taught: the college merely finds those who already have it. Most of its members shun Babilonia and roam the deserts and swamps of Armageddon in search of adepts, or of the solitude needed to hear fate murmur.',
     features: [
       {
-        id: 'laments-bonus-proficiencies',
-        name: 'Bonus Proficiencies',
+        id: 'spellcasting-focus-revelation',
+        name: 'Spellcasting Focus',
         level: 3,
         description:
-          'When you join the College of Laments at 3rd level, you gain proficiency with heavy armor and one martial weapon of your choice.',
+          'You find, craft or take a psaltery, a tome or a notebook of blank pages, and attune to it as if it were a magic item. Once attuned, you can use it as a spellcasting focus for your bard spells. Any class feature of yours that would need music or your voice — Bardic Inspiration, Song of Rest — uses your voice and this book, which serves you as both prayer book and songbook.',
       },
       {
-        id: 'dirge-of-sorrow',
-        name: 'Dirge of Sorrow',
+        id: 'omens-of-future',
+        name: 'Omens of Future',
         level: 3,
         description:
-          'You can use your Bardic Inspiration to sing a dirge of sorrow. As a bonus action, you can expend a use of Bardic Inspiration to force a creature you can see within 60 feet to make a Wisdom saving throw or be frightened of you for 1 minute.',
+          'You learn the guidance and true strike spells if you do not know them. In addition, you can use your action to weep tears of blood and read your immediate future through them: ask your Guide what a course of action you mean to take in the next 24 hours would bring, and they answer with Success, Possibility, Disaster, Uncertainty, Inconsequence or Confusion.',
       },
       {
-        id: 'song-of-the-lost',
-        name: 'Song of the Lost',
+        id: 'inflicted-destiny',
+        name: 'Inflicted Destiny',
+        level: 3,
+        description:
+          'As an action you can foresee a creature\'s death or defeat by weeping blood onto your book and reading the pattern. Spend one use of Bardic Inspiration and choose a creature within 60 feet — you sense its presence even unseen. Roll a number of Bardic Inspiration dice equal to your proficiency bonus and add your Charisma modifier. The target makes a Wisdom saving throw against your spell save DC, taking that much psychic damage and being frightened of you until the end of your next turn on a failure.',
+      },
+      {
+        id: 'warning-revelation',
+        name: 'Warning',
         level: 6,
         description:
-          'You learn to sing a mournful song that reaches the spirits of the dead. As an action, you can expend a use of Bardic Inspiration to contact the spirit of a dead creature whose remains you can see, asking it one question.',
-      },
-      {
-        id: 'requiem',
-        name: 'Requiem',
-        level: 14,
-        description:
-          'You can perform a requiem of devastating power. As an action, you can expend 3 uses of Bardic Inspiration to force each creature of your choice within 30 feet to make a Wisdom saving throw. On a failure, a creature takes psychic damage and is stunned until the end of your next turn.',
+          'Divinatory signs tell you what is about to happen, and you decipher them fast enough to warn those around you. As a bonus action, spend a use of Bardic Inspiration to choose a creature you can see within 60 feet: until the start of your next turn it cannot be surprised and has advantage on attack rolls and saving throws. If that creature is then hit by an attack, a spell or any other effect, you can spend your reaction and another use of Bardic Inspiration to cancel all damage and every other effect that source deals to it. You are then blinded until the end of your next turn, and cannot use this again until you finish a short or long rest.',
       },
     ],
   },
@@ -105,49 +105,49 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     name: 'Domain of Ruin',
     nameOriginal: 'Dominio della Rovina',
     description:
-      'Clerics of the Domain of Heresy have turned away from orthodox faith, embracing forbidden knowledge and blasphemous truths. In the End Times, they question the divine order itself.',
+      'The sound of bells tolling across the Plain of Armageddon recalls the voice of the Lord and the roaring depths of the Abyss alike. Clerics of the End Times know how to call upon the sounds of the inevitable decay of all things: their bells bring destruction and, at times, renewal. They believe everything must be destroyed in order to be rebuilt, and that ruin, erosion and decline are signs of the ever-closer Last Battle. Domain spells: create or destroy water and thunderwave (1st), magic weapon and shatter (3rd), create food and water and revivify (5th), fabricate and stone shape (7th).',
     features: [
       {
-        id: 'heretical-knowledge',
-        name: 'Heretical Knowledge',
+        id: 'bells-of-destruction',
+        name: 'Bells of Destruction',
         level: 1,
         description:
-          'You gain proficiency in Arcana. Your studies of forbidden texts grant you a cantrip from any class spell list, which counts as a cleric cantrip for you.',
+          'You gain proficiency with the battle bell and with heavy armor, and you gain a battle bell to add to your equipment.',
       },
       {
-        id: 'heresy-bonus-proficiency',
-        name: 'Bonus Proficiency',
+        id: 'ruining-and-mending',
+        name: 'Ruining and Mending',
         level: 1,
         description:
-          'You gain proficiency with heavy armor.',
+          'You learn the mending cantrip if you do not know it. In addition, when you hit a target with a melee weapon that deals bludgeoning damage, you can call upon the power of ruin to deal extra thunder damage equal to your Wisdom modifier — doubled against an item or a structure. You can do this a number of times equal to your proficiency bonus, regaining all uses on a short or long rest.',
       },
       {
-        id: 'channel-divinity-blasphemous-word',
-        name: 'Channel Divinity: Blasphemous Word',
+        id: 'channel-divinity-devastation',
+        name: 'Channel Divinity: Devastation',
         level: 2,
         description:
-          'As an action, you speak a word of blasphemy. Each creature of your choice within 30 feet that can hear you must make a Wisdom saving throw. On a failure, a creature is frightened of you for 1 minute and takes necrotic damage equal to your cleric level.',
+          'As an action you wield your holy symbol and call loudly upon the power of Shaddai the Destroyer. A thundering roar audible within 200 feet spreads from the symbol, and every creature in a 30-foot cone must make a Constitution saving throw against your spell save DC or take 12d12 + your cleric level thunder damage and be stunned until the start of your next turn.',
       },
       {
-        id: 'deny-divinity',
-        name: 'Deny Divinity',
+        id: 'channel-divinity-restoration',
+        name: 'Channel Divinity: Restoration',
         level: 6,
         description:
-          'Your heretical conviction allows you to resist divine power. You have advantage on saving throws against spells cast by celestials, fiends, and other clerics.',
+          'As an action you touch a creature and restore 3d8 + your cleric level hit points to it. You can also remove one level of exhaustion from the target, or end a disease or one condition afflicting it among blinded, deafened, paralyzed and stunned. You cannot use this on an undead creature.',
       },
       {
-        id: 'heresy-potent-spellcasting',
-        name: 'Potent Spellcasting',
+        id: 'unchecked-ruin',
+        name: 'Unchecked Ruin',
         level: 8,
         description:
-          'You add your Wisdom modifier to the damage you deal with any cleric cantrip.',
+          'Once per turn, when you hit a creature with a weapon attack, you can deal an extra 1d8 thunder damage, rising to 2d8 at 14th level. In addition, the features you use and the spells you cast ignore resistance to thunder damage.',
       },
       {
-        id: 'avatar-of-heresy',
-        name: 'Avatar of Heresy',
+        id: 'disintegrate-matter',
+        name: 'Disintegrate Matter',
         level: 17,
         description:
-          'You become an avatar of heretical truth. You are immune to being charmed or frightened by celestials and fiends. Additionally, when you deal damage with a cleric spell, you can add your Wisdom modifier to one damage roll.',
+          'As an action you unmake matter itself. A creature reduced to 0 hit points by this power is disintegrated, and it and everything it wears and carries except magic items become a pile of fine gray dust — only a true resurrection can restore it. It automatically disintegrates a Large or smaller nonmagical object or creation of magical force, or a 10-foot cube of a larger one. You regain the use of this feature after a long rest.',
       },
     ],
   },
@@ -364,32 +364,11 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
       'Monks who follow the Way of the Seven Seals channel the apocalyptic power released when each of the seven seals was broken. Each seal grants a different devastating ability.',
     features: [
       {
-        id: 'seal-of-conquest',
-        name: 'Seal of Conquest',
+        id: 'the-first-four-seals',
+        name: 'The First Four Seals',
         level: 3,
         description:
-          'You unlock the First Seal. When you hit with an unarmed strike, you can spend 1 ki point to force the target to make a Wisdom save or be frightened of you until the end of your next turn.',
-      },
-      {
-        id: 'seal-of-war',
-        name: 'Seal of War',
-        level: 3,
-        description:
-          'You unlock the Second Seal. When you use Flurry of Blows, each hit deals extra damage equal to your Wisdom modifier.',
-      },
-      {
-        id: 'seal-of-famine',
-        name: 'Seal of Famine',
-        level: 3,
-        description:
-          'You unlock the Third Seal. As a reaction when hit, you can spend 1 ki point to reduce the damage by your monk level + Wisdom modifier.',
-      },
-      {
-        id: 'seal-of-death',
-        name: 'Seal of Death',
-        level: 3,
-        description:
-          'You unlock the Fourth Seal. When you reduce a creature to 0 HP with an unarmed strike, you gain temporary HP equal to your Wisdom modifier + your proficiency bonus.',
+          'At initiation the first four spheres are grafted into your chest, and each costs ki to use. Seal of Conquest: your unarmed strikes can poison a target that fails a save against your ki DC, and 1 ki point adds 1d12 poison damage that ignores resistance. Seal of War: when a creature within 10 feet hits you in melee, spend 2 ki as a reaction to release a gout of flame — Dexterity save or 1d12 fire damage, plus 1d12 per extra ki point up to 6. Seal of Famine: on the Attack action, spend 1 ki to wither a target. Seal of Death: a chilling strike that restrains on a failed save and ignores resistance to cold damage.',
       },
       {
         id: 'seal-of-resurrection',
@@ -540,6 +519,13 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
           'Your otherworldly blood protects you. You gain resistance to radiant damage (Angel) or fire damage (Demon). Additionally, you can speak, read, and write Celestial or Infernal, based on your lineage.',
       },
       {
+        id: 'new-metamagic-option',
+        name: 'New Metamagic Option',
+        level: 3,
+        description:
+          'Your heritage opens a Metamagic option no other sorcerer can learn, letting you bend a spell toward the celestial or infernal nature of your ancestor.',
+      },
+      {
         id: 'otherworldly-consonance',
         name: 'Otherworldly Consonance',
         level: 6,
@@ -587,18 +573,18 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
           'You channel Lilith\'s ferocity. When you deal damage with a warlock cantrip, you can add your Charisma modifier to the damage. Additionally, when a creature hits you with a melee attack, you can use your reaction to deal psychic damage equal to your Charisma modifier to the attacker.',
       },
       {
+        id: 'rebellion-against-fate',
+        name: 'Rebellion Against Fate',
+        level: 3,
+        description:
+          'You can defy the natural order. When you or a creature within 30 feet fails a saving throw, you can use your reaction to force a reroll. The new result must be used. You can use this feature once per short or long rest.',
+      },
+      {
         id: 'indomitable-freedom',
         name: 'Indomitable Freedom of Lilith',
         level: 6,
         description:
           'Lilith\'s spirit of rebellion shields your mind. You are immune to being charmed and have advantage on saving throws against being frightened. If you are restrained, you can use a bonus action to attempt to break free.',
-      },
-      {
-        id: 'rebellion-against-fate',
-        name: 'Rebellion Against Fate',
-        level: 10,
-        description:
-          'You can defy the natural order. When you or a creature within 30 feet fails a saving throw, you can use your reaction to force a reroll. The new result must be used. You can use this feature once per short or long rest.',
       },
       {
         id: 'ultimate-freedom',

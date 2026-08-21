@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { apocalisseRaces, getApocalisseRaceById } from './races'
 import { apocalisseTraitDescriptions, apocalisseTraitDescriptionsIt } from './traits'
-import { traitNamesIt, raceNamesIt } from '@/i18n/gameTerms'
+import { apocalisseSubclasses } from './classes'
+import { traitNamesIt, raceNamesIt, featureNamesIt } from '@/i18n/gameTerms'
 
 describe('apocalisse origins', () => {
   it('ships the six Origins with unique ids', () => {
@@ -52,6 +53,36 @@ describe('apocalisse origins', () => {
     const used = new Set(apocalisseRaces.flatMap(r => r.traits))
     for (const key of Object.keys(apocalisseTraitDescriptions)) {
       expect(used.has(key), `${key} is described but unused`).toBe(true)
+    }
+  })
+})
+
+describe('apocalisse archetypes', () => {
+  it('gives every class exactly one archetype', () => {
+    const parents = apocalisseSubclasses.map(s => s.parentClassId)
+    expect(new Set(parents).size).toBe(parents.length)
+    expect(parents).toHaveLength(12)
+  })
+
+  it('names and levels every feature, and translates it to Italian', () => {
+    for (const sub of apocalisseSubclasses) {
+      expect(sub.nameOriginal, sub.id).toBeTruthy()
+      expect(sub.features.length, sub.id).toBeGreaterThan(0)
+      const ids = sub.features.map(f => f.id)
+      expect(new Set(ids).size, sub.id).toBe(ids.length)
+      for (const f of sub.features) {
+        expect(f.level, `${sub.id}/${f.id}`).toBeGreaterThanOrEqual(1)
+        expect(f.level, `${sub.id}/${f.id}`).toBeLessThanOrEqual(20)
+        expect(f.description, `${sub.id}/${f.id}`).toBeTruthy()
+        expect(featureNamesIt[f.name], f.name).toBeTruthy()
+      }
+    }
+  })
+
+  it('orders each archetype by level', () => {
+    for (const sub of apocalisseSubclasses) {
+      const levels = sub.features.map(f => f.level)
+      expect([...levels].sort((a, b) => a - b), sub.id).toEqual(levels)
     }
   })
 })

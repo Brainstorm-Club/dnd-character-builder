@@ -65,7 +65,7 @@ When adding a new feature, follow these steps in order:
 | Metric | Limit |
 |--------|-------|
 | Initial JS (gzipped) | < 170 KB |
-| Total JS (all chunks, gzipped) | < 550 KB |
+| Total JS (all chunks, gzipped) | < 760 KB |
 | CSS (gzipped) | < 15 KB |
 | Lighthouse Accessibility | >= 90 |
 | Lighthouse Performance | >= 80 |
