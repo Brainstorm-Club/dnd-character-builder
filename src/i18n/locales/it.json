@@ -87,6 +87,7 @@
     "savingThrows": "Tiri Salvezza",
     "skillChoices": "Scegli {count} abilita'",
     "subclass": "Sottoclasse",
+    "subclassAtLevel": "Disponibile al livello {level}",
     "features": "Privilegi di Classe",
     "proficiencies": "Competenze",
     "multiclass": "Multiclasse",

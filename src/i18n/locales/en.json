@@ -87,6 +87,7 @@
     "savingThrows": "Saving Throws",
     "skillChoices": "Choose {count} skills",
     "subclass": "Subclass",
+    "subclassAtLevel": "Available at level {level}",
     "features": "Class Features",
     "proficiencies": "Proficiencies",
     "multiclass": "Multiclass",
