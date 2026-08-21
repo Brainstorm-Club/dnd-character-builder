@@ -362,6 +362,68 @@ export const useCharacterStore = defineStore('character', () => {
   }
 
   /**
+   * Choose (or clear) the subclass of a class the character already has.
+   * Pass a classId to target a multiclass entry; omit it for the primary class.
+   * Features of the previous subclass are removed and the new subclass grants
+   * every feature up to the character's level in that class — the same rule
+   * levelUp() applies one level at a time.
+   * Returns { newFeatures, removedFeatures } or null if the class is unknown.
+   */
+  function setSubclass(
+    subclassId: string,
+    classId?: string,
+  ): { newFeatures: string[]; removedFeatures: string[] } | null {
+    const char = character.value
+    const targetClassId = classId ?? char.className
+    if (!targetClassId) return null
+
+    const cls = getClasses(char.variant).find(c => c.id === targetClassId)
+    if (!cls) return null
+    // Reject unknown subclass ids ('' clears the current choice)
+    if (subclassId && !cls.subclasses.some(s => s.id === subclassId)) return null
+
+    const entry = char.classes.find(c => c.classId === targetClassId)
+    const classLevel = entry ? entry.level : char.level
+    const previous = entry ? entry.subclass : char.subclass
+
+    // Drop the features granted by the subclass being replaced
+    const removedFeatures: string[] = []
+    if (previous && previous !== subclassId) {
+      const prevSub = cls.subclasses.find(s => s.id === previous)
+      for (const feat of prevSub?.features ?? []) {
+        const i = char.featuresTraits.indexOf(feat.name)
+        if (i >= 0) {
+          char.featuresTraits.splice(i, 1)
+          removedFeatures.push(feat.name)
+        }
+      }
+    }
+
+    if (entry) entry.subclass = subclassId
+    if (targetClassId === char.className) char.subclass = subclassId
+
+    // Grant every subclass feature the character already qualifies for
+    const newFeatures: string[] = []
+    if (subclassId && classLevel >= cls.subclassLevel) {
+      const sub = cls.subclasses.find(s => s.id === subclassId)
+      for (const feat of sub?.features.filter(f => f.level <= classLevel) ?? []) {
+        if (!char.featuresTraits.includes(feat.name)) {
+          char.featuresTraits.push(feat.name)
+          newFeatures.push(feat.name)
+        }
+      }
+    }
+
+    // Auto-save if the character exists in saved list
+    const idx = savedCharacters.value.findIndex(c => c.id === char.id)
+    if (idx >= 0) {
+      savedCharacters.value[idx] = JSON.parse(JSON.stringify(char))
+    }
+
+    return { newFeatures, removedFeatures }
+  }
+
+  /**
    * Level up the current character.
    * For multiclass characters, pass the classId to level up in.
    * Returns { hpGained, newFeatures } or null if at max level.
@@ -680,6 +742,7 @@ export const useCharacterStore = defineStore('character', () => {
     isMulticlass,
     addMulticlass,
     removeMulticlass,
+    setSubclass,
     levelUp,
     levelDown,
     exportJson,

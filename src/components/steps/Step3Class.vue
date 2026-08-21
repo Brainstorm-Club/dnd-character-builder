@@ -3,7 +3,7 @@ import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getClasses } from '@/data'
-import type { CharacterClass } from '@/data/dnd5e/classes'
+import type { CharacterClass, Subclass } from '@/data/dnd5e/classes'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
@@ -24,8 +24,21 @@ function skillDisplayName(skillId: string): string {
 const classes = computed(() => getClasses(characterStore.character.variant))
 const selectedClass = ref<CharacterClass | null>(null)
 const selectedSkills = ref<string[]>([])
+const selectedSubclass = ref<string>('')
+
+// Restore the pickers when the user comes back to this step
+const storedClass = classes.value.find(c => c.id === characterStore.character.className)
+if (storedClass) {
+  selectedClass.value = storedClass
+  selectedSkills.value = characterStore.character.skillProficiencies
+    .filter(s => storedClass.skillChoices.includes(s))
+  selectedSubclass.value = characterStore.character.subclass
+}
 
 function selectClass(cls: CharacterClass) {
+  // Drop the subclass (and its features) chosen for the previous class
+  if (characterStore.character.subclass) characterStore.setSubclass('')
+  selectedSubclass.value = ''
   selectedClass.value = cls
   characterStore.character.className = cls.id
   characterStore.character.hitDie = cls.hitDie
@@ -51,6 +64,60 @@ function toggleSkill(skill: string) {
     selectedSkills.value.push(skill)
   }
   characterStore.character.skillProficiencies = [...selectedSkills.value]
+}
+
+// ── Subclass ────────────────────────────────────────────────────────────────
+
+/** Level the character has in a given class (multiclass entries count separately) */
+function classLevel(classId: string): number {
+  const entry = (characterStore.character.classes ?? []).find(c => c.classId === classId)
+  return entry ? entry.level : characterStore.character.level
+}
+
+/**
+ * Subclass names are translated by id (see `subclassNamesIt`); fall back to the
+ * English name rather than showing a raw slug.
+ */
+function subclassLabel(sub: Subclass): string {
+  const translated = gt.subclassName(sub.id)
+  return translated === sub.id ? sub.name : translated
+}
+
+const subclassUnlocked = computed(() =>
+  !!selectedClass.value
+  && selectedClass.value.subclasses.length > 0
+  && classLevel(selectedClass.value.id) >= selectedClass.value.subclassLevel,
+)
+
+/** Level in the currently selected class (0 when no class is chosen) */
+const selectedClassLevel = computed(() =>
+  selectedClass.value ? classLevel(selectedClass.value.id) : 0,
+)
+
+const selectedSubclassObj = computed(
+  () => selectedClass.value?.subclasses.find(s => s.id === selectedSubclass.value) || null,
+)
+
+function selectSubclass(subclassId: string) {
+  if (!selectedClass.value) return
+  selectedSubclass.value = subclassId
+  characterStore.setSubclass(subclassId, selectedClass.value.id)
+}
+
+/**
+ * Subclass options for a secondary (multiclass) entry, once that class reaches
+ * its own subclass level. The primary class is skipped — it has the picker in
+ * the class details panel above.
+ */
+function multiclassSubclasses(classId: string): Subclass[] {
+  if (classId === characterStore.character.className) return []
+  const cls = classes.value.find(c => c.id === classId)
+  if (!cls || classLevel(classId) < cls.subclassLevel) return []
+  return cls.subclasses
+}
+
+function selectMulticlassSubclass(classId: string, subclassId: string) {
+  characterStore.setSubclass(subclassId, classId)
 }
 
 // Multiclass: only D&D 5e, only if primary class is selected
@@ -172,6 +239,46 @@ function removeSecondaryClass(clsId: string) {
           </div>
         </div>
       </div>
+
+      <!-- Subclass -->
+      <div v-if="selectedClass.subclasses.length" class="mt-4">
+        <h4 class="font-semibold text-stone-300 mb-2">{{ t('class.subclass') }}</h4>
+
+        <p v-if="!subclassUnlocked" class="text-stone-500 text-sm">
+          {{ t('class.subclassAtLevel', { level: selectedClass.subclassLevel }) }}
+        </p>
+
+        <template v-else>
+          <div class="flex gap-2 flex-wrap" role="radiogroup" :aria-label="t('class.subclass')">
+            <button
+              v-for="sub in selectedClass.subclasses"
+              :key="sub.id"
+              @click="selectSubclass(sub.id)"
+              class="px-3 py-1 rounded text-sm transition-colors cursor-pointer"
+              :class="selectedSubclass === sub.id ? 'bg-amber-600 text-stone-900' : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
+              role="radio"
+              :aria-checked="selectedSubclass === sub.id"
+            >
+              {{ subclassLabel(sub) }}
+            </button>
+          </div>
+
+          <!-- Selected subclass details -->
+          <div v-if="selectedSubclassObj" class="mt-3 text-sm">
+            <p class="text-stone-400">{{ selectedSubclassObj.description }}</p>
+            <div v-if="selectedSubclassObj.features.length" class="mt-2 space-y-2">
+              <div
+                v-for="feature in selectedSubclassObj.features.filter(f => f.level <= selectedClassLevel)"
+                :key="feature.name"
+              >
+                <span class="text-amber-400 font-medium">Lv.{{ feature.level }}:</span>
+                <span class="text-stone-400 ml-1">{{ gt.feature(feature.name) }}</span>
+                <p v-if="feature.description" class="text-stone-500 text-xs ml-4">{{ feature.description }}</p>
+              </div>
+            </div>
+          </div>
+        </template>
+      </div>
     </div>
 
     <!-- Multiclass (D&D 5e only) -->
@@ -181,24 +288,46 @@ function removeSecondaryClass(clsId: string) {
       <!-- Current multiclass breakdown -->
       <div v-if="(characterStore.character.classes ?? []).length >= 2" class="mb-3">
         <p class="text-stone-300 text-sm font-medium mb-2">{{ multiclassDisplay }} ({{ t('common.level') }} {{ characterStore.character.level }})</p>
-        <div class="flex flex-wrap gap-2">
+        <div class="flex flex-col gap-2">
           <div
             v-for="entry in characterStore.character.classes"
             :key="entry.classId"
-            class="flex items-center gap-2 bg-stone-700 rounded px-3 py-1.5 text-sm"
+            class="bg-stone-700 rounded px-3 py-1.5 text-sm"
           >
-            <span class="text-amber-400 font-medium">
-              {{ classes.find(c => c.id === entry.classId) ? gt.className(classes.find(c => c.id === entry.classId)!.name, variant) : entry.classId }}
-            </span>
-            <span class="text-stone-400">Lv.{{ entry.level }}</span>
-            <span class="text-stone-500 text-xs">(d{{ entry.hitDie }})</span>
-            <!-- Remove button (only for secondary classes) -->
-            <button
-              v-if="entry.classId !== characterStore.character.classes[0]?.classId"
-              @click="removeSecondaryClass(entry.classId)"
-              class="text-red-400 hover:text-red-300 text-xs ml-1 cursor-pointer"
-              :aria-label="t('class.removeClass')"
-            >✕</button>
+            <div class="flex items-center gap-2">
+              <span class="text-amber-400 font-medium">
+                {{ classes.find(c => c.id === entry.classId) ? gt.className(classes.find(c => c.id === entry.classId)!.name, variant) : entry.classId }}
+              </span>
+              <span class="text-stone-400">Lv.{{ entry.level }}</span>
+              <span class="text-stone-500 text-xs">(d{{ entry.hitDie }})</span>
+              <!-- Remove button (only for secondary classes) -->
+              <button
+                v-if="entry.classId !== characterStore.character.classes[0]?.classId"
+                @click="removeSecondaryClass(entry.classId)"
+                class="text-red-400 hover:text-red-300 text-xs ml-1 cursor-pointer"
+                :aria-label="t('class.removeClass')"
+              >✕</button>
+            </div>
+
+            <!-- Per-class subclass picker, unlocked at that class's own level -->
+            <div
+              v-if="multiclassSubclasses(entry.classId).length"
+              class="flex gap-2 flex-wrap mt-2"
+              role="radiogroup"
+              :aria-label="t('class.subclass')"
+            >
+              <button
+                v-for="sub in multiclassSubclasses(entry.classId)"
+                :key="sub.id"
+                @click="selectMulticlassSubclass(entry.classId, sub.id)"
+                class="px-2 py-0.5 rounded text-xs transition-colors cursor-pointer"
+                :class="entry.subclass === sub.id ? 'bg-amber-600 text-stone-900' : 'bg-stone-600 text-stone-300 hover:bg-stone-500'"
+                role="radio"
+                :aria-checked="entry.subclass === sub.id"
+              >
+                {{ subclassLabel(sub) }}
+              </button>
+            </div>
           </div>
         </div>
       </div>
