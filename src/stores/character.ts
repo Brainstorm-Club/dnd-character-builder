@@ -164,6 +164,34 @@ function createEmptyCharacter(): CharacterData {
   }
 }
 
+/**
+ * Clamp a character to its variant's maximum level.
+ * Needed for characters saved before a variant's cap was lowered (Brancalonia
+ * went from 10 to 6): an out-of-range level breaks the wizard's level control
+ * and makes levelUp() silently refuse. Only the level fields are touched --
+ * maxHp and featuresTraits are left as saved so nothing the player earned is
+ * silently thrown away; they can be reconciled with the level-down control.
+ */
+export function clampToMaxLevel(char: CharacterData): boolean {
+  const maxLv = getMaxLevel(char.variant)
+  if (char.level <= maxLv) return false
+
+  char.level = maxLv
+  const entries = char.classes ?? []
+  if (entries.length > 0) {
+    // Trim from the last class entry backwards until the total fits the cap.
+    let excess = entries.reduce((sum, e) => sum + e.level, 0) - maxLv
+    for (let i = entries.length - 1; i >= 0 && excess > 0; i--) {
+      const entry = entries[i]!
+      const removable = Math.min(excess, entry.level - 1)
+      entry.level -= removable
+      excess -= removable
+    }
+    char.level = Math.min(entries.reduce((sum, e) => sum + e.level, 0), maxLv)
+  }
+  return true
+}
+
 export const useCharacterStore = defineStore('character', () => {
   const character = ref<CharacterData>(createEmptyCharacter())
   const savedCharacters = ref<CharacterData[]>([])
@@ -175,6 +203,7 @@ export const useCharacterStore = defineStore('character', () => {
       if ((c as any).sessionNotes === undefined) (c as any).sessionNotes = ''
       if (!Array.isArray((c as any).classes)) (c as any).classes = []
       if (typeof (c as any).spellsKnownLimit !== 'number') (c as any).spellsKnownLimit = 0
+      clampToMaxLevel(c)
     }
   }
   migrateCharacters()
@@ -621,6 +650,10 @@ export const useCharacterStore = defineStore('character', () => {
       id: (typeof raw.id === 'string' && raw.id.length < 100) ? raw.id : crypto.randomUUID(),
       variant: raw.variant as GameVariant,
     }
+
+    // Characters exported before a variant's level cap was lowered are clamped,
+    // not rejected, so an older sheet still imports.
+    if (clampToMaxLevel(data)) warnings.push('WARN_LEVEL_CLAMPED')
 
     // Add warnings for optional missing fields
     if (!data.name) warnings.push('WARN_NO_NAME')

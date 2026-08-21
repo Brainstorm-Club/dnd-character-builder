@@ -41,6 +41,7 @@
     "INVALID_SPELLSKNOWN": "Gli incantesimi conosciuti devono essere una lista",
     "INVALID_SPELLSPREPARED": "Gli incantesimi preparati devono essere una lista",
     "INVALID_WEAPONS": "Le armi devono essere una lista",
+    "WARN_LEVEL_CLAMPED": "Livello ridotto al massimo consentito dalla variante di gioco",
     "WARN_NO_NAME": "Il personaggio non ha un nome",
     "WARN_NO_BACKGROUND": "Il personaggio non ha un background",
     "WARN_NO_HP": "I punti ferita non sono stati calcolati"

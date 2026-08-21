@@ -41,6 +41,7 @@
     "INVALID_SPELLSKNOWN": "Known spells must be a list",
     "INVALID_SPELLSPREPARED": "Prepared spells must be a list",
     "INVALID_WEAPONS": "Weapons must be a list",
+    "WARN_LEVEL_CLAMPED": "Level reduced to the maximum allowed by the game variant",
     "WARN_NO_NAME": "The character has no name",
     "WARN_NO_BACKGROUND": "The character has no background",
     "WARN_NO_HP": "Hit points have not been calculated"

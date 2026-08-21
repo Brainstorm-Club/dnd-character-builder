@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
-import { useCharacterStore } from '@/stores/character'
+import { useCharacterStore, clampToMaxLevel } from '@/stores/character'
 import { useAppStore } from '@/stores/app'
 import { decodeCharacterFromUrl, MAX_SHARE_DATA_LENGTH } from '@/utils/shareCharacter'
 
@@ -38,6 +38,9 @@ onMounted(() => {
         ;(current as Record<string, unknown>)[key] = value
       }
     }
+    // A link shared before the variant's level cap was lowered may carry an
+    // over-cap level; clamp it rather than showing an impossible character.
+    clampToMaxLevel(characterStore.character)
     characterName.value = characterStore.character.name || t('common.unnamed')
 
     // Navigate to review step

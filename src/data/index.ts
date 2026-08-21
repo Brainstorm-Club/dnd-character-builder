@@ -468,7 +468,8 @@ const dnd5eRulesData: VariantRules = {
   shortRestDuration: '1 hour', longRestDuration: '8 hours',
 }
 const brancaloniaRulesData: VariantRules = {
-  maxLevel: 10, currencyStandard: 'silver',
+  // Setting Book: characters cap at level 6; further advancement grants feats/ASI instead.
+  maxLevel: 6, currencyStandard: 'silver',
   shortRestDuration: '1 night (8 hours)', longRestDuration: '1 week of rollicking',
 }
 const apocalisseRulesData: VariantRules = {

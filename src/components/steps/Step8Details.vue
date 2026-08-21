@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { totalHp } from '@/utils/calculations'
-import { getRaces, getApocalisseRules, getWhacksLevels } from '@/data'
+import { getRaces, getApocalisseRules, getWhacksLevels, getMaxLevel } from '@/data'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 const { t, locale } = useI18n()
@@ -12,7 +12,7 @@ const characterStore = useCharacterStore()
 const variant = computed(() => characterStore.character.variant)
 const isBrancalonia = computed(() => variant.value === 'brancalonia')
 const isApocalisse = computed(() => variant.value === 'apocalisse')
-const maxLevel = computed(() => variant.value === 'brancalonia' ? 6 : 20)
+const maxLevel = computed(() => getMaxLevel(variant.value))
 
 const alignments = [
   'lg', 'ng', 'cg', 'ln', 'tn', 'cn', 'le', 'ne', 'ce'
@@ -61,6 +61,9 @@ const brawlingMovesText = computed({
 
 // Calculate HP when level changes
 function updateLevel() {
+  // The `max` attribute is only a hint: a typed value can exceed it, so clamp here too.
+  const lv = characterStore.character.level
+  characterStore.character.level = Math.min(Math.max(Math.round(lv) || 1, 1), maxLevel.value)
   const conMod = characterStore.abilityModifiers.con
   characterStore.character.maxHp = totalHp(characterStore.character.hitDie, conMod, characterStore.character.level)
   characterStore.character.currentHp = characterStore.character.maxHp
