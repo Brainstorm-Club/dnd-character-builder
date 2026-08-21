@@ -20,16 +20,15 @@ export const micheleCaduto: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:15(9), dex:13(5), con:14(7), int:8(0), wis:12(4), cha:10(2) = 27
   abilityScores: { str: 15, dex: 13, con: 14, int: 8, wis: 12, cha: 10 },
-  // Risen from Heaven: WIS+2, CHA+1 -> totals: 15, 13, 14, 8, 14, 11
-  racialBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 2, cha: 1 },
+  racialBonuses: { str: 1, wis: 2, cha: 1 },
   skillProficiencies: ['athletics', 'perception', 'insight', 'religion'],
   skillExpertise: [],
   savingThrowProficiencies: ['str', 'con'],
   languages: ['Common', 'Celestial'],
   proficienciesOther: ['all armor', 'shields', 'simple weapons', 'martial weapons'],
   weapons: [
-    { name: 'Longsword', attackBonus: 4, damage: '1d8+2' },
-    { name: 'Handaxe', attackBonus: 4, damage: '1d6+2' },
+    { name: 'Longsword', attackBonus: 5, damage: '1d8+3' },
+    { name: 'Handaxe', attackBonus: 5, damage: '1d6+3' },
   ],
   armor: 'Chain Mail',
   shield: true,
@@ -49,7 +48,13 @@ export const micheleCaduto: CharacterData = {
   bonds: 'I still hear the echoes of the celestial choir in my dreams. I fight so that one day, I might be worthy of hearing it again while awake.',
   flaws: 'My grief for paradise lost turns to fury at the slightest provocation. I am a weapon that cannot always tell friend from foe in the heat of battle.',
   featuresTraits: [
-    'Fighting Style: Defense',
+    'skills-risen-heaven',
+    'language-celestial',
+    'blindsight-20',
+    'memories-empyrean',
+    'celestial-longing',
+    'scent-of-holiness',
+    'Fighting Style',
     'Second Wind',
     'Action Surge',
     'Martial Archetype',
@@ -71,7 +76,6 @@ export const micheleCaduto: CharacterData = {
   spellsKnown: [],
   spellsPrepared: [],
   hitDie: 10,
-  // HP: L1 = 10 + 2(CON mod) = 12; L2-3 = 2 * (6 + 2) = 16; Total = 28
   maxHp: 28,
   currentHp: 28,
   tempHp: 0,

@@ -20,15 +20,14 @@ export const cronistaOblio: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:8(0), dex:14(7), con:14(7), int:15(9), wis:10(2), cha:10(2) = 27
   abilityScores: { str: 8, dex: 14, con: 14, int: 15, wis: 10, cha: 10 },
-  // Risen from Limbo: INT+1, WIS+1 -> totals: 8, 14, 14, 16, 11, 10
-  racialBonuses: { str: 0, dex: 0, con: 0, int: 1, wis: 1, cha: 0 },
+  racialBonuses: { dex: 1, int: 2, wis: 1 },
   skillProficiencies: ['arcana', 'history', 'investigation', 'religion'],
   skillExpertise: [],
   savingThrowProficiencies: ['int', 'wis'],
   languages: ['Common', 'Celestial', 'Infernal'],
   proficienciesOther: ['dagger', 'dart', 'sling', 'quarterstaff', 'light crossbow'],
   weapons: [
-    { name: 'Quarterstaff', attackBonus: 0, damage: '1d6-1' },
+    { name: 'Quarterstaff', attackBonus: 1, damage: '1d6-1' },
     { name: 'Dagger', attackBonus: 4, damage: '1d4+2' },
   ],
   armor: '',
@@ -48,6 +47,11 @@ export const cronistaOblio: CharacterData = {
   bonds: 'My spellbook is not merely a tool; it is a chronicle of everything I have witnessed since emerging from the void. To lose it would be to lose myself.',
   flaws: 'I am so focused on documenting the world that I often fail to act within it. I have watched people die while I was writing about their struggle.',
   featuresTraits: [
+    'skills-risen-limbo',
+    'memories-castle',
+    'discernment',
+    'declamation-of-courage',
+    'apocalyptic-bestiary',
     'Spellcasting',
     'Arcane Recovery',
     'Arcane Tradition',
@@ -69,7 +73,6 @@ export const cronistaOblio: CharacterData = {
   spellsKnown: [],
   spellsPrepared: ['Magic Missile', 'Shield', 'Mage Armor', 'Sleep', 'Scorching Ray', 'Web'],
   hitDie: 6,
-  // HP: L1 = 6 + 2(CON mod) = 8; L2-3 = 2 * (4 + 2) = 12; Total = 20
   maxHp: 20,
   currentHp: 20,
   tempHp: 0,

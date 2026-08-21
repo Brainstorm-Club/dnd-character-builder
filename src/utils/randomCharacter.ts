@@ -164,11 +164,13 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   // Handle ability score choices (e.g., Half-Elf gets +1 to two abilities of choice)
   if (race.abilityScoreChoice) {
     const allAbilities: AbilityKey[] = ['str', 'dex', 'con', 'int', 'wis', 'cha']
-    const alreadyBoosted = Object.keys(racialBonuses) as AbilityKey[]
-    const available = allAbilities.filter(a => !alreadyBoosted.includes(a))
-    const chosen = pickN(available, race.abilityScoreChoice.count)
-    for (const a of chosen) {
-      racialBonuses[a] = (racialBonuses[a] || 0) + race.abilityScoreChoice.amount
+    // Each tier draws from the abilities no fixed bonus or earlier tier took.
+    for (const tier of race.abilityScoreChoice) {
+      const taken = Object.keys(racialBonuses) as AbilityKey[]
+      const available = allAbilities.filter(a => !taken.includes(a))
+      for (const a of pickN(available, tier.count)) {
+        racialBonuses[a] = (racialBonuses[a] || 0) + tier.amount
+      }
     }
   }
 

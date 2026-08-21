@@ -21,9 +21,11 @@ onMounted(async () => {
 // WSG 3.8: Defer loading of non-critical resources — lazy load wizard steps
 const steps = [
   defineAsyncComponent(() => import('@/components/steps/Step1Variant.vue')),
+  // Abilities come before race: the level chosen here decides which
+  // subclasses the class step can offer.
+  defineAsyncComponent(() => import('@/components/steps/Step4Abilities.vue')),
   defineAsyncComponent(() => import('@/components/steps/Step2Race.vue')),
   defineAsyncComponent(() => import('@/components/steps/Step3Class.vue')),
-  defineAsyncComponent(() => import('@/components/steps/Step4Abilities.vue')),
   defineAsyncComponent(() => import('@/components/steps/Step5Background.vue')),
   defineAsyncComponent(() => import('@/components/steps/Step6Equipment.vue')),
   defineAsyncComponent(() => import('@/components/steps/Step7Spells.vue')),
@@ -31,7 +33,7 @@ const steps = [
   defineAsyncComponent(() => import('@/components/steps/Step9Review.vue')),
 ]
 
-const stepKeys = ['variant', 'race', 'class', 'abilities', 'background', 'equipment', 'spells', 'details', 'review']
+const stepKeys = ['variant', 'abilities', 'race', 'class', 'background', 'equipment', 'spells', 'details', 'review']
 
 // ─── Step Validation ──────────────────────────────────────────────────────
 const validationMessage = ref('')
@@ -42,9 +44,9 @@ const isCurrentStepValid = computed((): boolean => {
   const char = characterStore.character
   switch (appStore.currentStep) {
     case 0: return !!char.variant             // Variant selected
-    case 1: return !!char.race                // Race selected
-    case 2: return !!char.className           // Class selected
-    case 3: return true                       // Abilities always valid (defaults)
+    case 1: return true                       // Abilities and level always valid (defaults)
+    case 2: return !!char.race                // Race selected
+    case 3: return !!char.className           // Class selected
     case 4: return !!char.background          // Background selected
     case 5: return true                       // Equipment optional
     case 6: return true                       // Spells optional (non-casters skip)
@@ -56,8 +58,8 @@ const isCurrentStepValid = computed((): boolean => {
 /** Map step index to validation i18n key */
 function validationKey(step: number): string {
   switch (step) {
-    case 1: return 'validation.selectRace'
-    case 2: return 'validation.selectClass'
+    case 2: return 'validation.selectRace'
+    case 3: return 'validation.selectClass'
     case 4: return 'validation.selectBackground'
     default: return 'validation.completeStep'
   }

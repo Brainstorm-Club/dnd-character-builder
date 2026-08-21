@@ -20,8 +20,7 @@ export const spinaVeleno: CharacterData = {
   experiencePoints: 6500,
   // Point-buy base: str:10(2), dex:14(7), con:14(7), int:10(2), wis:15(9), cha:8(0) = 27
   abilityScores: { str: 10, dex: 14, con: 14, int: 10, wis: 15, cha: 8 },
-  // Child of the Apocalypse: CON+2, WIS+1 -> totals: 10, 14, 16, 10, 16, 8
-  racialBonuses: { str: 0, dex: 0, con: 2, int: 0, wis: 1, cha: 0 },
+  racialBonuses: { dex: 1, con: 2, wis: 1 },
   skillProficiencies: ['nature', 'survival', 'perception', 'medicine'],
   skillExpertise: [],
   savingThrowProficiencies: ['int', 'wis'],
@@ -49,8 +48,10 @@ export const spinaVeleno: CharacterData = {
   bonds: 'The blighted grove where I was born still pulses with toxic life. I will protect it from those who would exploit its power.',
   flaws: 'I trust the natural world more than any person. Compassion for the weak feels like a waste of precious energy.',
   featuresTraits: [
-    'Wasteland Born',
-    'Toxic Resilience',
+    'skills-child-apocalypse',
+    'tools-one-artisan',
+    'stormborn',
+    'accustomed-to-armageddon',
     'Druidic',
     'Spellcasting',
     'Wild Shape',
@@ -74,7 +75,6 @@ export const spinaVeleno: CharacterData = {
   spellsKnown: [],
   spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Goodberry', 'Hold Person', 'Pass without Trace', 'Thunderwave', 'Dispel Magic', 'Lesser Restoration'],
   hitDie: 8,
-  // HP: L1 = 8 + 3(CON mod) = 11; L2-5 = 4 * (5 + 3) = 32; Total = 43
   maxHp: 43,
   currentHp: 43,
   tempHp: 0,

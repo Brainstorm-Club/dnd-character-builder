@@ -20,8 +20,7 @@ export const guardianoMonte: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:10(2), dex:14(7), con:14(7), int:10(2), wis:15(9), cha:8(0) = 27
   abilityScores: { str: 10, dex: 14, con: 14, int: 10, wis: 15, cha: 8 },
-  // Risen from Purgatory: CON+1, WIS+2 -> totals: 10, 14, 15, 10, 17, 8
-  racialBonuses: { str: 0, dex: 0, con: 1, int: 0, wis: 2, cha: 0 },
+  racialBonuses: { dex: 1, con: 1, wis: 2 },
   skillProficiencies: ['nature', 'survival', 'perception', 'medicine'],
   skillExpertise: [],
   savingThrowProficiencies: ['int', 'wis'],
@@ -50,12 +49,18 @@ export const guardianoMonte: CharacterData = {
   bonds: 'The mountain where I first emerged from Purgatory still stands, defiant against the corruption. I will protect it until the earth itself reclaims it.',
   flaws: 'I view the suffering of mortals with unsettling detachment. After Purgatory, human pain seems almost trivial compared to what the land endures.',
   featuresTraits: [
+    'skills-risen-purgatory',
+    'language-old-world',
+    'blindsight-30',
+    'memories-mountain',
+    'resistance-of-the-mount',
     'Druidic',
     'Spellcasting',
     'Wild Shape',
     'Druid Circle',
     'Circle Spells',
     'Plagued Wild Shape',
+    'Excruciating Contagion',
   ],
   backstory: 'The Guardiano emerged from the fires of Purgatory not as a person reborn, but as something closer to the earth itself. Memories of a former life are fragmentary: a garden, a mountain, the smell of rain on stone. What remained was an intimate understanding of rot and renewal, of how plague and growth are intertwined in an endless cycle. The mountain that bore witness to the crossing became a sanctuary, and the Guardiano its silent protector. In wild shape, the druid becomes something terrible, a plague-bearer that walks among the blighted creatures of the wasteland as one of their own.',
   age: 'Appears ageless',
@@ -72,7 +77,6 @@ export const guardianoMonte: CharacterData = {
   spellsKnown: [],
   spellsPrepared: ['Cure Wounds', 'Goodberry', 'Faerie Fire', 'Pass without Trace', 'Hold Person', 'Thunderwave'],
   hitDie: 8,
-  // HP: L1 = 8 + 2(CON mod) = 10; L2-3 = 2 * (5 + 2) = 14; Total = 24
   maxHp: 24,
   currentHp: 24,
   tempHp: 0,

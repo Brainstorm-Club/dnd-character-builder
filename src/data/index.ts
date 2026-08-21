@@ -71,6 +71,7 @@ let _brancaRules: BrancaloniaRules | null = null
 
 // Apocalisse
 let _apoRaces: readonly Race[] | null = null
+let _apoTraitDescriptions: { en: Record<string, string>; it: Record<string, string> } | null = null
 let _apoSubclasses: readonly ApocalisseSubclass[] | null = null
 let _apoBackgrounds: readonly Background[] | null = null
 let _apoRules: ApocalisseRules | null = null
@@ -250,10 +251,23 @@ function ensureApoRaces(): Promise<void> {
   if (_apoRaces) return Promise.resolve()
   if (_pApoRaces) return _pApoRaces
   const cached = lsGet<Race[]>('apo-races')
-  if (cached) { _apoRaces = cached; return Promise.resolve() }
-  _pApoRaces = import('./apocalisse/races').then(m => {
-    _apoRaces = m.apocalisseRaces
-    lsSet('apo-races', m.apocalisseRaces)
+  const cachedTraits = lsGet<{ en: Record<string, string>; it: Record<string, string> }>('apo-trait-descriptions')
+  if (cached && cachedTraits) {
+    _apoRaces = cached
+    _apoTraitDescriptions = cachedTraits
+    return Promise.resolve()
+  }
+  _pApoRaces = Promise.all([
+    import('./apocalisse/races'),
+    import('./apocalisse/traits'),
+  ]).then(([raceMod, traitMod]) => {
+    _apoRaces = raceMod.apocalisseRaces
+    _apoTraitDescriptions = {
+      en: traitMod.apocalisseTraitDescriptions,
+      it: traitMod.apocalisseTraitDescriptionsIt,
+    }
+    lsSet('apo-races', raceMod.apocalisseRaces)
+    lsSet('apo-trait-descriptions', _apoTraitDescriptions)
   })
   return _pApoRaces
 }
@@ -308,17 +322,17 @@ export async function ensureStepData(variant: GameVariant, step: number): Promis
   const loads: Promise<void>[] = []
 
   switch (step) {
-    case 1: // Race
+    case 1: // Abilities and starting level — no data needed
+      break
+    case 2: // Race
       if (variant === 'brancalonia') loads.push(ensureBrancaRaces())
       else if (variant === 'apocalisse') loads.push(ensureApoRaces())
       else loads.push(ensureDnd5eRaces())
       break
-    case 2: // Class
+    case 3: // Class
       loads.push(ensureDnd5eClasses())
       if (variant === 'brancalonia') loads.push(ensureBrancaClasses())
       if (variant === 'apocalisse') loads.push(ensureApoClasses())
-      break
-    case 3: // Abilities — no data needed
       break
     case 4: // Background
       if (variant === 'brancalonia') loads.push(ensureBrancaBackgrounds())
@@ -421,9 +435,12 @@ export function getTraitDescription(
   traitId: string,
   locale: string,
 ): string {
-  if (variant !== 'brancalonia' || !_brancaTraitDescriptions) return ''
-  const dict = locale === 'it' ? _brancaTraitDescriptions.it : _brancaTraitDescriptions.en
-  return dict[traitId] ?? _brancaTraitDescriptions.en[traitId] ?? ''
+  const maps = variant === 'brancalonia' ? _brancaTraitDescriptions
+    : variant === 'apocalisse' ? _apoTraitDescriptions
+    : null
+  if (!maps) return ''
+  const dict = locale === 'it' ? maps.it : maps.en
+  return dict[traitId] ?? maps.en[traitId] ?? ''
 }
 
 // ─── Classes ────────────────────────────────────────────────────────────────
@@ -635,6 +652,7 @@ export function _resetCaches(): void {
   _brancaTraitDescriptions = null
   _brancaSubclasses = null; _brancaBurattinaio = null
   _apoRaces = _apoBackgrounds = _apoRules = null
+  _apoTraitDescriptions = null
   _apoSubclasses = null
   _pDnd5eRaces = _pDnd5eClasses = _pDnd5eBackgrounds = _pDnd5eSpells = _pDnd5eEquipment = _pDnd5eRules = null
   _pBrancaRaces = _pBrancaClasses = _pBrancaBackgrounds = _pBrancaRules = null

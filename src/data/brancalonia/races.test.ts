@@ -73,7 +73,7 @@ describe('brancalonia races', () => {
     it('lets the Nonexistent choose one extra ability point', () => {
       const nonexistent = getBrancaloniaRaceById('nonexistent')
       expect(nonexistent?.abilityBonuses).toEqual({ con: 2 })
-      expect(nonexistent?.abilityScoreChoice).toEqual({ count: 1, amount: 1 })
+      expect(nonexistent?.abilityScoreChoice).toEqual([{ count: 1, amount: 1 }])
     })
 
     it('gives the Pantegan the reduced speed of a Small rat-man', () => {
@@ -104,7 +104,7 @@ describe('brancalonia races', () => {
     it('lets the Paraghoul spread two extra ability points', () => {
       const paraghoul = getBrancaloniaRaceById('paraghoul')
       expect(paraghoul?.abilityBonuses).toEqual({ int: 1 })
-      expect(paraghoul?.abilityScoreChoice).toEqual({ count: 2, amount: 1 })
+      expect(paraghoul?.abilityScoreChoice).toEqual([{ count: 2, amount: 1 }])
     })
   })
 

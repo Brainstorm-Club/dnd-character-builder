@@ -20,8 +20,7 @@ export const graziaSpezzata: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:8(0), dex:14(7), con:14(7), int:10(2), wis:10(2), cha:15(9) = 27
   abilityScores: { str: 8, dex: 14, con: 14, int: 10, wis: 10, cha: 15 },
-  // Risen from Heaven: WIS+2, CHA+1 -> totals: 8, 14, 14, 10, 12, 16
-  racialBonuses: { str: 0, dex: 0, con: 0, int: 0, wis: 2, cha: 1 },
+  racialBonuses: { dex: 1, wis: 2, cha: 1 },
   skillProficiencies: ['arcana', 'religion', 'insight', 'persuasion'],
   skillExpertise: [],
   savingThrowProficiencies: ['con', 'cha'],
@@ -48,11 +47,19 @@ export const graziaSpezzata: CharacterData = {
   bonds: 'I carry within me a fragment of celestial song. When I cast spells, those nearby can hear a faint, haunting melody that brings both comfort and sorrow.',
   flaws: 'I see the best in everyone, even those who have long since lost any good within them. This naive trust will be my undoing.',
   featuresTraits: [
+    'skills-risen-heaven',
+    'language-celestial',
+    'blindsight-20',
+    'memories-empyrean',
+    'celestial-longing',
+    'scent-of-holiness',
     'Spellcasting',
     'Sorcerous Origin',
+    'Font of Magic',
+    'Metamagic',
     'Otherworldly Ancestor',
     'Otherworldly Sign',
-    'Font of Magic',
+    'Ancestor\'s Protection',
   ],
   backstory: 'Grazia was an echo of something greater, a fragment of celestial essence that coalesced into mortal form when Heaven shattered during the Apocalypse. She remembers warmth, harmony, and an overwhelming sense of belonging, then the fall, the shattering, and the cold silence of a ruined world. Her magic manifests as fractured light and discordant hymns, beautiful but broken, like stained glass scattered across a cathedral floor. She wanders the wasteland offering healing and hope to those she meets, though each spell costs her a little more of the celestial memory she clings to.',
   age: 'Appears 25',
@@ -69,7 +76,6 @@ export const graziaSpezzata: CharacterData = {
   spellsKnown: ['Shield', 'Cure Wounds', 'Scorching Ray', 'Misty Step'],
   spellsPrepared: [],
   hitDie: 6,
-  // HP: L1 = 6 + 2(CON mod) = 8; L2-3 = 2 * (4 + 2) = 12; Total = 20
   maxHp: 20,
   currentHp: 20,
   tempHp: 0,

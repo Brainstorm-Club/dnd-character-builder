@@ -67,11 +67,12 @@ describe('brancalonia blog characters', () => {
         if (fixed[a]) expect(char.racialBonuses[a], a).toBe(fixed[a])
       }
       // ...and the free choices must add up to the right number of points.
-      const choice = race!.abilityScoreChoice
+      const expected = (race!.abilityScoreChoice ?? [])
+        .reduce((sum, tier) => sum + tier.count * tier.amount, 0)
       const extra = abilities
         .filter(a => !fixed[a])
         .reduce((sum, a) => sum + (char.racialBonuses[a] ?? 0), 0)
-      expect(extra).toBe(choice ? choice.count * choice.amount : 0)
+      expect(extra).toBe(expected)
     })
 
     it('carries the size and hit die of its race and class', () => {

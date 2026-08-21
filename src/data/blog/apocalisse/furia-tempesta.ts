@@ -20,16 +20,15 @@ export const furiaTempesta: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:15(9), dex:13(5), con:14(7), int:8(0), wis:12(4), cha:10(2) = 27
   abilityScores: { str: 15, dex: 13, con: 14, int: 8, wis: 12, cha: 10 },
-  // Child of the Apocalypse: CON+2, WIS+1 -> totals: 15, 13, 16, 8, 13, 10
-  racialBonuses: { str: 0, dex: 0, con: 2, int: 0, wis: 1, cha: 0 },
+  racialBonuses: { str: 1, con: 2, wis: 1 },
   skillProficiencies: ['athletics', 'survival', 'perception', 'intimidation'],
   skillExpertise: [],
   savingThrowProficiencies: ['str', 'con'],
   languages: ['Common'],
   proficienciesOther: ['light armor', 'medium armor', 'shields', 'simple weapons', 'martial weapons'],
   weapons: [
-    { name: 'Greataxe', attackBonus: 4, damage: '1d12+2' },
-    { name: 'Handaxe', attackBonus: 4, damage: '1d6+2' },
+    { name: 'Greataxe', attackBonus: 5, damage: '1d12+3' },
+    { name: 'Handaxe', attackBonus: 5, damage: '1d6+3' },
   ],
   armor: '',
   shield: false,
@@ -47,6 +46,10 @@ export const furiaTempesta: CharacterData = {
   bonds: 'My spectral steed appeared to me during the worst storm I ever survived. It is the only thing in this world that has never abandoned me.',
   flaws: 'I cannot back down from a challenge, no matter how suicidal. The storm in my blood demands I face every threat head-on.',
   featuresTraits: [
+    'skills-child-apocalypse',
+    'tools-one-artisan',
+    'stormborn',
+    'accustomed-to-armageddon',
     'Rage',
     'Unarmored Defense',
     'Reckless Attack',
@@ -70,7 +73,6 @@ export const furiaTempesta: CharacterData = {
   spellsKnown: [],
   spellsPrepared: [],
   hitDie: 12,
-  // HP: L1 = 12 + 3(CON mod) = 15; L2-3 = 2 * (7 + 3) = 20; Total = 35
   maxHp: 35,
   currentHp: 35,
   tempHp: 0,

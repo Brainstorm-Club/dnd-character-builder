@@ -16,11 +16,17 @@ export interface Race {
   nameOriginal?: string
   description?: string
   abilityBonuses: Partial<AbilityScores>
-  /** If set, the player chooses `count` abilities to each receive +`amount` */
+  /**
+   * Free ability score increases the player assigns. Each entry is one tier:
+   * `[{count: 2, amount: 1}]` is "+1 to two abilities of your choice", while
+   * `[{count: 1, amount: 2}, {count: 2, amount: 1}]` is the Apocalisse
+   * "+2 to one ability and +1 to two others". Tiers never overlap, and never
+   * land on an ability that already has a fixed racial bonus.
+   */
   abilityScoreChoice?: {
     count: number
     amount: number
-  }
+  }[]
   speed: number
   size: Size
   traits: string[]

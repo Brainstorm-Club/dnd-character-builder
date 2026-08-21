@@ -11,7 +11,7 @@ export const brancaloniaRaces: readonly Race[] = [
     description:
       'Nine out of ten people you meet in the Kingdom are human. The salt of the earth and the cannon fodder of every war, they are the village people and the mercenaries, those who harvest the cotton, the rice and the wheat. Along with their more common variants — sylvans, gifted and morgants — humans believe themselves the only self-aware species in the known world, all the others having magical or supernatural origins. Pantegans, mandrakes and wolfcats disagree entirely.',
     abilityBonuses: {},
-    abilityScoreChoice: { count: 2, amount: 1 },
+    abilityScoreChoice: [{ count: 2, amount: 1 }],
     speed: 30,
     size: 'Medium',
     traits: [
@@ -31,7 +31,7 @@ export const brancaloniaRaces: readonly Race[] = [
     description:
       'Gifted are not a species distinct from humans but humans born with, or touched during their lifetime by, a supernatural talent — and they usually bear a visible mark of it. Traditions differ on where the gift comes from: descent from a malebranche, a special planetary conjunction, being a seventh child, born with a caul or prematurely, blessed by a saint, exchanged in the cradle, born during a storm, chosen by the fairies, or simply because their mother sneezed in the wrong direction. Commoners meet them with mistrust as often as with reverence — a talent like that could mean a heretic, or a blessing.',
     abilityBonuses: {},
-    abilityScoreChoice: { count: 2, amount: 1 },
+    abilityScoreChoice: [{ count: 2, amount: 1 }],
     speed: 30,
     size: 'Medium',
     traits: [
@@ -138,7 +138,7 @@ export const brancaloniaRaces: readonly Race[] = [
     description:
       'The last specimens of a race of hominids more feral and rustic than the common human, with much thicker body hair, more agile and muscular bodies, fiercer features and tougher mettle. The difference is almost entirely cultural: sylvan tribes build no shelters of brick or stone, work no land and raise no livestock — they are hunter-gatherers who live in pristine wilderness. Their lore is oral, and they know as many stories and songs by heart as humans have ever written in books.',
     abilityBonuses: { con: 2, wis: 1 },
-    abilityScoreChoice: { count: 1, amount: 1 },
+    abilityScoreChoice: [{ count: 1, amount: 1 }],
     speed: 30,
     size: 'Medium',
     traits: [
@@ -182,7 +182,7 @@ export const brancaloniaRaces: readonly Race[] = [
     description:
       'A nonexistent looks like empty clothes, armor or a cloak wandering about on its own as a knight, paladin, thief or sorcerer. They cover themselves carefully so the void beneath the cape stays hidden, speak through some form of ventriloquism, and perceive the world through senses much like human ones. Remove or destroy their garments and a nonexistent is simply not there anymore. Pure abstract consciousness enclosed in cloth, they are famed for a will and a self-determination far firmer than that of beings made of flesh.',
     abilityBonuses: { con: 2 },
-    abilityScoreChoice: { count: 1, amount: 1 },
+    abilityScoreChoice: [{ count: 1, amount: 1 }],
     speed: 30,
     size: 'Medium',
     traits: [
@@ -288,7 +288,7 @@ export const brancaloniaRaces: readonly Race[] = [
     description:
       'People who died and then, one way or another, cheated Sister Death and came back. Their heart has stopped and their blood no longer flows, but they are just regular folk with merits and flaws, and a paraghoul can easily disguise their nature and walk among the living unnoticed. Rumor makes them the hidden rulers and strategists of the ghouls, which does nothing for first impressions — but many cunning leaders find that a henchman who can deal with death without flinching is a gambit that pays off.',
     abilityBonuses: { int: 1 },
-    abilityScoreChoice: { count: 2, amount: 1 },
+    abilityScoreChoice: [{ count: 2, amount: 1 }],
     speed: 30,
     size: 'Medium',
     traits: [

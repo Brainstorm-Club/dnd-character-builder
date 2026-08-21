@@ -356,3 +356,27 @@ describe('useCharacterStore', () => {
     })
   })
 })
+
+describe('switching game variant', () => {
+  it('starts from a clean character so no cross-variant data survives', () => {
+    const store = useCharacterStore()
+    store.character.variant = 'brancalonia'
+    store.character.race = 'marionette'
+    store.character.subrace = 'pinocchio'
+    store.character.className = 'burattinaio'
+    store.character.subclass = 'geppetto'
+    store.character.background = 'ambulant'
+    store.character.name = 'Legnetto'
+
+    // What Step1Variant does when the player picks a different variant
+    store.resetCharacter()
+    store.character.variant = 'apocalisse'
+
+    expect(store.character.race).toBe('')
+    expect(store.character.subrace).toBe('')
+    expect(store.character.className).toBe('')
+    expect(store.character.subclass).toBe('')
+    expect(store.character.background).toBe('')
+    expect(store.character.variant).toBe('apocalisse')
+  })
+})

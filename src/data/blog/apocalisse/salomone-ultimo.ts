@@ -20,15 +20,14 @@ export const salomoneUltimo: CharacterData = {
   experiencePoints: 6500,
   // Point-buy base: str:8(0), dex:14(7), con:14(7), int:15(9), wis:10(2), cha:10(2) = 27
   abilityScores: { str: 8, dex: 14, con: 14, int: 15, wis: 10, cha: 10 },
-  // Child of the Old World: INT+2, WIS+1 -> totals: 8, 14, 14, 17, 11, 10
-  racialBonuses: { str: 0, dex: 0, con: 0, int: 2, wis: 1, cha: 0 },
+  racialBonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 },
   skillProficiencies: ['arcana', 'history', 'investigation', 'religion'],
   skillExpertise: [],
   savingThrowProficiencies: ['int', 'wis'],
   languages: ['Common', 'Old World Tongue', 'Draconic', 'Celestial'],
   proficienciesOther: ['dagger', 'dart', 'sling', 'quarterstaff', 'light crossbow'],
   weapons: [
-    { name: 'Quarterstaff', attackBonus: 1, damage: '1d6-1' },
+    { name: 'Quarterstaff', attackBonus: 2, damage: '1d6-1' },
     { name: 'Dagger', attackBonus: 5, damage: '1d4+2' },
   ],
   armor: '',
@@ -48,12 +47,15 @@ export const salomoneUltimo: CharacterData = {
   bonds: 'Solomon\'s grimoire chose me as its guardian. The spirits bound within its pages whisper to me in languages that predate mankind.',
   flaws: 'I believe my intellect makes me superior to those who survived through brute force alone. This arrogance has cost me allies before.',
   featuresTraits: [
+    'skills-child-old-world',
+    'tools-herbalist-artisan',
+    'language-old-world',
+    'memories-of-the-old-world',
     'Spellcasting',
     'Arcane Recovery',
     'Arcane Tradition',
     'Initiate of the School of Solomon',
     'Solomon\'s Warding',
-    'Summon Otherworldly Spirit',
   ],
   backstory: 'Salomone was born in one of the last intact libraries of the old world, raised among crumbling manuscripts and fading scrolls by scholars who remembered civilization. When raiders burned the library, he fled with nothing but Solomon\'s grimoire clutched to his chest, its pages whispering incantations of binding and warding. He has spent years wandering the wasteland, sealing rifts where demons pour through, exorcising spirits from haunted ruins, and recording everything in a new volume he calls the Chronicle of the Last Age. He knows that when he dies, the knowledge dies with him.',
   age: '52',
@@ -70,7 +72,6 @@ export const salomoneUltimo: CharacterData = {
   spellsKnown: [],
   spellsPrepared: ['Magic Missile', 'Shield', 'Mage Armor', 'Scorching Ray', 'Misty Step', 'Fireball', 'Counterspell', 'Fly'],
   hitDie: 6,
-  // HP: L1 = 6 + 2(CON mod) = 8; L2-5 = 4 * (4 + 2) = 24; Total = 32
   maxHp: 32,
   currentHp: 32,
   tempHp: 0,

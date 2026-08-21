@@ -20,8 +20,7 @@ export const animaErrante: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:8(0), dex:14(7), con:14(7), int:10(2), wis:10(2), cha:15(9) = 27
   abilityScores: { str: 8, dex: 14, con: 14, int: 10, wis: 10, cha: 15 },
-  // Risen from Purgatory: CON+1, WIS+2 -> totals: 8, 14, 15, 10, 12, 15
-  racialBonuses: { str: 0, dex: 0, con: 1, int: 0, wis: 2, cha: 0 },
+  racialBonuses: { con: 1, wis: 2, cha: 1 },
   skillProficiencies: ['arcana', 'intimidation', 'perception', 'survival'],
   skillExpertise: [],
   savingThrowProficiencies: ['wis', 'cha'],
@@ -49,11 +48,17 @@ export const animaErrante: CharacterData = {
   bonds: 'Lilith\'s voice is the only constant in my existence. She whispers through the flames of my spells, and I am never truly alone, for better or worse.',
   flaws: 'I avoid commitment to any cause or person. The moment something begins to matter, I hear the fires of Purgatory crackling at the edge of my awareness, and I run.',
   featuresTraits: [
+    'skills-risen-purgatory',
+    'language-old-world',
+    'blindsight-30',
+    'memories-mountain',
+    'resistance-of-the-mount',
     'Otherworldly Patron',
     'Pact Magic',
-    'Shielding Veils',
     'Eldritch Invocations',
     'Pact Boon',
+    'Shielding Veils',
+    'Fierce Savagery of Lilith',
   ],
   backstory: 'The Anima spent an eternity, or perhaps only a moment, in the purifying fires of Purgatory. Time has no meaning when you are burning. When the walls between worlds collapsed, the soul was expelled into the wasteland, raw and formless, unable to remember why it had been condemned. It was Lilith who found the wandering spirit, offering form and power in exchange for service. The pact was sealed in a language older than prayer, and the Anima Errante was born, neither living nor dead, neither damned nor saved, just endlessly wandering with eldritch fire at its fingertips.',
   age: 'Indeterminate',
@@ -70,7 +75,6 @@ export const animaErrante: CharacterData = {
   spellsKnown: ['Hex', 'Charm Person', 'Hold Person', 'Hellish Rebuke'],
   spellsPrepared: [],
   hitDie: 8,
-  // HP: L1 = 8 + 2(CON mod) = 10; L2-3 = 2 * (5 + 2) = 14; Total = 24
   maxHp: 24,
   currentHp: 24,
   tempHp: 0,

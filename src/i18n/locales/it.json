@@ -114,7 +114,9 @@
     "con": "Costituzione",
     "int": "Intelligenza",
     "wis": "Saggezza",
-    "cha": "Carisma"
+    "cha": "Carisma",
+    "startingLevel": "Livello di Partenza",
+    "startingLevelHint": "Da 1 a {max}. Determina quali sottoclassi potrai scegliere al passo Classe."
   },
   "background": {
     "title": "Scegli il Background",

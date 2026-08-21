@@ -114,7 +114,9 @@
     "con": "Constitution",
     "int": "Intelligence",
     "wis": "Wisdom",
-    "cha": "Charisma"
+    "cha": "Charisma",
+    "startingLevel": "Starting Level",
+    "startingLevelHint": "From 1 to {max}. It decides which subclasses the Class step can offer."
   },
   "background": {
     "title": "Choose Background",

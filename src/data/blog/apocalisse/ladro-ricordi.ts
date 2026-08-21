@@ -20,16 +20,15 @@ export const ladroRicordi: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:8(0), dex:15(9), con:14(7), int:12(4), wis:13(5), cha:10(2) = 27
   abilityScores: { str: 8, dex: 15, con: 14, int: 12, wis: 13, cha: 10 },
-  // Child of the Old World: INT+2, WIS+1 -> totals: 8, 15, 14, 14, 14, 10
-  racialBonuses: { str: 0, dex: 0, con: 0, int: 2, wis: 1, cha: 0 },
+  racialBonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 },
   skillProficiencies: ['stealth', 'investigation', 'history', 'perception', 'deception', 'arcana'],
   skillExpertise: ['stealth', 'investigation'],
   savingThrowProficiencies: ['dex', 'int'],
   languages: ['Common', 'Old World Tongue', 'Thieves\' Cant'],
   proficienciesOther: ['light armor', 'simple weapons', 'hand crossbow', 'longsword', 'rapier', 'shortsword', 'thieves\' tools'],
   weapons: [
-    { name: 'Shortsword', attackBonus: 4, damage: '1d6+2' },
-    { name: 'Dagger', attackBonus: 4, damage: '1d4+2' },
+    { name: 'Shortsword', attackBonus: 5, damage: '1d6+3' },
+    { name: 'Dagger', attackBonus: 5, damage: '1d4+3' },
   ],
   armor: 'Leather',
   shield: false,
@@ -49,6 +48,10 @@ export const ladroRicordi: CharacterData = {
   bonds: 'Somewhere in my collection of stolen memories lies the face of someone I loved before the Apocalypse. I have not yet found the courage to look.',
   flaws: 'The wormwood extract I depend on is slowly eroding my own memories. Soon I may not remember which thoughts are mine and which are stolen.',
   featuresTraits: [
+    'skills-child-old-world',
+    'tools-herbalist-artisan',
+    'language-old-world',
+    'memories-of-the-old-world',
     'Expertise',
     'Sneak Attack',
     'Thieves\' Cant',
@@ -72,7 +75,6 @@ export const ladroRicordi: CharacterData = {
   spellsKnown: [],
   spellsPrepared: [],
   hitDie: 8,
-  // HP: L1 = 8 + 2(CON mod) = 10; L2-3 = 2 * (5 + 2) = 14; Total = 24
   maxHp: 24,
   currentHp: 24,
   tempHp: 0,

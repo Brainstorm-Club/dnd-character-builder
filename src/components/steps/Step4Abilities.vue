@@ -4,12 +4,23 @@ import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import type { AbilityScores } from '@/stores/character'
 import { rollAbilityScores, STANDARD_ARRAY, POINT_BUY_COSTS, pointBuyRemaining } from '@/utils/diceRoller'
+import { getMaxLevel } from '@/data'
 import { modifier, formatModifier } from '@/utils/calculations'
 import DiceRoller from '@/components/shared/DiceRoller.vue'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 const { t } = useI18n()
 const characterStore = useCharacterStore()
+
+// The starting level is picked here because the class step needs it to know
+// whether the character has reached its subclass level yet.
+const maxLevel = computed(() => getMaxLevel(characterStore.character.variant))
+
+function clampLevel() {
+  // The `max` attribute is only a hint: a typed value can exceed it.
+  const lv = characterStore.character.level
+  characterStore.character.level = Math.min(Math.max(Math.round(lv) || 1, 1), maxLevel.value)
+}
 
 type Method = 'standard' | 'pointbuy' | 'roll'
 const method = ref<Method>('standard')
@@ -103,6 +114,15 @@ function setMethod(m: Method) {
 <template>
   <section aria-labelledby="abilities-heading">
     <h2 id="abilities-heading" class="text-2xl font-bold text-amber-500 mb-6">{{ t('abilities.title') }}</h2>
+
+    <!-- Starting level: decides which subclasses the class step can offer -->
+    <div class="mb-6 max-w-xs">
+      <label for="starting-level" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('abilities.startingLevel') }}</label>
+      <input id="starting-level" v-model.number="characterStore.character.level" type="number" min="1" :max="maxLevel"
+        @change="clampLevel"
+        class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+      <p class="text-xs text-stone-500 mt-1">{{ t('abilities.startingLevelHint', { max: maxLevel }) }}</p>
+    </div>
 
     <!-- Method Selection -->
     <div class="flex gap-2 mb-6" role="radiogroup" :aria-label="t('abilities.method')">

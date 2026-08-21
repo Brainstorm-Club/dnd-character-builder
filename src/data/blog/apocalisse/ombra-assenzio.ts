@@ -20,8 +20,7 @@ export const ombraAssenzio: CharacterData = {
   experiencePoints: 6500,
   // Point-buy base: str:8(0), dex:15(9), con:14(7), int:12(4), wis:13(5), cha:10(2) = 27
   abilityScores: { str: 8, dex: 15, con: 14, int: 12, wis: 13, cha: 10 },
-  // Risen from Hell: DEX+1, CHA+2 -> totals: 8, 16, 14, 12, 13, 12
-  racialBonuses: { str: 0, dex: 1, con: 0, int: 0, wis: 0, cha: 2 },
+  racialBonuses: { dex: 1, con: 1, cha: 2 },
   skillProficiencies: ['stealth', 'deception', 'sleight of hand', 'perception', 'investigation', 'intimidation'],
   skillExpertise: ['stealth', 'deception'],
   savingThrowProficiencies: ['dex', 'int'],
@@ -49,9 +48,11 @@ export const ombraAssenzio: CharacterData = {
   bonds: 'The wormwood that flows through me is both poison and purpose. Without it, I would dissolve back into the shadows of Hell.',
   flaws: 'My addiction to wormwood essence clouds my judgment and erodes my humanity. I will betray anyone if the craving grows strong enough.',
   featuresTraits: [
-    'Darkvision',
-    'Hellish Resistance',
-    'Infernal Legacy',
+    'skills-risen-hell',
+    'language-infernal',
+    'darkvision-60',
+    'memories-blind-world',
+    'scars-of-the-lost-ones',
     'Expertise',
     'Sneak Attack',
     'Thieves\' Cant',
@@ -59,7 +60,6 @@ export const ombraAssenzio: CharacterData = {
     'Roguish Archetype',
     'Wormwood Addiction',
     'Wormwood Shroud',
-    'Uncanny Dodge',
   ],
   backstory: 'Ombra dell\'Assenzio was a thief even in Hell, stealing moments of peace from the infernal jailers who tormented the damned. She discovered wormwood growing in the cracks between the circles of damnation, a bitter plant that granted fleeting invisibility to those desperate enough to consume its toxic essence. When the Apocalypse tore open the gates, she slipped out in a shroud of green vapor, carrying seeds of the infernal herb with her. Now she haunts the ruins of the mortal world, a specter who deals in secrets and silence. The wormwood keeps her tethered to the shadows, but each dose pulls her further from what remains of her humanity.',
   age: '31',
@@ -76,7 +76,6 @@ export const ombraAssenzio: CharacterData = {
   spellsKnown: [],
   spellsPrepared: [],
   hitDie: 8,
-  // HP: L1 = 8 + 2(CON mod) = 10; L2-5 = 4 * (5 + 2) = 28; Total = 38
   maxHp: 38,
   currentHp: 38,
   tempHp: 0,

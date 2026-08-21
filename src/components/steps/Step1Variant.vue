@@ -11,6 +11,12 @@ const characterStore = useCharacterStore()
 const appStore = useAppStore()
 
 async function selectVariant(variant: GameVariant) {
+  // Race, subrace, class, subclass, background, spells and equipment are all
+  // variant-specific. Carrying them across would leave, say, a Brancalonia
+  // marionette on an Apocalisse character, so switching variant starts over.
+  if (characterStore.character.variant !== variant) {
+    characterStore.resetCharacter()
+  }
   characterStore.character.variant = variant
   // WSG 3.8: Load only race data needed for Step 2
   await ensureStepData(variant, 1)

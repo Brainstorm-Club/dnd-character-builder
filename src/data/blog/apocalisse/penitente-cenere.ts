@@ -20,8 +20,7 @@ export const penitenteCenere: CharacterData = {
   experiencePoints: 900,
   // Point-buy base: str:14(7), dex:10(2), con:14(7), int:8(0), wis:15(9), cha:10(2) = 27
   abilityScores: { str: 14, dex: 10, con: 14, int: 8, wis: 15, cha: 10 },
-  // Risen from Purgatory: CON+1, WIS+2 -> totals: 14, 10, 15, 8, 17, 10
-  racialBonuses: { str: 0, dex: 0, con: 1, int: 0, wis: 2, cha: 0 },
+  racialBonuses: { str: 1, con: 1, wis: 2 },
   skillProficiencies: ['religion', 'medicine', 'perception', 'survival'],
   skillExpertise: [],
   savingThrowProficiencies: ['wis', 'cha'],
@@ -50,11 +49,18 @@ export const penitenteCenere: CharacterData = {
   bonds: 'I carry the ashes of my fellow penitents who did not survive the crossing. Their voices guide my prayers, heretical as they may be.',
   flaws: 'I am paralyzed by indecision when moral certainty is required. Having seen the truth behind divine masks, I trust nothing completely.',
   featuresTraits: [
+    'skills-risen-purgatory',
+    'language-old-world',
+    'blindsight-30',
+    'memories-mountain',
+    'resistance-of-the-mount',
     'Spellcasting',
     'Divine Domain',
-    'Heretical Knowledge',
-    'Channel Divinity: Blasphemous Word',
+    'Channel Divinity',
     'Channel Divinity: Turn Undead',
+    'Heretical Knowledge',
+    'Bonus Proficiency',
+    'Channel Divinity: Blasphemous Word',
   ],
   backstory: 'The Penitente remembers the flames of Purgatory with perfect clarity, the way they stripped away flesh and certainty in equal measure. When the walls between worlds collapsed, the fires spat out those who had suffered enough, and the Penitente stumbled into a world even more broken than the one left behind. The prayers that once brought comfort now twist into something darker, channeling a power that the old churches would have called blasphemy. In a world where God is silent and the angels have fallen, heresy may be the only honest form of worship.',
   age: 'Appears 45',
@@ -71,7 +77,6 @@ export const penitenteCenere: CharacterData = {
   spellsKnown: [],
   spellsPrepared: ['Cure Wounds', 'Bless', 'Healing Word', 'Shield of Faith', 'Aid', 'Lesser Restoration'],
   hitDie: 8,
-  // HP: L1 = 8 + 2(CON mod) = 10; L2-3 = 2 * (5 + 2) = 14; Total = 24
   maxHp: 24,
   currentHp: 24,
   tempHp: 0,

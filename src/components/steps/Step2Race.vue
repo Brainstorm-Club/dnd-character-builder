@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getRaces, getTraitDescription } from '@/data'
@@ -17,10 +17,22 @@ function traitDescription(traitId: string): string {
 }
 
 const races = computed(() => getRaces(characterStore.character.variant))
+
 const selectedRace = ref<Race | null>(null)
 const selectedSubrace = ref<string>('')
 const selectedSubraceObj = computed(
   () => selectedRace.value?.subraces?.find(s => s.id === selectedSubrace.value) || null,
+)
+// Switching variant resets the character, so drop the local selection too —
+// otherwise the detail panel keeps showing a race the new variant does not have.
+watch(
+  () => [characterStore.character.variant, characterStore.character.race],
+  ([, race]) => {
+    if (!race) {
+      selectedRace.value = null
+      selectedSubrace.value = ''
+    }
+  },
 )
 
 // Apply race + chosen subrace to the character (bonuses, speed, languages).
