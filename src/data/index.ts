@@ -318,7 +318,7 @@ function ensureApoRules(): Promise<void> {
  * Also prefetches next step's data (fire-and-forget).
  * WSG 3.8: Load only the data each step actually needs.
  */
-export async function ensureStepData(variant: GameVariant, step: number): Promise<void> {
+function loadsForStep(variant: GameVariant, step: number): Promise<void>[] {
   const loads: Promise<void>[] = []
 
   switch (step) {
@@ -356,11 +356,16 @@ export async function ensureStepData(variant: GameVariant, step: number): Promis
       break
   }
 
-  await Promise.all(loads)
+  return loads
+}
 
-  // Prefetch next step (fire-and-forget)
+export async function ensureStepData(variant: GameVariant, step: number): Promise<void> {
+  await Promise.all(loadsForStep(variant, step))
+
+  // Prefetch exactly one step ahead. Calling ensureStepData again would recurse
+  // all the way to case 8, which loads everything and defeats the lazy loading.
   if (step < 8) {
-    ensureStepData(variant, step + 1).catch(() => {})
+    void loadsForStep(variant, step + 1).map(pending => pending.catch(() => {}))
   }
 }
 

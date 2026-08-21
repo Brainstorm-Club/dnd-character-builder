@@ -52,6 +52,18 @@ const COMPACT_KEYS: Record<string, string> = {
   humanity: 'hu',
   sessionNotes: 'nt',
   classes: 'cl',
+
+  featuresTraits: 'ft',
+  languages: 'lg',
+  proficienciesOther: 'po',
+  coins: 'co',
+  currentHp: 'chp',
+  speed: 'sp',
+  size: 'sz',
+  whacksLevel: 'wl',
+  brawlingMoves: 'bm',
+  misdeeds: 'md',
+  spellsKnownLimit: 'skl',
 }
 
 const REVERSE_KEYS: Record<string, string> = Object.fromEntries(

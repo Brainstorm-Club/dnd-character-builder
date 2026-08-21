@@ -59,8 +59,10 @@ function selectClass(cls: CharacterClass) {
   characterStore.character.savingThrowProficiencies = [...cls.savingThrows]
   selectedSkills.value = []
 
-  // Set spellcasting info
-  if (cls.spellcasting) {
+  // Set spellcasting info. Fighter and Rogue carry a third-caster progression
+  // only for their spellcasting subclasses, so a plain one gets no spell sheet.
+  const castsBySubclass = cls.spellcasting?.casterType === 'third'
+  if (cls.spellcasting && !castsBySubclass) {
     characterStore.character.spellcastingClass = cls.id
     characterStore.character.spellcastingAbility = cls.spellcasting.ability
   } else {
@@ -116,10 +118,21 @@ const selectedSubclassObj = computed(
   () => selectedClass.value?.subclasses.find(s => s.id === selectedSubclass.value) || null,
 )
 
+// Subclasses that grant spellcasting on a third-caster chassis, i.e. the only
+// reason Fighter and Rogue carry a spellcasting block at all.
+const THIRD_CASTER_SUBCLASSES = ['eldritch-knight', 'arcane-trickster']
+
 function selectSubclass(subclassId: string) {
   if (!selectedClass.value) return
   selectedSubclass.value = subclassId
   characterStore.setSubclass(subclassId, selectedClass.value.id)
+
+  const cls = selectedClass.value
+  if (cls.spellcasting?.casterType === 'third') {
+    const casts = THIRD_CASTER_SUBCLASSES.includes(subclassId)
+    characterStore.character.spellcastingClass = casts ? cls.id : ''
+    characterStore.character.spellcastingAbility = casts ? cls.spellcasting.ability : ''
+  }
 }
 
 /**

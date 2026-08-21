@@ -7,7 +7,7 @@ import { useCharacterStore } from '@/stores/character'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { usePdfExport } from '@/composables/usePdfExport'
 import { generateShareUrl } from '@/utils/shareCharacter'
-import { modifier, proficiencyBonus } from '@/utils/calculations'
+import { modifier, proficiencyBonus, feetToMeters } from '@/utils/calculations'
 import { armor as armorTable } from '@/data/dnd5e/equipment'
 import type { CharacterData } from '@/stores/character'
 
@@ -318,7 +318,7 @@ onUnmounted(() => {
         </div>
         <div class="bg-stone-900/50 rounded-lg p-3 text-center">
           <span class="text-xs text-stone-500 uppercase block">{{ t('review.speed') }}</span>
-          <span class="text-2xl font-bold text-stone-100">{{ char.speed }} ft</span>
+          <span class="text-2xl font-bold text-stone-100">{{ feetToMeters(char.speed) }}m</span>
         </div>
         <div class="bg-stone-900/50 rounded-lg p-3 text-center">
           <span class="text-xs text-stone-500 uppercase block">{{ t('review.proficiencyBonus') }}</span>

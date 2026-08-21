@@ -187,6 +187,11 @@ export function clampToMaxLevel(char: CharacterData): boolean {
       entry.level -= removable
       excess -= removable
     }
+    // With more classes than the cap allows, every entry is already at 1 and
+    // nothing above is removable: drop whole entries from the end instead.
+    while (excess > 0 && entries.length > 1) {
+      excess -= entries.pop()!.level
+    }
     char.level = Math.min(entries.reduce((sum, e) => sum + e.level, 0), maxLv)
   }
   return true
@@ -207,7 +212,9 @@ export const useCharacterStore = defineStore('character', () => {
     }
   }
   migrateCharacters()
-  watch(savedCharacters, migrateCharacters, { once: true })
+  // Not `{ once: true }`: another tab or a manual restore can replace the
+  // store later, and that batch needs migrating too.
+  watch(savedCharacters, migrateCharacters)
 
   // Computed derived stats
   const abilityModifiers = computed(() => ({

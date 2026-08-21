@@ -166,15 +166,17 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
     }
   }
 
-  // Weapons (up to 5)
+  // Weapons (up to 5). The template's own field names carry inconsistent
+  // trailing spaces, so they are spelled out rather than derived.
+  const WPN_NAME = ['Wpn Name', 'Wpn Name 2', 'Wpn Name 3', 'Wpn Name 4', 'Wpn Name 5']
+  const WPN_ATK = ['Wpn1 AtkBonus', 'Wpn2 AtkBonus ', 'Wpn3 AtkBonus  ', 'Wpn4 AtkBonus', 'Wpn5 AtkBonus']
+  const WPN_DMG = ['Wpn1 Damage', 'Wpn2 Damage ', 'Wpn3 Damage ', 'Wpn4 Damage', 'Wpn5 Damage']
   for (let i = 0; i < Math.min(char.weapons.length, 5); i++) {
     const wpn = char.weapons[i]!
-    const suffix = i === 0 ? '' : ` ${i + 1}`
-    const atkSuffix = i === 0 ? '' : i === 1 ? ' ' : '  '
-    const dmgSuffix = i <= 1 ? (i === 1 ? ' ' : '') : ''
-    fields[`Wpn Name${suffix}`] = wpn.name
-    fields[`Wpn${i + 1} AtkBonus${atkSuffix}`] = formatModifier(wpn.attackBonus + prof + abilityMod(char, 'str'))
-    fields[`Wpn${i + 1} Damage${dmgSuffix}`] = wpn.damage
+    fields[WPN_NAME[i]!] = wpn.name
+    // attackBonus is already the final number, proficiency and ability included
+    fields[WPN_ATK[i]!] = formatModifier(wpn.attackBonus)
+    fields[WPN_DMG[i]!] = wpn.damage
   }
 
   // Equipment & Other
@@ -326,7 +328,7 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   for (let i = 0; i < Math.min(char.weapons.length, 3); i++) {
     const wpn = char.weapons[i]!
     fields[`Arma ${i + 1}`] = wpn.name
-    fields[`Bonus ${i + 1}`] = formatModifier(wpn.attackBonus + prof + abilityMod(char, 'str'))
+    fields[`Bonus ${i + 1}`] = formatModifier(wpn.attackBonus)
     fields[`Danno ${i + 1}`] = wpn.damage
   }
 

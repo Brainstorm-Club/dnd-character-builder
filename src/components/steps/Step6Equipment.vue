@@ -2,6 +2,7 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
+import { modifier, proficiencyBonus } from '@/utils/calculations'
 import { getEquipment } from '@/data'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
@@ -30,10 +31,22 @@ function updateCharacterWeapons() {
   characterStore.character.weapons = selectedWeapons.value.map(name => {
     const wpn = [...(equipment.value?.simpleWeapons || []), ...(equipment.value?.martialWeapons || [])]
       .find(w => w.name === name)
+    // Ranged and finesse weapons key off Dexterity; everything else off
+    // Strength. A weapon stored with a bonus of 0 would print +0 on the sheet.
+    const props = wpn?.properties ?? []
+    const ranged = props.some(p => p.startsWith('ammunition'))
+    const bonuses = characterStore.character.racialBonuses
+    const scores = characterStore.character.abilityScores
+    const strMod = modifier(scores.str + (bonuses.str || 0))
+    const dexMod = modifier(scores.dex + (bonuses.dex || 0))
+    const abilityMod = ranged || (props.includes('finesse') && dexMod > strMod) ? dexMod : strMod
+    const damage = wpn?.damage || ''
     return {
       name,
-      attackBonus: 0,
-      damage: wpn?.damage || '',
+      attackBonus: proficiencyBonus(characterStore.character.level) + abilityMod,
+      damage: damage && abilityMod !== 0
+        ? `${damage}${abilityMod > 0 ? '+' : ''}${abilityMod}`
+        : damage,
     }
   })
 }

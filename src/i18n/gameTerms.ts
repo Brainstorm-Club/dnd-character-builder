@@ -452,6 +452,16 @@ export const apocalisseClassNamesIt: Record<string, string> = {
 // ─── Race Names ─────────────────────────────────────────────────────────────
 
 /** D&D 5e race names in Italian */
+/** Race ids that are not simply their capitalised name. */
+const raceIdToName: Record<string, string> = {
+  'child-old-world': 'Child of the Old World',
+  'child-apocalypse': 'Child of the Apocalypse',
+  'risen-hell': 'Risen from Hell',
+  'risen-heaven': 'Risen from Heaven',
+  'risen-purgatory': 'Risen from Purgatory',
+  'risen-limbo': 'Risen from Limbo',
+}
+
 export const raceNamesIt: Record<string, string> = {
   // D&D 5e SRD
   'Dragonborn': 'Dragonide',
@@ -1517,7 +1527,12 @@ export function translateGameTerm(
       if (raceNamesIt[name]) return raceNamesIt[name]
       // Try capitalizing each word (IDs may be hyphenated, e.g. "half-elf" → "Half-Elf")
       const raceCapitalized = name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-')
-      return raceNamesIt[raceCapitalized] ?? raceNamesIt[raceCapitalized.replace(/-/g, ' ')] ?? name
+      // Apocalisse Origin ids are multi-word kebab: 'child-old-world' has to
+      // find 'Child of the Old World', so fall back to a name lookup by id.
+      const byId = Object.entries(raceIdToName).find(([id]) => id === name)?.[1]
+      return raceNamesIt[raceCapitalized]
+        ?? raceNamesIt[raceCapitalized.replace(/-/g, ' ')]
+        ?? (byId ? raceNamesIt[byId] ?? byId : name)
     }
     case 'subrace': {
       if (subraceNamesIt[name]) return subraceNamesIt[name]
