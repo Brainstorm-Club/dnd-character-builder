@@ -63,6 +63,7 @@ let _dnd5eGetMulticlassSpellSlots: ((classes: any[]) => { slots: Record<number, 
 
 // Brancalonia
 let _brancaRaces: readonly Race[] | null = null
+let _brancaTraitDescriptions: { en: Record<string, string>; it: Record<string, string> } | null = null
 let _brancaSubclasses: readonly BrancaloniaSubclass[] | null = null
 let _brancaBurattinaio: CharacterClass | null = null
 let _brancaBackgrounds: readonly Background[] | null = null
@@ -173,10 +174,23 @@ function ensureBrancaRaces(): Promise<void> {
   if (_brancaRaces) return Promise.resolve()
   if (_pBrancaRaces) return _pBrancaRaces
   const cached = lsGet<Race[]>('branca-races')
-  if (cached) { _brancaRaces = cached; return Promise.resolve() }
-  _pBrancaRaces = import('./brancalonia/races').then(m => {
-    _brancaRaces = m.brancaloniaRaces
-    lsSet('branca-races', m.brancaloniaRaces)
+  const cachedTraits = lsGet<{ en: Record<string, string>; it: Record<string, string> }>('branca-trait-descriptions')
+  if (cached && cachedTraits) {
+    _brancaRaces = cached
+    _brancaTraitDescriptions = cachedTraits
+    return Promise.resolve()
+  }
+  _pBrancaRaces = Promise.all([
+    import('./brancalonia/races'),
+    import('./brancalonia/traits'),
+  ]).then(([raceMod, traitMod]) => {
+    _brancaRaces = raceMod.brancaloniaRaces
+    _brancaTraitDescriptions = {
+      en: traitMod.brancaloniaTraitDescriptions,
+      it: traitMod.brancaloniaTraitDescriptionsIt,
+    }
+    lsSet('branca-races', raceMod.brancaloniaRaces)
+    lsSet('branca-trait-descriptions', _brancaTraitDescriptions)
   })
   return _pBrancaRaces
 }
@@ -396,6 +410,22 @@ export function getRaces(variant: GameVariant): readonly Race[] {
   }
 }
 
+/**
+ * What a racial trait does, in the requested locale, from the variant's own
+ * data. This text ships in the lazily loaded variant chunk rather than in the
+ * always-loaded Italian dictionary (WSG 3.8), so it costs nothing to players
+ * who never open that variant. Returns '' for variants without descriptions.
+ */
+export function getTraitDescription(
+  variant: GameVariant,
+  traitId: string,
+  locale: string,
+): string {
+  if (variant !== 'brancalonia' || !_brancaTraitDescriptions) return ''
+  const dict = locale === 'it' ? _brancaTraitDescriptions.it : _brancaTraitDescriptions.en
+  return dict[traitId] ?? _brancaTraitDescriptions.en[traitId] ?? ''
+}
+
 // ─── Classes ────────────────────────────────────────────────────────────────
 
 export function getClasses(variant: GameVariant): readonly CharacterClass[] {
@@ -602,6 +632,7 @@ export function _resetCaches(): void {
   _dnd5eEquipment = null
   _dnd5eGetSpellSlotsForLevel = _dnd5eGetMulticlassSpellSlots = null
   _brancaRaces = _brancaBackgrounds = _brancaRules = null
+  _brancaTraitDescriptions = null
   _brancaSubclasses = null; _brancaBurattinaio = null
   _apoRaces = _apoBackgrounds = _apoRules = null
   _apoSubclasses = null

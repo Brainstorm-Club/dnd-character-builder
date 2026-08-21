@@ -5,9 +5,11 @@ import { useCharacterStore } from '@/stores/character'
 import { totalHp } from '@/utils/calculations'
 import { getRaces, getApocalisseRules, getWhacksLevels, getMaxLevel } from '@/data'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
+import { useGameTerms } from '@/composables/useGameTerms'
 
 const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
+const gt = useGameTerms()
 
 const variant = computed(() => characterStore.character.variant)
 const isBrancalonia = computed(() => variant.value === 'brancalonia')
@@ -48,7 +50,7 @@ function displayName(item: { name: string; nameOriginal?: string }): string {
 // Whacks level display
 function whacksDisplay(level: number): string {
   const wl = getWhacksLevels().find(w => w.level === level)
-  return wl ? `${level} - ${wl.name}` : String(level)
+  return wl ? `${level} - ${gt.feature(wl.name)}` : String(level)
 }
 
 // Brawling moves as textarea (one per line)

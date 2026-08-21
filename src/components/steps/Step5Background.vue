@@ -75,7 +75,7 @@ function selectBackground(bg: Background) {
           <p class="text-stone-400">{{ selectedBg.languages }} {{ t('background.languageChoices') }}</p>
         </div>
         <div>
-          <h4 class="font-semibold text-stone-300">{{ selectedBg.feature.name }}</h4>
+          <h4 class="font-semibold text-stone-300">{{ gt.feature(selectedBg.feature.name) }}</h4>
           <p class="text-stone-400">{{ selectedBg.feature.description }}</p>
         </div>
       </div>

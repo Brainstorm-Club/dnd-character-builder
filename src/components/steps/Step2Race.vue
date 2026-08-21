@@ -2,15 +2,19 @@
 import { ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { getRaces } from '@/data'
+import { getRaces, getTraitDescription } from '@/data'
 import type { Race } from '@/data/dnd5e/races'
 import { formatModifier, feetToMeters } from '@/utils/calculations'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
 const gt = useGameTerms()
+
+function traitDescription(traitId: string): string {
+  return getTraitDescription(characterStore.character.variant, traitId, locale.value)
+}
 
 const races = computed(() => getRaces(characterStore.character.variant))
 const selectedRace = ref<Race | null>(null)
@@ -105,8 +109,11 @@ function bonusString(bonuses: Record<string, number>): string {
 
       <div v-if="selectedRace.traits.length" class="mt-4">
         <h4 class="font-semibold text-stone-300 mb-1">{{ t('race.traits') }}</h4>
-        <ul class="text-stone-400 text-sm space-y-1">
-          <li v-for="trait in selectedRace.traits" :key="trait">&bull; {{ gt.trait(trait) }}</li>
+        <ul class="text-stone-400 text-sm space-y-2">
+          <li v-for="trait in selectedRace.traits" :key="trait">
+            <span class="text-stone-300">&bull; {{ gt.trait(trait) }}</span>
+            <span v-if="traitDescription(trait)" class="block ml-3 text-stone-400/80">{{ traitDescription(trait) }}</span>
+          </li>
         </ul>
       </div>
 
@@ -135,8 +142,11 @@ function bonusString(bonuses: Record<string, number>): string {
           </div>
           <div v-if="selectedSubraceObj.traits.length">
             <h4 class="font-semibold text-stone-300 mb-1">{{ t('race.traits') }}</h4>
-            <ul class="text-stone-400 space-y-1">
-              <li v-for="trait in selectedSubraceObj.traits" :key="trait">&bull; {{ gt.trait(trait) }}</li>
+            <ul class="text-stone-400 space-y-2">
+              <li v-for="trait in selectedSubraceObj.traits" :key="trait">
+                <span class="text-stone-300">&bull; {{ gt.trait(trait) }}</span>
+                <span v-if="traitDescription(trait)" class="block ml-3 text-stone-400/80">{{ traitDescription(trait) }}</span>
+              </li>
             </ul>
           </div>
         </div>

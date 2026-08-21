@@ -363,9 +363,9 @@ export const backgroundNamesIt: Record<string, string> = {
   // Brancalonia
   'Ambulant': 'Ambulante',
   'Brawler': 'Attaccabrighe',
-  'Finagler': 'Faccendiere',
-  'Fugitive': 'Fuggiasco',
-  'Rover': 'Girovago',
+  'Finagler': 'Azzeccagarbugli',
+  'Fugitive': 'Fuggitivo',
+  'Rover': 'Brado',
   'Tough': 'Duro',
   // Apocalisse
   'Child of the Old World': 'Figlio del Vecchio Mondo',
@@ -759,6 +759,21 @@ export const featureNamesIt: Record<string, string> = {
   'Channel Divinity: Sacred Weapon': 'Incanalare Divinita\': Arma Sacra',
   'Channel Divinity: Turn the Unholy': 'Incanalare Divinita\': Scacciare gli Empi',
   'Hunter\'s Prey': 'Preda del Cacciatore',
+  // ─── Brancalonia Whacks Levels (Tabella delle Batoste) ────────────────────
+  'Unharmed': 'Illeso',
+  'Bruised': 'Ammaccato',
+  'Beaten': 'Contuso',
+  'Injured': 'Livido',
+  'Damaged': 'Pesto',
+  'Crushed': 'Gonfio',
+  'Unconscious': 'Incosciente',
+  // ─── Brancalonia Background Features (Setting Book) ───────────────────────
+  'Tales of the Road': 'Storie della Strada',
+  'Brawler': 'Rissaiolo',
+  'Trouble Solver': 'Risolvere Guai',
+  'Outcast': 'Reietto',
+  'Wild Comfort': 'Dimestichezza Selvatica',
+  'Tough Face': 'Faccia da Duro',
   // ─── Brancalonia Subclass Features (Setting Book) ─────────────────────────
   // Pagan (Barbarian)
   'Path of Unheard-of Ferocity': 'Cammino dell\'Inaudita Ferocia',
@@ -1428,13 +1443,32 @@ export const equipmentNamesIt: Record<string, string> = {
  */
 export type GameTermCategory = 'weapon' | 'armor' | 'spell' | 'school' | 'damageType' | 'pack' | 'background' | 'class' | 'race' | 'subrace' | 'skill' | 'proficiency' | 'feature' | 'trait' | 'language' | 'subclass' | 'equipment'
 
+/**
+ * Turn a kebab-case trait id into a readable English label
+ * ('brawl-removable-limb' -> 'Brawl: Removable Limb'). Full sentences used as
+ * ids by the Apocalisse data are returned untouched.
+ */
+function prettifyTraitId(id: string): string {
+  if (!/^[a-z0-9-]+$/.test(id)) return id
+  const words = id.split('-')
+  const brawl = words[0] === 'brawl'
+  const rest = (brawl ? words.slice(1) : words)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ')
+  return brawl ? `Brawl: ${rest}` : rest
+}
+
 export function translateGameTerm(
   name: string,
   locale: string,
   category: GameTermCategory,
   variant?: string,
 ): string {
-  if (locale !== 'it') return name
+  if (locale !== 'it') {
+    // Trait ids are kebab-case, so they need presenting even in English.
+    if (category === 'trait') return prettifyTraitId(name)
+    return name
+  }
 
   switch (category) {
     case 'weapon':

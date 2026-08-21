@@ -8,20 +8,18 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     nameOriginal: 'Ambulante',
     description:
       'You are a drifter, a wanderer with no fixed address and no particular destination. You have traveled every road, slept under every bridge, and eaten at every roadside tavern in the Boot. Your life is one of constant movement, and you have learned to survive by your wits and your charm. You know how to talk your way into a warm meal and how to read the land for shelter and sustenance.',
-    skillProficiencies: ['survival', 'persuasion'],
-    toolProficiencies: ['Herbalism kit'],
+    skillProficiencies: ['performance', 'history'],
+    toolProficiencies: ["A set of artisan's tools (one of your choice)"],
     languages: 1,
     equipment: [
-      'Walking staff',
-      'Traveler\'s clothes',
-      'Herbalism kit',
-      'Bedroll',
-      'Belt pouch containing 10 sp',
+      'A jewel dedicated to Saint Pathrick',
+      'A set of traveler\'s clothes',
+      'A pouch containing 15 sp',
     ],
     feature: {
-      name: 'Roadwise',
+      name: 'Tales of the Road',
       description:
-        'You know the roads and byways of Brancalonia like the back of your hand. You can always find a safe place to camp, a shortcut between two towns, or a tavern willing to give you a meal in exchange for news from the road. Additionally, you can identify local customs and potential dangers of any region you have previously traveled through.',
+        'Whatever group, profession or community you belong to, like any other ambulant you know a great many legends, rumors and tales collected on the road and gathered over the years. Whenever you collect one or more rumors you get an additional one, and you always have advantage on checks related to finding or travelling the Roads to Nowhere.',
     },
   },
 
@@ -32,92 +30,90 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     nameOriginal: 'Attaccabrighe',
     description:
       'You are a street fighter, born and bred in the rough quarters of a Brancalonian city. You grew up settling disputes with your fists and learned early that the best defense is a good headbutt. Whether in organized fighting pits or back-alley brawls, you have earned a reputation as someone not to be trifled with. Your body bears the scars of countless scraps.',
-    skillProficiencies: ['athletics', 'intimidation'],
-    toolProficiencies: ['Gaming set'],
+    skillProficiencies: ['insight', 'performance'],
+    toolProficiencies: ['Two types of gaming set'],
     languages: 0,
     equipment: [
-      'Knuckle wraps',
-      'Common clothes',
-      'Trophy from a memorable fight',
-      'Gaming set',
-      'Belt pouch containing 10 sp',
+      'A brawl trophy (roll an additional Memorabilia)',
+      'A map listing all the Dives in your hometown',
+      'A set of common clothes',
+      'A pouch containing 15 sp',
     ],
     feature: {
-      name: 'Pit Reputation',
+      name: 'Brawler',
       description:
-        'Your reputation as a fighter precedes you in the rough quarters of any city. You can always find a fighting pit or underground brawl, and the organizers will give you a place to sleep and food in exchange for a bout. Additionally, common toughs and street thugs are reluctant to pick a fight with you, recognizing you as one of their own.',
+        'You have mastered the lore of the taverns and inns where the sacred art of brawling was born. All that revelry and bare-handed fighting made you the formidable brawler of rare hubris you are today. You gain 1 additional move slot.',
     },
   },
 
-  // ─── Finagler (Faccendiere) ───────────────────────────────────────
+  // ─── Finagler (Azzeccagarbugli) ───────────────────────────────────
   {
     id: 'finagler',
     name: 'Finagler',
-    nameOriginal: 'Faccendiere',
+    nameOriginal: 'Azzeccagarbugli',
     description:
       'You are a bureaucrat, a fixer, a professional navigator of red tape. You know how to grease palms, forge documents, and exploit every loophole in the complex and contradictory laws of Brancalonia. Whether working as a minor official, a notary, or a full-time confidence artist, you have mastered the art of making things happen -- for a fee.',
-    skillProficiencies: ['deception', 'investigation'],
+    skillProficiencies: ['investigation', 'persuasion'],
     toolProficiencies: ['Forgery kit'],
     languages: 1,
     equipment: [
-      'Fine clothes',
-      'Forgery kit',
-      'Sheaf of official-looking documents',
-      'Sealing wax and signet ring (possibly fake)',
-      'Belt pouch containing 15 sp',
+      'A copy of your home region\'s book of laws',
+      'A bottle of black ink and a pen',
+      'A parchment',
+      'A set of fine clothes',
+      'A pouch containing 20 sp',
     ],
     feature: {
-      name: 'Bureaucratic Maze',
+      name: 'Trouble Solver',
       description:
-        'You know how to navigate the labyrinthine bureaucracy of Brancalonia. You can expedite official processes, obtain permits and documents (real or forged), and find the right person to bribe in any administrative body. Additionally, you can usually talk your way out of minor legal trouble by citing obscure regulations.',
+        'You know the laws of the Kingdom and the mechanisms behind the functioning — or malfunctioning — of its Justice inside out, which makes you the right Knave for \'fixing\' legal disputes that are not too serious. You can remove one of your Misdeeds, or one belonging to a member of your company, by paying a cost equal to the Bounty value of that Misdeed. You must do so before the authorities add the Misdeed to the character\'s Bounty.',
     },
   },
 
-  // ─── Fugitive (Fuggiasco) ─────────────────────────────────────────
+  // ─── Fugitive (Fuggitivo) ─────────────────────────────────────────
   {
     id: 'fugitive',
     name: 'Fugitive',
-    nameOriginal: 'Fuggiasco',
+    nameOriginal: 'Fuggitivo',
     description:
       'You are on the run. Whether from the law, a vengeful lord, a scorned lover, or debts you cannot pay, you have learned to live in the shadows. You know how to change your appearance, cover your tracks, and disappear into a crowd. Every town is a temporary refuge, every face a potential threat. Trust is a luxury you cannot afford.',
     skillProficiencies: ['stealth', 'survival'],
-    toolProficiencies: ['Disguise kit'],
-    languages: 0,
+    toolProficiencies: [],
+    languages: 1,
     equipment: [
-      'Dark common clothes with hood',
-      'Disguise kit',
-      'Map of escape routes',
-      'Dagger',
-      'Belt pouch containing 5 sp',
+      'A dagger',
+      'A memento from your past life',
+      'A set of traveler\'s clothes',
+      'A pouch containing 10 sp',
     ],
     feature: {
-      name: 'Underground Network',
+      name: 'Outcast',
       description:
-        'You know how to find safe houses, sympathizers, and fellow fugitives in any settlement. You can always locate a place to hide for a few days without drawing attention. Additionally, you can identify wanted posters, bounty hunters, and law enforcement agents with a quick survey of any area.',
+        'Your Bounty is higher than usual because of a serious misdeed that has been attributed to you, fairly or unfairly, along with a few aggravating factors: evasion, desertion, betrayal, interrupting a public execution, resisting arrest, assaulting a guard, sedition, riot, brigandage or pillage.',
     },
   },
 
-  // ─── Rover (Girovago) ─────────────────────────────────────────────
+  // ─── Rover (Brado) ────────────────────────────────────────────────
   {
     id: 'rover',
     name: 'Rover',
-    nameOriginal: 'Girovago',
+    nameOriginal: 'Brado',
     description:
       'You are a traveling performer -- a juggler, acrobat, puppeteer, fire-eater, or some combination thereof. You have performed in every piazza, festival, and market square in the Boot. Your life is one of spectacle and applause, but also of hunger and uncertainty. You know how to work a crowd and how to pass the hat when the show is done.',
-    skillProficiencies: ['acrobatics', 'performance'],
-    toolProficiencies: ['Musical instrument', 'Disguise kit'],
-    languages: 0,
+    skillProficiencies: ['animal-handling', 'athletics'],
+    toolProficiencies: ['Herbalism kit'],
+    languages: 1,
     equipment: [
-      'Musical instrument or performer\'s props',
-      'Costume',
-      'Disguise kit',
-      'Favor of an admirer',
-      'Belt pouch containing 10 sp',
+      'A staff',
+      'An animal bone pendant',
+      'Colored pigments',
+      'A set of traveler\'s clothes',
+      'A pouch containing 10 sp',
     ],
     feature: {
-      name: 'Center Stage',
+      name: 'Wild Comfort',
       description:
-        'You can always find a venue to perform -- a tavern, a piazza, a noble\'s courtyard. In exchange for a performance, you receive free lodging and food for yourself and your companions. Additionally, your performances attract attention, allowing you to gather rumors and local gossip from your audience.',
+        'You know how to move with respect for the creatures that inhabit the wildlands, and that awareness spares you unpleasant encounters. You and up to five other people can travel across any wild territory without running into hostile beasts. Other kinds of encounter are unaffected.',
     },
   },
 
@@ -128,20 +124,19 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     nameOriginal: 'Duro',
     description:
       'You are a hardened survivor, forged by a life of unrelenting difficulty. Whether you grew up in the slums, served time in a prison, or survived a brutal occupation, you have come out the other side tougher and more watchful than most. Nothing surprises you anymore. You have seen the worst that people can do, and you are always prepared for it.',
-    skillProficiencies: ['athletics', 'perception'],
-    toolProficiencies: ['Vehicles (land)'],
-    languages: 0,
+    skillProficiencies: ['athletics', 'intimidation'],
+    toolProficiencies: ['One type of gaming set'],
+    languages: 1,
     equipment: [
-      'Sturdy common clothes',
-      'Club or walking stick',
-      'Token from a hard time survived',
-      'Waterskin',
-      'Belt pouch containing 8 sp',
+      'A pendant of Saint Marauda',
+      'A poppycock card deck or another game',
+      'A set of common clothes',
+      'A pouch containing 15 sp',
     ],
     feature: {
-      name: 'Hard Knock Life',
+      name: 'Tough Face',
       description:
-        'Your hard life has given you an instinct for danger and a resilience that others lack. You can go without food for one additional day before suffering exhaustion. Additionally, when you rest in an unsafe location, you sleep with one eye open -- you cannot be surprised while sleeping, and you wake immediately if danger approaches.',
+        'You look so damn tough and intimidating that everyone you meet realizes straight away that you\'re no joke. When you interact with others using your Notoriety, you count it as one level higher.',
     },
   },
 ] as const

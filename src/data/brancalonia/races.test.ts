@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { brancaloniaRaces, getBrancaloniaRaceById } from './races'
+import { brancaloniaTraitDescriptions, brancaloniaTraitDescriptionsIt } from './traits'
 import { traitNamesIt, raceNamesIt, subraceNamesIt } from '@/i18n/gameTerms'
 
 /** Races added by the Macaronicon expansion */
@@ -112,5 +113,30 @@ describe('brancalonia races', () => {
       expect(getBrancaloniaRaceById('wolfcat')?.name).toBe('WolfCat')
       expect(getBrancaloniaRaceById('tiefling')).toBeUndefined()
     })
+  })
+})
+
+describe('brancalonia racial trait descriptions', () => {
+  it('explains every trait a race or subrace grants, in both languages', () => {
+    const traits = new Set<string>()
+    for (const race of brancaloniaRaces) {
+      race.traits.forEach(t => traits.add(t))
+      race.subraces.forEach(s => s.traits.forEach(t => traits.add(t)))
+    }
+    for (const t of traits) {
+      expect(brancaloniaTraitDescriptions[t], `${t} (English)`).toBeTruthy()
+      expect(brancaloniaTraitDescriptionsIt[t], `${t} (Italian)`).toBeTruthy()
+    }
+  })
+
+  it('carries no description for a trait no race grants', () => {
+    const traits = new Set<string>()
+    for (const race of brancaloniaRaces) {
+      race.traits.forEach(t => traits.add(t))
+      race.subraces.forEach(s => s.traits.forEach(t => traits.add(t)))
+    }
+    for (const key of Object.keys(brancaloniaTraitDescriptions)) {
+      expect(traits.has(key), `${key} is described but unused`).toBe(true)
+    }
   })
 })
