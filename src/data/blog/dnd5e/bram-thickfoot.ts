@@ -15,7 +15,7 @@ export const bramThickfoot: CharacterData = {
   className: 'fighter',
   subclass: 'champion',
   level: 3,
-  background: 'folk hero',
+  background: 'folk-hero',
   alignment: 'ng',
   experiencePoints: 900,
   // Point-buy (27 pts): STR 15(9), DEX 13(5), CON 14(7), INT 10(2), WIS 12(4), CHA 8(0) = 27

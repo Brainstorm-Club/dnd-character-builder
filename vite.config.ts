@@ -72,7 +72,7 @@ export default defineConfig({
           // WSG 3.3 + 3.8: Game data split per module — loaded on demand per wizard step
           'game-dnd5e-races': ['./src/data/dnd5e/races.ts'],
           'game-dnd5e-classes': ['./src/data/dnd5e/classes.ts'],
-          'game-dnd5e-backgrounds': ['./src/data/dnd5e/backgrounds.ts', './src/data/dnd5e/missing-backgrounds.ts'],
+          'game-dnd5e-backgrounds': ['./src/data/dnd5e/backgrounds.ts'],
           'game-dnd5e-spells': ['./src/data/dnd5e/spells.ts', './src/data/dnd5e/spells-4-9.ts'],
           'game-dnd5e-equipment': ['./src/data/dnd5e/equipment.ts'],
           'game-dnd5e-rules': ['./src/data/dnd5e/rules.ts'],

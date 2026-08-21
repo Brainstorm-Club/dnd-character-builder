@@ -170,8 +170,7 @@ export const races: readonly Race[] = [
     id: 'half-elf',
     name: 'Half-Elf',
     abilityBonuses: { cha: 2 },
-    // Note: Half-Elf also gets +1 to two other ability scores of choice.
-    // That selection is handled in the UI; these are the fixed bonuses.
+    abilityScoreChoice: [{ count: 2, amount: 1 }],
     speed: 30,
     size: 'Medium',
     traits: [

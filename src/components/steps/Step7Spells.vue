@@ -45,7 +45,11 @@ const casterClassEntries = computed(() =>
     return {
       classId: entry.classId,
       level: entry.level,
-      casterType: (cls?.spellcasting?.casterType ?? null) as CasterType | null,
+      // A third-caster chassis only casts through its spellcasting subclass;
+      // a plain Fighter or Rogue contributes nothing to the caster level.
+      casterType: (cls?.spellcasting?.casterType === 'third' && !entry.subclass
+        ? null
+        : cls?.spellcasting?.casterType ?? null) as CasterType | null,
     }
   }),
 )
@@ -54,7 +58,11 @@ const casterClassEntries = computed(() =>
 const spellSlots = computed(() => {
   void dataReady.value
   if (isMulticlass.value) return getMulticlassSpellSlots(casterClassEntries.value).slots
-  return getSpellSlots(characterStore.character.className, characterStore.character.level)
+  // Key off spellcastingClass, not className: it is set only when the
+  // character genuinely casts, which for Fighter and Rogue means a caster
+  // subclass was chosen.
+  if (!characterStore.character.spellcastingClass) return {}
+  return getSpellSlots(characterStore.character.spellcastingClass, characterStore.character.level)
 })
 
 // Pact magic slots (Warlock in multiclass) — shown separately

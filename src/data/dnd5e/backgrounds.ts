@@ -21,7 +21,6 @@ export interface Background {
   }
 }
 
-import { missingBackgrounds } from './missing-backgrounds'
 
 const baseBackgrounds: readonly Background[] = [
   {
@@ -154,10 +153,78 @@ const baseBackgrounds: readonly Background[] = [
       description: 'You have a military rank from your career as a soldier. Soldiers loyal to your former military organization still recognize your authority.',
     },
   },
+  // ─── Guild Artisan ────────────────────────────────────────────────
+  {
+    id: 'guild-artisan',
+    name: 'Guild Artisan',
+    description:
+      "You are a member of an artisan's guild, skilled in a particular field and closely associated with other artisans. You are a well-established part of the mercantile world, freed by talent and wealth from the constraints of a feudal social order. You learned your skills as an apprentice to a master artisan, under the sponsorship of your guild.",
+    skillProficiencies: ['insight', 'persuasion'],
+    toolProficiencies: ["One type of artisan's tools"],
+    languages: 1,
+    equipment: [
+      "A set of artisan's tools (one of your choice)",
+      'A letter of introduction from your guild',
+      "A set of traveler's clothes",
+      'A belt pouch containing 15 gp',
+    ],
+    feature: {
+      name: 'Guild Membership',
+      description:
+        'As an established and respected member of a guild, you can rely on certain benefits that membership provides. Your fellow guild members will provide you with lodging and food if necessary, and pay for your funeral if needed. In some cities and towns, a guildhall offers a central place to meet other members of your profession. Guilds often wield tremendous political power, and if you are accused of a crime your guild will support you if a good case can be made for your innocence.',
+    },
+  },
+
+  // ─── Sailor ───────────────────────────────────────────────────────
+  {
+    id: 'sailor',
+    name: 'Sailor',
+    description:
+      'You sailed on a seagoing vessel for years. In that time, you faced down mighty storms, monsters of the deep, and those who wanted to sink your craft to the bottomless depths. Your first love is the distant line of the horizon, but the time has come to try your hand at something new.',
+    skillProficiencies: ['athletics', 'perception'],
+    toolProficiencies: ["Navigator's tools", 'Vehicles (water)'],
+    languages: 0,
+    equipment: [
+      'A belaying pin (club)',
+      '50 feet of silk rope',
+      "A lucky charm such as a rabbit's foot or a small stone with a hole in the center",
+      'A set of common clothes',
+      'A belt pouch containing 10 gp',
+    ],
+    feature: {
+      name: "Ship's Passage",
+      description:
+        'When you need to, you can secure free passage on a sailing ship for yourself and your adventuring companions. You might sail on the ship you served on, or another ship you have good relations with. Because you are calling in a favor, you cannot be certain of a schedule or route, and in return you and your companions are expected to assist the crew during the voyage.',
+    },
+  },
+
+  // ─── Urchin ───────────────────────────────────────────────────────
+  {
+    id: 'urchin',
+    name: 'Urchin',
+    description:
+      'You grew up on the streets alone, orphaned and poor. You had no one to watch over you or to provide for you, so you learned to provide for yourself. You fought fiercely over food and kept a constant watch out for other desperate souls who might steal from you. You slept on rooftops and in alleyways, and survived despite all odds.',
+    skillProficiencies: ['sleight-of-hand', 'stealth'],
+    toolProficiencies: ['Disguise kit', "Thieves' tools"],
+    languages: 0,
+    equipment: [
+      'A small knife',
+      'A map of the city you grew up in',
+      'A pet mouse',
+      'A token to remember your parents by',
+      'A set of common clothes',
+      'A belt pouch containing 10 gp',
+    ],
+    feature: {
+      name: 'City Secrets',
+      description:
+        'You know the secret patterns and flow of cities and can find passages through the urban sprawl that others would miss. When you are not in combat, you and the companions you lead can travel between any two locations in the city twice as fast as your speed would normally allow.',
+    },
+  },
 ] as const
 
-/** All backgrounds: SRD core + additional open sources */
-export const backgrounds: readonly Background[] = [...baseBackgrounds, ...missingBackgrounds]
+/** All backgrounds, transcribed from the Player's Handbook. */
+export const backgrounds: readonly Background[] = baseBackgrounds
 
 export function getBackgroundById(id: string): Background | undefined {
   return backgrounds.find(b => b.id === id)
