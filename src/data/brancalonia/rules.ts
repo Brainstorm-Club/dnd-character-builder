@@ -147,44 +147,51 @@ export const languages: readonly BrancaloniaLanguage[] = [
   {
     id: 'vernacular',
     name: 'Vernacular',
-    description: 'The common tongue spoken across the Boot. Every person in Brancalonia speaks Vernacular, though regional dialects can make communication amusing.',
-    speakers: 'All peoples of Brancalonia',
+    description:
+      'The common language in use from the Crown Mountains to the Charybdean Sea. Despite countless regional dialects, jargons and local variants, every inhabitant of the Kingdom speaks and understands it, and most can read and write it well enough to sign documents, read signs and bounties and draw up short notes.',
+    speakers: 'Everyone in the Kingdom',
   },
   {
     id: 'draconian',
     name: 'Draconian',
-    description: 'The ancient language of the dragons and the old empire. Used in legal documents, academic texts, and by those who wish to appear learned.',
-    speakers: 'Scholars, bureaucrats, dragons',
+    description:
+      'The language of the empire that fell more than a thousand years ago, and the ancestor of Vernacular along with the other Occasian tongues. Reading and writing it is required to study arcane texts, documents of the past and imperial inscriptions, and it is taught exclusively in prestigious schools, colleges and corporations — for guiscards it is an implicit requirement from 1st level.',
+    speakers: 'Guiscards, scholars, colleges and corporations',
   },
   {
     id: 'macaronic',
     name: 'Macaronic',
-    description: 'A pidgin language mixing Vernacular with Draconian, used by semi-literate scholars, traveling merchants, and charlatans who want to sound impressive.',
-    speakers: 'Merchants, charlatans, half-educated folk',
+    description:
+      'The language of the Kingdom\'s religion and bureaucracy: a cultivated, codified derivation of Draconian, halfway between Draconian and Vernacular. Anyone educated in the Creed or of high social rank speaks, reads and writes it; someone who knows only Vernacular must pass a DC 15 Intelligence (History) check to use it.',
+    speakers: 'Clergy, bureaucrats, the high-born',
   },
   {
     id: 'bedamn',
     name: 'Bedamn',
-    description: 'The language of the infernal realms, spoken by devils, Malebranches, and those who traffic with the powers below. It is harsh, guttural, and unpleasant to hear.',
-    speakers: 'Malebranches, devils, diabolists',
+    description:
+      'Also called Black Lingo and Blackspeech, the language used in Inferno by devils, hags, fiends and the damned, and taught to heresiarchs, sorcerers and followers of dark powers. Unless they have consciously willed themselves to forget it, malebranche speak, read and write it instinctively.',
+    speakers: 'Malebranche, devils, heresiarchs, exorcists',
   },
   {
     id: 'lingua-ignota',
     name: 'Lingua Ignota',
-    description: 'The secret language of nature, spoken by Sylvans, druids, and the creatures of the wild. It has no written form and cannot be learned from books.',
-    speakers: 'Sylvans, druids, fey creatures',
+    description:
+      'Also called the Language of the Birds, this is the tongue of celestials, angels and the inhabitants of Urania, used for the most complex prophecies and the most sacred texts. Only a few hermits and mystics who roam the Kingdom seem to understand it — though some say it is an inner language accessible to anyone pure enough, or drunk enough.',
+    speakers: 'Celestials, angels, hermits and mystics',
   },
   {
     id: 'petroglyphic',
     name: 'Petroglyphic',
-    description: 'An ancient pictographic language found carved in cave walls, standing stones, and ruins throughout the Boot. Only scholars and certain druids can read it.',
-    speakers: 'Ancient peoples (extinct), scholars',
+    description:
+      'The oldest inscriptions on monoliths, prehistoric caves and primeval artifacts are petroglyphs: pictographic signs engraved or drawn on stone that represent concepts rather than words or letters. Petroglyphic is the last remnant of an ancestral language common to the ancestors of sylvans and morgants, the ancient Pelagians and other prehistoric peoples.',
+    speakers: 'Sylvans, morgants, and students of the ancestral past',
   },
   {
     id: 'racket',
     name: 'Racket',
-    description: 'A secret thieves\' argot used by the criminal underworld of Brancalonia. Similar in concept to Thieves\' Cant but unique to the Boot. Messages can be hidden in graffiti, hand gestures, and seemingly innocent conversation.',
-    speakers: 'Criminals, brigands, rogues',
+    description:
+      'The roguish jargon spoken by ziganes, lacklands and norcitans, as well as by many companies of puppeteers, street actors, carnies, harlequins and thespians, and by rovers, nomads and wanderers in general. It uses the Vernacular alphabet.',
+    speakers: 'Ziganes, lacklands, rovers, street performers, thieves',
   },
 ] as const
 

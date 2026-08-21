@@ -422,9 +422,11 @@ export const brancaloniaClassNamesIt: Record<string, string> = {
   'ranger': 'Mattatore',
   'rogue': 'Brigante',
   'sorcerer': 'Scaramante',
-  'warlock': 'Guiscardo',
-  'wizard': 'Alchimista',
+  'warlock': 'Menagramo',
+  'wizard': 'Guiscardo',
   'burattinaio': 'Burattinaio',
+  // The class is looked up by its English name too, which is not its id
+  'puppeteer': 'Burattinaio',
 }
 
 /**
@@ -466,7 +468,15 @@ export const raceNamesIt: Record<string, string> = {
   'Malebranche': 'Malebranche',
   'Marionette': 'Marionetta',
   'Morgant': 'Morgante',
-  'Sylvan': 'Silvano',
+  'Sylvan': 'Selvatico',
+  // Brancalonia — Macaronicon
+  'WolfCat': 'Gatto Lupesco',
+  'Nonexistent': 'Inesistente',
+  'Pantegan': 'Pantegano',
+  // Brancalonia — L'Impero Randella Ancora
+  'Arcimboldo': 'Arcimboldo',
+  'Jackrabid': 'Bieconiglio',
+  'Paraghoul': 'Paragulo',
   // Apocalisse Origins (shown as standalone races)
   'Child of the Old World': 'Figlio del Vecchio Mondo',
   'Child of the Apocalypse': 'Figlio dell\'Apocalisse',
@@ -488,6 +498,15 @@ export const subraceNamesIt: Record<string, string> = {
   'Forest Gnome': 'Gnomo delle Foreste',
   'Lightfoot Halfling': 'Halfling Piedelesto',
   'Stout Halfling': 'Halfling Tozzo',
+  // Brancalonia — Marionette shapes
+  'Pinocchio': 'Pinocchio',
+  'Pupo': 'Pupo',
+  'Cabin Doll': 'Mezzo Marinaio',
+  'Saintlet': 'Santino',
+  // Brancalonia — Arcimboldo natures
+  'Orcharder': 'Ortolano',
+  'Ragpicker': 'Robivecchi',
+  'Scrapper': 'Ferrivecchi',
 }
 
 // ─── Skill Names ────────────────────────────────────────────────────────────
@@ -509,6 +528,8 @@ export const skillNamesIt: Record<string, string> = {
   'Persuasion': 'Persuasione',
   'Religion': 'Religione',
   'Sleight of Hand': 'Rapidita\' di Mano',
+  // kebab ids title-case to 'Sleight Of Hand', which would otherwise miss
+  'Sleight Of Hand': 'Rapidita\' di Mano',
   'Stealth': 'Furtivita\'',
   'Survival': 'Sopravvivenza',
 }
@@ -529,6 +550,10 @@ export const proficiencyNamesIt: Record<string, string> = {
   'martial': 'Armi da Guerra',
   'martial weapons': 'Armi da Guerra',
   'all': 'Tutte',
+  // Tool proficiencies granted by the Puppeteer
+  'mason\'s tools': 'Attrezzi da Muratore',
+  'tinker\'s tools': 'Attrezzi da Calderaio',
+  'woodcarver\'s tools': 'Attrezzi da Intagliatore',
 }
 
 // ─── Feature Names ──────────────────────────────────────────────────────────
@@ -734,113 +759,61 @@ export const featureNamesIt: Record<string, string> = {
   'Channel Divinity: Sacred Weapon': 'Incanalare Divinita\': Arma Sacra',
   'Channel Divinity: Turn the Unholy': 'Incanalare Divinita\': Scacciare gli Empi',
   'Hunter\'s Prey': 'Preda del Cacciatore',
-  // ─── Brancalonia Subclass Features ─────────────────────────────────────────
+  // ─── Brancalonia Subclass Features (Setting Book) ─────────────────────────
   // Pagan (Barbarian)
-  'Pagan Fury': 'Furia Pagana',
-  'Rite of the Horned One': 'Rito del Cornuto',
-  'Spirit of the Land': 'Spirito della Terra',
+  'Path of Unheard-of Ferocity': 'Cammino dell\'Inaudita Ferocia',
+  'Savage Courage': 'Barbaro Coraggio',
+  'Unstoppable Rage': 'Ira Irrefrenabile',
   // Harlequin (Bard)
-  'Stage Persona': 'Personaggio di Scena',
-  'Comedic Timing': 'Tempismo Comico',
-  'Improvised Scene': 'Scena Improvvisata',
-  // Miracolaro (Cleric)
-  'Patron Saint': 'Santo Patrono',
-  'Miraculous Intercession': 'Intercessione Miracolosa',
-  'Festival of the Saint': 'Festa del Santo',
+  'College of Carnival': 'Collegio del Carnevale',
+  'Slapstick': 'Batocchio',
+  'Silence Please': 'Silenzio in Sala',
+  // Miraculist (Cleric)
+  'Calendar Domain': 'Dominio del Calendario',
+  'Call on the Saints': 'Tirare Giu\' i Santi',
+  'Channel Divinity: Recite the Calendar': 'Incanalare Divinita\': Recitare il Calendario',
+  'By the Saints!': 'Per Tutti i Santi!',
   // Benandante (Druid)
-  'Dance Macabre': 'Danza Macabra',
-  'Spirit Sight': 'Vista degli Spiriti',
-  'Requiem Form': 'Forma del Requiem',
-  // Sword-player (Fighter)
-  'Dueling Stance': 'Posizione da Duello',
-  'Riposte': 'Risposta',
-  'Fencing Flourish': 'Fioretto di Scherma',
+  'Glimpse Beyond the Veil': 'Guardare Oltre il Velo',
+  'Dance Macabre Guardian': 'Guardiano della Danza Macabra',
+  // Swordfighter (Fighter)
+  'School of Fencing': 'Scuola di Scherma',
   // Friar (Monk)
-  'Righteous Sermon': 'Sermone Virtuoso',
-  'Holy Brawler': 'Rissaiolo Sacro',
-  'Mendicant\'s Fortitude': 'Fortezza del Mendicante',
+  'Way of the Brawly Rule': 'Via della Condotta Manesca',
+  'Turn the Other Cheek': 'Porgi l\'Altra Guancia',
+  'The Iron & Feather Hand Technique': 'Tecnica della Mano di Ferro e di Piuma',
   // Knight-Errant (Paladin)
-  'Oath of Errantry': 'Giuramento di Erranza',
-  'Threadbare Nobility': 'Nobilta\' Rattoppata',
-  'Undying Chivalry': 'Cavalleria Immortale',
-  // Mattatore (Ranger)
-  'Beast Lore': 'Sapere delle Bestie',
-  'Pit Fighter': 'Lottatore da Arena',
-  'Monster Wrangler': 'Domatore di Mostri',
+  'Oath of Knightly Erring': 'Giuramento della Cavalleresca Erranza',
+  // Matador (Ranger)
+  'Master of Performance': 'Maestro dell\'Esibizione',
+  'Eye of the Matador': 'Occhio del Mattatore',
   // Brigand (Rogue)
-  'Ambush Master': 'Maestro dell\'Imboscata',
-  'Highway Robbery': 'Brigantaggio',
-  'Bandit\'s Escape': 'Fuga del Bandito',
-  // Scaramante (Sorcerer)
-  'Fortune\'s Favor': 'Favore della Fortuna',
-  'Warding Sign': 'Segno di Protezione',
-  'Fey Touched': 'Tocco Fatato',
-  // Menagramo (Warlock)
-  'Evil Eye': 'Malocchio',
-  'Misfortune\'s Embrace': 'Abbraccio della Sfortuna',
-  'Aura of Calamity': 'Aura di Calamita\'',
-  // Guiscardo (Wizard)
-  'Folk Magic': 'Magia Popolare',
-  'Street Savvy': 'Furberia di Strada',
-  'Tale Spinner': 'Narratore',
-  // Rabble-Rouser (Barbarian 2nd)
-  'Incite Riot': 'Incitare alla Rivolta',
-  'Voice of the People': 'Voce del Popolo',
-  'Revolutionary Fervor': 'Fervore Rivoluzionario',
-  // Storyteller (Bard 2nd)
-  'Painted Scroll': 'Pergamena Dipinta',
-  'Tale of Valor': 'Racconto di Valore',
-  'Epic Narrative': 'Narrazione Epica',
-  // Preacher (Cleric 2nd)
-  'Hellfire Sermon': 'Sermone di Fuoco Infernale',
-  'Voice of Doom': 'Voce del Giudizio',
-  'Congregation': 'Congregazione',
-  // Hedge Witch (Druid 2nd)
-  'Potion Brewer': 'Preparatore di Pozioni',
-  'Evil Eye Ward': 'Protezione dal Malocchio',
-  'Cauldron Magic': 'Magia del Calderone',
-  // Mercenary Captain (Fighter 2nd)
-  'Tactical Command': 'Comando Tattico',
-  'Battle Assessment': 'Valutazione di Battaglia',
-  'Inspiring Rally': 'Raduno Ispiratore',
-  // Wrestler (Monk 2nd)
-  'Grappling Master': 'Maestro di Lotta',
-  'Ring Throw': 'Lancio da Ring',
-  'Iron Grip': 'Presa di Ferro',
-  // Justicar (Paladin 2nd)
-  'Oath of Justice': 'Giuramento di Giustizia',
-  'Relentless Pursuit': 'Inseguimento Implacabile',
-  'Sentence of the Just': 'Sentenza del Giusto',
-  // Bounty Hunter (Ranger 2nd)
-  'Manhunter': 'Cacciatore di Uomini',
-  'Bring \'Em Back': 'Riportali Indietro',
-  'Nowhere to Hide': 'Nessun Posto dove Nascondersi',
-  // Charlatan (Rogue 2nd)
-  'Silver Tongue': 'Lingua d\'Argento',
-  'Fake It': 'Finzione',
-  'Confidence Scheme': 'Schema di Truffa',
-  // Witch (Sorcerer 2nd)
-  'Witch\'s Curse': 'Maledizione della Strega',
-  'Ancestral Knowledge': 'Sapere Ancestrale',
-  'Wild Transformation': 'Trasformazione Selvaggia',
-  // Hexer (Warlock 2nd)
-  'Effigy Binding': 'Vincolo dell\'Effigie',
-  'Sympathetic Hex': 'Fattura Simpatica',
-  'Puppet Strings': 'Fili del Burattino',
-  // Alchemist (Wizard 2nd)
-  'Alchemical Formulae': 'Formule Alchemiche',
-  'Experimental Elixirs': 'Elisir Sperimentali',
-  'Volatile Transmutation': 'Trasmutazione Volatile',
-  // Burattinaio class features
-  'Puppet Master': 'Burattinaio Maestro',
-  'Strings of Fate': 'Fili del Destino',
-  'Puppet Tradition': 'Tradizione del Burattino',
-  'Extra Marionette': 'Marionetta Extra',
-  'Grand Puppeteer': 'Gran Burattinaio',
-  'Theatrical Misdirection': 'Depistaggio Teatrale',
-  'Dramatic Performance': 'Performance Drammatica',
-  'Battle Puppets': 'Burattini da Battaglia',
-  'Puppet Swarm': 'Sciame di Burattini',
+  'Brigandage': 'Brigantaggio',
+  'The Fine Art of Ambushing': 'Arte dell\'Imboscata',
+  // Superstician (Sorcerer)
+  'Extravaganza': 'Fandonia',
+  'Preventive Magic': 'Magia di Protezione',
+  'Protected by Fate': 'Protetto dal Fato',
+  'Superstitious Ritual': 'Rituale Scaramantico',
+  // Jinx (Warlock)
+  'Evil Eye': 'Iattura',
+  'Misfortune Touch': 'Il Tocco della Malasorte',
+  // Guiscard (Wizard)
+  'Treasure Seeker': 'Cercatore di Tesori',
+  'Magic Items Expert': 'Esperto di Oggetti Magici',
+  'Magical Trinkets': 'Chincaglieria Magica',
+  'Master of Extravaganza': 'Maestria Fandonica',
+  // Puppeteer class features (Macaronicon)
+  'Theatre of Extravaganza': 'Teatro di Fandonia',
+  'Puppets Created': 'Burattini Creati',
+  'Puppeteer\'s Tradition': 'Tradizione del Burattinaio',
+  'Canons': 'Canoni',
+  'Artistic Vocation': 'Vocazione Artistica',
+  'Masterpiece': 'Capolavoro',
+  'The Show Must Go On': 'Lo Spettacolo Deve Continuare',
+  'Pyrotechnics Art': 'Arte Pirotecnica',
+  'Fatherly Love': 'Amore Paterno',
+  'Loyal Son': 'Figlio Fedele',
   // ─── Apocalisse Subclass Features ──────────────────────────────────────────
   // Path of Martyrdom (Barbarian)
   'Steed of the Apocalypse': 'Destriero dell\'Apocalisse',
@@ -918,6 +891,45 @@ export const featureNamesIt: Record<string, string> = {
   'Rebellion Against Fate': 'Ribellione contro il Destino',
   'Ultimate Freedom of Lilith': 'Liberta\' Suprema di Lilith',
   // Morgant racial traits (Title Case form used in blog character data)
+  // ─── Brancalonia — Macaronicon Subclass Features ───────────────────────
+  // Mountaineer (Barbarian)
+  'Mountaineer Path': 'Cammino del Montanaro',
+  'Ancient Art of the Grappanel': 'Antica Arte del Grappino',
+  'Blend': 'Miscela',
+  // Guappo (Bard)
+  'Competence Bonus': 'Competenze Bonus',
+  'Implied Folksong': 'Canzonetta Sottintesa',
+  'Unambiguous Violence': 'Violenza Beneinesa',
+  'Do Be Cruel': 'Infierire',
+  // Exorcist (Cleric)
+  'Between the Hammer and the Evil': 'Lo Martello che Schiaccia lo Male',
+  'The Revelation Gab': 'La Favella Magna',
+  'True Mirror': 'L\'Ispecchio della Verita\'',
+  'The Flame of the Just': 'La Fiamma dello Giusto',
+  // Bravo (Fighter)
+  'Disheartening Presence': 'Presenza Scoraggiante',
+  'Street Fighter': 'Combattente da Strada',
+  // Svanzic Guard (Monk)
+  'Training of the Guard': 'Addestramento della Guardia',
+  'Sacred Svanzic Dogma': 'Sacri Dogmi di Svanzica',
+  // Gallant Knight (Paladin)
+  'Oath of Love': 'Giuramento d\'Amore',
+  // Rat Catcher (Ranger)
+  'Rat Catcher\'s Magic': 'Magia dell\'Acchiapparatti',
+  'Torch Bearer': 'Portatore della Torcia',
+  'Danger Perception': 'Percezione del Pericolo',
+  'Urban Guide': 'Guida Urbana',
+  // Gadgeteer (Rogue)
+  'MacGadget': 'Con-genio',
+  'Bag of Gadgeteering': 'Sacca degli Aggeggi',
+  // Heresiarch (Sorcerer)
+  'Heresy Stigma': 'Marchio dell\'Eresia',
+  'Infernal Magic': 'Magia Infernale',
+  'The Ninth Gate': 'La Nona Porta',
+  // Talismancer (Warlock)
+  'Chosen Bearer': 'Portatore Prescelto',
+  'Angelic Fervor': 'Fervore Angelico',
+  'Angelic Intercession': 'Intercessione Angelica',
   'Powerful Build': 'Corporatura Possente',
   'Big Appetite': 'Grande Appetito',
   'Natural Athlete': 'Atleta Naturale',
@@ -967,28 +979,77 @@ export const traitNamesIt: Record<string, string> = {
   'draconic-ancestry': 'Ascendenza Draconica',
   'breath-weapon': 'Soffio del Drago',
   'damage-resistance': 'Resistenza ai Danni',
-  // ─── Brancalonia Racial Traits ─────────────────────────────────────────────
-  'versatile': 'Versatile',
-  'extra-skill-proficiency': 'Competenza in Abilita\' Extra',
-  'innate-spellcasting': 'Incantesimi Innati',
-  'physical-peculiarity': 'Peculiarita\' Fisica',
-  'superstitious-aura': 'Aura Superstiziosa',
-  'constructed-body': 'Corpo Costruito',
-  'fire-vulnerability': 'Vulnerabilita\' al Fuoco',
-  'poison-resistance': 'Resistenza al Veleno',
-  'wooden-resilience': 'Resilienza del Legno',
-  'sentry-rest': 'Riposo di Sentinella',
-  'powerful-build': 'Corporatura Possente',
-  'big-appetite': 'Grande Appetito',
-  'natural-athlete': 'Atleta Naturale',
-  'demi-giant-resilience': 'Resilienza del Semigigante',
-  'speak-with-animals': 'Parlare con gli Animali',
-  'nature-bond': 'Legame con la Natura',
-  'forest-born': 'Nato nella Foresta',
-  'infernal-heritage': 'Eredita\' Infernale',
-  'fire-resistance': 'Resistenza al Fuoco',
-  'enhanced-brawling': 'Rissa Potenziata',
-  'menacing-presence': 'Presenza Minacciosa',
+  // ─── Brancalonia Racial Traits (Setting Book) ─────────────────────────────
+  'skill-choice': 'Abilita\'',
+  'feat-choice': 'Talento',
+  'brawl-versatility': 'Privilegio da Rissa: Versatilita\'',
+  'magical-influence': 'Influsso Magico',
+  'magical-resonance': 'Risonanza Magica',
+  'brawl-magical-adaptation': 'Privilegio da Rissa: Adattamento Magico',
+  'brawl-hellbrawl': 'Privilegio da Rissa: Malebotte',
+  // The two Helltraits a malebranche picks are recorded per character
+  'Hellwings': 'Maleali',
+  'Hellflames': 'Malefiamme',
+  'Hellfeet': 'Malepiedi',
+  'Hellvoice': 'Malavoce',
+  'Hellclaws': 'Maleartigli',
+  'Hellears': 'Maleorecchie',
+  'infernal-helltraits': 'Malitratti',
+  'triflewood-construct': 'Costrutto di Fanfaluco',
+  'magical-but-still-made-of-wood': 'Magico ma Sempre Legno',
+  'self-mending': 'Aggiustarsi',
+  'brawl-removable-limb': 'Privilegio da Rissa: Braccio Smontabile',
+  'gargantuan': 'Gigantesco',
+  'sturdy-as-a-rock': 'Robusto come un Tronco',
+  'cast-iron-stomach': 'Stomaco d\'Acciaio',
+  'brawl-towering': 'Privilegio da Rissa: Torreggiante',
+  'raised-in-the-forest': 'Cresciuto nella Selva',
+  'primal-instinct': 'Istinto Primordiale',
+  'brawl-tough-guy': 'Privilegio da Rissa: Tosto',
+  // Marionette shapes (Setting Book + Macaronicon)
+  'different-shapes': 'Diverse Fogge',
+  'gullible': 'Credulone',
+  'integrated-armor': 'Armatura Innestata',
+  'nautical': 'Nautica',
+  'wind-and-water': 'Da Acqua e Vento',
+  'in-saints-image-and-likeness': 'A Immagine e Somiglianza dei Santi',
+  // ─── Brancalonia — Macaronicon Races ─────────────────────────────────────
+  'feline-darkvision': 'Scurovisione',
+  'scratch': 'Graffio',
+  'leap': 'Balzo',
+  'deceitful': 'Truffaldino',
+  'waterfear': 'Acquanera',
+  'brawl-cat-burglar': 'Privilegio da Rissa: Occhi di Gatto',
+  'extravaganza-being': 'Frutto della Fandonia',
+  'antimagic-susceptibility': 'Suscettibilita\' all\'Anti-magia',
+  'dressing': 'Vestizione',
+  'brawl-vanishing': 'Privilegio da Rissa: Svanizione',
+  'nimble-and-snappy': 'Agile e Scattante',
+  'rat-life': 'Vita da Ratti',
+  'live-fast': 'Lesto Vivere',
+  'flee-and-survive': 'Fuggire per Combattere Domani',
+  'brawl-pantemime': 'Privilegio da Rissa: Pantemima',
+  // ─── Brancalonia — L'Impero Randella Ancora Races ────────────────────────
+  'construct-type': 'Tipologia Creatura: Costrutto',
+  'jumble': 'Accozzaglia',
+  'brawl-scavenger': 'Privilegio da Rissa: Riciclaggio',
+  'extravagant-influence-orcharder': 'Influsso Fandonico (Ortolano)',
+  'extravagant-influence-ragpicker': 'Influsso Fandonico (Robivecchi)',
+  'extravagant-influence-scrapper': 'Influsso Fandonico (Ferrivecchi)',
+  'resistant-structure-piercing': 'Resistenza Strutturale (Perforanti)',
+  'resistant-structure-bludgeoning': 'Resistenza Strutturale (Contundenti)',
+  'resistant-structure-slashing': 'Resistenza Strutturale (Taglienti)',
+  'red-eyes': 'Occhi Rossi',
+  'unflinching': 'Impassibile',
+  'rabid-fury': 'Furia Bieca',
+  'natural-born-jumper': 'Saltatore Nato',
+  'born-for-the-skewer': 'Nato per lo Spiedo',
+  'brawl-jackrabid-kick': 'Privilegio da Rissa: Spietato',
+  'undead-type': 'Tipologia Creatura: Non Morto',
+  'still-blood': 'Sangue Fermo',
+  'pull-scams-not-push-daisies': 'Tirare le Sole, non le Cuoia',
+  'making-fun-of-death': 'Pergulare la Morte',
+  'brawl-hes-already-dead': 'Privilegio da Rissa: E\' Gia\' Morto!',
   // ─── Apocalisse Origin Traits ──────────────────────────────────────────────
   // Child of the Old World
   'Proficiency in 2 skills from: Arcana, Medicine, Nature, Perception, Religion, History, plus 1 free skill': 'Competenza in 2 abilita\' tra: Arcano, Medicina, Natura, Percezione, Religione, Storia, piu\' 1 abilita\' a scelta',
@@ -1052,7 +1113,13 @@ export const languageNamesIt: Record<string, string> = {
   'Sylvan': 'Silvano',
   'Undercommon': 'Sottocomune',
   // Brancalonia
-  'Brancalonese': 'Brancalonese',
+  'Vernacular': 'Volgare',
+  'Draconian': 'Draconiano',
+  'Macaronic': 'Maccheronico',
+  'Bedamn': 'Male Parole',
+  'Lingua Ignota': 'Lingua Ignota',
+  'Petroglyphic': 'Petroglifico',
+  'Racket': 'Baccaglio',
   'Thieves\' Cant': 'Gergo dei Ladri',
   // Apocalisse
   'Old World Tongue': 'Lingua del Vecchio Mondo',
@@ -1085,27 +1152,33 @@ export const subclassNamesIt: Record<string, string> = {
   'the-fiend': 'Il Demone',
   'thief': 'Ladro',
   'way-of-the-open-hand': 'Via della Mano Aperta',
-  // Brancalonia
+  // Brancalonia — Setting Book
   'benandante': 'Benandante',
   'brigand': 'Brigante',
-  'charlatan': 'Ciarlatana',
-  'friar': 'Fraticello',
+  'friar': 'Frate',
   'guiscardo': 'Guiscardo',
   'harlequin': 'Arlecchino',
-  'hedge-witch': 'Fattucchiera',
-  'knight-errant': 'Cavaliere Errante',
+  'knight-errant': 'Cavalier Errante',
   'mattatore': 'Mattatore',
   'menagramo': 'Menagramo',
-  'mercenary-captain': 'Capitano di Ventura',
   'miracolaro': 'Miracolaro',
   'pagan': 'Pagano',
-  'preacher': 'Predicatore',
-  'rabble-rouser': 'Rivoltoso',
   'scaramante': 'Scaramante',
-  'storyteller': 'Cantastorie',
-  'sword-player': 'Giocatore di Spada',
-  'witch': 'Strega',
-  'wrestler': 'Lottatore',
+  'sword-player': 'Spadaccino',
+  // Brancalonia — Puppeteer traditions (Macaronicon)
+  'mangiafuoco': 'Mangiafuoco',
+  'geppetto': 'Geppetto',
+  // Brancalonia — Macaronicon
+  'mountaineer': 'Montanaro',
+  'guappo': 'Guappo',
+  'exorcist': 'Esorcista',
+  'bravo': 'Bravo',
+  'svanzic-guard': 'Guardia Svanzica',
+  'gallant-knight': 'Cavalier Servente',
+  'rat-catcher': 'Acchiapparatti',
+  'gadgeteer': 'Congegnere',
+  'heresiarch': 'Eresiarca',
+  'talismancer': 'Talismante',
   // Apocalisse
   'bastion': 'Bastione',
   'circle-of-plagues': 'Circolo delle Piaghe',
@@ -1418,7 +1491,8 @@ export function translateGameTerm(
       return proficiencyNamesIt[profCapitalized] ?? weaponNamesIt[profCapitalized] ?? armorNamesIt[profCapitalized] ?? name
     }
     case 'feature':
-      return featureNamesIt[name] ?? name
+      // featuresTraits mixes class/subclass feature names with racial trait ids
+      return featureNamesIt[name] ?? traitNamesIt[name] ?? name
     case 'trait':
       return traitNamesIt[name] ?? name
     case 'language':

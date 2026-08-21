@@ -68,7 +68,7 @@
     "apocalissePromo": "If you like Apocalisse, buy the manuals on",
     "dnd5ePromo": "If you like D&D 5e, buy the manuals on",
     "dnd5eFeatures": "12 classes • 9 races • Level 1-20",
-    "brancaloniaFeatures": "12 subclasses • 6 races • Level 1-6",
+    "brancaloniaFeatures": "22 subclasses • 12 races • Level 1-6",
     "apocalisseFeatures": "12 archetypes • 6 origins • Level 1-20"
   },
   "race": {
@@ -664,7 +664,7 @@
         "skin": "Olive"
       },
       "cleric-human-fra-benedetto-miracolaro": {
-        "description": "Fra Benedetto il Miracolaro is a Level 4 Human Cleric (Miracolaro) who wanders the countryside selling dubious relics and performing suspiciously convenient miracles. This roving friar's faith is sincere, even if his methods are decidedly unorthodox.",
+        "description": "Fra Benedetto il Miracolaro is a Level 4 Human Cleric (Miraculist) who wanders the countryside selling dubious relics and performing suspiciously convenient miracles. This roving friar's faith is sincere, even if his methods are decidedly unorthodox.",
         "bio": "Fra Benedetto was a simple Tuscan peasant until a lightning bolt struck his plow and made him see the Madonna (or maybe it was just the sun in his eyes after three glasses of red wine). From that day he became a friar and began wandering the Bel Paese selling relics of more or less invented saints and dispensing miracles to paying customers. Despite his questionable methods, his faith is sincere and his spells actually work, which confuses him more than anyone else. He has funded the construction of three hospices, two orphanages, and at least one wine cellar.",
         "personality": "He always has a blessing ready for anyone who offers him a meal and a curse for anyone who denies him wine. He talks to the saints as if they were old drinking buddies. He can no longer tell his lies from his prayers, and perhaps neither can the saints.",
         "personalityTraits": "Ho sempre una benedizione pronta per chi mi offre un pasto e una maledizione per chi mi nega il vino. Parlo con i santi come fossero vecchi amici di osteria.",
@@ -688,7 +688,7 @@
         "skin": "Bark-like, pale green"
       },
       "warlock-malebranche-fosco-occhiomaligno": {
-        "description": "Fosco Occhiomaligno is a Level 4 Malebranche Warlock (Menagramo) whose baleful gaze has cursed more village councils than the plague. This sinister jinxer peddles misfortune across the back roads of Brancalonia, amber eyes glowing with infernal malice.",
+        "description": "Fosco Occhiomaligno is a Level 4 Malebranche Warlock (Jinx) whose baleful gaze has cursed more village councils than the plague. This sinister jinxer peddles misfortune across the back roads of Brancalonia, amber eyes glowing with infernal malice.",
         "bio": "Fosco was born on a moonless night in the infamous quarter of Napulonia, son of a Malebranche and a street fortune-teller. From an early age he discovered that his gaze brought bad luck: cats hissed at him, milk curdled, and merchants shut their shops as he passed. Rather than curse his fate, he learned to make a trade of it, striking a pact with a dark infernal entity that granted him the power to channel his natural jinx. Now he travels the Bel Paese selling curses on commission, hoping nobody discovers that sometimes the bad luck hits him too.",
         "personality": "He watches everyone with a crooked little smile that puts them on edge. He enjoys making people believe he brings bad luck, even when it is not true. His infernal pride is his downfall, and he cannot resist cursing anyone who wrongs him.",
         "personalityTraits": "Guardo tutti con un sorrisetto storto che li mette a disagio. Mi diverto a far credere che porto sfortuna, anche quando non e vero.",
@@ -700,7 +700,7 @@
         "skin": "Ruddy with small horns"
       },
       "fighter-malebranche-scorza-lamadinferno": {
-        "description": "Scorza Lamadinferno is a Level 4 Malebranche Fighter (Sword-player) with ash-grey skin, small horns, and an ego as sharp as his rapier. This devilish duelist carves his way through the Bel Paese one duel at a time, seeking worthy opponents.",
+        "description": "Scorza Lamadinferno is a Level 4 Malebranche Fighter (Swordfighter) with ash-grey skin, small horns, and an ego as sharp as his rapier. This devilish duelist carves his way through the Bel Paese one duel at a time, seeking worthy opponents.",
         "bio": "Scorza was born with small horns and ash-colored skin in the streets of Dis, Florence's infernal quarter where the Malebranche live on the margins of society. His father was a minor devil who vanished before he opened his eyes; his mother, a swordswoman who taught him that respect is won with the blade. At fifteen he challenged and defeated the city's fencing champion, stealing his sword as a trophy. Since then he wanders the Bel Paese seeking worthy opponents, leaving behind a trail of wounded pride and unread infernal contracts.",
         "personality": "He smiles only when his blade meets that of a worthy adversary. He never loses, and when he does, it was not a real challenge. His pride is his ruin: he never refuses a duel, even when he knows he might lose.",
         "personalityTraits": "Sorrido solo quando la mia lama tocca quella di un avversario degno. Non perdo mai, e quando perdo, non era una sfida vera.",
@@ -712,7 +712,7 @@
         "skin": "Ash grey with faint red undertones"
       },
       "wizard-marionette-legno-sapiente": {
-        "description": "Legno il Sapiente is a Level 4 Marionette Wizard (Guiscardo) -- a sentient wooden puppet who escaped his maker's workshop and taught himself magic from a stolen spellbook. His joints creak in the rain, but his mind burns with arcane ambition.",
+        "description": "Legno il Sapiente is a Level 4 Marionette Wizard (Guiscard) -- a sentient wooden puppet who escaped his maker's workshop and taught himself magic from a stolen spellbook. His joints creak in the rain, but his mind burns with arcane ambition.",
         "bio": "Legno was built by an old herbalist wizard in the forests of the Marca, destined to be a simple laboratory assistant. But one stormy night, a bolt of lightning struck the tower and something ignited inside that wooden body: the spark of consciousness. He fled with his creator's spellbook under his jointed arm, teaching himself to decipher arcane runes along the dusty roads of the Bel Paese. Now he passes himself off as an itinerant sage, though every time it rains his joints creak in an embarrassing manner.",
         "personality": "He refers to himself in the third person when nervous. He stops to read anything written, even graffiti in alleyways. He is terrified of fire, which paralyzes him at the worst moments, and sometimes forgets he is not human, taking it badly when reminded.",
         "personalityTraits": "Parlo di me stesso in terza persona quando sono nervoso. Mi fermo a leggere qualsiasi cosa scritta, anche i graffiti nei vicoli.",
@@ -736,7 +736,7 @@
         "skin": "Olive"
       },
       "burattinaio-human-mastro-geppetto": {
-        "description": "Mastro Geppetto is a Level 4 Human Burattinaio (Puppeteer) whose marionettes have a disturbing tendency to move on their own. This kindly old puppeteer mixes commedia dell'arte with actual enchantments, performing satirical shows that keep him one step ahead of the law.",
+        "description": "Mastro Geppetto is a Level 4 Human Puppeteer (Geppetto) whose marionettes have a disturbing tendency to move on their own. This kindly old puppeteer mixes commedia dell'arte with actual enchantments, performing satirical shows that keep him one step ahead of the law.",
         "bio": "Mastro Geppetto spent thirty years in his workshop in Firenzuola, carving marionettes for traveling puppet theaters at patron saint festivals. One day, by accident or by fate, one of his puppets opened its eyes and escaped through the window. From that moment Geppetto discovered he had a gift: the strings he wove could bind not only wood but also the will of others. He abandoned his workshop to search for his fugitive puppet, earning his living with shows that blend commedia dell'arte and enchantments. The authorities are looking for him over a particularly biting satire of the king, but he changes towns before they can catch him.",
         "personality": "He talks to his puppets as if they were real people, and sometimes they actually answer. He is easily moved, especially by the stories he tells himself. He is too sentimental and trusts anyone who tells him a good story.",
         "personalityTraits": "Parlo con i miei burattini come se fossero persone vere e a volte rispondono davvero. Mi commuovo facilmente, soprattutto per le storie che racconto io stesso.",
@@ -760,7 +760,7 @@
         "skin": "Fair, sun-weathered"
       },
       "barbarian-human-tonio-rivoltoso": {
-        "description": "Tonio il Rivoltoso is a Level 3 Human Barbarian (Rabble-Rouser) who traded his pitchfork for a greatclub and his patience for a fiery revolutionary's rage. This peasant firebrand roams the Brancalonian countryside stirring rebellion against tyrants and tax collectors.",
+        "description": "Tonio il Rivoltoso is a Level 3 Human Barbarian (Mountaineer) who traded his pitchfork for a greatclub and his patience for a fiery revolutionary's rage. This peasant firebrand roams the Brancalonian countryside stirring rebellion against tyrants and tax collectors.",
         "bio": "Tonio was a simple peasant from the fields of Brancalonian Magna Graecia, until the day the tax collector burned his village's harvest over an unpaid tithe. That night, with a torch in hand and fury in his heart, he led his fellow villagers in a revolt that shook the entire fief. Since then he has never stopped fighting for the dispossessed, traveling from town to town to spark the flame of rebellion. His battle cry echoes in taverns from Napulonia to Venetia.",
         "personality": "He cannot stand injustice and lets everyone know, usually by shouting. Where he sees a nobleman, he sees a problem to solve with a good revolt. His rage blinds him and he often ends up destroying more than he intended.",
         "personalityTraits": "Non sopporto le ingiustizie e lo faccio sapere a tutti, di solito urlando. Dove vedo un nobile, vedo un problema da risolvere con una bella rivolta.",
@@ -772,7 +772,7 @@
         "skin": "Sun-darkened olive"
       },
       "ranger-morgant-rocco-domabelve": {
-        "description": "Rocco Domabelve is a Level 4 Morgant Ranger (Mattatore), a massive beast-tamer who roams the countryside with a menagerie of half-tamed creatures at his heels. This towering half-giant pit fighter understands animals far better than people.",
+        "description": "Rocco Domabelve is a Level 4 Morgant Ranger (Matador), a massive beast-tamer who roams the countryside with a menagerie of half-tamed creatures at his heels. This towering half-giant pit fighter understands animals far better than people.",
         "bio": "Rocco grew up in the mountains of Basilicata, son of a Morgant shepherd who taught him to tame wolves and boars before he even learned to read. When a traveling circus passed through his village, the young half-giant challenged the bear-tamer to a contest of strength and won, earning the bear's respect and the master's wrath. Since that day Rocco has wandered the roads of the Bel Paese as a traveling beast-tamer, dominating fierce creatures in village arenas and riding giant boars through market streets, to the delight of children and the terror of greengrocers.",
         "personality": "Beasts understand him better than men, and he understands beasts better than men. If an animal does not trust you, neither does he. He prefers the company of animals to people, making him gruff and suspicious of strangers.",
         "personalityTraits": "Le bestie mi capiscono meglio degli uomini, e io capisco meglio le bestie. Se un animale non si fida di te, neanche io mi fido.",
@@ -784,7 +784,7 @@
         "skin": "Ruddy, freckled"
       },
       "bard-marionette-cantastorie-legnetto": {
-        "description": "Cantastorie Legnetto is a Level 3 Marionette Bard (Storyteller), a wooden troubadour whose tales are so moving that audiences forget to guard their purses. This painted pine puppet captivates crowds while his companions lighten their coin pouches.",
+        "description": "Cantastorie Legnetto is a Level 3 Marionette Bard (Guappo), a wooden troubadour whose tales are so moving that audiences forget to guard their purses. This painted pine puppet captivates crowds while his companions lighten their coin pouches.",
         "bio": "Cantastorie Legnetto was a simple puppet from a traveling puppet theater, passed from hand to hand among storytellers and charlatans along the roads of Brancalonia. One evening, during a particularly moving performance of the legend of the Bel Paese, something clicked in his pine heart: he began improvising lines off-script and the audience went wild. Since then he wanders the piazzas and taverns telling wondrous tales, accompanied by a slightly out-of-tune lute. People cry, laugh, and above all do not notice that his companions are lightening their purses.",
         "personality": "He cannot stop telling stories, even in the middle of a fight. His facial expressions are painted, but he swears they change with his mood. He always exaggerates everything and does not know when to stop, embellishing the truth until it becomes unrecognizable.",
         "personalityTraits": "Non riesco a smettere di raccontare storie, anche in mezzo a un combattimento. Le mie espressioni facciali sono dipinte, ma giuro che cambiano con il mio umore.",
@@ -808,7 +808,7 @@
         "skin": "Olive with a birthmark shaped like a fox"
       },
       "cleric-sylvan-padre-radice": {
-        "description": "Padre Radice is a Level 3 Sylvan Cleric (Preacher) who preaches doom and damnation at market squares, fleecing the terrified faithful while secretly communing with the old spirits of root and branch. This wild-eyed forest priest hides a con artist behind the cassock.",
+        "description": "Padre Radice is a Level 3 Sylvan Cleric (Exorcist) who preaches doom and damnation at market squares, fleecing the terrified faithful while secretly communing with the old spirits of root and branch. This wild-eyed forest priest hides a con artist behind the cassock.",
         "bio": "Padre Radice grew up among the roots of an ancient sacred grove in the Brancalonian hills, raised by a community of sylvans who worshipped the earth spirits. When lumberjacks began felling the sacred trees, Radice descended into the city to preach nature's vengeance. He discovered, however, that screaming about the end of the world at markets was far more profitable than praying among the ferns, and that people pay well to be terrified and then consoled. Now he wanders between villages in his bark cassock, preaching repentance with one hand and emptying the offering boxes with the other.",
         "personality": "He preaches the end of the world at least three times a day, more often if there is a market nearby. He talks to plants and is convinced they answer him. He is a first-rate swindler who hides behind the cassock, using fear of divine judgment to fill his pockets.",
         "personalityTraits": "Predico la fine del mondo almeno tre volte al giorno, piu spesso se c'e un mercato nelle vicinanze. Parlo con le piante e sono convinto che mi rispondano.",
@@ -820,7 +820,7 @@
         "skin": "Bark-like, olive brown"
       },
       "sorcerer-gifted-strega-malocchio": {
-        "description": "Strega Malocchio is a Level 4 Gifted Sorcerer (Scaramante) whose evil eye and unnatural violet gaze bring misfortune to all who cross her path. This feared hedge witch's curses are whispered about in every village square across the Bel Paese.",
+        "description": "Strega Malocchio is a Level 4 Gifted Sorcerer (Superstician) whose evil eye and unnatural violet gaze bring misfortune to all who cross her path. This feared hedge witch's curses are whispered about in every village square across the Bel Paese.",
         "bio": "No one knows the real name of Strega Malocchio, not even her. Born in a Sardinian village with unnaturally colored eyes and snow-white hair, she was branded a witch from the cradle. The old village witch took her under her wing and taught her the art of curses, protections, and omens. When the local mayor accused her of ruining the harvest (she actually did, out of revenge) and organized a pyre, the Strega fled into the night carrying only her black cat and a grudge that burns hotter than any flame. Now she wanders the Bel Paese, feared and respected, offering her services to those who pay and her curses to those who do not.",
         "personality": "She talks to shadows and the shadows answer her. Her gaze makes the brave tremble and children cry, though she insists it is not her fault. Her tongue is more venomous than her curses, and she cannot help but curse anyone who irritates her.",
         "personalityTraits": "Parlo con le ombre e le ombre mi rispondono. Il mio sguardo fa tremare i coraggiosi e piangere i bambini, ma non e colpa mia se ho gli occhi cosi.",
@@ -832,7 +832,7 @@
         "skin": "Pale, almost translucent"
       },
       "druid-human-nonna-erba": {
-        "description": "Nonna Erba is a Level 3 Human Druid (Hedge Witch), a wily old herbalist on the run from the Inquisition. This cunning grandmother peddles potions and poultices across the countryside, half of which are just spiced beet juice with a dash of theatrics.",
+        "description": "Nonna Erba is a Level 3 Human Druid (Benandante), a wily old herbalist on the run from the Inquisition. This cunning grandmother peddles potions and poultices across the countryside, half of which are just spiced beet juice with a dash of theatrics.",
         "bio": "Nonna Erba, born Carmela Fioravanti, was a healer in a small Tuscan hill village. For forty years she cured colds, heartbreak, and evil eyes with her herbal decoctions, until the new village inquisitor accused her of witchcraft over a love potion gone wrong. Since then she has lived on the run, moving from village to village with her cauldron on her back and her black cat Basilico on her shoulder. People seek her for her miraculous remedies, but she knows that her greatest secret is that half her potions are just beet juice with a pinch of theatrics.",
         "personality": "She calls everyone \"dear\" and offers unsolicited herbal remedies. Her cauldron is her most precious possession and woe to anyone who touches it. She is a born swindler who cannot stop selling fake potions, and her vanity about her recipes always gets her in trouble.",
         "personalityTraits": "Chiamo tutti \"tesoro mio\" e offro rimedi erboristici non richiesti. Il mio calderone e il mio bene piu prezioso e guai a chi lo tocca.",
@@ -844,7 +844,7 @@
         "skin": "Weathered olive"
       },
       "fighter-morgant-capitan-bracciodiferro": {
-        "description": "Capitan Bracciodiferro is a Level 3 Morgant Fighter (Mercenary Captain), a grizzled half-giant mercenary who has served under every banner in Brancalonia and deserted most of them. This towering sell-sword now leads a ragtag band with more appetite than discipline.",
+        "description": "Capitan Bracciodiferro is a Level 3 Morgant Fighter (Bravo), a grizzled half-giant mercenary who has served under every banner in Brancalonia and deserted most of them. This towering sell-sword now leads a ragtag band with more appetite than discipline.",
         "bio": "Capitan Bracciodiferro, born Arrigo delle Montagne, started his military career as a simple pikeman in a mercenary company in northern Brancalonia. His Morgant stature and tactical instinct quickly earned him the rank of captain, but his career ended the day he discovered his lord was sending his men to die over a personal feud. He deserted with half the company and since then offers his services to the highest bidder, provided the cause is just -- or at least the pay is punctual. His troops follow him for his ability to always find a good meal after battle.",
         "personality": "He gives orders even when nobody has asked him to. He judges people by the firmness of their handshake and how well they hold their wine. He is too rigid with rules when it suits him and too flexible when it does not.",
         "personalityTraits": "Do ordini anche quando nessuno me l'ha chiesto. Giudico le persone dalla fermezza della loro stretta di mano e da come reggono il vino.",
@@ -856,7 +856,7 @@
         "skin": "Pale, scarred"
       },
       "monk-malebranche-cornoduro": {
-        "description": "Cornoduro is a Level 3 Malebranche Monk (Wrestler), a bull-horned fiend-blooded grappler who dominates the underground fighting rings of Brancalonia. This infernal showman wins with a mix of martial arts and diabolical dirty tricks.",
+        "description": "Cornoduro is a Level 3 Malebranche Monk (Svanzic Guard), a bull-horned fiend-blooded grappler who dominates the underground fighting rings of Brancalonia. This infernal showman wins with a mix of martial arts and diabolical dirty tricks.",
         "bio": "Cornoduro -- nobody remembers his real name, not even him -- was born in the slums of Napulonia, son of a Malebranche dockworker and a washerwoman with a hard punch. His horns, harder than iron, earned him the nickname and a career in the city's underground fighting rings. He learned to wrestle in the streets, refining his style into a mix of martial arts and infernal cheating that made him invincible -- or at least unbeaten, if you do not count the times he ran away. After winning the Grand Tournament of the Napulonia Fair (with greased horns, say the detractors), he decided to take his art on tour across the Bel Paese.",
         "personality": "He talks about himself as if he were the greatest wrestler in history. Before every fight he delivers a theatrical speech that lasts longer than the brawl itself. He cannot resist a wrestling challenge, even when it is clearly a trap, and his ego is as big as his horns.",
         "personalityTraits": "Parlo di me stesso come se fossi il piu grande lottatore della storia. Prima di ogni combattimento faccio un discorso teatrale che dura piu della rissa.",
@@ -868,7 +868,7 @@
         "skin": "Dark red, leathery"
       },
       "rogue-sylvan-volpina-delbosco": {
-        "description": "Volpina del Bosco is a Level 3 Sylvan Rogue (Charlatan), a sly forest-born trickster who sells fake treasure maps and stolen heirlooms across the markets of Brancalonia. This fox-eyed con artist slips through the woods whenever the law gets too close.",
+        "description": "Volpina del Bosco is a Level 3 Sylvan Rogue (Brigand), a sly forest-born trickster who sells fake treasure maps and stolen heirlooms across the markets of Brancalonia. This fox-eyed con artist slips through the woods whenever the law gets too close.",
         "bio": "Volpina was born in a sacred grove of central Brancalonia, daughter of sylvans who lived on the margins of civilization. From a young age she discovered that her natural talent for camouflage worked just as well among humans: all it took was a smile and a well-told story to make wallets and jewelry vanish. After selling a hand-drawn treasure map on birch bark to the mayor of Firenzuola, she had to hide in the forest for three months. Now she travels the Bel Paese with a repertoire of refined scams, fake maps, and invented identities, always one step ahead of the guards.",
         "personality": "She smiles constantly, especially when she is lying. She can sell ice to polar bears and sand to desert dwellers. Her forest homeland always protects her -- when things go wrong, she retreats among the trees where no one can find her.",
         "personalityTraits": "Sorrido sempre, soprattutto quando sto mentendo. Riesco a vendere ghiaccio agli orsi polari e sabbia ai beduini.",
@@ -880,7 +880,7 @@
         "skin": "Light olive with freckles"
       },
       "sorcerer-marionette-bambola-fatata": {
-        "description": "Bambola Fatata is a Level 3 Marionette Sorcerer (Witch), a haunted-looking wooden doll brought to life by wild magic. This tiny, unblinking puppet terrifies villagers wherever she goes, wielding unpredictable sorcery and searching for the witch who gave her life.",
+        "description": "Bambola Fatata is a Level 3 Marionette Sorcerer (Superstician), a haunted-looking wooden doll brought to life by wild magic. This tiny, unblinking puppet terrifies villagers wherever she goes, wielding unpredictable sorcery and searching for the witch who gave her life.",
         "bio": "Bambola Fatata was created by an old swamp witch in the lowlands of Brancalonia as a companion against loneliness. When the witch died during a particularly powerful spell, all her wild magic poured into the doll, granting it life and power it does not yet know how to control. She fled the swamps after the villagers nearby tried to burn her, convinced she was possessed. Since then she wanders the Bel Paese, involuntarily frightening everyone she meets with her animated doll appearance and unpredictable powers. Inside her, however, there is only the desire to understand what it means to be alive.",
         "personality": "She moves unnaturally and speaks with a voice that seems to come from somewhere far away. She enjoys scaring people, even when there is no need. She does not understand human emotions, which leads her to do things others consider terrifying.",
         "personalityTraits": "Mi muovo in modo innaturale e parlo con una voce che sembra venire da un posto lontano. Mi diverte spaventare la gente, anche quando non ce n'e bisogno.",

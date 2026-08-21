@@ -1,138 +1,128 @@
 import type { CharacterClass } from '../dnd5e/classes'
 
 /**
- * Burattinaio (Puppeteer) - A Brancalonia-exclusive class.
+ * Burattinaio (Puppeteer) — the Brancalonia-exclusive class introduced in the
+ * Macaronicon expansion, in the "Mangiafuoco Caravan" companion.
  *
- * The Burattinaio is a master puppeteer who controls magical marionettes in combat.
- * They are a unique class found only in the Brancalonia setting, drawing on the
- * rich tradition of Italian puppet theater (teatro dei pupi).
- *
- * The Burattinaio is a half-caster who uses Charisma as their primary ability,
- * controlling puppets that fight, distract, and spy for them.
+ * The Puppeteer is NOT a spellcaster. Its whole kit is the Strings: a fey bond
+ * to one animated triflewood puppet at a time, through which the puppeteer acts
+ * at a distance. Intelligence drives the puppets' attack and save DCs.
  */
-
-const burattinaiCantrips = [2, 2, 2, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4]
-const burattinaiSpellsKnown = [0, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 8, 9, 9, 10, 10, 11, 11]
-
 export const burattinaioBrancaloniaClass: CharacterClass = {
   id: 'burattinaio',
-  name: 'Burattinaio',
+  name: 'Puppeteer',
   description:
-    'A master puppeteer who commands magical marionettes in combat. Drawing on the ancient tradition of Italian puppet theater, the Burattinaio brings wooden figures to life, sending them to fight, spy, and perform in their stead. Part artisan, part spellcaster, the Burattinaio blurs the line between performer and warrior.',
+    'The discovery of triflewood\'s astonishing faculties paved the way for the magical art of the Puppeteers: artisans and entertainers skilled at creating sentient marionettes, animated puppets and more common figurines, and at making them perform. Their existence smells of wood — moving from village to village in wagons overflowing with props and carpenter\'s tools, living amidst wood-shavings and spare parts, forever trying to make ends meet. But a Puppeteer with a capital P is no simple carpenter or barker: their creations are animated, prodigious, sometimes even sentient, and after generations devoted to the sublime art of entertainment these artisans and their creations are ready to carry out other kinds of Jobs.',
   hitDie: 8,
-  primaryAbility: ['cha'],
-  savingThrows: ['dex', 'cha'],
+  primaryAbility: ['int'],
+  savingThrows: ['dex', 'int'],
   armorProficiencies: ['light'],
-  weaponProficiencies: ['simple', 'hand crossbow', 'rapier', 'shortsword'],
-  toolProficiencies: ['woodcarver\'s tools', 'one musical instrument of your choice'],
+  weaponProficiencies: ['simple'],
+  toolProficiencies: ['mason\'s tools', 'tinker\'s tools', 'woodcarver\'s tools'],
   skillChoices: [
-    'acrobatics', 'arcana', 'deception', 'insight',
-    'investigation', 'perception', 'performance',
-    'persuasion', 'sleight-of-hand', 'stealth',
+    'arcana', 'deception', 'history',
+    'performance', 'persuasion', 'sleight-of-hand',
   ],
-  numSkillChoices: 3,
+  numSkillChoices: 2,
   startingEquipment: [
-    'rapier',
-    'entertainer-pack',
+    'light crossbow and 20 bolts (or any simple weapon)',
+    'entertainer-pack (or explorer-pack)',
     'leather armor',
+    'any simple weapon',
+    'two daggers',
+    'mason\'s tools',
     'woodcarver\'s tools',
-    'puppet theater kit (3 marionettes)',
   ],
-  subclassLevel: 3,
-  subclassName: 'Puppet Tradition',
-  spellcasting: {
-    ability: 'cha',
-    cantripsKnown: burattinaiCantrips,
-    spellsKnown: burattinaiSpellsKnown,
-    preparedCaster: false,
-    casterType: 'half',
-  },
+  subclassLevel: 1,
+  subclassName: 'Puppeteer\'s Tradition',
+  // The Puppeteer has no spellcasting: every effect runs through the puppets.
+  spellcasting: null,
   features: [
     {
-      id: 'puppet-master',
-      name: 'Puppet Master',
+      id: 'theatre-of-extravaganza',
+      name: 'Theatre of Extravaganza',
       level: 1,
       description:
-        'You can control a magical marionette as a bonus action. The marionette occupies a space within 30 feet of you and can make a single melee attack using your spell attack modifier, dealing 1d6 + CHA modifier bludgeoning damage. The marionette has AC 13, hit points equal to your Burattinaio level + CHA modifier, and uses your saving throw bonuses. It moves up to 30 feet on your turn. If destroyed, you can rebuild it during a long rest.',
+        'Your puppets are not sentient, but you share your energies with some of them through an inner fey bond called Strings. When you finish building an animated puppet, the Strings weave between you and your creation: they let you move the puppet and activate its unique abilities. You can be connected to only one puppet at a time and can move the Strings to another with a bonus action; the connection ends if you are incapacitated or die. While the puppet is in sight and within your Distance of Use you can use your action to have it take the Attack, Dash, Disengage, Dodge or Help action or make a skill check, use your bonus action to move it, and use its Secret Technique. Recoil: all damage, effects, spells and conditions inflicted on a puppet you are connected to are inflicted on you instead, and you make its saving throws. Your attack bonus with a puppet equals your Intelligence modifier + your proficiency bonus, and the DC to resist its effects is 8 + your Intelligence modifier + your proficiency bonus. Distance of Use starts at 50 feet and grows to 60, 80 and 100 feet as you gain levels.',
     },
     {
-      id: 'puppet-strings',
-      name: 'Strings of Fate',
+      id: 'puppets-created',
+      name: 'Puppets Created',
       level: 1,
       description:
-        'Your magical connection to your puppets allows you to perceive through their senses. As an action, you can see through your marionette\'s eyes and hear through its ears for up to 10 minutes. While doing so, you are blind and deaf to your own surroundings.',
+        'You own three puppets of your choice from the common puppets list — Romualdo, Doctor Mutandone, Guerlocco, Brighella, Pulcinello, the Archangel Giorel and Taratata are the classic models — and gain more at 3rd and 5th level, to a total of five. Each puppeteer builds their own puppets and can only bind their Strings to puppets they made themselves. A puppet you are connected to counts as a Tiny construct; unbound it is an object with 10 hit points and AC 8, and at 0 hit points it breaks. Repairing a broken puppet takes a long rest and 30 gp. Puppets cannot carry or equip items.',
     },
     {
-      id: 'spellcasting-burattinaio',
-      name: 'Spellcasting',
+      id: 'puppeteers-tradition',
+      name: 'Puppeteer\'s Tradition',
+      level: 1,
+      description:
+        'You choose a tradition — Geppetto or Mangiafuoco — named after the mythical founders of the two approaches to the art of animated puppets. Your choice grants you features at 1st and 6th level.',
+    },
+    {
+      id: 'canons',
+      name: 'Canons',
       level: 2,
       description:
-        'You have learned to channel magic through your puppets and performances. Charisma is your spellcasting ability. You can use your marionettes as a spellcasting focus.',
+        'Dedicating yourself to the art of puppets, you develop artistic canons of construction and staging that let your puppets perform true portents. You learn two canons at 2nd level and more as you advance, and each time you gain a level you can swap one canon you know for another you could learn. Available canons: Child\'s Play (5th level — the bound puppet can move along vertical surfaces and ceilings with its hands free and gains a climbing speed); Cold Audience and Inflame the Audience (the bound puppet deals an extra 1d6 cold or fire damage on a hit); Fierce Puppets (5th level — the puppet makes two attacks instead of one when you take the Attack action); Last Performance (you can use a bound puppet\'s Secret Technique, but the puppet breaks); Lightning Replacement (swap places with the bound puppet as a bonus action); Perception of Wood (requires Mise-en-scene — the puppet gains blindsight in a 20-foot radius); Protection from Energy (5th level, requires Construction Art — the puppet gains resistance to a chosen damage type); Quick Puppets (the puppet\'s speed increases by 10 feet); Ventriloquism (you can speak through the bound puppet).',
     },
     {
-      id: 'puppet-tradition',
-      name: 'Puppet Tradition',
+      id: 'artistic-vocation',
+      name: 'Artistic Vocation',
       level: 3,
       description:
-        'You choose a Puppet Tradition that shapes how you use your marionettes: the Tradition of the Stage or the Tradition of War.',
+        'You choose the vocation that will characterize your Theatre of Extravaganza. Mise-en-scene: you double your Distance of Use, and as an action you can extend your perceptions through a bound puppet until the start of your next turn, during which you are blind and deaf to your own surroundings. Construction Art: all your creations are sturdier — an unbound puppet has 20 hit points and AC 10, and repairing a broken puppet costs you only a short rest and 15 gp.',
     },
     {
-      id: 'extra-marionette',
-      name: 'Extra Marionette',
+      id: 'masterpiece',
+      name: 'Masterpiece',
       level: 5,
       description:
-        'You can control a second marionette simultaneously. When you use your bonus action to command your marionettes, both can act. Additionally, your marionettes\' attacks count as magical for the purpose of overcoming resistance.',
-    },
-    {
-      id: 'grand-puppeteer',
-      name: 'Grand Puppeteer',
-      level: 6,
-      description:
-        'Your marionettes become extensions of your will. Their attack damage die increases to 1d8. You can now deliver your spells through your marionettes, using their position as the origin point for spells with a range of Touch or Self.',
+        'You create a new unique and special puppet, your masterpiece, chosen from the list of masterpieces.',
     },
   ],
   subclasses: [
     {
-      id: 'stage',
-      name: 'Tradition of the Stage',
+      id: 'mangiafuoco',
+      name: 'Mangiafuoco',
       description:
-        'You follow the theatrical tradition of the great puppet masters, using your marionettes to deceive, distract, and charm. Your puppets are works of art that captivate audiences and befuddle enemies.',
+        'Mangiafuocos usually come from the street, born among the many artists and entrepreneurs of the Kingdom\'s cities. They build their own puppets exactly as the Geppettos do, but they are far less emotionally tied to their creations, using them essentially as actors in their own company — and are ready to sacrifice them when they must.',
       features: [
         {
-          id: 'theatrical-misdirection',
-          name: 'Theatrical Misdirection',
-          level: 3,
+          id: 'the-show-must-go-on',
+          name: 'The Show Must Go On',
+          level: 1,
           description:
-            'Your marionettes can serve as perfect distractions. When your marionette is within 5 feet of a creature, you and your allies have advantage on attack rolls against that creature. Additionally, you can cast illusion spells through your marionettes.',
+            'When a puppet is about to take damage, you can use your reaction to cut the Strings that bind you to it. The puppet loses all the benefits of the bond.',
         },
         {
-          id: 'dramatic-performance',
-          name: 'Dramatic Performance',
+          id: 'pyrotechnics-art',
+          name: 'Pyrotechnics Art',
           level: 6,
           description:
-            'As an action, your marionettes perform a captivating show. Each creature of your choice within 30 feet that can see your marionettes must make a Wisdom saving throw or be charmed for 1 minute. A charmed creature can repeat the save if it takes damage. You can use this once per short rest.',
+            'When you use The Show Must Go On you can destroy the puppet instead, releasing the triflewood\'s extravaganza in a great firework display. Each creature within 10 feet of the puppet must make a Constitution saving throw, taking 3d8 thunder damage and being blinded on a failure, or half as much damage and no condition on a success.',
         },
       ],
     },
     {
-      id: 'war',
-      name: 'Tradition of War',
+      id: 'geppetto',
+      name: 'Geppetto',
       description:
-        'You craft your marionettes for battle, turning them into deadly weapons. Your puppets are armored and armed, fighting alongside you as tireless warriors.',
+        'Unlike the Mangiafuocos, who resemble unscrupulous entrepreneurs more than loyal creators, Geppettos relate to their puppets with a solid and personal emotional bond — one the puppets themselves cannot fail to feel. That deeper intimacy turns the relationship between puppeteer and puppets into a strong friendship, or something close to a parental one.',
       features: [
         {
-          id: 'battle-puppets',
-          name: 'Battle Puppets',
-          level: 3,
+          id: 'fatherly-love',
+          name: 'Fatherly Love',
+          level: 1,
           description:
-            'Your marionettes are reinforced for combat. Their AC increases to 15, their HP increases by your proficiency bonus, and they can make opportunity attacks. When a creature attacks you while your marionette is within 5 feet of it, you can use your reaction to have the marionette make an attack against that creature.',
+            'You have advantage on all saving throws made because of an effect transmitted through your bond with a puppet.',
         },
         {
-          id: 'puppet-swarm',
-          name: 'Puppet Swarm',
+          id: 'loyal-son',
+          name: 'Loyal Son',
           level: 6,
           description:
-            'You can control up to three marionettes simultaneously. Additionally, when you command your marionettes to attack, one of them can make two attacks instead of one. Your marionettes gain a climbing speed equal to their walking speed.',
+            'When you are reduced to 0 hit points while your Strings are bound to a puppet, they are not cut: you can keep taking actions using only the puppet for 3 rounds, and for the whole duration the Recoil of the Strings does not affect you. The effect ends if you regain any hit points, if you die, or if you are still at 0 hit points at the end of the third round — and when it ends, the puppet breaks.',
         },
       ],
     },

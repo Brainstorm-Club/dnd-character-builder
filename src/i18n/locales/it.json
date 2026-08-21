@@ -68,7 +68,7 @@
     "apocalissePromo": "Se ti piace Apocalisse, compra i manuali su",
     "dnd5ePromo": "Se ti piace D&D 5e, compra i manuali su",
     "dnd5eFeatures": "12 classi • 9 razze • Livello 1-20",
-    "brancaloniaFeatures": "12 sottoclassi • 6 razze • Livello 1-6",
+    "brancaloniaFeatures": "22 sottoclassi • 12 razze • Livello 1-6",
     "apocalisseFeatures": "12 archetipi • 6 origini • Livello 1-20"
   },
   "race": {
@@ -676,7 +676,7 @@
         "skin": "Abbronzata"
       },
       "druid-sylvan-quercia-verdecuore": {
-        "description": "Quercia Verdecuore e' una Druida Silvana (Benandante) di livello 4, spirito misterioso dei boschi calabresi che danza con i morti nelle notti di luna piena. Parla con gli alberi e protegge i luoghi selvaggi dall'avarizia degli uomini.",
+        "description": "Quercia Verdecuore e' una Druida Selvatica (Benandante) di livello 4, spirito misterioso dei boschi calabresi che danza con i morti nelle notti di luna piena. Parla con gli alberi e protegge i luoghi selvaggi dall'avarizia degli uomini.",
         "bio": "Quercia non ricorda il suo nome mortale. Abbandonata da neonata ai piedi di una quercia secolare nelle foreste della Calabria silvana, fu allevata dagli spiriti del bosco e dalle fate dei ruscelli. Crebbe selvatica e silenziosa, imparando a parlare con le bestie prima che con gli uomini. Quando un signorotto locale comincio' ad abbattere il bosco sacro per costruire una villa, Quercia avveleno' il suo raccolto e fu costretta a fuggire. Ora vaga per il Bel Paese come una benandante, danzando con gli spiriti nelle notti di luna piena e proteggendo i luoghi selvaggi dall'avarizia degli uomini.",
         "personality": "Parla con gli alberi e loro le rispondono. Gli umani invece parlano troppo e non dicono niente. Preferisce dormire su un letto di muschio che in qualunque locanda. Non si fida di nessuno che vive tra le mura di una citta'.",
         "personalityTraits": "Parlo con gli alberi e loro mi rispondono. Gli umani invece parlano troppo e non dicono niente. Preferisco dormire su un letto di muschio che in qualunque locanda.",
@@ -736,7 +736,7 @@
         "skin": "Olivastra"
       },
       "burattinaio-human-mastro-geppetto": {
-        "description": "Mastro Geppetto e' un Burattinaio Umano di livello 4, un vecchio burattinato gentile i cui burattini hanno la tendenza inquietante a muoversi da soli. I suoi spettacoli satirici gli hanno fatto piu' nemici che amici, ma lui continua imperterrito.",
+        "description": "Mastro Geppetto e' un Burattinaio Umano (Geppetto) di livello 4, un vecchio burattinato gentile i cui burattini hanno la tendenza inquietante a muoversi da soli. I suoi spettacoli satirici gli hanno fatto piu' nemici che amici, ma lui continua imperterrito.",
         "bio": "Mastro Geppetto ha passato trent'anni nella sua bottega di Firenzuola, intagliando marionette per i teatrini ambulanti delle feste patronali. Un giorno, per sbaglio o per destino, uno dei suoi burattini apri' gli occhi e scappo' dalla finestra. Da quel momento Geppetto scopri' di avere un dono: i fili che tesseva potevano legare non solo il legno ma anche la volonta' altrui. Abbandono' la bottega per cercare il suo burattino fuggitivo, guadagnandosi da vivere con spettacoli che mescolano commedia dell'arte e incantesimi. Le autorita' lo cercano per una satira particolarmente pungente sul re, ma lui cambia citta' prima che possano acchiapparlo.",
         "personality": "Parla con i suoi burattini come se fossero persone vere e a volte rispondono davvero. Si commuove facilmente, soprattutto per le storie che racconta lui stesso. E' troppo sentimentale e si fida di chiunque gli racconti una bella storia.",
         "personalityTraits": "Parlo con i miei burattini come se fossero persone vere e a volte rispondono davvero. Mi commuovo facilmente, soprattutto per le storie che racconto io stesso.",
@@ -748,7 +748,7 @@
         "skin": "Olivastra, rugosa"
       },
       "paladin-human-ser-galeazzo-senzamacchia": {
-        "description": "Ser Galeazzo Senzamacchia e' un Paladino Umano (Cavaliere Errante) di livello 4, un cavaliere dall'armatura ammaccata e dagli ideali impossibili. Serve un re che non esiste piu' e difende un regno che vive solo nel suo cuore.",
+        "description": "Ser Galeazzo Senzamacchia e' un Paladino Umano (Cavalier Errante) di livello 4, un cavaliere dall'armatura ammaccata e dagli ideali impossibili. Serve un re che non esiste piu' e difende un regno che vive solo nel suo cuore.",
         "bio": "Galeazzo nacque nobile, terzo figlio di un conte decaduto il cui castello fu venduto per pagare i debiti di gioco del padre. Rimasto con nulla se non il cognome e una spada arrugginita, giuro' di servire la giustizia come cavaliere errante. Sfido' a duello un nobile corrotto che opprimeva i contadini e brucio' pubblicamente il suo decreto d'esilio. Da allora viaggia per il Bel Paese con l'armatura ammaccata e il cuore intatto, cercando torti da raddrizzare e donzelle da impressionare (con scarso successo su entrambi i fronti).",
         "personality": "Parla come se fosse ancora a corte, anche quando si trova in una stalla. L'onore non e' negoziabile, il prezzo della cena invece si'. E' cosi' attaccato al suo codice d'onore che spesso dimentica il buon senso.",
         "personalityTraits": "Parlo come se fossi ancora a corte, anche quando sono in una stalla. L'onore non e negoziabile, il prezzo della cena invece si.",
@@ -760,7 +760,7 @@
         "skin": "Chiara, segnata dal sole"
       },
       "barbarian-human-tonio-rivoltoso": {
-        "description": "Tonio il Rivoltoso e' un Barbaro Umano (Rivoltoso) di livello 3, un contadino infuocato che ha barattato il forcone per un randello. Gira per le campagne brancaloniane aizzando il popolo contro gli esattori, i tiranni e chiunque porti un cappello troppo elegante.",
+        "description": "Tonio il Rivoltoso e' un Barbaro Umano (Montanaro) di livello 3, un contadino infuocato che ha barattato il forcone per un randello. Gira per le campagne brancaloniane aizzando il popolo contro gli esattori, i tiranni e chiunque porti un cappello troppo elegante.",
         "bio": "Tonio era un semplice contadino delle campagne della Magna Grecia brancaloniana, fino al giorno in cui l'esattore delle tasse bruciolo' il raccolto del suo villaggio per una decima non pagata. Quella notte, con una torcia in mano e la furia nel cuore, guido' i suoi compaesani in una rivolta che fece tremare il feudo. Da allora non ha mai smesso di combattere per i diseredati, viaggiando da un borgo all'altro per accendere la scintilla della ribellione. Il suo grido di battaglia risuona nelle taverne da Napulonia a Venetia.",
         "personality": "Non sopporta le ingiustizie e lo fa sapere a tutti, di solito urlando. Dove vede un nobile, vede un problema da risolvere con una bella rivolta. La sua rabbia lo acceca e spesso finisce per distruggere piu' di quanto volesse.",
         "personalityTraits": "Non sopporto le ingiustizie e lo faccio sapere a tutti, di solito urlando. Dove vedo un nobile, vedo un problema da risolvere con una bella rivolta.",
@@ -784,7 +784,7 @@
         "skin": "Rubizza, lentigginosa"
       },
       "bard-marionette-cantastorie-legnetto": {
-        "description": "Cantastorie Legnetto e' un Bardo Marionetta (Cantastorie) di livello 3, un trovatore di legno che incanta il pubblico con storie cosi' commoventi che nessuno si accorge che i suoi compagni stanno alleggerendo le borse. Le sue espressioni facciali sono dipinte, ma giura che cambiano con l'umore.",
+        "description": "Cantastorie Legnetto e' un Bardo Marionetta (Guappo) di livello 3, un trovatore di legno che incanta il pubblico con storie cosi' commoventi che nessuno si accorge che i suoi compagni stanno alleggerendo le borse. Le sue espressioni facciali sono dipinte, ma giura che cambiano con l'umore.",
         "bio": "Cantastorie Legnetto era un burattino da teatrino ambulante, passato di mano in mano tra cantastorie e ciarlatani lungo le strade della Brancalonia. Una sera, durante una rappresentazione particolarmente commovente della leggenda del Bel Paese, qualcosa scatto' nel suo cuore di pino: comincio' a improvvisare battute fuori copione e il pubblico impazzi'. Da allora vaga per le piazze e le taverne raccontando storie mirabolanti, accompagnandosi con un liuto leggermente scordato. La gente piange, ride e soprattutto non si accorge che i suoi compagni stanno alleggerendo le loro borse.",
         "personality": "Non riesce a smettere di raccontare storie, anche in mezzo a un combattimento. Esagera sempre tutto e non sa quando fermarsi. Ha la tendenza a imbellire la verita' fino a renderla irriconoscibile.",
         "personalityTraits": "Non riesco a smettere di raccontare storie, anche in mezzo a un combattimento. Le mie espressioni facciali sono dipinte, ma giuro che cambiano con il mio umore.",
@@ -808,7 +808,7 @@
         "skin": "Olivastra con una voglia a forma di volpe"
       },
       "cleric-sylvan-padre-radice": {
-        "description": "Padre Radice e' un Chierico Silvano (Predicatore) di livello 3, un prete selvatico dagli occhi spiritati che predica la fine del mondo nei mercati. Terrorizza i fedeli e svuota le cassette delle offerte con uguale maestria.",
+        "description": "Padre Radice e' un Chierico Selvatico (Esorcista) di livello 3, un prete selvatico dagli occhi spiritati che predica la fine del mondo nei mercati. Terrorizza i fedeli e svuota le cassette delle offerte con uguale maestria.",
         "bio": "Padre Radice crebbe tra le radici di un antico bosco sacro nelle colline della Brancalonia, allevato da una comunita' di silvani che veneravano gli spiriti della terra. Quando i boscaioli cominciarono ad abbattere gli alberi sacri, Radice scese in citta' per predicare la vendetta della natura. Scopri' pero' che urlare la fine del mondo ai mercati era molto piu' redditizio che pregare tra le felci, e che la gente paga bene per essere terrorizzata e poi consolata. Ora vaga tra i borghi con la sua tonaca di corteccia, predicando il pentimento con una mano e svuotando le cassette delle offerte con l'altra.",
         "personality": "Predica la fine del mondo almeno tre volte al giorno, piu' spesso se c'e' un mercato nelle vicinanze. Parla con le piante ed e' convinto che gli rispondano. E' un imbroglione di prima categoria che si nasconde dietro la tonaca.",
         "personalityTraits": "Predico la fine del mondo almeno tre volte al giorno, piu spesso se c'e un mercato nelle vicinanze. Parlo con le piante e sono convinto che mi rispondano.",
@@ -832,7 +832,7 @@
         "skin": "Pallida, quasi trasparente"
       },
       "druid-human-nonna-erba": {
-        "description": "Nonna Erba e' una Druida Umana (Fattucchiera) di livello 3, una vecchia erborista furba in fuga dalla legge che vende pozioni e cataplasmi per le campagne brancaloniane. Il suo segreto? Meta' delle sue pozioni sono succo di barbabietola con un pizzico di teatralita'.",
+        "description": "Nonna Erba e' una Druida Umana (Benandante) di livello 3, una vecchia erborista furba in fuga dalla legge che vende pozioni e cataplasmi per le campagne brancaloniane. Il suo segreto? Meta' delle sue pozioni sono succo di barbabietola con un pizzico di teatralita'.",
         "bio": "Nonna Erba, al secolo Carmela Fioravanti, faceva la guaritrice in un paesino delle colline toscane brancaloniane. Per quarant'anni ha curato raffreddori, mal d'amore e malocchi con i suoi decotti di erbe, finche' il nuovo inquisitore del borgo non l'ha accusata di stregoneria per una pozione d'amore andata storta. Da allora vive in fuga, spostandosi di villaggio in villaggio con il suo calderone sulla schiena e il gatto nero Basilico sulla spalla. La gente la cerca per i suoi rimedi miracolosi, ma lei sa che il suo segreto piu' grande e' che meta' delle sue pozioni sono solo succo di barbabietola con un pizzico di teatralita'.",
         "personality": "Chiama tutti 'tesoro mio' e offre rimedi erboristici non richiesti. Il suo calderone e' il suo bene piu' prezioso e guai a chi lo tocca. E' una truffaldina nata e la sua vanita' per le sue ricette la mette sempre nei guai.",
         "personalityTraits": "Chiamo tutti \"tesoro mio\" e offro rimedi erboristici non richiesti. Il mio calderone e il mio bene piu prezioso e guai a chi lo tocca.",
@@ -844,7 +844,7 @@
         "skin": "Olivastra, segnata dalle intemperie"
       },
       "fighter-morgant-capitan-bracciodiferro": {
-        "description": "Capitan Bracciodiferro e' un Guerriero Morgante (Capitano Mercenario) di livello 3, un veterano mezzo gigante che ha servito sotto ogni bandiera della Brancalonia e disertato dalla maggior parte. Ora guida una banda di mercenari con piu' appetito che disciplina.",
+        "description": "Capitan Bracciodiferro e' un Guerriero Morgante (Bravo) di livello 3, un veterano mezzo gigante che ha servito sotto ogni bandiera della Brancalonia e disertato dalla maggior parte. Ora guida una banda di mercenari con piu' appetito che disciplina.",
         "bio": "Capitan Bracciodiferro, nato Arrigo delle Montagne, comincio' la sua carriera militare come semplice picchiere in una compagnia di ventura della Brancalonia settentrionale. La sua stazza morgante e il suo istinto tattico lo portarono rapidamente al grado di capitano, ma la sua carriera militare fini' il giorno in cui scopri' che il suo signore stava mandando i suoi uomini a morire per una faida personale. Diserto' con meta' della compagnia e da allora offre i suoi servizi al miglior offerente, a patto che la causa sia giusta o almeno che il pagamento sia puntuale. Le sue truppe lo seguono per la sua abilita' nel trovare sempre un buon pasto dopo la battaglia.",
         "personality": "Da' ordini anche quando nessuno gliel'ha chiesto. Giudica le persone dalla fermezza della stretta di mano e da come reggono il vino. E' troppo rigido con le regole quando gli conviene e troppo flessibile quando non gli conviene.",
         "personalityTraits": "Do ordini anche quando nessuno me l'ha chiesto. Giudico le persone dalla fermezza della loro stretta di mano e da come reggono il vino.",
@@ -856,7 +856,7 @@
         "skin": "Pallida, piena di cicatrici"
       },
       "monk-malebranche-cornoduro": {
-        "description": "Cornoduro e' un Monaco Malebranche (Lottatore) di livello 3, un lottatore dalle corna di toro e dal sangue infernale che domina i ring della Brancalonia con prese demoniache e tattiche discutibili. Il suo ego e' grande quanto le sue corna.",
+        "description": "Cornoduro e' un Monaco Malebranche (Guardia Svanzica) di livello 3, un lottatore dalle corna di toro e dal sangue infernale che domina i ring della Brancalonia con prese demoniache e tattiche discutibili. Il suo ego e' grande quanto le sue corna.",
         "bio": "Cornoduro, nessuno ricorda il suo vero nome nemmeno lui, nacque nei bassifondi di Napulonia, figlio di un malebranche portuale e di una lavandaia dal pugno duro. Le sue corna, piu' dure del ferro, gli valsero il soprannome e una carriera nei ring clandestini della citta'. Imparo' a lottare nelle strade, affinando il suo stile in un misto di arti marziali e scorrettezze infernali che lo resero invincibile, o almeno imbattuto se non conti le volte che e' scappato. Dopo aver vinto il Grande Torneo della Fiera di Napulonia (con le corna unte di grasso, dicono i maligni), ha deciso di portare la sua arte in giro per il Bel Paese.",
         "personality": "Parla di se' stesso come se fosse il piu' grande lottatore della storia. Prima di ogni combattimento fa un discorso teatrale che dura piu' della rissa. Non resiste a una sfida di lotta, anche quando e' chiaramente una trappola.",
         "personalityTraits": "Parlo di me stesso come se fossi il piu grande lottatore della storia. Prima di ogni combattimento faccio un discorso teatrale che dura piu della rissa.",
@@ -868,7 +868,7 @@
         "skin": "Rosso scuro, coriacea"
       },
       "rogue-sylvan-volpina-delbosco": {
-        "description": "Volpina del Bosco e' una Ladra Silvana (Ciarlatana) di livello 3, una furba truffatrice nata nel bosco che vende mappe del tesoro false e cimeli rubati nei mercati della Brancalonia. Sguscia tra gli alberi come una volpe quando la legge si avvicina troppo.",
+        "description": "Volpina del Bosco e' una Ladra Selvatica (Brigante) di livello 3, una furba truffatrice nata nel bosco che vende mappe del tesoro false e cimeli rubati nei mercati della Brancalonia. Sguscia tra gli alberi come una volpe quando la legge si avvicina troppo.",
         "bio": "Volpina nacque in un bosco sacro della Brancalonia centrale, figlia di silvani che vivevano ai margini della civilta'. Fin da piccola scopri' che il suo talento naturale per il mimetismo funzionava anche tra gli umani: bastava un sorriso e una storia ben raccontata per far sparire portafogli e gioielli. Dopo aver venduto al borgomastro di Firenzuola una mappa del tesoro disegnata da lei stessa su una corteccia di betulla, dovette fuggire nel bosco per tre mesi. Ora viaggia per il Bel Paese con un repertorio di truffe raffinate, mappe false e identita' inventate, sempre un passo avanti rispetto alle guardie.",
         "personality": "Sorride sempre, soprattutto quando sta mentendo. Riesce a vendere ghiaccio agli orsi polari e sabbia ai beduini. Non resiste a un colpo troppo bello per essere ignorato, anche quando il rischio e' enorme.",
         "personalityTraits": "Sorrido sempre, soprattutto quando sto mentendo. Riesco a vendere ghiaccio agli orsi polari e sabbia ai beduini.",
@@ -880,7 +880,7 @@
         "skin": "Olivastra chiara con le lentiggini"
       },
       "sorcerer-marionette-bambola-fatata": {
-        "description": "Bambola Fatata e' una Stregona Marionetta (Strega) di livello 3, una bambola di legno dall'aspetto inquietante portata in vita dalla magia selvaggia. Terrorizza i villici e si diverte nel caos che la sua presenza maledetta porta ovunque.",
+        "description": "Bambola Fatata e' una Stregona Marionetta (Scaramante) di livello 3, una bambola di legno dall'aspetto inquietante portata in vita dalla magia selvaggia. Terrorizza i villici e si diverte nel caos che la sua presenza maledetta porta ovunque.",
         "bio": "Bambola Fatata fu creata da una vecchia strega delle paludi della Bassa Brancalonia come compagnia per la sua solitudine. Quando la strega mori' durante un incantesimo particolarmente potente, tutta la sua magia selvaggia si riverso' nella bambola, dandole vita e un potere che non sa ancora controllare. Fuggi' dalle paludi dopo che i contadini del villaggio vicino cercarono di bruciarla, convinti che fosse posseduta. Da allora vaga per il Bel Paese, spaventando involontariamente chiunque incontri con il suo aspetto di bambola animata e i suoi poteri imprevedibili. Dentro di lei, pero', c'e' solo il desiderio di capire cosa significhi essere viva.",
         "personality": "Si muove in modo innaturale e parla con una voce che sembra venire da un posto lontano. Si diverte a spaventare la gente, anche quando non ce n'e' bisogno. Non capisce le emozioni umane e questo la porta a fare cose che gli altri considerano terrificanti.",
         "personalityTraits": "Mi muovo in modo innaturale e parlo con una voce che sembra venire da un posto lontano. Mi diverte spaventare la gente, anche quando non ce n'e bisogno.",
