@@ -89,7 +89,7 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     feature: {
       name: 'Outcast',
       description:
-        'Your Bounty is higher than usual because of a serious misdeed that has been attributed to you, fairly or unfairly, along with a few aggravating factors: evasion, desertion, betrayal, interrupting a public execution, resisting arrest, assaulting a guard, sedition, riot, brigandage or pillage.',
+        'Your Bounty is higher than usual because of a serious misdeed that has been attributed to you, fairly or unfairly, along with a few aggravating factors: evasion, desertion, betrayal, interrupting a public execution, resisting arrest, assaulting a guard, sedition, riot, brigandage or pillage. Your Bounty increases by 100 gp.',
     },
   },
 
@@ -99,7 +99,7 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     name: 'Rover',
     nameOriginal: 'Brado',
     description:
-      'You are a traveling performer -- a juggler, acrobat, puppeteer, fire-eater, or some combination thereof. You have performed in every piazza, festival, and market square in the Boot. Your life is one of spectacle and applause, but also of hunger and uncertainty. You know how to work a crowd and how to pass the hat when the show is done.',
+      'You spend most of your life in the free, natural manner traditional of the feral communities: with the wolfcats, the hermits and the heretics, the woodcutters, coalmen and shepherds of the wild places. Rovers are hunter-gatherers who read the land the way townsfolk read a signpost, and they move through territory that swallows anyone else.',
     skillProficiencies: ['animal-handling', 'athletics'],
     toolProficiencies: ['Herbalism kit'],
     languages: 1,

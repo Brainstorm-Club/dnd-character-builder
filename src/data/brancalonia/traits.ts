@@ -97,7 +97,7 @@ export const brancaloniaTraitDescriptions: Record<string, string> = {
     'An emerging consciousness springs from your mix of assorted materials: you are immune to poison damage and the poisoned condition, immune to disease, and you require no air, food or drink.',
   'brawl-scavenger':
     'Brawl Feature. When you take a whack during a brawl you lose an item from your body, and that item can be used as a prop.',
-  'extravagant-influence-orcharder': 'You know the druidcraft and thorn whip innate cantrips.',
+  'extravagant-influence-orcharder': 'You know the druidcraft and acid splash innate cantrips.',
   'extravagant-influence-ragpicker': 'You know the friends and guidance innate cantrips.',
   'extravagant-influence-scrapper': 'You know the resistance and mending innate cantrips.',
   'resistant-structure-piercing': 'You have resistance to piercing damage from nonmagical attacks.',
@@ -108,7 +108,7 @@ export const brancaloniaTraitDescriptions: Record<string, string> = {
   'red-eyes':
     'Your beastly eyes are entirely red, granting keen sight and an intimidating look. You have proficiency in the Intimidation and Perception skills.',
   'unflinching': 'You have advantage on saving throws against being frightened.',
-  'rabid-fury': 'If you move at least 20 feet in a straight line, you can make an attack as a free action.',
+  'rabid-fury': 'If you move at least 20 feet in a straight line, you can make an attack as a bonus action.',
   'natural-born-jumper':
     'Your long jump is up to 20 feet and your high jump up to 10 feet, with or without a running start. You also have advantage on Strength (Athletics) checks to long jump and on Dexterity (Acrobatics) checks to land on your feet on difficult terrain.',
   'born-for-the-skewer': 'You are proficient with the skewer.',
@@ -145,7 +145,7 @@ export const brancaloniaTraitDescriptionsIt: Record<string, string> = {
   'brawl-hellbrawl':
     'Privilegio da Rissa. Addestrato nelle caverne piu\' oscure delle Malebolge, si ottiene vantaggio a tutti i tiri salvezza effettuati durante una rissa.',
   'infernal-helltraits':
-    'Se ne scelgono due. Maleali: ali troppo piccole per volare ma sufficienti a planare, che annullano i danni da caduta. Malefiamme: un cono di 4,5 m o una linea di 1,5 per 9 m, tiro salvezza su Destrezza con CD 8 + modificatore di Costituzione + bonus di competenza per 2d6 danni, 3d6 dal 6 livello, una volta per riposo breve o lungo. Malepiedi: zampe caprine che portano la velocita\' a 12 metri. Malavoce: si lancia charme su persone una volta per riposo lungo, con Carisma come caratteristica da incantatore. Maleartigli: velocita\' di scalare di 6 metri e artigli che infliggono 1d4 + modificatore di Forza danni taglienti con un attacco senz\'armi. Maleorecchie: competenza in Percezione e bonus di competenza raddoppiato nelle prove di Percezione basate sull\'udito.',
+    'Se ne scelgono due. Maleali: ali troppo piccole per volare ma sufficienti a planare, che annullano i danni da caduta. Malefiamme: un cono di 4,5 m o una linea di 1,5 per 9 m, tiro salvezza su Destrezza con CD 8 + modificatore di Costituzione + bonus di competenza per 2d6 danni, 3d6 dal 6 livello, una volta per riposo breve o lungo. Malegambe: zampe caprine che portano la velocita\' a 12 metri. Malavoce: si lancia charme su persone una volta per riposo lungo, con Carisma come caratteristica da incantatore. Malemani: velocita\' di scalare di 6 metri e artigli che infliggono 1d4 + modificatore di Forza danni taglienti con un attacco senz\'armi. Malerecchie: competenza in Percezione e bonus di competenza raddoppiato nelle prove di Percezione basate sull\'udito.',
   'triflewood-construct':
     'Si e\' un costrutto animato: immuni ai danni da veleno e alla condizione avvelenato, immuni alle malattie tranne quelle del legno, e non serve mangiare, bere o respirare.',
   'magical-but-still-made-of-wood':
@@ -217,7 +217,7 @@ export const brancaloniaTraitDescriptionsIt: Record<string, string> = {
   'brawl-scavenger':
     'Privilegio da Rissa. Quando si subisce una batosta si perde un oggetto dal proprio corpo, e quell\'oggetto puo\' essere usato come oggetto di scena.',
   'extravagant-influence-orcharder':
-    'Si conoscono i trucchetti innati artificio druidico e frusta di spine.',
+    'Si conoscono i trucchetti innati artificio druidico e fiotto acido.',
   'extravagant-influence-ragpicker':
     'Si conoscono i trucchetti innati amicizia e guida.',
   'extravagant-influence-scrapper':
@@ -233,7 +233,7 @@ export const brancaloniaTraitDescriptionsIt: Record<string, string> = {
   'unflinching':
     'Vantaggio ai tiri salvezza per non essere spaventati.',
   'rabid-fury':
-    'Se ci si muove per almeno 6 metri in linea retta, si puo\' effettuare un attacco come azione gratuita.',
+    'Se ci si muove per almeno 6 metri in linea retta, si puo\' effettuare un attacco come azione bonus.',
   'natural-born-jumper':
     'Il salto in lungo arriva a 6 metri e quello in alto a 3 metri, con o senza rincorsa. Inoltre si ha vantaggio alle prove di Forza (Atletica) per il salto in lungo e a quelle di Destrezza (Acrobazia) per atterrare in piedi su terreno difficile.',
   'born-for-the-skewer':

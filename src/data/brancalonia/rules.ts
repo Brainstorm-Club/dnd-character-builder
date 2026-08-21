@@ -20,8 +20,10 @@ export interface CurrencyConversion {
 export const currencies: readonly CurrencyConversion[] = [
   { name: 'Copper Piece', abbreviation: 'cp', valueInSilver: 0.1 },
   { name: 'Silver Piece', abbreviation: 'sp', valueInSilver: 1 },
+  // Brancalonia replaces electrum with iron: 5 silver to one iron hunk,
+  // also called a petechin. Nobody in the Kingdom knows what platinum is.
+  { name: 'Iron Piece', abbreviation: 'ip', valueInSilver: 5 },
   { name: 'Gold Piece', abbreviation: 'gp', valueInSilver: 10 },
-  { name: 'Platinum Piece', abbreviation: 'pp', valueInSilver: 100 },
 ] as const
 
 // ─── Shoddy Equipment ──────────────────────────────────────────────────────
@@ -37,18 +39,15 @@ export interface ShoddyEquipmentRule {
 export const shoddyEquipmentRules: readonly ShoddyEquipmentRule[] = [
   {
     condition: 'fine',
-    description: 'The equipment is in good working order.',
-    mechanicalEffect: 'No penalties. Equipment functions as described in its stat block.',
+    description: 'Equipment of ordinary make, as described in its stat block.',
+    mechanicalEffect: 'No penalties.',
   },
   {
     condition: 'shoddy',
-    description: 'The equipment is worn, patched, rusted, or otherwise degraded. Most starting equipment in Brancalonia is shoddy.',
-    mechanicalEffect: 'Shoddy weapons deal -1 damage (minimum 1). Shoddy armor grants -1 AC. On a natural 1 attack roll with a shoddy weapon, it breaks. On a natural 20 attack against someone wearing shoddy armor, it breaks.',
-  },
-  {
-    condition: 'broken',
-    description: 'The equipment is no longer functional and must be repaired or replaced.',
-    mechanicalEffect: 'Broken weapons cannot be used to attack. Broken armor provides no AC bonus. Repairs cost half the item\'s base price.',
+    description:
+      'Worn, patched, rusted or badly made. Most gear a Knave can afford is shoddy, and it usually costs about a tenth of the listed price.',
+    mechanicalEffect:
+      'On a natural 1 with a shoddy weapon it comes apart, and every subsequent attack is made with disadvantage until you spend an action to put it back together. When an enemy scores a natural 20 against you, a piece of your shoddy armor flies off and its base Armor Class drops by 2 until you retrieve it. Shoddy tools break when a check with them fails by 5 or more.',
   },
 ] as const
 
@@ -67,46 +66,40 @@ export interface WhacksLevel {
  */
 export const whacksLevels: readonly WhacksLevel[] = [
   {
-    level: 0,
-    name: 'Unharmed',
-    description: 'You have taken no whacks yet.',
-    mechanicalEffect: 'No penalty.',
-  },
-  {
     level: 1,
     name: 'Bruised',
     description: 'The first blows have landed and you are starting to show it.',
-    mechanicalEffect: '-1 AC.',
+    mechanicalEffect: '-1 AC (cumulative with the levels below it).',
   },
   {
     level: 2,
     name: 'Beaten',
     description: 'The scuffle is turning against you.',
-    mechanicalEffect: '-1 AC (cumulative: -2 in total).',
+    mechanicalEffect: '-1 AC (cumulative with the levels below it).',
   },
   {
     level: 3,
     name: 'Injured',
     description: 'You are visibly the worse for wear.',
-    mechanicalEffect: '-1 AC (cumulative: -3 in total).',
+    mechanicalEffect: '-1 AC (cumulative with the levels below it).',
   },
   {
     level: 4,
     name: 'Damaged',
     description: 'You are barely staying on your feet.',
-    mechanicalEffect: '-1 AC (cumulative: -4 in total).',
+    mechanicalEffect: '-1 AC (cumulative with the levels below it).',
   },
   {
     level: 5,
     name: 'Crushed',
     description: 'One more whack and the brawl is over for you.',
-    mechanicalEffect: '-1 AC (cumulative: -5 in total).',
+    mechanicalEffect: '-1 AC (cumulative with the levels below it).',
   },
   {
     level: 6,
     name: 'Unconscious',
-    description: 'You have taken one whack too many and go down.',
-    mechanicalEffect: 'You are unconscious. Conditions taken during a brawl last until the end of it.',
+    description: 'You have taken one whack too many and go down flat out.',
+    mechanicalEffect: 'You are flat out. Conditions taken during a brawl last until the end of the affected creature\'s next turn.',
   },
 ] as const
 
@@ -204,11 +197,20 @@ export interface PostLevelAdvancement {
 
 export const postLevelAdvancement: PostLevelAdvancement = {
   description:
-    'After reaching level 6, characters no longer gain class levels. Instead, each time they would level up, they gain a feat or ability score improvement. This represents the idea that in Brancalonia, true heroes are rare and power is capped at a more grounded level.',
+    'After 6th level Knaves stop gaining class levels. Instead they earn an Emeriticence for every 9,000 XP beyond the first 14,000 — the Kingdom has no room for archmages, only for veterans who got very good at surviving it.',
   options: [
-    'Gain one feat of your choice',
-    'Increase one ability score by 2 (maximum 20)',
-    'Increase two ability scores by 1 each (maximum 20)',
+    'Absolute Emeriticence: your proficiency bonus rises to +4',
+    'Band Together: you strengthen the bonds that hold your Band',
+    'Beefy: your hit point maximum increases',
+    'Blessed Luck: fortune leans your way once more often',
+    'Empower Extravaganza: your fey and superstitious powers grow',
+    'Favored Weapon: one weapon becomes truly yours',
+    'Gift of Feat: you gain a feat of your choice',
+    'Improved Extravaganza: a second step along the Extravaganza',
+    'Improved Recovery: you get more out of every rest',
+    'Indomitable: you shrug off what would fell other people',
+    'Professional Brawler: your brawling repertoire widens',
+    'Sharpening: one ability score improves',
   ],
 }
 

@@ -58,6 +58,8 @@ export const sentinelConfine: CharacterData = {
     'Spellcasting',
     'Ranger Archetype',
     'Primeval Awareness',
+    'Improved Perception',
+    'Sentinel on the Border',
     'Frontier Training',
   ],
   backstory: 'Sentinel del Confine was born in a fortified camp on the edge of the irradiated wastes, where every day was a fight for survival. Before he could walk, he learned to recognize the sounds of approaching predators; before he could read, he knew how to set traps that would stop a charging abomination. The elders of his settlement named him Sentinel when he killed his first wasteland horror at the age of twelve, using nothing but a sharpened stick and raw determination. Now he patrols the frontier as a Bastion ranger, the last line of defense between the fragile human settlements and the nightmarish creatures that the Apocalypse spawned.',

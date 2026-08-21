@@ -225,7 +225,7 @@ export const brancaloniaSubclasses: readonly BrancaloniaSubclass[] = [
     id: 'knight-errant',
     parentClassId: 'paladin',
     name: 'Knight-Errant',
-    nameOriginal: 'Cavalier Errante',
+    nameOriginal: 'Cavaliere Errante',
     description:
       'Not everyone you meet in the streets of the Kingdom and in the Bounty Brotherhood is a pauper in dire straits. Some Knaves are of noble descent — offspring of fallen families, cadet sons launching into adventure with the weapons and banners of their lineage in plain sight and their rump on an old jade. Generally better educated than most of the populace and armed with robust ambitions and moral principles, these rambling knights are the beggars\' aristocracy and often demand to be treated as such. The almost-supernatural talent they display in battle arises more from valor and determination than from any power conferred by the Ternal Father. Oath spells: bless and command at 3rd level, find steed and pass without trace at 5th.',
     features: [
@@ -422,14 +422,14 @@ export const brancaloniaSubclasses: readonly BrancaloniaSubclass[] = [
         name: 'Mountaineer Path',
         level: 3,
         description:
-          'You always carry your flasks of spirits with you. When you enter a rage you can take a sip from one of them and gain, for the duration of the rage, the benefit of the chosen Grappanel, plus resistance to psychic damage. Demoncello: you see in magical and nonmagical darkness up to 120 feet, can move along vertical surfaces and ceilings with your hands free, and gain a climbing speed equal to your walking speed. Gramp\'s Sgnap: resistance to cold damage; each creature that starts its turn within 10 feet of you takes 1d6 cold damage from your alpine breath. Storica Rossa: resistance to fire damage; when a melee attack damages you, you can use your reaction to breathe flame at the attacker, which takes 2d8 fire damage on a failed Dexterity save, half on a success. Stravecchia: resistance to necrotic damage; the first creature you hit each turn takes an extra 1d8 necrotic damage. Vincanto: the spirits of ancient mountaineers sing around you — you gain resistance to radiant damage, shed dim light in a 10-foot radius, and when you rage the spirits cast bless or shield of faith at its lowest level, lasting until the rage ends without concentration.',
+          'The Mountaineer Path runs forever uphill, so the proverb says, but the bottle makes it flat. Among the noble arts these rude folk of the peaks have learned is the distillation of special spirits, fermented from mountain herbs with unique properties. Using them from an early age has given every mountaineer a particular resonance with the concoctions, which no one outside the path can share. They are called grappanels, after the four-sided grappling hook a true mountaineer always carries at their side.',
       },
       {
         id: 'ancient-art-of-the-grappanel',
         name: 'Ancient Art of the Grappanel',
         level: 3,
         description:
-          'You gain proficiency with brewer\'s supplies, and your flasks of grappanel are always considered to be with you and full when you enter a rage.',
+          'You always carry your flasks of spirits with you and can take a sip from one of them when you enter a rage. For the duration of the rage you gain the benefit of the chosen Grappanel plus resistance to psychic damage, and you gain proficiency with brewer\'s supplies. Demoncello: you see in magical and nonmagical darkness up to 120 feet, can move along vertical surfaces and ceilings with your hands free, and gain a climbing speed equal to your walking speed. Gramp\'s Sgnap: resistance to cold damage; each creature that starts its turn within 10 feet of you takes 1d6 cold damage from your alpine breath. Storica Rossa: resistance to fire damage; when a melee attack damages you, you can use your reaction to breathe flame at the attacker, which takes 2d8 fire damage on a failed Dexterity save, half on a success. Stravecchia: resistance to necrotic damage; the first creature you hit each turn takes an extra 1d8 necrotic damage. Vincanto: the spirits of ancient mountaineers sing around you — you gain resistance to radiant damage, shed dim light in a 10-foot radius, and when you rage the spirits cast bless or shield of faith at its lowest level, lasting until the rage ends without concentration.',
       },
       {
         id: 'blend',
@@ -670,7 +670,7 @@ export const brancaloniaSubclasses: readonly BrancaloniaSubclass[] = [
     name: 'Heresiarch',
     nameOriginal: 'Eresiarca',
     description:
-      'The Creed is a religion of extreme tolerance, dedicated more to good living and collecting alms than to inquisitions — but the one thing clergy and faithful cannot bear is the Heresiarchs: sorcerers who adore and draw power from Lucifuge, the Archdevils, the Malacodas and the whole pseudo-monarchy of Inferno. Perhaps an ancestor made a Pact, perhaps the Knave was conceived during rituals better left undescribed. The power is innate, but the path of perdition is neither necessary nor predestined: if devils themselves can leave Inferno and live as ordinary people, so can someone with a drop of diabolical blood. Infernal spells: charm person, disguise self (1st); enthrall, suggestion (2nd); fear, phantom steed (3rd).',
+      'The Creed is a religion of extreme tolerance, dedicated more to good living and collecting alms than to inquisitions — but the one thing clergy and faithful cannot bear is the Heresiarchs: sorcerers who adore and draw power from Lucifuge, the Archdevils, the Malacodas and the whole pseudo-monarchy of Inferno. Perhaps an ancestor made a Pact, perhaps the Knave was conceived during rituals better left undescribed. The power is innate, but the path of perdition is neither necessary nor predestined: if devils themselves can leave Inferno and live as ordinary people, so can someone with a drop of diabolical blood. Infernal spells: charm person and disguise self (1st level), enthrall and suggestion (3rd), fear and phantom steed (5th).',
     features: [
       {
         id: 'heresy-stigma',
@@ -703,7 +703,7 @@ export const brancaloniaSubclasses: readonly BrancaloniaSubclass[] = [
     name: 'Talismancer',
     nameOriginal: 'Talismante',
     description:
-      'Instead of Madame Jinx or some fiendish patron, certain warlocks draw power from celestial essences scattered through the earthly world — astral talismans called Enchiridia, "that which one carries in hand", because they must be grafted into the bearer\'s palm to work. These sentient mystical gems are almost certainly of angelic or celestial origin, fallen from the Firmament or trafficked across the world from the blessed forges of Urania. The fusion between Enchiridion and talismancer is so profound that detaching it would kill them — though nothing obliges the bearer to use its light benevolently. Expanded spells: bless, shield of fate (1st); exorcism, searing smite (2nd); angelic emanation, daylight (3rd).',
+      'Instead of Madame Jinx or some fiendish patron, certain warlocks draw power from celestial essences scattered through the earthly world — astral talismans called Enchiridia, "that which one carries in hand", because they must be grafted into the bearer\'s palm to work. These sentient mystical gems are almost certainly of angelic or celestial origin, fallen from the Firmament or trafficked across the world from the blessed forges of Urania. The fusion between Enchiridion and talismancer is so profound that detaching it would kill them — though nothing obliges the bearer to use its light benevolently. Expanded spells: bless, shield of faith (1st); exorcism, searing smite (2nd); angelic emanation, daylight (3rd).',
     features: [
       {
         id: 'chosen-bearer',
@@ -724,7 +724,7 @@ export const brancaloniaSubclasses: readonly BrancaloniaSubclass[] = [
         name: 'Angelic Intercession',
         level: 6,
         description:
-          'When you are reduced to 0 hit points but not killed outright, your patron\'s energies pour out of the Enchiridion. You and every friendly creature within 30 feet regain hit points equal to 2d8 + your Charisma modifier, and each enemy within 30 feet must make a Wisdom saving throw, taking 2d8 + your Charisma modifier radiant damage on a failure or half as much on a success. You regain the use of this feature after a long rest.',
+          'When you are reduced to 0 hit points but not killed outright, your patron\'s energies pour out of the Enchiridion. You and every friendly creature within 30 feet regain hit points equal to 2d8 + your Charisma modifier, and each enemy within 30 feet must make a Wisdom saving throw, taking 2d8 + your Charisma modifier radiant damage on a failure or half as much on a success. You regain the use of this feature after a short or long rest.',
       },
     ],
   },

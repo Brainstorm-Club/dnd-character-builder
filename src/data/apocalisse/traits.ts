@@ -60,6 +60,14 @@ export const apocalisseTraitDescriptions: Record<string, string> = {
     'As an action you make a short, stirring oration. Up to four friendly creatures within 20 feet who can see or hear and understand you gain temporary hit points equal to your level, and while they have them they have advantage on saving throws against being frightened.',
   'apocalyptic-bestiary':
     'Feature. Millennia in Limbo, earlier study and the freedom of the Castle gave you a broad knowledge of the supernatural beings and otherworldly powers that now scour the Earth.',
+  'shard-of-eternal-pain':
+    'Hell left a splinter of its torment in you, and you can pass it on. Once per turn, when you deal damage to a target with an attack or a spell, you can deal extra necrotic damage equal to your proficiency bonus. Usable a number of times equal to your proficiency bonus, regained on a long rest.',
+  'used-to-atonement':
+    'Ages of penance inure you to hardship: you ignore any penalty from the first level of exhaustion.',
+  'tireless-walker':
+    'The endless climb taught you to keep going. You have advantage on Constitution saving throws when traveling at forced march.',
+  'ridge-climber':
+    'You gain proficiency in the Athletics skill, and your proficiency bonus is doubled for any ability check you make with it.',
 }
 
 /** The same, in Italian. */
@@ -120,4 +128,12 @@ export const apocalisseTraitDescriptionsIt: Record<string, string> = {
     'Con un\'azione si tiene una breve orazione che infiamma gli animi. Fino a quattro creature alleate entro 6 metri che possano vedere o sentire e comprendere ottengono punti ferita temporanei pari al proprio livello, e finche\' li conservano hanno vantaggio ai tiri salvezza per non essere spaventate.',
   'apocalyptic-bestiary':
     'Privilegio. I millenni nel Limbo, gli studi precedenti e la liberta\' del Castello danno un\'ampia conoscenza degli esseri soprannaturali e dei poteri ultraterreni che ora battono la Terra.',
+  'shard-of-eternal-pain':
+    'L\'Inferno ha lasciato dentro una scheggia del suo tormento, e la si puo\' trasmettere. Una volta per turno, infliggendo danni a un bersaglio con un attacco o un incantesimo, si aggiungono danni necrotici pari al bonus di competenza. Utilizzabile un numero di volte pari al bonus di competenza, recuperate con un riposo lungo.',
+  'used-to-atonement':
+    'Ere di penitenza abituano alle privazioni: si ignora qualsiasi penalita\' dovuta al primo livello di sfinimento.',
+  'tireless-walker':
+    'La scalata interminabile ha insegnato a non fermarsi. Si ha vantaggio ai tiri salvezza su Costituzione quando si viaggia a marcia forzata.',
+  'ridge-climber':
+    'Competenza nell\'abilita\' Atletica, e il bonus di competenza e\' raddoppiato per ogni prova di caratteristica che la utilizza.',
 }

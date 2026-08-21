@@ -39,7 +39,7 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Endurance',
         level: 6,
         description:
-          'You have learned to endure hits, assaults and afflictions of any kind without suffering their effects. While you are not at your maximum hit points, you can reroll a failed saving throw and must use the new roll.',
+          'You have learned to endure hits, assaults and afflictions of any kind without suffering their effects. While you are not at your maximum hit points, you can reroll a failed saving throw and must use the new roll. You can do this a number of times equal to half your proficiency bonus, rounded down, regaining all uses on a long rest.',
       },
       {
         id: 'an-eye-for-an-eye',
@@ -53,7 +53,7 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Relentless',
         level: 14,
         description:
-          'Your pain threshold grows so high that while raging you cannot become incapacitated, stunned or paralyzed.',
+          'Your pain threshold grows so high that while raging you cannot become incapacitated, stunned or paralyzed. In addition, any critical hit scored against you counts as a normal hit.',
       },
     ],
   },
@@ -79,21 +79,28 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Omens of Future',
         level: 3,
         description:
-          'You learn the guidance and true strike spells if you do not know them. In addition, you can use your action to weep tears of blood and read your immediate future through them: ask your Guide what a course of action you mean to take in the next 24 hours would bring, and they answer with Success, Possibility, Disaster, Uncertainty, Inconsequence or Confusion.',
+          'You learn the guidance and true strike spells if you do not know them. In addition, you can use your action to weep tears of blood and read your immediate future through them: ask your Guide what a course of action you mean to take in the next 24 hours would bring, and they answer through your tears with Success, Possibility, Disaster, Unexpected, Indifferent or Confusion. Afterwards you are blinded until the end of your next turn, and you cannot use this again until you complete a short or long rest.',
       },
       {
         id: 'inflicted-destiny',
         name: 'Inflicted Destiny',
         level: 3,
         description:
-          'As an action you can foresee a creature\'s death or defeat by weeping blood onto your book and reading the pattern. Spend one use of Bardic Inspiration and choose a creature within 60 feet — you sense its presence even unseen. Roll a number of Bardic Inspiration dice equal to your proficiency bonus and add your Charisma modifier. The target makes a Wisdom saving throw against your spell save DC, taking that much psychic damage and being frightened of you until the end of your next turn on a failure.',
+          'As an action you can foresee a creature\'s death or defeat by weeping blood onto your book and reading the pattern. Spend one use of Bardic Inspiration and choose a creature within 60 feet — you sense its presence even unseen. Roll a number of Bardic Inspiration dice equal to your proficiency bonus and add your Charisma modifier. The target makes a Wisdom saving throw against your spell save DC, taking that much psychic damage and being frightened of you until the end of your next turn on a failure, or half damage and no fright on a success. Afterwards you must make a Constitution saving throw with a DC equal to 8 + your proficiency bonus, taking one level of exhaustion on a failure.',
       },
       {
         id: 'warning-revelation',
         name: 'Warning',
         level: 6,
         description:
-          'Divinatory signs tell you what is about to happen, and you decipher them fast enough to warn those around you. As a bonus action, spend a use of Bardic Inspiration to choose a creature you can see within 60 feet: until the start of your next turn it cannot be surprised and has advantage on attack rolls and saving throws. If that creature is then hit by an attack, a spell or any other effect, you can spend your reaction and another use of Bardic Inspiration to cancel all damage and every other effect that source deals to it. You are then blinded until the end of your next turn, and cannot use this again until you finish a short or long rest.',
+          'Divinatory signs tell you what is about to happen, and you decipher them fast enough to warn those around you. As a bonus action, spend a use of Bardic Inspiration to choose a creature you can see within 60 feet: until the start of your next turn it cannot be surprised and has advantage on attack rolls and saving throws.',
+      },
+      {
+        id: 'elude-destiny',
+        name: 'Elude Destiny',
+        level: 14,
+        description:
+          'When a creature other than you is hit by an attack, a spell or any mundane or magical effect from any source, you can spend your reaction and one use of Bardic Inspiration to cancel all damage and every other effect that source deals to it. This has no effect on any additional target hit by the same source. Afterwards you are blinded until the end of your next turn, and you cannot use it again until you complete a short or long rest.',
       },
     ],
   },
@@ -105,7 +112,7 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     name: 'Domain of Ruin',
     nameOriginal: 'Dominio della Rovina',
     description:
-      'The sound of bells tolling across the Plain of Armageddon recalls the voice of the Lord and the roaring depths of the Abyss alike. Clerics of the End Times know how to call upon the sounds of the inevitable decay of all things: their bells bring destruction and, at times, renewal. They believe everything must be destroyed in order to be rebuilt, and that ruin, erosion and decline are signs of the ever-closer Last Battle. Domain spells: create or destroy water and thunderwave (1st), magic weapon and shatter (3rd), create food and water and revivify (5th), fabricate and stone shape (7th).',
+      'The sound of bells tolling across the Plain of Armageddon recalls the voice of the Lord and the roaring depths of the Abyss alike. Clerics of the End Times know how to call upon the sounds of the inevitable decay of all things: their bells bring destruction and, at times, renewal. They believe everything must be destroyed in order to be rebuilt, and that ruin, erosion and decline are signs of the ever-closer Last Battle. Domain spells: create or destroy water and thunderwave (1st), magic weapon and shatter (3rd), create food and water and revivify (5th), fabricate and stone shape (7th), passwall and wall of force (9th).',
     features: [
       {
         id: 'bells-of-destruction',
@@ -126,7 +133,7 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Channel Divinity: Devastation',
         level: 2,
         description:
-          'As an action you wield your holy symbol and call loudly upon the power of Shaddai the Destroyer. A thundering roar audible within 200 feet spreads from the symbol, and every creature in a 30-foot cone must make a Constitution saving throw against your spell save DC or take 12d12 + your cleric level thunder damage and be stunned until the start of your next turn.',
+          'As an action you wield your holy symbol and call loudly upon the power of Shaddai the Destroyer. A thundering roar audible within 200 feet spreads from the symbol, and every creature in a 30-foot cone must make a Constitution saving throw against your spell save DC. On a failure it takes 3d8 + your cleric level thunder damage, is knocked prone and is deafened until the start of your next turn; on a success it takes half damage and suffers neither condition. Constructs have disadvantage on this save and take 6d8 + your cleric level instead.',
       },
       {
         id: 'channel-divinity-restoration',
@@ -147,7 +154,7 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Disintegrate Matter',
         level: 17,
         description:
-          'As an action you unmake matter itself. A creature reduced to 0 hit points by this power is disintegrated, and it and everything it wears and carries except magic items become a pile of fine gray dust — only a true resurrection can restore it. It automatically disintegrates a Large or smaller nonmagical object or creation of magical force, or a 10-foot cube of a larger one. You regain the use of this feature after a long rest.',
+          'As an action you call upon the Destroyer\'s power against a target you can see within 60 feet — a creature, an object, or a creation of magical force such as a wall of force. A creature must make a Wisdom saving throw against your spell save DC, taking 12d12 + your cleric level thunder damage and being stunned until the start of your next turn on a failure. If the damage reduces it to 0 hit points it is disintegrated: it and everything it wears and carries except magic items become a pile of fine gray dust, and only a true resurrection or a wish spell can restore it. The feature automatically disintegrates a Large or smaller nonmagical object or creation of magical force, or a 10-foot cube of a larger one; magic items are unaffected. You regain the use of this feature after a long rest.',
       },
     ],
   },
@@ -157,7 +164,7 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     id: 'circle-of-plagues',
     parentClassId: 'druid',
     name: 'Circle of Plagues',
-    nameOriginal: 'Circolo delle Piaghe',
+    nameOriginal: 'Circolo della Piaga',
     description:
       'Druids of the Circle of Plagues embrace the corruption of Famine, the third Horseman. Their bodies decay and transform, granting them power over disease and pestilence to lead the world to rebirth.',
     features: [
@@ -295,14 +302,14 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Misty Form',
         level: 13,
         description:
-          'You can partially dissolve into wormwood mist. As a bonus action, you become incorporeal until the start of your next turn. While incorporeal, you have resistance to all damage except force, and you can move through creatures and objects as if they were difficult terrain.',
+          'As a bonus action you sublimate into wormwood vapour for 1 hour, or until you revert with another bonus action. While sublimated you cannot take actions, speak or manipulate objects; you are weightless, you have a flying speed of 20 feet and can hover, you can enter a hostile creature\'s space and pass anywhere air can without squeezing, you have advantage on Strength, Dexterity and Constitution saving throws, and you are immune to all nonmagical damage. You regain the use of this feature after a short or long rest.',
       },
       {
         id: 'evanescence',
         name: 'Evanescence',
         level: 17,
         description:
-          'You master the art of dissolving into wormwood vapor. You can cast gaseous form on yourself at will without expending a spell slot. Additionally, while in your Wormwood Shroud, you are invisible.',
+          'While you are inside your wormwood shroud, when a creature you can see would hit you, you can use your reaction to roll a d20 and choose whether that roll is used instead of the attacker\'s. You can do this a number of times equal to your Dexterity modifier, minimum one, regaining all uses on a long rest.',
       },
     ],
   },
@@ -321,35 +328,35 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Initiate of the School of Solomon',
         level: 2,
         description:
-          'You learn the basics of Solomonic magic. You gain proficiency in Religion and can read Enochian. Summoning and binding spells you cast have their duration doubled.',
+          'The spell save DC of your conjuration and charm spells increases by 1, and you can speak, read and write Primal Tongue. If the Temple of Solomon has not already issued you one, you gain a Ring of Solomon as soon as possible.',
       },
       {
         id: 'solomons-warding',
         name: 'Solomon\'s Warding',
         level: 2,
         description:
-          'You can inscribe a warding circle as an action. Fiends and celestials cannot willingly enter or leave the circle unless they succeed on a Charisma saving throw against your spell save DC. The circle lasts for 1 hour.',
+          'You are enshrouded in a mystical aura of warding: you gain +1 to all saving throws against spells and other magical effects. In addition, when you or a creature you can see within 30 feet takes damage, you can use your reaction to summon a cabalist screen, rolling 2d8 + your Intelligence modifier and reducing the damage by that amount. You can do this a number of times equal to your proficiency bonus, regaining all uses on a long rest.',
       },
       {
         id: 'summon-otherworldly-spirit',
         name: 'Summon Otherworldly Spirit',
         level: 6,
         description:
-          'You learn to summon and bind a lesser otherworldly spirit. You can cast summon lesser demons or summon celestial (3rd level version) once per long rest without expending a spell slot or material components.',
+          'With an action you speak a kabbalistic incantation and summon a malakh, a demon of temptation, or any other fiend or celestial of challenge rating 2 or lower, in an unoccupied space you can see within 60 feet. It is friendly to you and your companions and remains as long as you concentrate, up to 1 hour, or until it drops to 0 hit points. Without commands it only defends itself. You regain the use of this feature after a short or long rest.',
       },
       {
         id: 'master-school-solomon',
         name: 'Master of the School of Solomon',
         level: 10,
         description:
-          'Your mastery over summoned creatures grows. Creatures you summon gain extra hit points equal to your wizard level and their attacks count as magical. You have advantage on Charisma checks when interacting with summoned creatures.',
+          'You have advantage on Constitution saving throws to maintain concentration on conjuration spells and on your summoning features. In addition, as a bonus action you can magically teleport up to 60 feet to an unoccupied space you can see; every creature within 10 feet of you that can see you must then make a Wisdom saving throw against your spell save DC or be charmed by you for 1 minute, or until it takes damage. You can teleport a number of times equal to your proficiency bonus, regaining all uses on a long rest.',
       },
       {
         id: 'summon-greater-spirit',
         name: 'Summon Greater Otherworldly Spirit',
         level: 14,
         description:
-          'You can bind even the mightiest spirits. You can cast planar binding once per long rest without expending a spell slot. Additionally, when you use your Summon Otherworldly Spirit feature, you can summon a more powerful version of the spirit.',
+          'Your incantation now calls a spirit of Solomon, a cherub, a wormwood demon, or any other fiend or celestial of challenge rating 5 or lower, in an unoccupied space you can see within 120 feet, for up to 1 hour of concentration. You regain the use of this feature after a short or long rest.',
       },
     ],
   },
@@ -368,28 +375,28 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'The First Four Seals',
         level: 3,
         description:
-          'At initiation the first four spheres are grafted into your chest, and each costs ki to use. Seal of Conquest: your unarmed strikes can poison a target that fails a save against your ki DC, and 1 ki point adds 1d12 poison damage that ignores resistance. Seal of War: when a creature within 10 feet hits you in melee, spend 2 ki as a reaction to release a gout of flame — Dexterity save or 1d12 fire damage, plus 1d12 per extra ki point up to 6. Seal of Famine: on the Attack action, spend 1 ki to wither a target. Seal of Death: a chilling strike that restrains on a failed save and ignores resistance to cold damage.',
+          'Four spheres are grafted into your chest, and each costs ki. Seal of Conquest: as an action, spend 3 ki to loose a lightning bolt in a 50-foot line 5 feet wide — a Dexterity save against your ki DC or 2d10 lightning damage and stunned, +1d10 per extra ki point up to 6. Seal of War: when a creature within 10 feet hits you in melee, spend 2 ki as a reaction to release a gout of flame — a Dexterity save or 1d12 fire damage and blinded until the start of its next turn, +1d12 per extra ki point up to 6. Seal of Famine: your unarmed strikes can poison a target that fails a Constitution save until the start of your next turn, and 1 ki adds 1d12 poison damage that ignores resistance to poison. Seal of Death: as an action, spend 3 ki for a wave of cold in a 15-foot radius — a Constitution save or 3d8 cold damage and restrained, +1d8 per extra ki point.',
       },
       {
         id: 'seal-of-resurrection',
         name: 'Seal of Resurrection',
         level: 6,
         description:
-          'You unlock the Fifth Seal. As an action, you can spend 3 ki points to touch a creature and heal it for a number of HP equal to your monk level + Wisdom modifier. You can also end one disease or one condition (blinded, deafened, paralyzed, or poisoned).',
+          'You graft the fifth sphere into your chest. Spend 4 ki points and touch a creature that has died within the last minute: it returns to life with 1 hit point.',
       },
       {
         id: 'seal-of-eternal-eclipse',
         name: 'Seal of the Eternal Eclipse',
         level: 11,
         description:
-          'You unlock the Sixth Seal. As an action, you can spend 4 ki points to create a 20-foot-radius sphere of magical darkness centered on yourself that lasts for 1 minute. You can see normally in this darkness. Enemies in the area have disadvantage on attack rolls and saving throws.',
+          'You graft the sixth sphere into your chest. As an action, spend 5 ki points to release an unnatural darkness from your body. You see through it out to 60 feet, darkvision cannot pierce it, and it dispels light created by spells of 3rd level or lower that overlap the area.',
       },
       {
         id: 'seal-of-silence',
         name: 'Seal of Silence',
         level: 17,
         description:
-          'You unlock the Seventh Seal. As an action, you can spend 6 ki points to create a zone of absolute silence in a 30-foot radius for 1 minute. No sound can be made or heard within the area. Creatures that start their turn in the area must make a Constitution save or be stunned until the start of their next turn.',
+          'You graft the last sphere into your chest. When you see a creature within 30 feet casting a spell, you can spend 6 ki points and use your reaction: unless it succeeds on a Wisdom saving throw against your ki DC, the spell fails and has no effect, and the creature is deafened and cannot cast a spell with a verbal component until the end of its next turn.',
       },
     ],
   },
@@ -408,42 +415,42 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Channel Divinity: Memento Mori',
         level: 3,
         description:
-          'As an action, you present your holy symbol and speak of the inevitability of death. Each creature of your choice within 30 feet must make a Wisdom saving throw or be frightened for 1 minute.',
+          'As an action you show a creature of your choice within 30 feet its own end. Unless it is immune to being frightened it must make a Wisdom saving throw against your spell save DC — aberrations, monstrosities and elementals have disadvantage — and on a failure it is frightened of you for 1 minute, repeating the save at the end of each of its turns.',
       },
       {
         id: 'channel-divinity-ultima-forsan',
         name: 'Channel Divinity: Ultima Forsan',
         level: 3,
         description:
-          'As a bonus action, you channel the urgency of the End Times into your strikes. For 1 minute, you add your Charisma modifier to attack rolls against a creature you can see.',
+          'As an action you remind up to four creatures within 20 feet that this could be their last hour: for 1 minute you and they have advantage on saving throws against spells and other magical effects.',
       },
       {
         id: 'divine-ruin',
         name: 'Divine Ruin',
         level: 3,
         description:
-          'When you deal radiant damage with your Divine Smite, the target must also make a Constitution saving throw or have its speed reduced to 0 until the end of its next turn.',
+          'Every time you would use Divine Smite to deal radiant damage, you deal force damage instead. All other effects of the feature are unchanged.',
       },
       {
         id: 'aura-of-dismay',
         name: 'Aura of Dismay',
         level: 7,
         description:
-          'You emanate an aura of dread in a 10-foot radius. Enemies in the area have disadvantage on saving throws against being frightened. At 18th level, the range increases to 30 feet.',
+          'Fear clings to you within 10 feet, rising to 30 feet at 18th level. While a creature frightened by you is inside the aura, its speed is halved and your attack rolls against it have advantage.',
       },
       {
         id: 'exploit-dismay',
         name: 'Exploit Dismay',
         level: 15,
         description:
-          'You can exploit the terror you inspire. When you hit a frightened creature with a melee weapon attack, you deal extra radiant damage equal to your Charisma modifier.',
+          'When an enemy creature enters your aura of dismay or starts its turn there during a battle, you can use your reaction to deal 2d8 + your Charisma modifier force damage to it.',
       },
       {
         id: 'herald-of-the-end',
         name: 'Herald of the End of the World',
         level: 20,
         description:
-          'You can assume the form of a Herald of the End Times. For 1 minute, you gain: flying speed of 60 ft., resistance to all damage, and once per turn when you hit with a weapon attack, you can deal an extra 2d10 radiant damage. Once used, you can\'t use this again until you finish a long rest.',
+          'As an action you exalt body and spirit and become the earthly symbol of destruction for 1 minute: your melee weapon attacks score a critical hit on a roll of 19 or 20, you can make one melee weapon attack as a bonus action, and every melee hit deals an extra 2d6 force damage and forces a Strength saving throw or knocks the target prone.',
       },
     ],
   },
@@ -453,37 +460,51 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     id: 'bastion',
     parentClassId: 'ranger',
     name: 'Bastion',
-    nameOriginal: 'Bastione',
+    nameOriginal: 'Baluardo',
     description:
       'Bastions are rangers who serve as frontier guards and sharpshooters, defending the last bastions of civilization against the horrors of the Plain of Armageddon. They specialize in ranged combat with heavy firearms like the culverin.',
     features: [
+      {
+        id: 'improved-perception',
+        name: 'Improved Perception',
+        level: 3,
+        description:
+          'You gain proficiency in the Perception skill, and your proficiency bonus is doubled for any ability check you make with it.',
+      },
+      {
+        id: 'sentinel-on-the-border',
+        name: 'Sentinel on the Border',
+        level: 3,
+        description:
+          'You gain a culverin and 20 pellets. If you do not move on your turn while holding a ranged weapon, you can take aim at a creature and gain advantage on your next ranged attack against it that turn. You can do this a number of times equal to your proficiency bonus, regaining all uses on a short or long rest.',
+      },
       {
         id: 'frontier-training',
         name: 'Frontier Training',
         level: 3,
         description:
-          'You gain proficiency with firearms (including the culverin). You can use your Dexterity modifier for attack and damage rolls with firearms. You also gain the culverin weapon: ranged martial weapon, 2d8 piercing, range 80/320, ammunition, loading, two-handed.',
+          'You gain proficiency with firearms and with heavy armor, and heavy armor no longer hinders you: you ignore the Strength column of the Armor table.',
       },
       {
         id: 'egregious-training',
         name: 'Egregious Training',
         level: 7,
         description:
-          'Your training allows you to reload faster and shoot with deadly precision. You ignore the loading property of firearms. Additionally, your ranged weapon attacks score a critical hit on a roll of 19 or 20.',
+          'You ignore the loading property of ranged weapons. In addition, as a bonus action you can mark a creature: the next time you hit it this turn it takes extra damage equal to your proficiency bonus.',
       },
       {
         id: 'tireless-shooter',
         name: 'Tireless Shooter',
         level: 11,
         description:
-          'When you use the Attack action with a ranged weapon, you can make one additional attack as a bonus action. Additionally, you can add your Wisdom modifier to damage rolls with ranged weapons.',
+          'Endless patrols have made you tough: you gain proficiency with Constitution saving throws, and you have advantage on rolls to resist or end the blinded condition on yourself.',
       },
       {
         id: 'bullseye',
         name: 'Bullseye',
         level: 15,
         description:
-          'Your ranged attacks are devastatingly precise. When you score a critical hit with a ranged weapon, you deal an additional 2d8 damage. Additionally, your ranged weapon attacks ignore half cover and three-quarters cover.',
+          'You learn to hit the weakest spot of any target: when you make a weapon attack on your turn, you can decide it scores a critical hit. You regain the use of this feature after a long rest.',
       },
     ],
   },
@@ -493,7 +514,7 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     id: 'otherworldly-heritage',
     parentClassId: 'sorcerer',
     name: 'Otherworldly Heritage',
-    nameOriginal: 'Stirpe Ultraterrena',
+    nameOriginal: 'Discendenza Ultraterrena',
     description:
       'Your innate magic comes from an otherworldly ancestor - an angel or a demon. This heritage manifests in supernatural abilities that grow stronger as you embrace your dual nature.',
     features: [
@@ -502,49 +523,49 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
         name: 'Otherworldly Ancestor',
         level: 1,
         description:
-          'Choose your ancestral lineage: Angel or Demon. This choice determines the nature of your otherworldly powers. Angels grant healing and protective abilities; Demons grant destructive and deceptive powers.',
+          'You choose the ancestor whose blood runs in you: an Angel, whose damage type is radiant, or a Demon, whose damage type is necrotic. That choice sets the damage type used by every later feature of this origin.',
       },
       {
         id: 'otherworldly-sign',
         name: 'Otherworldly Sign',
         level: 1,
         description:
-          'Your heritage manifests physically. You gain a visible mark of your ancestry (wings of light, horns, glowing eyes, etc.). You learn one additional cantrip based on your lineage (sacred flame for Angel, fire bolt for Demon).',
+          'Your lineage shows. An Angel grants you a bright golden halo, the light cantrip and a Blade of Splendor, with proficiency in it. A Demon grants you two small horns and a gloomy purple glow, the minor illusion cantrip and a Blade of Gloom, with proficiency in it.',
       },
       {
         id: 'ancestors-protection',
         name: 'Ancestor\'s Protection',
         level: 1,
         description:
-          'Your otherworldly blood protects you. You gain resistance to radiant damage (Angel) or fire damage (Demon). Additionally, you can speak, read, and write Celestial or Infernal, based on your lineage.',
+          'While you are wearing no armor your AC equals 10 + your Charisma modifier + your Dexterity modifier. In addition, you have advantage on death saving throws.',
       },
       {
-        id: 'new-metamagic-option',
-        name: 'New Metamagic Option',
+        id: 'otherworldly-spell',
+        name: 'Otherworldly Spell',
         level: 3,
         description:
-          'Your heritage opens a Metamagic option no other sorcerer can learn, letting you bend a spell toward the celestial or infernal nature of your ancestor.',
+          'You gain a Metamagic option no other sorcerer has: for 1 additional sorcery point you can change the acid, cold, lightning, fire, psychic or thunder damage of a spell into your ancestor\'s damage type.',
       },
       {
         id: 'otherworldly-consonance',
         name: 'Otherworldly Consonance',
         level: 6,
         description:
-          'Your connection to the otherworldly deepens. When you cast a spell that deals radiant (Angel) or fire (Demon) damage, you can add your Charisma modifier to one damage roll. Additionally, you can spend 2 sorcery points to give yourself wings for 10 minutes.',
+          'Once per turn you can add your Charisma modifier to one damage roll of your ancestor\'s damage type. In addition, you can spend 1 sorcery point to gain resistance to that damage type for 1 hour.',
       },
       {
         id: 'call-of-blood',
         name: 'Call of Blood',
         level: 14,
         description:
-          'Your otherworldly blood sings with power. When you are reduced to half your HP or below, you can use your reaction to unleash a burst of otherworldly energy. Each creature within 10 feet takes radiant (Angel) or fire (Demon) damage equal to your sorcerer level.',
+          'As a bonus action you sprout wings and gain a flying speed equal to your walking speed. In addition, as an action you can emit a blinding aura in a 30-foot radius: every creature in it must make a Wisdom saving throw against your spell save DC or be blinded. You regain the use of this feature after a long rest.',
       },
       {
         id: 'otherworldly-affliction',
         name: 'Otherworldly Affliction',
         level: 18,
         description:
-          'You fully embrace your otherworldly nature. You permanently gain a flying speed of 30 ft. You gain immunity to radiant (Angel) or fire (Demon) damage. Once per long rest, you can cast divine word (Angel) or fire storm (Demon) without expending a spell slot.',
+          'When you deal your ancestor\'s damage type to a creature, you can spend 5 sorcery points to give that target vulnerability to that damage type until the start of your next turn.',
       },
     ],
   },
@@ -554,44 +575,58 @@ export const apocalisseSubclasses: readonly ApocalisseSubclass[] = [
     id: 'warlock-of-lilith',
     parentClassId: 'warlock',
     name: 'Warlock of Lilith',
-    nameOriginal: 'Warlock di Lilith',
+    nameOriginal: 'Patto di Lilith',
     description:
       'You have made a pact with Lilith, the Mother of Demons, who embodies freedom, rebellion, and savage independence. Her warlocks are fierce individualists who reject all authority.',
     features: [
+      {
+        id: 'expanded-spell-list-lilith',
+        name: 'Expanded Spell List',
+        level: 1,
+        description:
+          'Lilith adds spells to your warlock list: expeditious retreat and hunter\'s mark (1st), calm emotions and levitate (2nd), fly and nondetection (3rd), freedom of movement and private sanctum (4th), dispel evil and good and hallow (5th).',
+      },
       {
         id: 'shielding-veils',
         name: 'Shielding Veils',
         level: 1,
         description:
-          'Lilith wraps you in protective veils of shadow. When you are not wearing armor, your AC equals 10 + your Dexterity modifier + your Charisma modifier. You can use a shield and still benefit from this feature.',
+          'Lilith\'s veils cover you: you cannot be charmed, possessed or frightened by aberrations, celestials, fiends, fey or elementals.',
       },
       {
         id: 'fierce-savagery',
         name: 'Fierce Savagery of Lilith',
         level: 1,
         description:
-          'You channel Lilith\'s ferocity. When you deal damage with a warlock cantrip, you can add your Charisma modifier to the damage. Additionally, when a creature hits you with a melee attack, you can use your reaction to deal psychic damage equal to your Charisma modifier to the attacker.',
+          'You gain proficiency with short bows and long bows. After each rest you can touch one weapon and, until your next rest, use Charisma instead of Strength or Dexterity for its attack and damage rolls. This also applies to your pact weapon.',
       },
       {
-        id: 'rebellion-against-fate',
-        name: 'Rebellion Against Fate',
+        id: 'pact-boon-lilith',
+        name: 'Pact Boon',
         level: 3,
         description:
-          'You can defy the natural order. When you or a creature within 30 feet fails a saving throw, you can use your reaction to force a reroll. The new result must be used. You can use this feature once per short or long rest.',
+          'You must take the Pact of the Blade. Your pact weapon is always a ranged weapon, it serves as a spellcasting focus for your warlock spells, and it generates its own magical ammunition.',
       },
       {
         id: 'indomitable-freedom',
         name: 'Indomitable Freedom of Lilith',
         level: 6,
         description:
-          'Lilith\'s spirit of rebellion shields your mind. You are immune to being charmed and have advantage on saving throws against being frightened. If you are restrained, you can use a bonus action to attempt to break free.',
+          'As a bonus action you take flight for 1 minute: you gain a flying speed of 30 feet and can hover, once per turn you deal an extra 1d6 force damage with a weapon attack, and you cannot be restrained. You can do this a number of times equal to your proficiency bonus, regaining all uses on a long rest.',
+      },
+      {
+        id: 'rebellion-against-fate',
+        name: 'Rebellion Against Fate',
+        level: 10,
+        description:
+          'When you make an attack roll with a weapon and miss, you can use a bonus action to make another attack roll with that weapon against the same target.',
       },
       {
         id: 'ultimate-freedom',
         name: 'Ultimate Freedom of Lilith',
         level: 14,
         description:
-          'You embody Lilith\'s absolute freedom. As an action, you can transform for 1 minute: you gain a flying speed of 60 ft., resistance to all damage except radiant, and your warlock spells deal extra psychic damage equal to your Charisma modifier. Once used, you can\'t use this again until you finish a long rest.',
+          'The extra damage from Indomitable Freedom of Lilith increases to 1d12. While it lasts you cannot be paralyzed, and you do not provoke opportunity attacks when you fly out of a creature\'s reach.',
       },
     ],
   },

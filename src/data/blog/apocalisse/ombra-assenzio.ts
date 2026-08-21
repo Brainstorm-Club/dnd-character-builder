@@ -52,6 +52,7 @@ export const ombraAssenzio: CharacterData = {
     'language-infernal',
     'darkvision-60',
     'memories-blind-world',
+    'shard-of-eternal-pain',
     'scars-of-the-lost-ones',
     'Expertise',
     'Sneak Attack',

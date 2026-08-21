@@ -130,7 +130,7 @@ export const brancaloniaRaces: readonly Race[] = [
     subraces: [],
   },
 
-  // ─── Sylvan (Silvano) ─────────────────────────────────────────────
+  // ─── Sylvan (Selvatico) ───────────────────────────────────────────
   {
     id: 'sylvan',
     name: 'Sylvan',

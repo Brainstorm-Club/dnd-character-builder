@@ -60,7 +60,7 @@ export const graziaSpezzata: CharacterData = {
     'Otherworldly Ancestor',
     'Otherworldly Sign',
     'Ancestor\'s Protection',
-    'New Metamagic Option',
+    'Otherworldly Spell',
   ],
   backstory: 'Grazia was an echo of something greater, a fragment of celestial essence that coalesced into mortal form when Heaven shattered during the Apocalypse. She remembers warmth, harmony, and an overwhelming sense of belonging, then the fall, the shattering, and the cold silence of a ruined world. Her magic manifests as fractured light and discordant hymns, beautiful but broken, like stained glass scattered across a cathedral floor. She wanders the wasteland offering healing and hope to those she meets, though each spell costs her a little more of the celestial memory she clings to.',
   age: 'Appears 25',
