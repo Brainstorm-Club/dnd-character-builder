@@ -134,7 +134,8 @@ function selectClassGear(
 
 export function generateRandomCharacter(variant: GameVariant, forcedLevel?: number): CharacterData {
   const maxLevel = getMaxLevel(variant)
-  const level = forcedLevel ?? randomInt(1, Math.min(maxLevel, 10))
+  // Random rolls stay in the 1-10 band for playability; the variant cap always wins.
+  const level = Math.min(forcedLevel ?? randomInt(1, Math.min(maxLevel, 10)), maxLevel)
 
   // Pick random race
   const races = getRaces(variant)

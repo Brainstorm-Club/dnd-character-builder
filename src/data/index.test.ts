@@ -93,8 +93,13 @@ describe('data loader', () => {
       expect(getRules('dnd5e').maxLevel).toBe(20)
     })
 
-    it('brancalonia has lower max level', () => {
-      expect(getMaxLevel('brancalonia')).toBeLessThanOrEqual(10)
+    it('brancalonia max level is 6 (Setting Book cap)', () => {
+      expect(getMaxLevel('brancalonia')).toBe(6)
+      expect(getRules('brancalonia').maxLevel).toBe(6)
+    })
+
+    it('brancalonia static rules agree with the loaded variant rules', () => {
+      expect(getBrancaloniaRules('brancalonia')?.maxLevel).toBe(getMaxLevel('brancalonia'))
     })
 
     it('apocalisse max level is 20', () => {

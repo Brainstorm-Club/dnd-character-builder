@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest'
+import { nextTick } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCharacterStore } from './character'
 import type { CharacterData } from './character'
@@ -18,7 +19,7 @@ function makeMinimalCharacter(overrides: Partial<CharacterData> = {}): Partial<C
 describe('useCharacterStore', () => {
   // Preload data for tests that use getClasses/getMaxLevel
   beforeAll(async () => {
-    await preloadVariantData('dnd5e')
+    await Promise.all([preloadVariantData('dnd5e'), preloadVariantData('brancalonia')])
   })
 
   beforeEach(() => {
@@ -294,6 +295,64 @@ describe('useCharacterStore', () => {
       store.addMulticlass('fighter') // same class
       // classes should have just the primary class entry
       expect(store.character.classes).toHaveLength(1)
+    })
+  })
+
+  describe('variant level cap', () => {
+    it('refuses to level a brancalonia character past 6', () => {
+      const store = useCharacterStore()
+      store.character.variant = 'brancalonia'
+      store.character.className = 'fighter'
+      store.character.hitDie = 10
+      store.character.level = 6
+      expect(store.levelUp()).toBeNull()
+      expect(store.character.level).toBe(6)
+    })
+
+    it('still levels a brancalonia character up to 6', () => {
+      const store = useCharacterStore()
+      store.character.variant = 'brancalonia'
+      store.character.className = 'fighter'
+      store.character.hitDie = 10
+      store.character.level = 5
+      expect(store.levelUp()).not.toBeNull()
+      expect(store.character.level).toBe(6)
+    })
+
+    it('clamps saved brancalonia characters above the cap on hydration', async () => {
+      const store = useCharacterStore()
+      store.savedCharacters = [
+        { ...makeMinimalCharacter({ variant: 'brancalonia', level: 10, id: 'over' }) },
+      ] as CharacterData[]
+      await nextTick()
+      expect(store.savedCharacters[0]!.level).toBe(6)
+    })
+
+    it('leaves saved characters within the cap untouched', async () => {
+      const store = useCharacterStore()
+      store.savedCharacters = [
+        { ...makeMinimalCharacter({ variant: 'brancalonia', level: 4, id: 'ok' }) },
+        { ...makeMinimalCharacter({ variant: 'dnd5e', level: 17, id: 'dnd' }) },
+      ] as CharacterData[]
+      await nextTick()
+      expect(store.savedCharacters[0]!.level).toBe(4)
+      expect(store.savedCharacters[1]!.level).toBe(17)
+    })
+
+    it('clamps an imported over-cap character instead of rejecting it', () => {
+      const store = useCharacterStore()
+      const json = JSON.stringify(makeMinimalCharacter({ variant: 'brancalonia', level: 9 }))
+      const { data, warnings } = store.importJson(json)
+      expect(data.level).toBe(6)
+      expect(warnings).toContain('WARN_LEVEL_CLAMPED')
+    })
+
+    it('does not warn when an imported character is within the cap', () => {
+      const store = useCharacterStore()
+      const json = JSON.stringify(makeMinimalCharacter({ variant: 'brancalonia', level: 3 }))
+      const { data, warnings } = store.importJson(json)
+      expect(data.level).toBe(3)
+      expect(warnings).not.toContain('WARN_LEVEL_CLAMPED')
     })
   })
 })
