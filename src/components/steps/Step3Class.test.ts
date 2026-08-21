@@ -4,11 +4,13 @@ import { createI18n } from 'vue-i18n'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCharacterStore } from '@/stores/character'
 import type { GameVariant } from '@/stores/app'
-import { preloadVariantData } from '@/data'
+import { getClasses, preloadVariantData } from '@/data'
+import type { CharacterClass, Subclass } from '@/data/dnd5e/classes'
 import Step3Class from './Step3Class.vue'
 
 // Minimal i18n — with locale 'en', game terms fall back to the raw English
 // names and missing keys render as the key itself ("class.subclassAtLevel").
+// So class buttons read `cls.name` and subclass buttons read `sub.name`.
 const i18n = createI18n({
   legacy: false,
   locale: 'en',
@@ -17,6 +19,41 @@ const i18n = createI18n({
   missingWarn: false,
   fallbackWarn: false,
 })
+
+// The variant data files change often (subclasses get added, renamed, reworked),
+// so every expectation below is derived from the data rather than hard-coded.
+
+/** First class of the variant offering at least `count` subclasses */
+function classWithSubclasses(variant: GameVariant, count = 1): CharacterClass {
+  const cls = getClasses(variant).find(c => c.subclasses.length >= count)
+  if (!cls) throw new Error(`no ${variant} class with ${count}+ subclasses`)
+  return cls
+}
+
+/**
+ * A subclass that grants features both at its unlock level and at some later
+ * level — the shape needed to tell "up to my level" apart from "all of them".
+ */
+function progressionFixture(variant: GameVariant) {
+  for (const cls of getClasses(variant)) {
+    for (const sub of cls.subclasses) {
+      const earned = sub.features.filter(f => f.level <= cls.subclassLevel)
+      const later = sub.features.filter(f => f.level > cls.subclassLevel)
+      if (earned.length && later.length) {
+        return { cls, sub, threshold: cls.subclassLevel, highest: Math.max(...later.map(f => f.level)) }
+      }
+    }
+  }
+  throw new Error(`no ${variant} subclass with features above its unlock level`)
+}
+
+function featureNamesAtOrBelow(sub: Subclass, level: number): string[] {
+  return sub.features.filter(f => f.level <= level).map(f => f.name)
+}
+
+function featureNamesAbove(sub: Subclass, level: number): string[] {
+  return sub.features.filter(f => f.level > level).map(f => f.name)
+}
 
 function mountStep(variant: GameVariant = 'dnd5e', level = 1) {
   const store = useCharacterStore()
@@ -28,10 +65,10 @@ function mountStep(variant: GameVariant = 'dnd5e', level = 1) {
 
 type Wrapper = ReturnType<typeof mountStep>['wrapper']
 
-async function selectClass(wrapper: Wrapper, name: string) {
+async function selectClass(wrapper: Wrapper, cls: CharacterClass) {
   const group = wrapper.find('[aria-label="class.title"]')
-  const btn = group.findAll('[role="radio"]').find(b => b.text().includes(name))
-  expect(btn, `class button "${name}" should exist`).toBeTruthy()
+  const btn = group.findAll('[role="radio"]').find(b => b.text().includes(cls.name))
+  expect(btn, `class button "${cls.name}" should exist`).toBeTruthy()
   await btn!.trigger('click')
 }
 
@@ -41,9 +78,9 @@ function subclassButtons(wrapper: Wrapper) {
   return groups.length ? groups[0]!.findAll('button') : []
 }
 
-async function clickSubclass(wrapper: Wrapper, name: string) {
-  const btn = subclassButtons(wrapper).find(b => b.text().includes(name))
-  expect(btn, `subclass button "${name}" should exist`).toBeTruthy()
+async function clickSubclass(wrapper: Wrapper, sub: Subclass) {
+  const btn = subclassButtons(wrapper).find(b => b.text() === sub.name)
+  expect(btn, `subclass button "${sub.name}" should exist`).toBeTruthy()
   await btn!.trigger('click')
 }
 
@@ -57,119 +94,150 @@ describe('Step3Class — subclass selection', () => {
   })
 
   it('hides the picker below the class subclass level', async () => {
-    const { store, wrapper } = mountStep('dnd5e', 1)
-    await selectClass(wrapper, 'Barbarian')
+    const cls = classWithSubclasses('dnd5e')
+    expect(cls.subclassLevel).toBeGreaterThan(1)
 
-    // Barbarian picks a Primal Path at level 3
+    const { store, wrapper } = mountStep('dnd5e', 1)
+    await selectClass(wrapper, cls)
+
     expect(subclassButtons(wrapper)).toHaveLength(0)
     expect(wrapper.text()).toContain('class.subclassAtLevel')
     expect(store.character.subclass).toBe('')
   })
 
-  it('shows the picker once the character reaches the subclass level', async () => {
-    const { wrapper } = mountStep('dnd5e', 3)
-    await selectClass(wrapper, 'Barbarian')
+  it('shows every subclass once the character reaches the subclass level', async () => {
+    const cls = classWithSubclasses('brancalonia', 2)
+    const { wrapper } = mountStep('brancalonia', cls.subclassLevel)
+    await selectClass(wrapper, cls)
 
-    const labels = subclassButtons(wrapper).map(b => b.text())
-    expect(labels).toContain('Path of the Berserker')
+    expect(subclassButtons(wrapper).map(b => b.text()))
+      .toEqual(cls.subclasses.map(s => s.name))
     expect(wrapper.text()).not.toContain('class.subclassAtLevel')
   })
 
   it('does not preselect a subclass', async () => {
-    const { store, wrapper } = mountStep('brancalonia', 3)
-    await selectClass(wrapper, 'Barbarian')
+    const cls = classWithSubclasses('brancalonia', 2)
+    const { store, wrapper } = mountStep('brancalonia', cls.subclassLevel)
+    await selectClass(wrapper, cls)
 
-    expect(subclassButtons(wrapper)).toHaveLength(2)
     expect(store.character.subclass).toBe('')
     expect(subclassButtons(wrapper).every(b => b.attributes('aria-checked') === 'false')).toBe(true)
   })
 
-  it('stores the chosen subclass and grants its features up to the character level', async () => {
-    const { store, wrapper } = mountStep('brancalonia', 3)
-    await selectClass(wrapper, 'Barbarian')
-    await clickSubclass(wrapper, 'Rabble-Rouser')
+  it('stores the chosen subclass and grants only the features it has earned', async () => {
+    const { cls, sub, threshold } = progressionFixture('brancalonia')
 
-    expect(store.character.subclass).toBe('ciurmatore')
-    // Level 3 features are granted...
-    expect(store.character.featuresTraits).toContain('Incite Riot')
-    expect(store.character.featuresTraits).toContain('Voice of the People')
-    // ...but nothing from a level the character has not reached yet
-    expect(store.character.featuresTraits).not.toContain('Revolutionary Fervor')
+    const { store, wrapper } = mountStep('brancalonia', threshold)
+    await selectClass(wrapper, cls)
+    await clickSubclass(wrapper, sub)
+
+    expect(store.character.subclass).toBe(sub.id)
+    expect(store.character.featuresTraits).toEqual(
+      expect.arrayContaining(featureNamesAtOrBelow(sub, threshold)),
+    )
+    for (const later of featureNamesAbove(sub, threshold)) {
+      expect(store.character.featuresTraits).not.toContain(later)
+    }
 
     const checked = subclassButtons(wrapper).filter(b => b.attributes('aria-checked') === 'true')
     expect(checked).toHaveLength(1)
-    expect(checked[0]!.text()).toContain('Rabble-Rouser')
+    expect(checked[0]!.text()).toBe(sub.name)
   })
 
-  it('grants every earned level of subclass features at higher levels', async () => {
-    const { store, wrapper } = mountStep('brancalonia', 6)
-    await selectClass(wrapper, 'Barbarian')
-    await clickSubclass(wrapper, 'Pagan')
+  it('grants the whole progression at a higher level', async () => {
+    const { cls, sub, highest } = progressionFixture('brancalonia')
 
-    expect(store.character.subclass).toBe('pagan')
-    // Levels 3, 3 and 6 — the whole progression up to the character's level
+    const { store, wrapper } = mountStep('brancalonia', highest)
+    await selectClass(wrapper, cls)
+    await clickSubclass(wrapper, sub)
+
     expect(store.character.featuresTraits).toEqual(
-      expect.arrayContaining(['Pagan Fury', 'Rite of the Horned One', 'Spirit of the Land']),
+      expect.arrayContaining(sub.features.map(f => f.name)),
     )
   })
 
   it('swaps features when the subclass choice changes', async () => {
-    const { store, wrapper } = mountStep('brancalonia', 3)
-    await selectClass(wrapper, 'Barbarian')
-    await clickSubclass(wrapper, 'Pagan')
-    await clickSubclass(wrapper, 'Rabble-Rouser')
+    const cls = classWithSubclasses('brancalonia', 2)
+    const [first, second] = cls.subclasses as [Subclass, Subclass]
+    const level = cls.subclassLevel
 
-    expect(store.character.subclass).toBe('ciurmatore')
-    expect(store.character.featuresTraits).toContain('Incite Riot')
-    expect(store.character.featuresTraits).not.toContain('Pagan Fury')
-    expect(store.character.featuresTraits).not.toContain('Rite of the Horned One')
+    const { store, wrapper } = mountStep('brancalonia', level)
+    await selectClass(wrapper, cls)
+    await clickSubclass(wrapper, first)
+    await clickSubclass(wrapper, second)
+
+    expect(store.character.subclass).toBe(second.id)
+    expect(store.character.featuresTraits).toEqual(
+      expect.arrayContaining(featureNamesAtOrBelow(second, level)),
+    )
+    // Features unique to the abandoned subclass are gone
+    const secondNames = new Set(second.features.map(f => f.name))
+    for (const dropped of featureNamesAtOrBelow(first, level).filter(n => !secondNames.has(n))) {
+      expect(store.character.featuresTraits).not.toContain(dropped)
+    }
   })
 
   it('clears the subclass and its features when another class is chosen', async () => {
-    const { store, wrapper } = mountStep('brancalonia', 3)
-    await selectClass(wrapper, 'Barbarian')
-    await clickSubclass(wrapper, 'Pagan')
-    await selectClass(wrapper, 'Bard')
+    const cls = classWithSubclasses('brancalonia', 1)
+    const sub = cls.subclasses[0]!
+    const other = getClasses('brancalonia').find(c => c.id !== cls.id)!
 
-    expect(store.character.className).toBe('bard')
+    const { store, wrapper } = mountStep('brancalonia', cls.subclassLevel)
+    await selectClass(wrapper, cls)
+    await clickSubclass(wrapper, sub)
+    await selectClass(wrapper, other)
+
+    expect(store.character.className).toBe(other.id)
     expect(store.character.subclass).toBe('')
-    expect(store.character.featuresTraits).not.toContain('Pagan Fury')
+    for (const name of featureNamesAtOrBelow(sub, cls.subclassLevel)) {
+      expect(store.character.featuresTraits).not.toContain(name)
+    }
   })
 
   it('restores the chosen subclass when the step is re-mounted', async () => {
-    const { store, wrapper } = mountStep('brancalonia', 3)
-    await selectClass(wrapper, 'Barbarian')
-    await clickSubclass(wrapper, 'Pagan')
+    const cls = classWithSubclasses('brancalonia', 1)
+    const sub = cls.subclasses[0]!
+
+    const { store, wrapper } = mountStep('brancalonia', cls.subclassLevel)
+    await selectClass(wrapper, cls)
+    await clickSubclass(wrapper, sub)
     wrapper.unmount()
 
     const again = mount(Step3Class, { global: { plugins: [i18n] } })
     const checked = subclassButtons(again).filter(b => b.attributes('aria-checked') === 'true')
     expect(checked).toHaveLength(1)
-    expect(checked[0]!.text()).toContain('Pagan')
-    expect(store.character.subclass).toBe('pagan')
+    expect(checked[0]!.text()).toBe(sub.name)
+    expect(store.character.subclass).toBe(sub.id)
   })
 
   it('offers a subclass for a multiclass entry that reached its own level', async () => {
-    const { store, wrapper } = mountStep('dnd5e', 3)
-    await selectClass(wrapper, 'Barbarian')
+    // Multiclass is D&D 5e only
+    const primary = classWithSubclasses('dnd5e', 1)
+    const secondary = getClasses('dnd5e')
+      .find(c => c.id !== primary.id && c.subclasses.length >= 1)!
+    const secondarySub = secondary.subclasses[0]!
 
-    store.addMulticlass('fighter')
+    const { store, wrapper } = mountStep('dnd5e', primary.subclassLevel)
+    await selectClass(wrapper, primary)
+
+    store.addMulticlass(secondary.id)
     await wrapper.vm.$nextTick()
-    // Fighter is only level 1 — the Martial Archetype is not available yet
-    expect(wrapper.text()).not.toContain('Champion')
+    // The secondary class is only level 1 — its subclass is not available yet
+    expect(wrapper.text()).not.toContain(secondarySub.name)
 
-    store.levelUp('fighter')
-    store.levelUp('fighter')
+    for (let lv = 1; lv < secondary.subclassLevel; lv++) store.levelUp(secondary.id)
     await wrapper.vm.$nextTick()
 
-    const champion = wrapper.findAll('[role="radio"]').find(b => b.text().trim() === 'Champion')
-    expect(champion, 'Champion subclass button should exist').toBeTruthy()
-    await champion!.trigger('click')
+    const btn = wrapper.findAll('[role="radio"]').find(b => b.text() === secondarySub.name)
+    expect(btn, `subclass button "${secondarySub.name}" should exist`).toBeTruthy()
+    await btn!.trigger('click')
 
-    const fighterEntry = store.character.classes.find(c => c.classId === 'fighter')
-    expect(fighterEntry?.subclass).toBe('champion')
+    const entry = store.character.classes.find(c => c.classId === secondary.id)
+    expect(entry?.subclass).toBe(secondarySub.id)
     // The primary class keeps its own (still unset) subclass
     expect(store.character.subclass).toBe('')
-    expect(store.character.featuresTraits).toContain('Improved Critical')
+    expect(store.character.featuresTraits).toEqual(
+      expect.arrayContaining(featureNamesAtOrBelow(secondarySub, secondary.subclassLevel)),
+    )
   })
 })
