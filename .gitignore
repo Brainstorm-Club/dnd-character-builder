@@ -24,8 +24,9 @@ Thumbs.db
 *.log
 npm-debug.log*
 
-# PDF templates and manuals (copyrighted)
+# PDF templates and manuals (copyrighted) - never commit these
 schede/
+manuali/
 manuali/
 
 # PWA dev

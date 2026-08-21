@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getRaces, getTraitDescription } from '@/data'
 import type { Race } from '@/data/dnd5e/races'
+import type { AbilityScores } from '@/stores/character'
 import { formatModifier, feetToMeters } from '@/utils/calculations'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
@@ -31,9 +32,40 @@ watch(
     if (!race) {
       selectedRace.value = null
       selectedSubrace.value = ''
+      resetChoices(null)
     }
   },
 )
+
+// Free ability score increases the player assigns, one entry per tier.
+// Without this a race whose bonus is only a choice — the Brancalonia human,
+// every Apocalisse origin but one — silently gets nothing at all.
+const abilityKeys: (keyof AbilityScores)[] = ['str', 'dex', 'con', 'int', 'wis', 'cha']
+const chosenBonuses = ref<(keyof AbilityScores | '')[][]>([])
+
+function resetChoices(race: Race | null) {
+  chosenBonuses.value = (race?.abilityScoreChoice ?? []).map(tier => Array(tier.count).fill(''))
+}
+
+/** Abilities a given tier slot may still offer: no fixed bonus, no duplicate. */
+function availableFor(tierIdx: number, slotIdx: number): (keyof AbilityScores)[] {
+  const race = selectedRace.value
+  if (!race) return []
+  const taken = new Set<string>(Object.keys(race.abilityBonuses))
+  const sub = race.subraces.find(s => s.id === selectedSubrace.value)
+  Object.keys(sub?.abilityBonuses ?? {}).forEach(k => taken.add(k))
+  chosenBonuses.value.forEach((tier, ti) =>
+    tier.forEach((a, si) => {
+      if (a && !(ti === tierIdx && si === slotIdx)) taken.add(a)
+    }),
+  )
+  return abilityKeys.filter(a => !taken.has(a))
+}
+
+function chooseBonus(tierIdx: number, slotIdx: number, ability: string) {
+  chosenBonuses.value[tierIdx]![slotIdx] = ability as keyof AbilityScores | ''
+  if (selectedRace.value) applyRace(selectedRace.value, selectedSubrace.value)
+}
 
 // Apply race + chosen subrace to the character (bonuses, speed, languages).
 // Kept separate from selectRace so switching subrace does NOT reset the choice.
@@ -50,12 +82,21 @@ function applyRace(race: Race, subraceId: string) {
       }
     }
   }
+  const tiers = race.abilityScoreChoice ?? []
+  tiers.forEach((tier, ti) => {
+    for (const ability of chosenBonuses.value[ti] ?? []) {
+      if (!ability) continue
+      const bonuses = characterStore.character.racialBonuses
+      bonuses[ability] = (bonuses[ability] || 0) + tier.amount
+    }
+  })
   characterStore.character.speed = race.speed
   characterStore.character.languages = [...race.languages]
 }
 
 function selectRace(race: Race) {
   selectedRace.value = race
+  resetChoices(race)
   selectedSubrace.value = race.subraces?.[0]?.id || ''
   applyRace(race, selectedSubrace.value)
 }
@@ -116,6 +157,41 @@ function bonusString(bonuses: Record<string, number>): string {
         <div>
           <h4 class="font-semibold text-stone-300 mb-1">{{ t('race.languages') }}</h4>
           <p class="text-stone-400">{{ selectedRace.languages.map(l => gt.language(l)).join(', ') }}</p>
+        </div>
+      </div>
+
+      <!-- Free ability score increases the race leaves to the player -->
+      <div v-if="selectedRace.abilityScoreChoice?.length" class="mt-4">
+        <h4 class="font-semibold text-stone-300 mb-2">{{ t('race.chooseBonuses') }}</h4>
+        <div
+          v-for="(tier, ti) in selectedRace.abilityScoreChoice"
+          :key="ti"
+          class="mb-2"
+        >
+          <p class="text-xs text-stone-500 mb-1">
+            {{ t('race.bonusTier', { amount: formatModifier(tier.amount), count: tier.count }) }}
+          </p>
+          <div class="flex gap-2 flex-wrap">
+            <select
+              v-for="slot in tier.count"
+              :key="slot"
+              :value="chosenBonuses[ti]?.[slot - 1] || ''"
+              :aria-label="t('race.bonusTier', { amount: formatModifier(tier.amount), count: tier.count })"
+              @change="chooseBonus(ti, slot - 1, ($event.target as HTMLSelectElement).value)"
+              class="bg-stone-800 border border-stone-700 rounded-lg px-3 py-1 text-sm text-stone-200 focus:border-amber-500 focus:outline-none"
+            >
+              <option value="">--</option>
+              <option
+                v-for="a in availableFor(ti, slot - 1)"
+                :key="a"
+                :value="a"
+              >{{ t(`abilities.${a}`) }}</option>
+              <option
+                v-if="chosenBonuses[ti]?.[slot - 1]"
+                :value="chosenBonuses[ti]?.[slot - 1]"
+              >{{ t(`abilities.${chosenBonuses[ti]?.[slot - 1]}`) }}</option>
+            </select>
+          </div>
         </div>
       </div>
 

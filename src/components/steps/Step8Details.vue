@@ -2,7 +2,6 @@
 import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { totalHp } from '@/utils/calculations'
 import { getRaces, getApocalisseRules, getWhacksLevels, getMaxLevel } from '@/data'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import { useGameTerms } from '@/composables/useGameTerms'
@@ -63,16 +62,9 @@ const brawlingMovesText = computed({
 
 // Calculate HP when level changes
 function updateLevel() {
-  // The `max` attribute is only a hint: a typed value can exceed it, so clamp here too.
-  const lv = characterStore.character.level
-  characterStore.character.level = Math.min(Math.max(Math.round(lv) || 1, 1), maxLevel.value)
-  const conMod = characterStore.abilityModifiers.con
-  characterStore.character.maxHp = totalHp(characterStore.character.hitDie, conMod, characterStore.character.level)
-  characterStore.character.currentHp = characterStore.character.maxHp
+  characterStore.syncClassAndLevel()
 }
 
-// Set initial HP
-updateLevel()
 </script>
 
 <template>

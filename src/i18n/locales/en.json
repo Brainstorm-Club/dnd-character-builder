@@ -79,7 +79,9 @@
     "speed": "Speed",
     "languages": "Languages",
     "size": "Size",
-    "subrace": "Subrace"
+    "subrace": "Subrace",
+    "chooseBonuses": "Ability Score Increases of Your Choice",
+    "bonusTier": "{amount} to {count} abilities of your choice"
   },
   "class": {
     "title": "Choose Class",

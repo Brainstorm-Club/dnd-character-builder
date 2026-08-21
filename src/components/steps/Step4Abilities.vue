@@ -17,9 +17,9 @@ const characterStore = useCharacterStore()
 const maxLevel = computed(() => getMaxLevel(characterStore.character.variant))
 
 function clampLevel() {
-  // The `max` attribute is only a hint: a typed value can exceed it.
-  const lv = characterStore.character.level
-  characterStore.character.level = Math.min(Math.max(Math.round(lv) || 1, 1), maxLevel.value)
+  // Clamps the typed value (the `max` attribute is only a hint) and rebuilds
+  // hit points, features and subclass legality if a class is already chosen.
+  characterStore.syncClassAndLevel()
 }
 
 type Method = 'standard' | 'pointbuy' | 'roll'

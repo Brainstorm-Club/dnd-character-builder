@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getClasses } from '@/data'
@@ -35,6 +35,20 @@ if (storedClass) {
   selectedSubclass.value = characterStore.character.subclass
 }
 
+// Switching variant resets the character, so drop the local selection too —
+// otherwise the panel keeps offering a class the new variant does not have,
+// and its skill picker keeps writing to the store.
+watch(
+  () => [characterStore.character.variant, characterStore.character.className],
+  ([, className]) => {
+    if (!className) {
+      selectedClass.value = null
+      selectedSubclass.value = ''
+      selectedSkills.value = []
+    }
+  },
+)
+
 function selectClass(cls: CharacterClass) {
   // Drop the subclass (and its features) chosen for the previous class
   if (characterStore.character.subclass) characterStore.setSubclass('')
@@ -53,6 +67,10 @@ function selectClass(cls: CharacterClass) {
     characterStore.character.spellcastingClass = ''
     characterStore.character.spellcastingAbility = ''
   }
+
+  // Grant the class features the character's level entitles it to. Without
+  // this a hand-built character ends up with only its subclass features.
+  characterStore.syncClassAndLevel()
 }
 
 function toggleSkill(skill: string) {

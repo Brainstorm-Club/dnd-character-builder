@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { GameVariant } from './app'
-import { modifier, proficiencyBonus, hpPerLevel } from '@/utils/calculations'
+import { modifier, proficiencyBonus, hpPerLevel, totalHp } from '@/utils/calculations'
 import { getMaxLevel, getClasses } from '@/data'
 
 export interface AbilityScores {
@@ -428,6 +428,35 @@ export const useCharacterStore = defineStore('character', () => {
    * For multiclass characters, pass the classId to level up in.
    * Returns { hpGained, newFeatures } or null if at max level.
    */
+  /**
+   * Rebuild everything that depends on class and level in one shot.
+   *
+   * The wizard now asks for the level before the class exists, so walking
+   * levelUp() up from 1 is not an option. This recomputes the hit die, the hit
+   * points and the granted features from scratch, and revokes a subclass the
+   * character is no longer high enough for. Safe to call repeatedly.
+   */
+  function syncClassAndLevel() {
+    const char = character.value
+    char.level = Math.min(Math.max(Math.round(char.level) || 1, 1), getMaxLevel(char.variant))
+    const cls = getClasses(char.variant).find(c => c.id === char.className)
+    if (!cls) return
+
+    char.hitDie = cls.hitDie
+    const chosen = cls.subclasses.find(s => s.id === char.subclass)
+    if (char.subclass && (!chosen || char.level < cls.subclassLevel)) char.subclass = ''
+    const sub = cls.subclasses.find(s => s.id === char.subclass)
+
+    char.featuresTraits = [
+      ...cls.features.filter(f => f.level <= char.level).map(f => f.name),
+      ...(sub?.features.filter(f => f.level <= char.level).map(f => f.name) ?? []),
+    ]
+
+    const conMod = modifier(char.abilityScores.con + (char.racialBonuses.con || 0))
+    char.maxHp = totalHp(cls.hitDie, conMod, char.level)
+    char.currentHp = char.maxHp
+  }
+
   function levelUp(classId?: string): { hpGained: number; newFeatures: string[] } | null {
     const char = character.value
     const maxLv = getMaxLevel(char.variant)
@@ -743,6 +772,7 @@ export const useCharacterStore = defineStore('character', () => {
     addMulticlass,
     removeMulticlass,
     setSubclass,
+    syncClassAndLevel,
     levelUp,
     levelDown,
     exportJson,
