@@ -26,6 +26,7 @@ npm-debug.log*
 
 # PDF templates and manuals (copyrighted)
 schede/
+manuali/
 
 # PWA dev
 dev-dist/
