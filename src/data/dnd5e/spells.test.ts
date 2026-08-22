@@ -76,4 +76,16 @@ describe('incantesimi D&D 5e (SRD 5.1)', () => {
       expect(s!.classes.sort(), name).toEqual(classes.sort())
     }
   })
+
+  it('marca come rituali gli incantesimi che lo sono nell\'SRD', () => {
+    const rituals = new Set(spells.filter(s => s.ritual).map(s => s.name))
+    // Campione dai quattro angoli della lista rituali dell'SRD 5.1
+    for (const n of ['Alarm', 'Detect Magic', 'Find Familiar', 'Identify',
+                     'Leomund\'s Tiny Hut', 'Water Breathing', 'Commune', 'Gate']) {
+      const s = spells.find(x => x.name === n)
+      if (!s) continue
+      expect(rituals.has(n), `${n} dovrebbe essere rituale`).toBe(n !== 'Gate')
+    }
+    expect(rituals.size).toBeGreaterThanOrEqual(20)
+  })
 })

@@ -325,6 +325,11 @@ function showDetail(spell: Spell) {
             <span>
               <span class="font-medium">{{ gt.spell(spell.name) }}</span>
               <span class="text-stone-500 ml-2">Lv.{{ spell.level }} - {{ gt.school(spell.school) }}</span>
+              <span
+                v-if="spell.ritual"
+                class="ml-2 px-1.5 py-0.5 text-[10px] uppercase tracking-wide rounded bg-amber-900/40 text-amber-300 border border-amber-800"
+                :title="t('spells.ritual')"
+              >{{ t('spells.ritual') }}</span>
             </span>
             <span class="text-xs text-stone-500">{{ spell.castingTime }}</span>
           </button>

@@ -171,7 +171,8 @@
     "manual": "Manual",
     "resetDefault": "use class default",
     "noneForClass": "No cantrips for this class.",
-    "noneAtLevel": "No spells available at your level."
+    "noneAtLevel": "No spells available at your level.",
+    "ritual": "Ritual"
   },
   "details": {
     "title": "Character Details",

@@ -171,7 +171,8 @@
     "manual": "Manuale",
     "resetDefault": "usa il default della classe",
     "noneForClass": "Nessun trucchetto per questa classe.",
-    "noneAtLevel": "Nessun incantesimo disponibile al tuo livello."
+    "noneAtLevel": "Nessun incantesimo disponibile al tuo livello.",
+    "ritual": "Rituale"
   },
   "details": {
     "title": "Dettagli del Personaggio",
