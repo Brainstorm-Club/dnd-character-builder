@@ -4,6 +4,22 @@ import { useCharacterStore } from '@/stores/character'
 import type { CharacterData } from '@/stores/character'
 import { getDnd5eFieldMapping, getBrancaloniaFieldMapping } from '@/utils/pdfFieldMapping'
 
+/**
+ * I moduli PDF portano il proprio font: se non ha il glifo di una lettera
+ * accentata, pdf-lib solleva un errore e il campo resterebbe vuoto. Prima di
+ * rinunciare riproviamo con la forma senza accento ("citta'" invece di
+ * "città"), che nei manuali italiani è una convenzione già in uso.
+ */
+const ACCENT_FALLBACK: Record<string, string> = {
+  à: "a'", è: "e'", é: "e'", ì: "i'", í: "i'", ò: "o'", ó: "o'", ù: "u'", ú: "u'",
+  À: "A'", È: "E'", É: "E'", Ì: "I'", Ò: "O'", Ù: "U'",
+  '\u2019': "'", '\u2018': "'", '\u201c': '"', '\u201d': '"', '\u2013': '-', '\u2014': '-', '\u2026': '...',
+}
+
+function transliterate(text: string): string {
+  return text.replace(/[^\u0000-\u00ff]|[\u00c0-\u00ff]/g, ch => ACCENT_FALLBACK[ch] ?? ch)
+}
+
 export function usePdfExport() {
   const exporting = ref(false)
 
@@ -50,8 +66,14 @@ export function usePdfExport() {
             }
           } else if (value) {
             const textField = form.getTextField(fieldName)
-            const text = String(value)
-            textField.setText(text.length > MAX_FIELD_LENGTH ? text.slice(0, MAX_FIELD_LENGTH) : text)
+            const full = String(value)
+            const text = full.length > MAX_FIELD_LENGTH ? full.slice(0, MAX_FIELD_LENGTH) : full
+            try {
+              textField.setText(text)
+            } catch {
+              // Il font del modulo non conosce qualche carattere: riprova senza accenti
+              textField.setText(transliterate(text))
+            }
           }
         } catch {
           skippedFields.push(fieldName)

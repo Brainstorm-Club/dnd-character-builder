@@ -129,45 +129,45 @@ export const brancaloniaTraitDescriptions: Record<string, string> = {
 /** The same, in Italian. */
 export const brancaloniaTraitDescriptionsIt: Record<string, string> = {
   'skill-choice':
-    'Competenza in un\'abilita\' a scelta.',
+    'Competenza in un\'abilità a scelta.',
   'feat-choice':
     'Un talento a scelta.',
   'brawl-versatility':
     'Privilegio da Rissa. Il personaggio ottiene 1 slot mossa aggiuntivo.',
   'magical-influence':
-    'Si sceglie una scuola di magia tra Abiurazione, Ammaliamento, Divinazione, Evocazione, Illusione, Invocazione, Necromanzia e Trasmutazione. Si apprende un trucchetto e un incantesimo di 1 livello di quella scuola, lanciabile una volta al suo livello piu\' basso e recuperabile con un riposo lungo. La caratteristica da incantatore e\' Saggezza o Carisma, a scelta.',
+    'Si sceglie una scuola di magia tra Abiurazione, Ammaliamento, Divinazione, Evocazione, Illusione, Invocazione, Necromanzia e Trasmutazione. Si apprende un trucchetto e un incantesimo di 1 livello di quella scuola, lanciabile una volta al suo livello più basso e recuperabile con un riposo lungo. La caratteristica da incantatore e\' Saggezza o Carisma, a scelta.',
   'magical-resonance':
-    'Al termine di un riposo breve si puo\' scegliere di recuperare uno slot incantesimo di 1 livello.',
+    'Al termine di un riposo breve si può scegliere di recuperare uno slot incantesimo di 1 livello.',
   'brawl-magical-adaptation':
     'Privilegio da Rissa. Si possono scegliere le mosse anche dalla lista delle mosse magiche, oltre che da quella generica.',
   'darkvision':
-    'In condizioni di luce fioca si vede fino a 18 metri come se fosse luce intensa, e nell\'oscurita\' come se fosse luce fioca. Nell\'oscurita\' non si distinguono i colori, solo tonalita\' di grigio.',
+    'In condizioni di luce fioca si vede fino a 18 metri come se fosse luce intensa, e nell\'oscurità come se fosse luce fioca. Nell\'oscurità non si distinguono i colori, solo tonalità di grigio.',
   'brawl-hellbrawl':
-    'Privilegio da Rissa. Addestrato nelle caverne piu\' oscure delle Malebolge, si ottiene vantaggio a tutti i tiri salvezza effettuati durante una rissa.',
+    'Privilegio da Rissa. Addestrato nelle caverne più oscure delle Malebolge, si ottiene vantaggio a tutti i tiri salvezza effettuati durante una rissa.',
   'infernal-helltraits':
-    'Se ne scelgono due. Maleali: ali troppo piccole per volare ma sufficienti a planare, che annullano i danni da caduta. Malefiamme: un cono di 4,5 m o una linea di 1,5 per 9 m, tiro salvezza su Destrezza con CD 8 + modificatore di Costituzione + bonus di competenza per 2d6 danni, 3d6 dal 6 livello, una volta per riposo breve o lungo. Malegambe: zampe caprine che portano la velocita\' a 12 metri. Malavoce: si lancia charme su persone una volta per riposo lungo, con Carisma come caratteristica da incantatore. Malemani: velocita\' di scalare di 6 metri e artigli che infliggono 1d4 + modificatore di Forza danni taglienti con un attacco senz\'armi. Malerecchie: competenza in Percezione e bonus di competenza raddoppiato nelle prove di Percezione basate sull\'udito.',
+    'Se ne scelgono due. Maleali: ali troppo piccole per volare ma sufficienti a planare, che annullano i danni da caduta. Malefiamme: un cono di 4,5 m o una linea di 1,5 per 9 m, tiro salvezza su Destrezza con CD 8 + modificatore di Costituzione + bonus di competenza per 2d6 danni, 3d6 dal 6 livello, una volta per riposo breve o lungo. Malegambe: zampe caprine che portano la velocità a 12 metri. Malavoce: si lancia charme su persone una volta per riposo lungo, con Carisma come caratteristica da incantatore. Malemani: velocità di scalare di 6 metri e artigli che infliggono 1d4 + modificatore di Forza danni taglienti con un attacco senz\'armi. Malerecchie: competenza in Percezione e bonus di competenza raddoppiato nelle prove di Percezione basate sull\'udito.',
   'triflewood-construct':
     'Si e\' un costrutto animato: immuni ai danni da veleno e alla condizione avvelenato, immuni alle malattie tranne quelle del legno, e non serve mangiare, bere o respirare.',
   'magical-but-still-made-of-wood':
-    'Si ha vulnerabilita\' ai danni da fuoco.',
+    'Si ha vulnerabilità ai danni da fuoco.',
   'self-mending':
-    'Finche\' il nucleo di fanfaluco non viene distrutto ci si ripara con facilita\', aggiungendo 2d8 al numero massimo di Dadi Vita spendibili al termine di un riposo breve. I Dadi Vita spesi si recuperano con un riposo lungo.',
+    'Finché il nucleo di fanfaluco non viene distrutto ci si ripara con facilità, aggiungendo 2d8 al numero massimo di Dadi Vita spendibili al termine di un riposo breve. I Dadi Vita spesi si recuperano con un riposo lungo.',
   'brawl-removable-limb':
-    'Privilegio da Rissa. Con un\'azione bonus si puo\' staccare un arto e usarlo come oggetto di scena comune. A differenza degli oggetti di scena normali, l\'arto non viene perso dopo l\'utilizzo.',
+    'Privilegio da Rissa. Con un\'azione bonus si può staccare un arto e usarlo come oggetto di scena comune. A differenza degli oggetti di scena normali, l\'arto non viene perso dopo l\'utilizzo.',
   'different-shapes':
-    'Il pinocchio e\' la marionetta piu\' comune, ma esistono altre fogge. Se ne sceglie una alla creazione del personaggio.',
+    'Il pinocchio e\' la marionetta più comune, ma esistono altre fogge. Se ne sceglie una alla creazione del personaggio.',
   'gullible':
     'Svantaggio alle prove di Saggezza (Intuizione).',
   'integrated-armor':
     'Non si ottiene alcun beneficio dall\'indossare armature, ma si beneficia comunque di uno scudo. La CA e\' pari a 12 + modificatore di Destrezza (massimo 2) + bonus di competenza.',
   'nautical':
-    'Competenza nei veicoli acquatici e negli strumenti da navigatore. Inoltre, tramite gesti e suoni, si comunicano concetti semplici a qualunque bestia dotata di velocita\' di nuotare innata.',
+    'Competenza nei veicoli acquatici e negli strumenti da navigatore. Inoltre, tramite gesti e suoni, si comunicano concetti semplici a qualunque bestia dotata di velocità di nuotare innata.',
   'wind-and-water':
-    'Si conosce il trucchetto artificio druidico. Al 3 livello si puo\' lanciare nube di nebbia una volta con questo tratto, al 5 folata di vento, recuperandoli con un riposo lungo. La caratteristica da incantatore e\' Carisma.',
+    'Si conosce il trucchetto artificio druidico. Al 3 livello si può lanciare nube di nebbia una volta con questo tratto, al 5 folata di vento, recuperandoli con un riposo lungo. La caratteristica da incantatore e\' Carisma.',
   'in-saints-image-and-likeness':
-    'Si conosce il trucchetto taumaturgia. Al 3 livello si puo\' lanciare benedizione una volta con questo tratto, al 5 preghiera di guarigione, recuperandoli con un riposo lungo. La caratteristica da incantatore e\' Saggezza.',
+    'Si conosce il trucchetto taumaturgia. Al 3 livello si può lanciare benedizione una volta con questo tratto, al 5 preghiera di guarigione, recuperandoli con un riposo lungo. La caratteristica da incantatore e\' Saggezza.',
   'gargantuan':
-    'Si viene considerati di una taglia piu\' grande per determinare la capacita\' di carico e il peso che si puo\' spingere, trascinare o sollevare.',
+    'Si viene considerati di una taglia più grande per determinare la capacità di carico e il peso che si può spingere, trascinare o sollevare.',
   'sturdy-as-a-rock':
     'Il massimo dei punti ferita aumenta di 1, e di nuovo di 1 a ogni livello acquisito.',
   'cast-iron-stomach':
@@ -175,47 +175,47 @@ export const brancaloniaTraitDescriptionsIt: Record<string, string> = {
   'brawl-towering':
     'Privilegio da Rissa. Si possono raccogliere oggetti di scena epici con un\'azione bonus.',
   'raised-in-the-forest':
-    'Ci si puo\' nascondere anche quando si e\' oscurati solo da vegetazione, pioggia intensa, neve, nebbia o altri fenomeni naturali.',
+    'Ci si può nascondere anche quando si e\' oscurati solo da vegetazione, pioggia intensa, neve, nebbia o altri fenomeni naturali.',
   'primal-instinct':
-    'Competenza nelle abilita\' Percezione e Sopravvivenza.',
+    'Competenza nelle abilità Percezione e Sopravvivenza.',
   'brawl-tough-guy':
     'Privilegio da Rissa. Durante una rissa si ignorano gli effetti secondari dei primi due livelli di Batoste.',
   'feline-darkvision':
-    'I sensi felini danno una vista superiore: in luce fioca si vede fino a 36 metri come se fosse luce intensa, e nell\'oscurita\' come se fosse luce fioca, solo in tonalita\' di grigio.',
+    'I sensi felini danno una vista superiore: in luce fioca si vede fino a 36 metri come se fosse luce intensa, e nell\'oscurità come se fosse luce fioca, solo in tonalità di grigio.',
   'scratch':
     'Le mani terminano in artigli affilati. Sono armi naturali utilizzabili per attacchi senz\'armi e infliggono 1d4 + modificatore di Destrezza danni taglienti al posto dei normali danni contundenti.',
   'leap':
-    'Si puo\' saltare un numero di metri pari al proprio movimento, e non serve alcuna prova per atterrare su terreno difficile.',
+    'Si può saltare un numero di metri pari al proprio movimento, e non serve alcuna prova per atterrare su terreno difficile.',
   'deceitful':
-    'Competenza nelle abilita\' Inganno e Percezione.',
+    'Competenza nelle abilità Inganno e Percezione.',
   'waterfear':
     'Svantaggio a tutte le prove di Forza (Atletica) effettuate per nuotare.',
   'brawl-cat-burglar':
-    'Privilegio da Rissa. Con un\'azione bonus si puo\' sottrarre un oggetto di scena comune impugnato da un\'altra creatura. Una volta per rissa.',
+    'Privilegio da Rissa. Con un\'azione bonus si può sottrarre un oggetto di scena comune impugnato da un\'altra creatura. Una volta per rissa.',
   'extravaganza-being':
     'Si e\' pura coscienza astratta racchiusa in un vestito: immuni ai danni da veleno e alla condizione avvelenato, immuni alle malattie, e non serve mangiare, bere o respirare.',
   'antimagic-susceptibility':
-    'Si e\' incapacitati finche\' si resta nell\'area di un campo antimagia. Se bersagliati da dissolvi magie occorre superare un tiro salvezza su Costituzione contro la CD degli incantesimi di chi lancia, altrimenti si cade privi di sensi per 1 minuto.',
+    'Si e\' incapacitati finché si resta nell\'area di un campo antimagia. Se bersagliati da dissolvi magie occorre superare un tiro salvezza su Costituzione contro la CD degli incantesimi di chi lancia, altrimenti si cade privi di sensi per 1 minuto.',
   'dressing':
-    'Bisogna sempre indossare un vestito o un\'armatura, e se ne puo\' ignorare la qualita\' scadente. Dal 3 livello gli oggetti indossati sono considerati magici; dal 5 si ottiene +1 a tutti i tiri salvezza.',
+    'Bisogna sempre indossare un vestito o un\'armatura, e se ne può ignorare la qualità scadente. Dal 3 livello gli oggetti indossati sono considerati magici; dal 5 si ottiene +1 a tutti i tiri salvezza.',
   'brawl-vanishing':
-    'Privilegio da Rissa. Quando una creatura attacca, si puo\' usare la reazione per ignorare l\'attacco. Una volta per rissa.',
+    'Privilegio da Rissa. Quando una creatura attacca, si può usare la reazione per ignorare l\'attacco. Una volta per rissa.',
   'nimble-and-snappy':
-    'Ci si puo\' muovere attraverso lo spazio di qualsiasi creatura di taglia piu\' grande, e ci si puo\' nascondere anche se oscurati da una sola creatura di almeno una taglia superiore.',
+    'Ci si può muovere attraverso lo spazio di qualsiasi creatura di taglia più grande, e ci si può nascondere anche se oscurati da una sola creatura di almeno una taglia superiore.',
   'rat-life':
     'Si e\' immuni alle malattie.',
   'live-fast':
-    'Competenza nelle abilita\' Furtivita\' e Percezione.',
+    'Competenza nelle abilità Furtività e Percezione.',
   'flee-and-survive':
     'Svantaggio a tutti i tiri salvezza per non essere spaventati.',
   'brawl-pantemime':
-    'Privilegio da Rissa. Quando si subisce una batosta si puo\' usare la reazione per fare una scenata e fingersi feriti: non si puo\' essere attaccati di nuovo fino all\'inizio del proprio turno successivo. Una volta per rissa.',
+    'Privilegio da Rissa. Quando si subisce una batosta si può usare la reazione per fare una scenata e fingersi feriti: non si può essere attaccati di nuovo fino all\'inizio del proprio turno successivo. Una volta per rissa.',
   'construct-type':
     'Il tipo di creatura e\' costrutto.',
   'jumble':
     'Una coscienza emergente nasce dall\'accozzaglia di materiali che compone il corpo: immuni ai danni da veleno e alla condizione avvelenato, immuni alle malattie, e non servono aria, cibo o bevande.',
   'brawl-scavenger':
-    'Privilegio da Rissa. Quando si subisce una batosta si perde un oggetto dal proprio corpo, e quell\'oggetto puo\' essere usato come oggetto di scena.',
+    'Privilegio da Rissa. Quando si subisce una batosta si perde un oggetto dal proprio corpo, e quell\'oggetto può essere usato come oggetto di scena.',
   'extravagant-influence-orcharder':
     'Si conoscono i trucchetti innati artificio druidico e fiotto acido.',
   'extravagant-influence-ragpicker':
@@ -229,11 +229,11 @@ export const brancaloniaTraitDescriptionsIt: Record<string, string> = {
   'resistant-structure-slashing':
     'Resistenza ai danni taglienti da attacchi non magici.',
   'red-eyes':
-    'Gli occhi animaleschi sono completamente rossi: danno una vista acuta e un aspetto intimidatorio. Competenza nelle abilita\' Intimidire e Percezione.',
+    'Gli occhi animaleschi sono completamente rossi: danno una vista acuta e un aspetto intimidatorio. Competenza nelle abilità Intimidire e Percezione.',
   'unflinching':
     'Vantaggio ai tiri salvezza per non essere spaventati.',
   'rabid-fury':
-    'Se ci si muove per almeno 6 metri in linea retta, si puo\' effettuare un attacco come azione bonus.',
+    'Se ci si muove per almeno 6 metri in linea retta, si può effettuare un attacco come azione bonus.',
   'natural-born-jumper':
     'Il salto in lungo arriva a 6 metri e quello in alto a 3 metri, con o senza rincorsa. Inoltre si ha vantaggio alle prove di Forza (Atletica) per il salto in lungo e a quelle di Destrezza (Acrobazia) per atterrare in piedi su terreno difficile.',
   'born-for-the-skewer':
@@ -243,11 +243,11 @@ export const brancaloniaTraitDescriptionsIt: Record<string, string> = {
   'undead-type':
     'Il tipo di creatura e\' non morto, e non serve respirare.',
   'still-blood':
-    'Il cuore si e\' fermato al momento della morte e il sangue non scorre piu\': si e\' immuni ai danni da veleno, alla condizione avvelenato e alle malattie.',
+    'Il cuore si e\' fermato al momento della morte e il sangue non scorre più: si e\' immuni ai danni da veleno, alla condizione avvelenato e alle malattie.',
   'pull-scams-not-push-daisies':
-    'Si e\' tornati in vita ingannando la morte in un modo o nell\'altro. Competenza nelle abilita\' Inganno e Persuasione.',
+    'Si e\' tornati in vita ingannando la morte in un modo o nell\'altro. Competenza nelle abilità Inganno e Persuasione.',
   'making-fun-of-death':
-    'Avendo gia\' ingannato Sorella Morte una volta, si aggiunge il bonus di competenza ai tiri salvezza contro morte.',
+    'Avendo già ingannato Sorella Morte una volta, si aggiunge il bonus di competenza ai tiri salvezza contro morte.',
   'brawl-hes-already-dead':
-    'Privilegio da Rissa. Con un\'azione bonus ci si puo\' fingere morti con una prova contrapposta di Carisma (Inganno) contro la Saggezza (Intuizione) dei nemici. Riuscendo, non si puo\' essere attaccati finche\' non si intraprende un\'azione. Una volta per rissa.',
+    'Privilegio da Rissa. Con un\'azione bonus ci si può fingere morti con una prova contrapposta di Carisma (Inganno) contro la Saggezza (Intuizione) dei nemici. Riuscendo, non si può essere attaccati finché non si intraprende un\'azione. Una volta per rissa.',
 }

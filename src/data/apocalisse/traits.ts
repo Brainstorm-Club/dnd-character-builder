@@ -73,67 +73,67 @@ export const apocalisseTraitDescriptions: Record<string, string> = {
 /** The same, in Italian. */
 export const apocalisseTraitDescriptionsIt: Record<string, string> = {
   'skills-child-old-world':
-    'Due abilita\' tra Arcano, Medicina, Natura, Percezione, Religione e Storia, piu\' un\'abilita\' aggiuntiva a scelta.',
+    'Due abilità tra Arcano, Medicina, Natura, Percezione, Religione e Storia, più un\'abilità aggiuntiva a scelta.',
   'tools-herbalist-artisan':
     'Competenza in un kit da erborista e in un tipo di strumenti da artigiano a scelta.',
   'language-old-world':
     'Si conosce la Lingua del Vecchio Mondo: si ricordano vagamente le lingue parlate prima dell\'Apocalisse, mescolate e confuse in un unico idioma.',
   'memories-of-the-old-world':
-    'Privilegio. Quando si cerca un luogo o si richiama un\'informazione precedente all\'Apocalisse, la Guida indica dove quella conoscenza sopravvive: una persona che la possiede, una biblioteca nascosta, un monastero abbandonato. Puo\' diventare lo spunto di un\'intera avventura.',
+    'Privilegio. Quando si cerca un luogo o si richiama un\'informazione precedente all\'Apocalisse, la Guida indica dove quella conoscenza sopravvive: una persona che la possiede, una biblioteca nascosta, un monastero abbandonato. Può diventare lo spunto di un\'intera avventura.',
   'skills-child-apocalypse':
-    'Un\'abilita\' tra Atletica, Furtivita\', Percezione e Sopravvivenza, piu\' un\'abilita\' aggiuntiva a scelta.',
+    'Un\'abilità tra Atletica, Furtività, Percezione e Sopravvivenza, più un\'abilità aggiuntiva a scelta.',
   'tools-one-artisan':
     'Competenza in un tipo di strumenti da artigiano a scelta.',
   'stormborn':
-    'Si e\' nati durante gli sconvolgimenti della Fine dei Tempi e si e\' naturalmente piu\' resistenti. Il massimo dei punti ferita aumenta di 1, e di nuovo di 1 a ogni livello acquisito.',
+    'Si e\' nati durante gli sconvolgimenti della Fine dei Tempi e si e\' naturalmente più resistenti. Il massimo dei punti ferita aumenta di 1, e di nuovo di 1 a ogni livello acquisito.',
   'accustomed-to-armageddon':
     'Privilegio. Cresciuti nella Piana dell\'Armageddon, se ne conoscono il clima e i pericoli, e se ne leggono cieli, tempeste e rovine meglio di chiunque sia cresciuto altrove.',
   'skills-risen-hell':
-    'Due abilita\' tra Arcano, Furtivita\', Inganno, Intimidire, Percezione, Rapidita\' di Mano e Religione.',
+    'Due abilità tra Arcano, Furtività, Inganno, Intimidire, Percezione, Rapidità di Mano e Religione.',
   'language-infernal':
     'Si conosce l\'Infernale.',
   'darkvision-60':
-    'In luce fioca si vede fino a 18 metri come se fosse luce intensa, e nell\'oscurita\' come se fosse luce fioca. Nell\'oscurita\' non si distinguono i colori, solo tonalita\' di grigio.',
+    'In luce fioca si vede fino a 18 metri come se fosse luce intensa, e nell\'oscurità come se fosse luce fioca. Nell\'oscurità non si distinguono i colori, solo tonalità di grigio.',
   'memories-blind-world':
-    'Si mantengono capacita\' apprese venerando immondi nel Cieco Mondo. Si conosce il trucchetto tocco gelido; dal 3 livello si puo\' lanciare infliggi ferite una volta, recuperandolo con un riposo lungo. Si possono lanciare anche con qualsiasi slot del livello appropriato, usando Intelligenza, Saggezza o Carisma, scelta fatta selezionando l\'Origine.',
+    'Si mantengono capacità apprese venerando immondi nel Cieco Mondo. Si conosce il trucchetto tocco gelido; dal 3 livello si può lanciare infliggi ferite una volta, recuperandolo con un riposo lungo. Si possono lanciare anche con qualsiasi slot del livello appropriato, usando Intelligenza, Saggezza o Carisma, scelta fatta selezionando l\'Origine.',
   'scars-of-the-lost-ones':
-    'Privilegio. Vent\'anni dopo la Resurrezione della Carne le cicatrici non sono guarite e mai lo saranno. La gente riconosce un\'anima tormentata che e\' passata letteralmente per l\'Inferno e la tratta con esitazione e un po\' di paura, mentre gli altri risorti dall\'Inferno vi riconoscono un simile e provano un\'istintiva complicita\'.',
+    'Privilegio. Vent\'anni dopo la Resurrezione della Carne le cicatrici non sono guarite e mai lo saranno. La gente riconosce un\'anima tormentata che e\' passata letteralmente per l\'Inferno e la tratta con esitazione e un po\' di paura, mentre gli altri risorti dall\'Inferno vi riconoscono un simile e provano un\'istintiva complicità.',
   'skills-risen-heaven':
-    'Due abilita\' tra Arcano, Intuizione, Medicina, Percezione, Persuasione e Religione.',
+    'Due abilità tra Arcano, Intuizione, Medicina, Percezione, Persuasione e Religione.',
   'language-celestial':
     'Si conosce il Celestiale.',
   'blindsight-20':
-    'Si ottiene vista cieca entro 6 metri: in quel raggio si percepisce tutto cio\' che non sia dietro copertura totale, anche se accecati o al buio, e si vedono le creature invisibili a meno che non siano nascoste con successo.',
+    'Si ottiene vista cieca entro 6 metri: in quel raggio si percepisce tutto ciò che non sia dietro copertura totale, anche se accecati o al buio, e si vedono le creature invisibili a meno che non siano nascoste con successo.',
   'memories-empyrean':
-    'Si mantengono capacita\' apprese venerando angeli nel Cielo delle Stelle Fisse. Si conosce il trucchetto salvare i morenti; dal 3 livello si puo\' lanciare cura ferite una volta e dal 5 bagliore lunare una volta senza componenti materiali, recuperandoli con un riposo lungo. La caratteristica da incantatore e\' Intelligenza, Saggezza o Carisma, scelta selezionando l\'Origine.',
+    'Si mantengono capacità apprese venerando angeli nel Cielo delle Stelle Fisse. Si conosce il trucchetto salvare i morenti; dal 3 livello si può lanciare cura ferite una volta e dal 5 bagliore lunare una volta senza componenti materiali, recuperandoli con un riposo lungo. La caratteristica da incantatore e\' Intelligenza, Saggezza o Carisma, scelta selezionando l\'Origine.',
   'celestial-longing':
-    'Si porta il rimpianto inguaribile della beatitudine celeste perduta, e lo si puo\' rivolgere contro gli altri. Una volta per turno, infliggendo danni con un attacco o un incantesimo, si aggiungono danni radianti pari al bonus di competenza. Utilizzabile un numero di volte pari al bonus di competenza, recuperate con un riposo lungo.',
+    'Si porta il rimpianto inguaribile della beatitudine celeste perduta, e lo si può rivolgere contro gli altri. Una volta per turno, infliggendo danni con un attacco o un incantesimo, si aggiungono danni radianti pari al bonus di competenza. Utilizzabile un numero di volte pari al bonus di competenza, recuperate con un riposo lungo.',
   'scent-of-holiness':
     'Privilegio. Una tenue aura celestiale e un profumo appena percettibile restano addosso. Attirano i credenti e i disperati, mentre i servitori dell\'Abisso li trovano intollerabili.',
   'skills-risen-purgatory':
-    'Un\'abilita\' tra Natura, Percezione e Sopravvivenza.',
+    'Un\'abilità tra Natura, Percezione e Sopravvivenza.',
   'blindsight-30':
-    'Si ottiene vista cieca entro 9 metri: in quel raggio si percepisce tutto cio\' che non sia dietro copertura totale, anche se accecati o al buio, e si vedono le creature invisibili a meno che non siano nascoste con successo.',
+    'Si ottiene vista cieca entro 9 metri: in quel raggio si percepisce tutto ciò che non sia dietro copertura totale, anche se accecati o al buio, e si vedono le creature invisibili a meno che non siano nascoste con successo.',
   'memories-mountain':
-    'Si mantengono capacita\' soprannaturali apprese durante l\'interminabile scalata della montagna all\'altro capo del mondo. Si conosce il trucchetto resistenza; dal 3 livello si puo\' lanciare passo lungo una volta e dal 5 protezione dal veleno una volta, recuperandoli con un riposo lungo.',
+    'Si mantengono capacità soprannaturali apprese durante l\'interminabile scalata della montagna all\'altro capo del mondo. Si conosce il trucchetto resistenza; dal 3 livello si può lanciare passo lungo una volta e dal 5 protezione dal veleno una volta, recuperandoli con un riposo lungo.',
   'resistance-of-the-mount':
     'Privilegio. Dopo un\'espiazione quasi interminabile sulla montagna se ne conoscono pendenze, temperature e aria rarefatta, e ci si adatta naturalmente alle alte quote e alle condizioni estreme.',
   'skills-risen-limbo':
-    'Due abilita\' tra Arcano, Indagare, Intimidire, Intrattenere, Natura, Persuasione, Religione e Storia.',
+    'Due abilità tra Arcano, Indagare, Intimidire, Intrattenere, Natura, Persuasione, Religione e Storia.',
   'memories-castle':
-    'Si mantengono capacita\' soprannaturali apprese durante l\'interminabile permanenza nel Castello degli Spiriti Magni. Si conosce il trucchetto guida; dal 3 livello si puo\' lanciare benedizione una volta e dal 5 legame protettivo una volta, recuperandoli con un riposo lungo.',
+    'Si mantengono capacità soprannaturali apprese durante l\'interminabile permanenza nel Castello degli Spiriti Magni. Si conosce il trucchetto guida; dal 3 livello si può lanciare benedizione una volta e dal 5 legame protettivo una volta, recuperandoli con un riposo lungo.',
   'discernment':
-    'Effettuando una prova di caratteristica con un\'abilita\' in cui si e\' competenti, si puo\' decidere di avere vantaggio prima di tirare. Utilizzabile un numero di volte pari al bonus di competenza, recuperate con un riposo lungo.',
+    'Effettuando una prova di caratteristica con un\'abilità in cui si e\' competenti, si può decidere di avere vantaggio prima di tirare. Utilizzabile un numero di volte pari al bonus di competenza, recuperate con un riposo lungo.',
   'declamation-of-courage':
-    'Con un\'azione si tiene una breve orazione che infiamma gli animi. Fino a quattro creature alleate entro 6 metri che possano vedere o sentire e comprendere ottengono punti ferita temporanei pari al proprio livello, e finche\' li conservano hanno vantaggio ai tiri salvezza per non essere spaventate.',
+    'Con un\'azione si tiene una breve orazione che infiamma gli animi. Fino a quattro creature alleate entro 6 metri che possano vedere o sentire e comprendere ottengono punti ferita temporanei pari al proprio livello, e finché li conservano hanno vantaggio ai tiri salvezza per non essere spaventate.',
   'apocalyptic-bestiary':
-    'Privilegio. I millenni nel Limbo, gli studi precedenti e la liberta\' del Castello danno un\'ampia conoscenza degli esseri soprannaturali e dei poteri ultraterreni che ora battono la Terra.',
+    'Privilegio. I millenni nel Limbo, gli studi precedenti e la libertà del Castello danno un\'ampia conoscenza degli esseri soprannaturali e dei poteri ultraterreni che ora battono la Terra.',
   'shard-of-eternal-pain':
-    'L\'Inferno ha lasciato dentro una scheggia del suo tormento, e la si puo\' trasmettere. Una volta per turno, infliggendo danni a un bersaglio con un attacco o un incantesimo, si aggiungono danni necrotici pari al bonus di competenza. Utilizzabile un numero di volte pari al bonus di competenza, recuperate con un riposo lungo.',
+    'L\'Inferno ha lasciato dentro una scheggia del suo tormento, e la si può trasmettere. Una volta per turno, infliggendo danni a un bersaglio con un attacco o un incantesimo, si aggiungono danni necrotici pari al bonus di competenza. Utilizzabile un numero di volte pari al bonus di competenza, recuperate con un riposo lungo.',
   'used-to-atonement':
-    'Ere di penitenza abituano alle privazioni: si ignora qualsiasi penalita\' dovuta al primo livello di sfinimento.',
+    'Ere di penitenza abituano alle privazioni: si ignora qualsiasi penalità dovuta al primo livello di sfinimento.',
   'tireless-walker':
     'La scalata interminabile ha insegnato a non fermarsi. Si ha vantaggio ai tiri salvezza su Costituzione quando si viaggia a marcia forzata.',
   'ridge-climber':
-    'Competenza nell\'abilita\' Atletica, e il bonus di competenza e\' raddoppiato per ogni prova di caratteristica che la utilizza.',
+    'Competenza nell\'abilità Atletica, e il bonus di competenza e\' raddoppiato per ogni prova di caratteristica che la utilizza.',
 }

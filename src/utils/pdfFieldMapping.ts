@@ -212,13 +212,13 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
     }
     if (char.virtue) {
       const virtueObj = apocalisseRules.virtues.find(v => v.id === char.virtue)
-      if (virtueObj) featureLines.push(`Virtu': ${virtueObj.nameOriginal}`)
+      if (virtueObj) featureLines.push(`Virtù: ${virtueObj.nameOriginal}`)
     }
     if (char.sin) {
       const sinObj = apocalisseRules.sins.find(s => s.id === char.sin)
       if (sinObj) featureLines.push(`Peccato: ${sinObj.nameOriginal}`)
     }
-    featureLines.push(`Umanita': ${char.humanity}`)
+    featureLines.push(`Umanità: ${char.humanity}`)
   }
   fields['Features and Traits'] = featureLines.join('\n')
   fields['PersonalityTraits '] = char.personalityTraits

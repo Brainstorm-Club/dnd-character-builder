@@ -125,7 +125,7 @@ const virtues: ApocalisseVirtue[] = [
   {
     id: 'charity',
     name: 'Charity',
-    nameOriginal: 'Carita\'',
+    nameOriginal: 'Carità',
     description: 'Sympathy for the whole of Creation: kindness and selfless dedication that overcomes hate, indifference, and selfishness.',
     saveAdvantages: ['dex', 'cha'],
     damageResistance: 'acid',

@@ -1,11 +1,31 @@
 <script setup lang="ts">
+import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAppStore, STEP_KEYS } from '@/stores/app'
+import { useCharacterStore } from '@/stores/character'
+import { ensureStepData } from '@/data'
 
 const { t } = useI18n()
 const appStore = useAppStore()
+const characterStore = useCharacterStore()
 
 const stepKeys = STEP_KEYS
+const isLoading = ref(false)
+
+// I dati della variante sono caricati su richiesta (WSG 3.8). Saltando a un
+// passo dalla barra senza caricarli prima, il passo compariva vuoto.
+async function goToStep(idx: number) {
+  const variant = characterStore.character.variant
+  if (variant) {
+    isLoading.value = true
+    try {
+      await ensureStepData(variant, idx)
+    } finally {
+      isLoading.value = false
+    }
+  }
+  appStore.setStep(idx)
+}
 </script>
 
 <template>
@@ -18,7 +38,8 @@ const stepKeys = STEP_KEYS
         role="listitem"
       >
         <button
-          @click="appStore.setStep(idx)"
+          @click="goToStep(idx)"
+          :disabled="isLoading"
           class="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap cursor-pointer"
           :class="{
             'bg-amber-600 text-stone-900': idx === appStore.currentStep,
