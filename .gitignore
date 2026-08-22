@@ -34,3 +34,4 @@ dev-dist/
 
 # Claude Code
 .claude/
+.work/

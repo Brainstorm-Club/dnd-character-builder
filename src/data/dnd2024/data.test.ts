@@ -157,6 +157,121 @@ describe('coerenza delle classi 2024', () => {
   })
 })
 
+describe('sottoclassi di D&D 2024', () => {
+  // Quanti privilegi ha ogni sottoclasse nell'SRD 5.2.1: numeri contati sul
+  // manuale, non sull'estrazione, così una riga persa fa fallire il test.
+  const ATTESI: Record<string, [string, number]> = {
+    barbarian: ['path-of-the-berserker', 4],
+    bard: ['college-of-lore', 4],
+    cleric: ['life-domain', 5],
+    druid: ['circle-of-the-land', 5],
+    fighter: ['champion', 6],
+    monk: ['warrior-of-the-open-hand', 4],
+    paladin: ['oath-of-devotion', 5],
+    ranger: ['hunter', 5],
+    rogue: ['thief', 5],
+    sorcerer: ['draconic-sorcery', 5],
+    warlock: ['fiend-patron', 5],
+    wizard: ['evoker', 5],
+  }
+
+  it('ha una sola sottoclasse per classe, e nessuna è vuota', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    expect(dnd2024Classes).toHaveLength(12)
+    for (const c of dnd2024Classes) {
+      expect(c.subclasses, c.id).toHaveLength(1)
+      const atteso = ATTESI[c.id]
+      expect(atteso, `${c.id}: classe non prevista`).toBeDefined()
+      const [id, quanti] = atteso!
+      expect(c.subclasses[0]!.id, c.id).toBe(id)
+      expect(c.subclasses[0]!.features.length, `${c.id}: privilegi di ${id}`).toBe(quanti)
+    }
+  })
+
+  it('ha i 58 privilegi di sottoclasse dell\'SRD 5.2.1', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    const totale = dnd2024Classes.reduce(
+      (n, c) => n + c.subclasses.reduce((m, s) => m + s.features.length, 0), 0)
+    expect(totale).toBe(58)
+  })
+
+  it('non dà privilegi prima del 3° livello né oltre il 20°', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    for (const c of dnd2024Classes) {
+      for (const s of c.subclasses) {
+        const livelli = s.features.map(f => f.level)
+        for (const l of livelli) {
+          expect(l, `${s.id}: livello ${l}`).toBeGreaterThanOrEqual(c.subclassLevel)
+          expect(l, `${s.id}: livello ${l}`).toBeLessThanOrEqual(20)
+        }
+        // La sottoclasse deve dare qualcosa già nel momento in cui la si sceglie
+        expect(Math.min(...livelli), `${s.id}: niente al 3° livello`).toBe(c.subclassLevel)
+        // ...e i privilegi sono in ordine di livello, come nel manuale
+        expect(livelli, `${s.id}: livelli fuori ordine`).toEqual([...livelli].sort((a, b) => a - b))
+      }
+    }
+  })
+
+  it('non ha id duplicati fra classe e sottoclasse', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    for (const c of dnd2024Classes) {
+      const ids = [...c.features.map(f => f.id), ...c.subclasses.flatMap(s => s.features.map(f => f.id))]
+      expect(new Set(ids).size, `${c.id}: id ripetuti`).toBe(ids.length)
+      for (const s of c.subclasses) {
+        for (const f of s.features) expect(f.id, `${s.id}/${f.name}`).toMatch(/^[a-z0-9-]+$/)
+      }
+    }
+  })
+
+  it('non lascia descrizioni tronche o sporche di PDF', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    // Le colonne del PDF si intrufolavano nei testi: queste stringhe sono le
+    // tracce che lasciavano quando l'estrazione sbordava nella voce accanto.
+    const sporcizia = /System Reference Document|This section presents|Spell List|Core \w+ Traits|@@@/
+    for (const c of dnd2024Classes) {
+      for (const s of c.subclasses) {
+        for (const f of s.features) {
+          const eti = `${s.id}/${f.name}`
+          expect(f.description.length, eti).toBeGreaterThan(50)
+          expect(f.description, eti).not.toMatch(sporcizia)
+          // Un testo tronco a metà frase comincia in minuscolo o non finisce col punto
+          expect(f.description[0], `${eti}: comincia a metà frase`).toMatch(/[A-Z“"]/)
+          expect(f.description.trim(), `${eti}: finisce a metà frase`).toMatch(/[.”]$/)
+        }
+      }
+    }
+  })
+
+  it('dà un nome italiano a ogni privilegio di sottoclasse', async () => {
+    const { featureNamesIt } = await import('@/i18n/gameTerms')
+    const { dnd2024Classes } = await import('./classes')
+    const mancanti: string[] = []
+    for (const c of dnd2024Classes) {
+      for (const s of c.subclasses) {
+        for (const f of s.features) if (!featureNamesIt[f.name]) mancanti.push(`${s.id}/${f.name}`)
+      }
+    }
+    expect(mancanti).toEqual([])
+  })
+
+  it('riporta i privilegi caratteristici, con il livello del manuale', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    const trova = (cls: string, nome: string) =>
+      dnd2024Classes.find(c => c.id === cls)!.subclasses[0]!.features.find(f => f.name === nome)
+    expect(trova('barbarian', 'Frenzy')!.level).toBe(3)
+    expect(trova('barbarian', 'Intimidating Presence')!.level).toBe(14)
+    expect(trova('fighter', 'Improved Critical')!.level).toBe(3)   // nel 2014 era al 3° come qui
+    expect(trova('fighter', 'Superior Critical')!.level).toBe(15)
+    expect(trova('monk', 'Quivering Palm')!.level).toBe(17)
+    expect(trova('paladin', 'Holy Nimbus')!.level).toBe(20)
+    expect(trova('rogue', 'Use Magic Device')!.level).toBe(13)
+    expect(trova('wizard', 'Potent Cantrip')!.level).toBe(3)
+    // Il monaco 2024 spende Punti concentrazione, non Ki
+    expect(trova('monk', 'Quivering Palm')!.description).toContain('Focus Points')
+    expect(trova('monk', 'Quivering Palm')!.description).not.toContain('ki point')
+  })
+})
+
 describe('incantesimi 2024', () => {
   it('include i 23 che esistono solo nell\'SRD 5.2.1', async () => {
     const { toDnd2024Spells } = await import('./spells')

@@ -1,0 +1,504 @@
+// Descrizioni italiane dei privilegi di classe e di sottoclasse di D&D 2024.
+//
+// Fonte: System Reference Document 5.2.1 in italiano (CC-BY-4.0), la stessa
+// da cui vengono i dati inglesi in `classes.ts`. Le distanze sono in metri,
+// come nel testo italiano, e la terminologia è quella dell'SRD: "tiro
+// salvezza", "bonus di competenza", "riposo breve/lungo", "azione bonus",
+// "punti ferita", "Padronanza d'armi", "Concentrazione da monaco".
+//
+// ATTENZIONE ALL'EDIZIONE. Qui siamo nel 2024: l'Ira dura fino alla fine del
+// turno successivo e va prolungata, il monaco spende punti concentrazione e
+// non ki, la Punizione divina del paladino è un incantesimo, e ogni classe
+// sceglie la sottoclasse al 3° livello. Le regole 2014 stanno in
+// `../dnd5e/classes-it.ts` e non vanno mescolate con queste.
+//
+// I NOMI dei privilegi non stanno qui ma in `src/i18n/gameTerms.ts`
+// (featureNamesIt): sono un'unica mappa per tutta l'app, così il riepilogo
+// e la scheda PDF non possono divergere dalla lista dei privilegi.
+//
+// Alcuni id sono condivisi da più classi (`spellcasting`, `extra-attack`,
+// `unarmored-defense`...): la mappa è indicizzata solo per id, quindi quelle
+// voci sono scritte in modo da valere per tutte le classi che le usano.
+
+/** Frase ricorrente: l'Aumento dei punteggi di caratteristica. */
+const ASI =
+  'Il personaggio ottiene il talento Aumento dei punteggi di caratteristica oppure un altro talento a scelta di cui possiede i prerequisiti. Questo privilegio si ottiene di nuovo ai livelli superiori indicati nella tabella della classe.'
+
+/** Frase ricorrente: il privilegio concesso dalla sottoclasse a un livello. */
+const sub = (cls: string, lv: number) =>
+  `Il personaggio ottiene il privilegio che la sua sottoclasse ${cls} concede al ${lv}° livello.`
+
+export const dnd2024FeatureDescriptionsIt: Record<string, string> = {
+  // ═══ Privilegi comuni a più classi ═════════════════════════════════
+  'ability-score-improvement': ASI,
+  'ability-score-improvement-2': ASI,
+  'ability-score-improvement-3': ASI,
+  'ability-score-improvement-4': ASI,
+  'ability-score-improvement-5': ASI,
+  'ability-score-improvement-6': ASI,
+  'epic-boon':
+    'Il personaggio ottiene un Dono epico oppure un altro talento a scelta di cui possiede i prerequisiti. I Doni epici sono i talenti riservati ai personaggi che hanno raggiunto il 19° livello.',
+  'extra-attack':
+    'Quando effettua l\'azione di Attacco nel proprio turno, il personaggio può attaccare due volte anziché una.',
+  spellcasting:
+    'Il personaggio ha imparato a lanciare incantesimi. La tabella della sua classe indica i trucchetti conosciuti, il numero di incantesimi preparati e gli slot incantesimo disponibili; gli slot spesi si recuperano con un riposo lungo, e la lista di incantesimi preparati si può modificare quando si ottiene un livello o si completa un riposo lungo, a seconda della classe. La caratteristica da incantatore è il Carisma per bardo, paladino e stregone, la Saggezza per chierico, druido e ranger, l\'Intelligenza per il mago.',
+  expertise:
+    'Il personaggio ottiene Maestria in due abilità in cui ha già competenza: il suo bonus di competenza raddoppia in ogni prova di caratteristica che usi una di quelle abilità.',
+  'unarmored-defense':
+    'Mentre non indossa alcuna armatura, la Classe Armatura base del personaggio è pari a 10 più il suo modificatore di Destrezza e il modificatore della caratteristica tipica della sua classe: Costituzione per il barbaro, che può comunque impugnare uno scudo, Saggezza per il monaco, che invece non deve impugnarne alcuno.',
+  'weapon-mastery':
+    'L\'addestramento con le armi permette al personaggio di avvalersi della proprietà di padronanza di alcuni tipi di armi semplici o da guerra a sua scelta: due per il barbaro e per il ladro, tre per il guerriero. Al termine di ogni riposo lungo può esercitarsi e cambiare una delle armi scelte, e ai livelli indicati nella tabella della classe il numero di armi aumenta.',
+  'channel-divinity':
+    'Il personaggio incanala l\'energia divina dei Piani Esterni per alimentare effetti magici. Il chierico parte con Scintilla divina e Scacciare non morti, il paladino con Percezione del divino; altri privilegi aggiungono altri effetti. Dispone di due utilizzi: ne recupera uno con un riposo breve e tutti con un riposo lungo. Se un effetto richiede un tiro salvezza, la CD è quella dei suoi incantesimi.',
+  'fighting-style':
+    'Il personaggio ottiene un talento Stile di combattimento a sua scelta. Il paladino può scegliere in alternativa Guerriero benedetto, che gli insegna due trucchetti da chierico; il ranger può scegliere Guerriero druidico, che gli insegna due trucchetti da druido.',
+  evasion:
+    'Quando è soggetto a un effetto che gli consente di effettuare un tiro salvezza su Destrezza per dimezzare i danni, il personaggio non subisce alcun danno se lo supera e solo la metà dei danni se lo fallisce. Non beneficia di questo privilegio mentre è incapacitato.',
+
+  // ═══ Barbaro ══════════════════════════════════════════════════════
+  rage:
+    'Come azione bonus, e purché non indossi un\'armatura pesante, il barbaro può entrare in ira: ottiene resistenza ai danni contundenti, perforanti e taglienti, un bonus ai danni degli attacchi che usano Forza e vantaggio alle prove e ai tiri salvezza su Forza, ma non può lanciare incantesimi né mantenere la concentrazione. L\'ira dura fino alla fine del suo turno successivo e va prolungata attaccando un nemico, costringendolo a un tiro salvezza o spendendo un\'azione bonus, fino a un massimo di 10 minuti.',
+  'danger-sense':
+    'Il barbaro percepisce quando qualcosa nei paraggi non è come dovrebbe essere: dispone di vantaggio ai tiri salvezza su Destrezza, a meno che non sia incapacitato.',
+  'reckless-attack':
+    'Quando effettua il primo tiro per colpire del suo turno, il barbaro può attaccare in modo irruento: fino all\'inizio del suo turno successivo dispone di vantaggio ai tiri per colpire che usano Forza, ma anche i tiri per colpire contro di lui dispongono di vantaggio.',
+  'barbarian-subclass':
+    'Il barbaro sceglie una sottoclasse del barbaro, come il Cammino del berserker, e ne ottiene i privilegi al 3°, 6°, 10° e 14° livello.',
+  'primal-knowledge':
+    'Il barbaro ottiene competenza in un\'altra abilità a scelta fra quelle disponibili per i barbari di 1° livello. Inoltre, mentre l\'ira è in atto, può effettuare come prove di Forza le prove di Acrobazia, Intimidire, Percezione, Furtività e Sopravvivenza.',
+  'fast-movement':
+    'La velocità del barbaro aumenta di 3 metri, purché non indossi un\'armatura pesante.',
+  'barbarian-subclass-feature': sub('del barbaro', 6),
+  'feral-instinct':
+    'Gli istinti del barbaro sono talmente affinati da fornirgli vantaggio ai tiri per l\'iniziativa.',
+  'instinctive-pounce':
+    'Come parte dell\'azione bonus con cui entra in ira, il barbaro può muoversi fino alla metà della sua velocità.',
+  'brutal-strike':
+    'Se usa Attacco irruento, il barbaro può rinunciare al vantaggio su un tiro per colpire basato sulla Forza, purché quel tiro non abbia svantaggio. Se il colpo va a segno, il bersaglio subisce 1d10 danni extra dello stesso tipo dell\'arma e il barbaro sceglie un effetto: Colpo violento, che spinge il bersaglio a 4,5 metri e gli permette di avanzare di metà velocità senza provocare attacchi di opportunità, oppure Colpo spaccaossa, che riduce di 4,5 metri la velocità del bersaglio fino all\'inizio del turno successivo.',
+  'barbarian-subclass-feature-2': sub('del barbaro', 10),
+  'relentless-rage':
+    'Se scende a 0 punti ferita mentre è in ira e non viene ucciso sul colpo, il barbaro può effettuare un tiro salvezza su Costituzione con CD 10: se lo supera, i suoi punti ferita diventano pari al doppio del suo livello da barbaro. Ogni utilizzo successivo aumenta la CD di 5, che torna a 10 dopo un riposo breve o lungo.',
+  'improved-brutal-strike':
+    'Il barbaro affina nuovi modi di colpire e aggiunge due opzioni al Colpo brutale: Colpo sbalorditivo, che impone svantaggio al prossimo tiro salvezza del bersaglio e gli impedisce gli attacchi di opportunità fino all\'inizio del turno successivo del barbaro, e Colpo di scissione, che concede un bonus di +5 al prossimo tiro per colpire di un\'altra creatura contro quel bersaglio.',
+  'barbarian-subclass-feature-3': sub('del barbaro', 14),
+  'persistent-rage':
+    'Quando effettua un tiro per l\'iniziativa, il barbaro può recuperare tutti gli utilizzi di ira spesi, e non può rifarlo prima di un riposo lungo. Inoltre l\'ira dura 10 minuti senza bisogno di prolungarla a ogni round e termina anticipatamente solo se il barbaro è privo di sensi o indossa un\'armatura pesante.',
+  'improved-brutal-strike-2':
+    'I danni extra del Colpo brutale aumentano a 2d10 e il barbaro può causare due diversi effetti di Colpo brutale ogni volta che usa quel privilegio.',
+  'indomitable-might':
+    'Se il totale di una prova di Forza o di un tiro salvezza su Forza è inferiore al suo punteggio di Forza, il barbaro può usare quel punteggio al posto del totale.',
+  'primal-champion':
+    'Il barbaro diventa un\'incarnazione del potere primordiale: i suoi punteggi di Forza e Costituzione aumentano di 4, fino a un massimo di 25.',
+
+  // ─── Cammino del berserker ───────────────────────────────────────
+  frenzy:
+    'Se usa Attacco irruento mentre è in ira, il barbaro infligge danni extra al primo bersaglio che colpisce nel suo turno con un attacco basato sulla Forza: tira un numero di d6 pari al suo bonus ai danni dell\'ira e ne somma i risultati. I danni sono dello stesso tipo dell\'arma o del colpo senz\'armi usato.',
+  'mindless-rage':
+    'Mentre è in ira, il barbaro non può essere affascinato né spaventato; se è già affascinato o spaventato quando entra in ira, quella condizione termina.',
+  retaliation:
+    'Quando subisce danni da una creatura che si trova entro 1,5 metri da sé, il barbaro può usare la reazione per effettuare un attacco in mischia contro quella creatura, con un\'arma o con un colpo senz\'armi.',
+  'intimidating-presence':
+    'Come azione bonus, ogni creatura a scelta del barbaro in un\'emanazione del raggio di 9 metri deve superare un tiro salvezza su Saggezza, con CD pari a 8 più il modificatore di Forza e il bonus di competenza, o restare spaventata per 1 minuto, ripetendo il tiro alla fine di ogni suo turno. Serve un riposo lungo per riusarlo, oppure la spesa di un utilizzo dell\'ira.',
+
+  // ═══ Bardo ════════════════════════════════════════════════════════
+  'bardic-inspiration':
+    'Come azione bonus, il bardo ispira un\'altra creatura entro 18 metri che sia in grado di vederlo o sentirlo, conferendole un dado di Ispirazione bardica (d6). Entro l\'ora successiva, quando fallisce una prova con d20, quella creatura può tirare il dado e sommarne il risultato. Gli utilizzi sono pari al modificatore di Carisma del bardo e si recuperano con un riposo lungo; il dado diventa d8 al 5° livello, d10 al 10° e d12 al 15°.',
+  'bard-subclass-d':
+    'Il bardo sceglie una sottoclasse del bardo, come il Collegio del sapere, e ne ottiene i privilegi al 3°, 6° e 14° livello.',
+  'font-of-inspiration-d':
+    'Il bardo recupera tutti gli utilizzi spesi di Ispirazione bardica quando completa un riposo breve o lungo. Inoltre può spendere uno slot incantesimo, senza bisogno di alcuna azione, per recuperare un singolo utilizzo.',
+  'bard-subclass-feature': sub('del bardo', 6),
+  'countercharm-d':
+    'Se il bardo o una creatura entro 9 metri da lui fallisce un tiro salvezza contro un effetto che applica la condizione affascinato o spaventato, il bardo può usare la reazione per far ripetere quel tiro salvezza con vantaggio.',
+  'expertise-d':
+    'Il bardo ottiene Maestria in altre due abilità in cui ha competenza: il suo bonus di competenza raddoppia nelle prove di caratteristica che le usano.',
+  'magical-secrets-d':
+    'Ogni volta che il numero di incantesimi preparati indicato nella tabella del bardo aumenta, il bardo può scegliere il nuovo incantesimo dalle liste di bardo, chierico, druido e mago; per lui vale in ogni caso come incantesimo da bardo. Può anche sostituire un incantesimo preparato con uno tratto da quelle liste.',
+  'bard-subclass-feature-2': sub('del bardo', 14),
+  'superior-inspiration-d':
+    'Quando tira per l\'iniziativa, se ha meno di due utilizzi di Ispirazione bardica il bardo ne recupera finché non ne possiede due.',
+  'words-of-creation-d':
+    'Il bardo padroneggia le parole della vita e della morte: gli incantesimi parola del potere guarire e parola del potere uccidere sono sempre considerati preparati e, quando ne lancia uno, può bersagliare una seconda creatura che si trovi entro 3 metri dal primo bersaglio.',
+
+  // ─── Collegio del sapere ─────────────────────────────────────────
+  'bonus-proficiencies':
+    'Il bardo acquisisce competenza in tre abilità a sua scelta.',
+  'cutting-words':
+    'Quando una creatura entro 18 metri che il bardo è in grado di vedere effettua un tiro per i danni, oppure supera una prova di caratteristica o un tiro per colpire, il bardo può usare la reazione e spendere un utilizzo di Ispirazione bardica: tira il dado e sottrae il risultato dal tiro della creatura, riducendo i danni o trasformando il successo in un fallimento.',
+  'magical-discoveries':
+    'Il bardo apprende due incantesimi a scelta dalle liste di chierico, druido o mago. Devono essere trucchetti o incantesimi di un livello di cui possiede slot; sono sempre considerati preparati e può sostituirne uno ogni volta che ottiene un livello da bardo.',
+  'peerless-skill':
+    'Quando fallisce una prova di caratteristica o un tiro per colpire, il bardo può spendere un utilizzo di Ispirazione bardica per tirare il dado e sommarne il risultato al d20. Se il tiro fallisce comunque, l\'utilizzo non viene consumato.',
+
+  // ═══ Chierico ═════════════════════════════════════════════════════
+  'divine-order':
+    'Il chierico si dedica a un ruolo sacro a sua scelta: Protettore, che gli concede competenza nelle armi da guerra e nelle armature pesanti, oppure Taumaturgo, che gli insegna un trucchetto extra e aggiunge il suo modificatore di Saggezza, minimo +1, alle prove di Intelligenza (Arcano o Religione).',
+  'cleric-subclass':
+    'Il chierico sceglie una sottoclasse del chierico, come il Dominio della vita, e ne ottiene i privilegi al 3°, 6° e 17° livello.',
+  'sear-undead':
+    'Ogni volta che usa Scacciare non morti, il chierico tira un numero di d8 pari al suo modificatore di Saggezza, minimo 1d8: ogni non morto che fallisce il tiro salvezza subisce danni radiosi pari alla somma dei dadi, senza che l\'effetto di Scacciare non morti si interrompa.',
+  'cleric-subclass-feature': sub('del chierico', 6),
+  'blessed-strikes':
+    'Il potere divino permea il chierico in battaglia, che sceglie una fra due opzioni: Colpo divino, che una volta per turno aggiunge 1d8 danni necrotici o radiosi a un colpo andato a segno con un\'arma, oppure Incantesimi potenti, che aggiunge il modificatore di Saggezza ai danni di qualsiasi suo trucchetto da chierico.',
+  'divine-intervention':
+    'Come azione di Magia, il chierico invoca la propria divinità: sceglie un incantesimo da chierico di 5° livello o inferiore che non richieda una reazione per essere lanciato e lo lancia senza spendere slot incantesimo né componenti materiali. Deve completare un riposo lungo prima di poterlo rifare.',
+  'improved-blessed-strikes':
+    'L\'opzione scelta per i Colpi benedetti diventa più potente: i danni extra del Colpo divino aumentano a 2d8, oppure gli Incantesimi potenti concedono a sé o a una creatura entro 18 metri punti ferita temporanei pari al doppio del modificatore di Saggezza.',
+  'cleric-subclass-feature-2': sub('del chierico', 17),
+  'greater-divine-intervention':
+    'Quando usa Intervento divino, il chierico può scegliere l\'incantesimo desiderio. Se lo fa, non può usare di nuovo Intervento divino finché non ha completato 2d4 riposi lunghi.',
+
+  // ─── Dominio della vita ──────────────────────────────────────────
+  'disciple-of-life':
+    'Quando un incantesimo lanciato dal chierico con uno slot incantesimo ripristina i punti ferita di una creatura, quella creatura ne recupera altri pari a 2 più il livello dello slot usato.',
+  'life-domain-spells':
+    'Il legame con il dominio tiene sempre preparati alcuni incantesimi: aiuto, benedizione, cura ferite e ristorare inferiore al 3° livello; parola guaritrice di massa e rinascita al 5°; aura di vita e interdizione alla morte al 7°; ristorare superiore e cura ferite di massa al 9°.',
+  'preserve-life':
+    'Come azione di Magia, il chierico spende un utilizzo di Incanalare divinità per distribuire fra le creature sanguinanti entro 9 metri, compreso se stesso, un numero di punti ferita pari a cinque volte il suo livello da chierico. Nessuna creatura può essere riportata oltre la metà dei suoi punti ferita massimi.',
+  'blessed-healer':
+    'Subito dopo aver lanciato con uno slot incantesimo un incantesimo che ripristina i punti ferita di una o più creature diverse da sé, il chierico recupera punti ferita pari a 2 più il livello dello slot usato.',
+  'supreme-healing':
+    'Quando dovrebbe tirare uno o più dadi per ripristinare punti ferita con un incantesimo o con Incanalare divinità, il chierico usa invece il risultato massimo di ogni dado.',
+
+  // ═══ Druido ═══════════════════════════════════════════════════════
+  druidic:
+    'Il druido conosce il Druidico, la lingua segreta del suo ordine, e ha sempre preparato l\'incantesimo parlare con gli animali. Con il Druidico può lasciare messaggi nascosti: chi non conosce la lingua può accorgersene con una prova di Intelligenza (Indagare) con CD 15, ma non può decifrarli senza magia.',
+  'wild-shape':
+    'Come azione bonus, il druido assume la forma di una bestia fra quelle di cui ha appreso la forma e vi resta per un numero di ore pari alla metà del suo livello da druido. Ottiene punti ferita temporanei pari al suo livello e le statistiche della bestia, ma conserva personalità, ricordi, capacità di parlare, punti ferita, Dadi Vita, punteggi mentali, privilegi di classe, lingue e talenti. In forma bestiale non può lanciare incantesimi, ma il mutamento non interrompe la sua concentrazione.',
+  'druid-subclass':
+    'Il druido sceglie una sottoclasse del druido, come il Circolo della Terra, e ne ottiene i privilegi al 3°, 6°, 10° e 14° livello.',
+  'wild-resurgence':
+    'Una volta per turno, se ha consumato tutti gli utilizzi di Forma selvatica, il druido può recuperarne uno spendendo uno slot incantesimo, senza bisogno di alcuna azione. In alternativa può spendere un utilizzo di Forma selvatica per ottenere uno slot incantesimo di 1° livello, una volta per riposo lungo.',
+  'druid-subclass-feature': sub('del druido', 6),
+  'elemental-fury':
+    'La forza degli elementi scorre nel druido, che sceglie una fra due opzioni: Incantesimi potenti, che aggiunge il modificatore di Saggezza ai danni dei suoi trucchetti da druido, oppure Colpo primordiale, che una volta per turno aggiunge 1d8 danni da freddo, fuoco, fulmine o tuono a un colpo andato a segno con un\'arma o con un attacco della forma bestiale.',
+  'druid-subclass-feature-2': sub('del druido', 10),
+  'druid-subclass-feature-3': sub('del druido', 14),
+  'improved-elemental-fury':
+    'L\'opzione scelta per la Furia elementale diventa più potente: la gittata dei trucchetti da druido con raggio di almeno 3 metri aumenta di 90 metri, oppure i danni extra del Colpo primordiale salgono a 2d8.',
+  'beast-spells':
+    'Mentre utilizza Forma selvatica, il druido può lanciare incantesimi anche in forma bestiale, fatta eccezione per quelli che richiedono componenti materiali dal costo specificato o che le consumano.',
+  archdruid:
+    'La vitalità della natura fiorisce nel druido: quando tira per l\'iniziativa senza utilizzi disponibili di Forma selvatica ne recupera uno; può convertire gli utilizzi non spesi in un unico slot incantesimo, contando 2 livelli per utilizzo, una volta per riposo lungo; e il suo corpo invecchia di 1 anno ogni 10 anni trascorsi.',
+
+  // ─── Circolo della Terra ─────────────────────────────────────────
+  'circle-of-the-land-spells':
+    'Al termine di ogni riposo lungo il druido sceglie un tipo di terra fra arida, polare, temperata e tropicale, e considera preparati gli incantesimi elencati per quella terra fino al suo livello: tre incantesimi al 3° livello e uno in più al 5°, al 7° e al 9°.',
+  'lands-aid':
+    'Come azione di Magia, il druido spende un utilizzo di Forma selvatica e sceglie un punto entro 18 metri: in una sfera del raggio di 3 metri ogni creatura a sua scelta subisce 2d6 danni necrotici, dimezzati con un tiro salvezza su Costituzione superato, mentre una creatura a sua scelta nell\'area recupera 2d6 punti ferita. I dadi salgono a 3d6 al 10° livello e a 4d6 al 14°.',
+  'natural-recovery':
+    'Il druido può lanciare senza spendere slot uno degli incantesimi preparati con Incantesimi del Circolo, una volta per riposo lungo. Inoltre, al termine di un riposo breve, recupera slot incantesimo per un totale di livelli pari alla metà del suo livello da druido, arrotondata per eccesso, e nessuno di livello superiore al 6°.',
+  'natures-ward':
+    'Il druido è immune alla condizione avvelenato e ottiene resistenza al tipo di danno legato alla terra scelta: fuoco per la terra arida, freddo per la polare, fulmine per la temperata, veleno per la tropicale.',
+  'natures-sanctuary':
+    'Come azione di Magia, il druido spende un utilizzo di Forma selvatica per far apparire alberi e viticci spettrali in un cubo con spigolo di 4,5 metri entro 36 metri da sé, per 1 minuto. Lui e i suoi alleati ottengono mezza copertura nell\'area, e gli alleati anche la resistenza concessa da Protezione della natura; come azione bonus può spostare il cubo fino a 18 metri.',
+
+  // ═══ Guerriero ════════════════════════════════════════════════════
+  'second-wind':
+    'Come azione bonus, il guerriero attinge alla propria riserva di resistenza fisica e mentale e recupera punti ferita pari a 1d10 più il suo livello da guerriero. Dispone di due utilizzi: ne recupera uno con un riposo breve e tutti con un riposo lungo, e ne ottiene altri ai livelli indicati nella tabella della classe.',
+  'action-surge-one-use':
+    'Nel suo turno il guerriero può spingersi oltre i propri limiti ed effettuare un\'azione aggiuntiva, fatta eccezione per l\'azione di Magia. Deve completare un riposo breve o lungo prima di poterlo rifare.',
+  'tactical-mind':
+    'Quando fallisce una prova di caratteristica, il guerriero può spendere un utilizzo di Recuperare energie per tirare 1d10 e sommarne il risultato alla prova, trasformandola potenzialmente in un successo. Se la prova fallisce comunque, l\'utilizzo non viene speso.',
+  'fighter-subclass':
+    'Il guerriero sceglie una sottoclasse del guerriero, come il Campione, e ne ottiene i privilegi al 3°, 7°, 10°, 15° e 18° livello.',
+  'tactical-shift':
+    'Ogni volta che attiva Recuperare energie con un\'azione bonus, il guerriero può muoversi fino a metà della sua velocità senza provocare attacchi di opportunità.',
+  'fighter-subclass-feature': sub('del guerriero', 7),
+  'indomitable-one-use':
+    'Se fallisce un tiro salvezza, il guerriero può ripeterlo con un bonus pari al suo livello da guerriero, ed è obbligato a usare il nuovo risultato. Deve completare un riposo lungo prima di poterlo rifare.',
+  'tactical-master':
+    'Quando attacca con un\'arma di cui può utilizzare la proprietà di padronanza, per quell\'attacco il guerriero può sostituirla con le proprietà spinta, fiaccare o lentezza.',
+  'fighter-subclass-feature-2': sub('del guerriero', 10),
+  'two-extra-attacks':
+    'Quando effettua l\'azione di Attacco nel proprio turno, il guerriero può attaccare tre volte anziché una.',
+  'indomitable-two-uses':
+    'Il guerriero può usare il privilegio Indomabile due volte prima di completare un riposo lungo.',
+  'studied-attacks':
+    'Il guerriero impara da ogni attacco che sferra: se effettua un tiro per colpire contro una creatura e la manca, dispone di vantaggio al tiro per colpire successivo contro quella creatura, prima della fine del suo turno seguente.',
+  'fighter-subclass-feature-3': sub('del guerriero', 15),
+  'action-surge-two-uses':
+    'Il guerriero può usare Azione impetuosa due volte prima di un riposo breve o lungo, ma soltanto una volta nello stesso turno.',
+  'indomitable-three-uses':
+    'Il guerriero può usare il privilegio Indomabile tre volte prima di completare un riposo lungo.',
+  'fighter-subclass-feature-4': sub('del guerriero', 18),
+  'three-extra-attacks':
+    'Quando effettua l\'azione di Attacco nel proprio turno, il guerriero può attaccare quattro volte anziché una.',
+
+  // ─── Campione ────────────────────────────────────────────────────
+  'improved-critical':
+    'I tiri per colpire del guerriero con armi e con colpi senz\'armi mettono a segno un colpo critico con un risultato di 19 o 20 sul d20.',
+  'remarkable-athlete':
+    'Grazie alle sue doti atletiche il guerriero dispone di vantaggio ai tiri per l\'iniziativa e alle prove di Forza (Atletica). Inoltre, subito dopo aver messo a segno un colpo critico, può muoversi fino a metà della propria velocità senza provocare attacchi di opportunità.',
+  'additional-fighting-style':
+    'Il guerriero ottiene un altro talento Stile di combattimento a sua scelta.',
+  'heroic-warrior':
+    'Il brivido della battaglia sospinge il guerriero: durante il combattimento può concedersi Ispirazione eroica ogni volta che inizia il turno senza averla.',
+  'superior-critical':
+    'I tiri per colpire del guerriero con armi e con colpi senz\'armi mettono a segno un colpo critico con un risultato da 18 a 20 sul d20.',
+  survivor:
+    'Il guerriero raggiunge l\'apice della sua resilienza: dispone di vantaggio ai tiri salvezza contro morte e tratta come un 20 ogni risultato da 18 a 20. Inoltre, se è sanguinante e possiede almeno 1 punto ferita, all\'inizio di ogni suo turno recupera punti ferita pari a 5 più il suo modificatore di Costituzione.',
+
+  // ═══ Monaco ═══════════════════════════════════════════════════════
+  'martial-arts':
+    'Finché è senz\'armi o impugna soltanto armi da monaco, non indossa alcuna armatura e non usa scudi, il monaco può effettuare un colpo senz\'armi come azione bonus, tirare il dado di Arti marziali al posto dei danni normali del colpo o dell\'arma da monaco, e usare Destrezza al posto di Forza per i tiri per colpire e per i danni.',
+  'monk-s-focus':
+    'L\'addestramento del monaco imbriglia un\'energia straordinaria misurata in punti concentrazione, il cui numero dipende dal suo livello. Spendendoli attiva Raffica di colpi, che sferra due colpi senz\'armi come azione bonus, Difesa paziente, che unisce Disimpegno e Schivata come azione bonus, e Passo del vento, che unisce Disimpegno e Scatto come azione bonus raddoppiando la distanza di salto. I punti spesi si recuperano con un riposo breve o lungo, e la CD dei relativi tiri salvezza è pari a 8 più il modificatore di Saggezza e il bonus di competenza.',
+  'unarmored-movement':
+    'La velocità del monaco aumenta di 3 metri, purché non indossi un\'armatura e non impugni uno scudo. Il bonus cresce ai livelli indicati nella tabella del monaco.',
+  'deflect-attacks':
+    'Quando è colpito da un attacco che include danni contundenti, perforanti o taglienti, il monaco può usare la reazione per ridurne i danni di 1d10 più il suo modificatore di Destrezza e il suo livello da monaco. Se li riduce a 0, può spendere 1 punto concentrazione per rimandare parte della forza dell\'attacco contro una creatura entro 1,5 metri, oppure entro 18 metri se l\'attacco era a distanza.',
+  'monk-subclass':
+    'Il monaco sceglie una sottoclasse del monaco, come il Guerriero della Mano Aperta, e ne ottiene i privilegi al 3°, 6°, 11° e 17° livello.',
+  'slow-fall':
+    'Quando cade, il monaco può usare la reazione per ridurre gli eventuali danni da caduta di un ammontare pari a cinque volte il suo livello da monaco.',
+  'stunning-strike':
+    'Una volta per turno, quando colpisce una creatura con un\'arma da monaco o con un colpo senz\'armi, il monaco può spendere 1 punto concentrazione: il bersaglio deve superare un tiro salvezza su Costituzione o restare stordito fino all\'inizio del turno successivo del monaco. Se lo supera, la sua velocità è dimezzata e il prossimo tiro per colpire contro di lui dispone di vantaggio.',
+  'empowered-strikes':
+    'Ogni volta che infligge danni con un colpo senz\'armi, il monaco può scegliere se infliggere danni da forza oppure il tipo di danno normale.',
+  'monk-subclass-feature': sub('del monaco', 6),
+  'acrobatic-movement':
+    'Se non indossa armature e non impugna uno scudo, nel suo turno il monaco può muoversi lungo le superfici verticali e sulle superfici liquide senza cadere durante il movimento.',
+  'heightened-focus':
+    'I tre privilegi alimentati dai punti concentrazione migliorano: Raffica di colpi infligge tre colpi senz\'armi anziché due; Difesa paziente concede punti ferita temporanei pari a due tiri del dado di Arti marziali; Passo del vento permette di portare con sé una creatura consenziente entro 1,5 metri di taglia Grande o inferiore.',
+  'self-restoration':
+    'Al termine di ogni suo turno il monaco può rimuovere da sé le condizioni affascinato, spaventato o avvelenato. Inoltre la rinuncia a cibo e bevande non gli fa accumulare livelli di indebolimento.',
+  'monk-subclass-feature-2': sub('del monaco', 11),
+  'deflect-energy':
+    'Il monaco può usare il privilegio Devia attacchi contro gli attacchi che infliggono qualsiasi tipo di danno, non più soltanto contro quelli contundenti, perforanti o taglienti.',
+  'disciplined-survivor':
+    'La disciplina fisica e mentale del monaco gli conferisce competenza in tutti i tiri salvezza. Inoltre, quando fallisce un tiro salvezza, può spendere 1 punto concentrazione per ripeterlo, usando il nuovo risultato.',
+  'perfect-focus':
+    'Quando tira per l\'iniziativa e possiede 3 punti concentrazione o meno, il monaco ne recupera fino ad averne 4.',
+  'monk-subclass-feature-3': sub('del monaco', 17),
+  'superior-defense':
+    'All\'inizio del suo turno il monaco può spendere 3 punti concentrazione per ottenere resistenza a tutti i danni tranne quelli da forza, per 1 minuto o finché non è incapacitato.',
+  'body-and-mind':
+    'La mente e il corpo del monaco raggiungono nuove vette: i punteggi di Destrezza e Saggezza aumentano di 4, fino a un massimo di 25.',
+
+  // ─── Guerriero della Mano Aperta ─────────────────────────────────
+  'open-hand-technique':
+    'Ogni volta che colpisce una creatura con un attacco della Raffica di colpi, il monaco può imporre un effetto a scelta: Disorientamento, che impedisce al bersaglio gli attacchi di opportunità fino all\'inizio del suo turno successivo; Spinta, che lo allontana fino a 4,5 metri se fallisce un tiro salvezza su Forza; Rovesciamento, che lo fa cadere prono se fallisce un tiro salvezza su Destrezza.',
+  'wholeness-of-body':
+    'Come azione bonus, il monaco tira il dado di Arti marziali e recupera punti ferita pari al risultato più il suo modificatore di Saggezza, minimo 1. Gli utilizzi sono pari al modificatore di Saggezza, minimo uno, e si recuperano con un riposo lungo.',
+  'fleet-step':
+    'Quando effettua un\'azione bonus diversa da Passo del vento, il monaco può usare anche Passo del vento subito dopo quell\'azione bonus.',
+  'quivering-palm':
+    'Quando colpisce una creatura con un colpo senz\'armi, il monaco può spendere 4 punti concentrazione per innescare vibrazioni impercettibili che durano un numero di giorni pari al suo livello da monaco. Quando vi pone fine, il bersaglio subisce 10d12 danni da forza, dimezzati con un tiro salvezza su Costituzione superato. Può tenere una sola creatura alla volta sotto questo effetto.',
+
+  // ═══ Paladino ═════════════════════════════════════════════════════
+  'lay-on-hands':
+    'Il paladino possiede una riserva di poteri curativi pari a cinque volte il suo livello, che si ricostituisce con un riposo lungo. Come azione bonus può toccare una creatura, anche se stesso, e attingere alla riserva per ripristinarle punti ferita; può inoltre consumare 5 punti della riserva per curare l\'avvelenamento, senza che quei punti ripristinino punti ferita.',
+  'paladin-s-smite':
+    'L\'incantesimo punizione divina è sempre considerato preparato e il paladino può lanciarlo una volta senza consumare slot incantesimo, recuperando quell\'utilizzo con un riposo lungo.',
+  'paladin-subclass':
+    'Il paladino sceglie una sottoclasse del paladino, come il Giuramento di devozione, e ne ottiene i privilegi al 3°, 7°, 15° e 20° livello.',
+  'faithful-steed':
+    'Il paladino ha sempre preparato l\'incantesimo trova cavalcatura e può lanciarlo una volta senza consumare uno slot incantesimo, recuperando quell\'utilizzo con un riposo lungo.',
+  'aura-of-protection':
+    'Il paladino sprigiona un\'aura protettiva invisibile in un\'emanazione di 3 metri: lui e i suoi alleati al suo interno ottengono un bonus ai tiri salvezza pari al suo modificatore di Carisma, minimo +1. L\'aura si spegne mentre il paladino è incapacitato, e una creatura può beneficiare di una sola Aura di protezione alla volta.',
+  'paladin-subclass-feature': sub('del paladino', 7),
+  'abjure-foes':
+    'Come azione di Magia, il paladino consuma un utilizzo di Incanalare divinità e prende di mira un numero di creature entro 18 metri pari al suo modificatore di Carisma, minimo una. Ogni bersaglio deve superare un tiro salvezza su Saggezza o restare spaventato per 1 minuto, o finché non subisce danni, potendo compiere nel proprio turno solo una fra il movimento, un\'azione e un\'azione bonus.',
+  'aura-of-courage':
+    'Il paladino e i suoi alleati sono immuni alla paura finché si trovano nell\'Aura di protezione; un alleato spaventato che vi entra smette di subire l\'effetto della paura finché resta al suo interno.',
+  'radiant-strikes':
+    'I colpi del paladino si caricano di potere soprannaturale: quando colpisce un bersaglio con un\'arma da mischia o con un colpo senz\'armi, gli infligge 1d8 danni radiosi aggiuntivi.',
+  'restoring-touch':
+    'Quando usa Imposizione delle mani su una creatura, il paladino può anche liberarla dalle condizioni accecato, affascinato, assordato, paralizzato, spaventato o stordito, consumando 5 punti della riserva curativa per ciascuna condizione rimossa.',
+  'paladin-subclass-feature-2': sub('del paladino', 15),
+  'aura-expansion':
+    'L\'Aura di protezione del paladino diventa un\'emanazione del raggio di 9 metri.',
+  'paladin-subclass-feature-3': sub('del paladino', 20),
+
+  // ─── Giuramento di devozione ─────────────────────────────────────
+  'oath-of-devotion-spells':
+    'La magia del giuramento tiene sempre preparati alcuni incantesimi: protezione dal bene e dal male e scudo della fede al 3° livello; aiuto e zona di verità al 5°; faro di speranza e dissolvi magie al 9°; libertà di movimento e guardiano della fede al 13°; comunione e colpo infuocato al 17°.',
+  'sacred-weapon':
+    'Quando effettua l\'azione di Attacco, il paladino può consumare un utilizzo di Incanalare divinità per infondere energia positiva nell\'arma da mischia che impugna: per 10 minuti aggiunge il suo modificatore di Carisma ai tiri per colpire con quell\'arma, minimo +1, può infliggere danni radiosi al posto di quelli normali, e l\'arma emette luce intensa per 6 metri e luce fioca per altri 6.',
+  'aura-of-devotion':
+    'Il paladino e i suoi alleati non possono essere affascinati finché si trovano nell\'Aura di protezione; un alleato affascinato che vi entra smette di subire quell\'effetto finché resta al suo interno.',
+  'smite-of-protection':
+    'Ogni volta che lancia punizione divina, il paladino e i suoi alleati che si trovano nell\'Aura di protezione ottengono mezza copertura fino all\'inizio del suo turno successivo.',
+  'holy-nimbus':
+    'Come azione bonus, il paladino infonde l\'Aura di protezione di potere sacro per 10 minuti: i nemici che iniziano il turno nell\'aura subiscono danni radiosi pari al suo modificatore di Carisma più il bonus di competenza, l\'aura rifulge di luce solare e il paladino dispone di vantaggio ai tiri salvezza imposti da immondi e non morti. Serve un riposo lungo per riusarlo, oppure uno slot incantesimo di 5° livello.',
+
+  // ═══ Ranger ═══════════════════════════════════════════════════════
+  'favored-enemy':
+    'Il ranger ha sempre preparato l\'incantesimo marchio del cacciatore e può lanciarlo due volte senza consumare slot incantesimo, recuperando gli utilizzi con un riposo lungo. Il numero di utilizzi aumenta ai livelli indicati nella tabella del ranger.',
+  'deft-explorer':
+    'I molti viaggi del ranger gli concedono Maestria in una delle abilità in cui ha competenza e la conoscenza di due lingue a sua scelta.',
+  'ranger-subclass':
+    'Il ranger sceglie una sottoclasse del ranger, come il Cacciatore, e ne ottiene i privilegi al 3°, 7°, 11° e 15° livello.',
+  roving:
+    'La velocità del ranger aumenta di 3 metri, purché non indossi un\'armatura pesante, e ottiene velocità di scalata e di nuoto pari alla propria velocità.',
+  'ranger-subclass-feature': sub('del ranger', 7),
+  tireless:
+    'Come azione di Magia, il ranger ottiene punti ferita temporanei pari a 1d8 più il suo modificatore di Saggezza, un numero di volte pari a quel modificatore e recuperando gli utilizzi con un riposo lungo. Inoltre, quando completa un riposo breve, il suo livello di indebolimento diminuisce di 1.',
+  'ranger-subclass-feature-2': sub('del ranger', 11),
+  'relentless-hunter':
+    'Subire danni non interrompe più la concentrazione del ranger sull\'incantesimo marchio del cacciatore.',
+  'nature-s-veil':
+    'Come azione bonus, il ranger invoca gli spiriti della natura e si conferisce la condizione invisibile fino al termine del suo turno successivo. Gli utilizzi sono pari al suo modificatore di Saggezza, minimo uno, e si recuperano con un riposo lungo.',
+  'ranger-subclass-feature-3': sub('del ranger', 15),
+  'precise-hunter':
+    'Il ranger dispone di vantaggio ai tiri per colpire contro la creatura su cui ha posto il proprio marchio del cacciatore.',
+  'feral-senses':
+    'Il legame con le forze della natura conferisce al ranger vista cieca entro un raggio di 9 metri.',
+  'foe-slayer':
+    'I danni dell\'incantesimo marchio del cacciatore si tirano con un d10 anziché con un d6.',
+
+  // ─── Cacciatore ──────────────────────────────────────────────────
+  'hunters-lore':
+    'Se una creatura porta il marchio del cacciatore del ranger, questi sa quali immunità, resistenze e vulnerabilità possiede quel bersaglio.',
+  'hunters-prey':
+    'Il ranger sceglie fra due opzioni: Devastatore dell\'orda, che una volta per turno gli concede un altro attacco con la stessa arma contro una creatura diversa entro 1,5 metri dal primo bersaglio, e Sterminatore di colossi, che una volta per turno aggiunge 1d8 danni contro una creatura a cui mancano punti ferita. Può cambiare opzione al termine di un riposo breve o lungo.',
+  'defensive-tactics':
+    'Il ranger sceglie fra due opzioni: Difesa dal multiattacco, per cui una creatura che lo colpisce subisce svantaggio a tutti gli altri tiri per colpire contro di lui in quel turno, e Sfuggire all\'orda, per cui gli attacchi di opportunità contro di lui subiscono svantaggio. Può cambiare opzione al termine di un riposo breve o lungo.',
+  'superior-hunters-prey':
+    'Una volta per turno, quando infligge i danni del marchio del cacciatore a una creatura, il ranger può infliggerli anche a un\'altra creatura nel suo campo visivo che si trovi entro 9 metri dal primo bersaglio.',
+  'superior-hunters-defense':
+    'Quando subisce danni, il ranger può usare la reazione per ottenere resistenza a quel tipo di danno fino al termine del turno in corso.',
+
+  // ═══ Ladro ════════════════════════════════════════════════════════
+  'sneak-attack':
+    'Una volta per turno il ladro infligge 1d6 danni extra a una creatura che colpisce con un\'arma accurata o a distanza, se dispone di vantaggio al tiro per colpire, oppure se un suo alleato non incapacitato si trova entro 1,5 metri dal bersaglio e il tiro non ha svantaggio. I dadi aumentano ai livelli indicati nella tabella del ladro.',
+  'thieves-cant':
+    'Il ladro conosce il Gergo ladresco, il codice delle comunità in cui ha affinato le proprie competenze illecite, e un\'altra lingua a sua scelta.',
+  'cunning-action':
+    'La prontezza di spirito del ladro gli permette di effettuare come azione bonus, nel suo turno, una fra le azioni di Scatto, Disimpegno e Nascondersi.',
+  'rogue-subclass':
+    'Il ladro sceglie una sottoclasse del ladro, come il Furfante, e ne ottiene i privilegi al 3°, 9°, 13° e 17° livello.',
+  'steady-aim':
+    'Come azione bonus, il ladro ottiene vantaggio al prossimo tiro per colpire del turno in corso. Può farlo solo se non si è mosso in quel turno e, dopo averlo usato, la sua velocità è ridotta a 0 fino al termine del turno.',
+  'cunning-strike':
+    'Quando infligge i danni dell\'Attacco furtivo, il ladro può rinunciare ad alcuni dadi di danno per aggiungere un effetto: Inciampo, che costa 1d6 e fa cadere prono un bersaglio di taglia Grande o inferiore che fallisce un tiro salvezza su Destrezza; Ritirata, che costa 1d6 e gli permette di muoversi di metà velocità senza provocare attacchi di opportunità; Veleno, che costa 1d6 e impone un tiro salvezza su Costituzione per non restare avvelenato per 1 minuto. La CD è pari a 8 più il modificatore di Destrezza e il bonus di competenza.',
+  'uncanny-dodge':
+    'Quando è colpito da un attaccante che si trova nel suo campo visivo, il ladro può usare la reazione per dimezzare i danni subiti, arrotondati per difetto.',
+  'expertise-2':
+    'Il ladro ottiene Maestria in altre due abilità in cui ha competenza: il suo bonus di competenza raddoppia nelle prove di caratteristica che le usano.',
+  'reliable-talent':
+    'Quando effettua una prova di caratteristica con un\'abilità o uno strumento in cui ha competenza, il ladro considera come 10 ogni risultato del d20 pari o inferiore a 9.',
+  'rogue-subclass-feature': sub('del ladro', 9),
+  'improved-cunning-strike':
+    'Il ladro può utilizzare fino a due effetti di Colpo astuto quando infligge i danni dell\'Attacco furtivo, pagando il costo in dadi di ciascuno di essi.',
+  'rogue-subclass-feature-2': sub('del ladro', 13),
+  'devious-strikes':
+    'Il ladro aggiunge tre opzioni al Colpo astuto: Atterramento, che costa 6d6 e rende privo di sensi per 1 minuto il bersaglio che fallisce un tiro salvezza su Costituzione; Confusione, che costa 2d6 e gli lascia nel turno successivo una sola fra il movimento, un\'azione e un\'azione bonus; Rabbuio, che costa 3d6 e lo acceca fino al termine del suo turno successivo se fallisce un tiro salvezza su Destrezza.',
+  'slippery-mind':
+    'La mente arguta del ladro è difficile da controllare: ottiene competenza nei tiri salvezza su Saggezza e Carisma.',
+  'rogue-subclass-feature-3': sub('del ladro', 17),
+  elusive:
+    'Il ladro è talmente sfuggente che nessun tiro per colpire contro di lui può disporre di vantaggio, a meno che non sia incapacitato.',
+  'stroke-of-luck':
+    'Se fallisce una prova con d20, il ladro può trasformare il risultato in un 20. Deve completare un riposo breve o lungo prima di poterlo rifare.',
+
+  // ─── Furfante ────────────────────────────────────────────────────
+  'fast-hands':
+    'Come azione bonus, il ladro può effettuare una prova di Destrezza (Rapidità di mano) per scassinare una serratura, disattivare una trappola con gli arnesi da scasso o borseggiare qualcuno, oppure effettuare l\'azione di Utilizzo o di Magia per usare un oggetto magico che la richieda.',
+  'second-story-work':
+    'Il duro addestramento porta il ladro dove è difficile arrivare: ottiene una velocità di scalata pari alla propria velocità e può determinare la distanza dei suoi salti con il modificatore di Destrezza anziché con quello di Forza.',
+  'supreme-sneak':
+    'Il ladro ottiene l\'opzione di Colpo astuto Attacco nascosto, che costa 1d6: se è invisibile per via dell\'azione Nascondersi, l\'attacco non interrompe quella condizione, purché il ladro termini il turno dietro tre quarti di copertura o copertura totale.',
+  'use-magic-device':
+    'Il ladro trae il massimo dagli oggetti magici: quando usa una proprietà a cariche tira 1d6 e con un 6 non consuma cariche; può usare qualsiasi pergamena magica con Intelligenza come caratteristica da incantatore, superando una prova di Intelligenza (Arcano) con CD 10 più il livello dell\'incantesimo per quelli oltre il 1° livello; e può sintonizzarsi con un massimo di quattro oggetti magici.',
+  'thiefs-reflexes':
+    'Nel primo round di ogni combattimento il ladro effettua due turni: il primo alla sua iniziativa normale e il secondo alla sua iniziativa meno 10.',
+
+  // ═══ Stregone ═════════════════════════════════════════════════════
+  'font-of-magic':
+    'Lo stregone attinge alla fonte di potere magico che ha dentro di sé, rappresentata dai punti stregoneria indicati nella tabella della classe e recuperati con un riposo lungo. Può consumare uno slot incantesimo per ottenere punti stregoneria pari al livello dello slot e, come azione bonus, trasformare i punti non spesi in slot incantesimo fino al 5° livello, che svaniscono al riposo lungo successivo.',
+  'sorcerer-subclass':
+    'Lo stregone sceglie una sottoclasse dello stregone, come la Stregoneria draconica, e ne ottiene i privilegi al 3°, 6°, 14° e 18° livello.',
+  sorcerous:
+    'Quando completa un riposo breve, lo stregone recupera punti stregoneria spesi fino a un massimo pari alla metà del suo livello da stregone, arrotondata per difetto. Deve completare un riposo lungo prima di poterlo rifare.',
+  'sorcerer-subclass-feature': sub('dello stregone', 6),
+  'sorcery-incarnate':
+    'Se ha consumato tutti gli utilizzi di Stregoneria innata, lo stregone può attivarla come azione bonus spendendo 2 punti stregoneria. Inoltre, mentre quel privilegio è attivo, può usare fino a due opzioni di Metamagia su ogni incantesimo che lancia.',
+  metamagic:
+    'Poiché la sua magia è innata, lo stregone può alterare gli incantesimi secondo necessità: ottiene due opzioni di Metamagia, che applica agli incantesimi lanciati spendendo il costo in punti stregoneria indicato da ciascuna. Di norma può usare una sola opzione per incantesimo e, ogni volta che ottiene un livello da stregone, può sostituire una delle opzioni conosciute con un\'altra.',
+  'sorcerer-subclass-feature-2': sub('dello stregone', 14),
+  'metamagic-2':
+    'Lo stregone ottiene altre due opzioni di Metamagia a sua scelta fra quelle elencate nella descrizione della classe.',
+  'sorcerer-subclass-feature-3': sub('dello stregone', 18),
+  'arcane-apotheosis':
+    'Mentre il privilegio Stregoneria innata è attivo, lo stregone può usare un\'opzione di Metamagia a ogni turno senza consumare punti stregoneria.',
+
+  // ─── Stregoneria draconica ───────────────────────────────────────
+  'draconic-resilience':
+    'La magia draconica plasma il corpo dello stregone: i suoi punti ferita massimi salgono di 3 e aumentano di 1 a ogni livello da stregone successivo. Inoltre parti del suo corpo sono ricoperte di scaglie di drago e, se non indossa armature, la sua Classe Armatura base è pari a 10 più i modificatori di Destrezza e Carisma.',
+  'draconic-spells':
+    'La discendenza draconica tiene sempre preparati alcuni incantesimi: alterare se stesso, globo cromatico, comando e soffio del drago al 3° livello; paura e volare al 5°; occhio arcano e charme sui mostri al 7°; conoscenza delle leggende e richiama drago al 9°.',
+  'elemental-affinity':
+    'Lo stregone sceglie un tipo di danno associato ai draghi fra acido, freddo, fulmine, fuoco e veleno: ottiene resistenza a quel danno e, quando lancia un incantesimo di quell\'elemento, può aggiungere il suo modificatore di Carisma a un tiro per i danni.',
+  'dragon-wings':
+    'Come azione bonus, lo stregone fa apparire sulla sua schiena ali draconiche che gli conferiscono velocità di volo di 18 metri per 1 ora, o finché non le fa scomparire. Serve un riposo lungo per riusarlo, oppure la spesa di 3 punti stregoneria.',
+  'dragon-companion':
+    'Lo stregone può lanciare richiama drago senza usare componenti materiali e, una volta per riposo lungo, anche senza consumare uno slot incantesimo.',
+
+  // ═══ Warlock ══════════════════════════════════════════════════════
+  'eldritch-invocations':
+    'Il warlock ha scoperto le Suppliche occulte, frammenti di conoscenza proibita che gli conferiscono doti magiche persistenti, come il Patto del tomo. Alcune suppliche hanno prerequisiti; ogni volta che ottiene un livello da warlock può sostituirne una, e ai livelli indicati nella tabella della classe ne ottiene altre.',
+  'pact-magic':
+    'Attraverso una cerimonia occulta il warlock ha stretto un patto con un\'entità misteriosa che gli ha concesso la capacità di lanciare incantesimi. I suoi slot incantesimo sono tutti dello stesso livello, dal 1° al 5°, e si recuperano con un riposo breve o lungo; la caratteristica da incantatore è il Carisma.',
+  'magical-cunning':
+    'Il warlock può eseguire un rito esoterico della durata di 1 minuto, al termine del quale recupera slot incantesimo spesi di Magia del patto, fino a metà del loro numero massimo arrotondata per eccesso. Deve completare un riposo lungo prima di poterlo rifare.',
+  'warlock-subclass':
+    'Il warlock sceglie una sottoclasse del warlock, come il Patrono immondo, e ne ottiene i privilegi al 3°, 6°, 10° e 14° livello.',
+  'warlock-subclass-feature': sub('del warlock', 6),
+  'warlock-subclass-feature-2': sub('del warlock', 10),
+  'contact-patron':
+    'Il warlock ha sempre preparato l\'incantesimo contattare altri piani e può lanciarlo senza consumare uno slot incantesimo per parlare direttamente con il proprio patrono, superando automaticamente il relativo tiro salvezza. Deve completare un riposo lungo prima di poterlo rifare.',
+  'mystic-arcanum-level-6-spell':
+    'Il patrono rivela al warlock un segreto magico: sceglie un incantesimo da warlock di 6° livello e può lanciarlo una volta senza consumare slot incantesimo, recuperando quell\'utilizzo con un riposo lungo.',
+  'mystic-arcanum-level-7-spell':
+    'Il warlock sceglie un altro arcanum, questa volta un incantesimo da warlock di 7° livello, lanciabile una volta per riposo lungo senza consumare slot incantesimo.',
+  'warlock-subclass-feature-3': sub('del warlock', 14),
+  'mystic-arcanum-level-8-spell':
+    'Il warlock sceglie un altro arcanum, questa volta un incantesimo da warlock di 8° livello, lanciabile una volta per riposo lungo senza consumare slot incantesimo.',
+  'mystic-arcanum-level-9-spell':
+    'Il warlock sceglie un altro arcanum, questa volta un incantesimo da warlock di 9° livello, lanciabile una volta per riposo lungo senza consumare slot incantesimo.',
+  'eldritch-master':
+    'Quando usa il privilegio Scaltrezza magica, il warlock recupera tutti gli slot incantesimo spesi di Magia del patto.',
+
+  // ─── Patrono immondo ─────────────────────────────────────────────
+  'dark-ones-blessing':
+    'Quando fa scendere un nemico a 0 punti ferita, o quando lo fa qualcun altro con un nemico entro 3 metri da lui, il warlock ottiene punti ferita temporanei pari al suo modificatore di Carisma più il suo livello da warlock, minimo 1.',
+  'fiend-spells':
+    'La magia del patrono tiene sempre preparati alcuni incantesimi: comando, mani brucianti, raggio rovente e suggestione al 3° livello; nube maleodorante e palla di fuoco al 5°; muro di fuoco e scudo di fuoco al 7°; costrizione e piaga degli insetti al 9°.',
+  'dark-ones-own-luck':
+    'Quando effettua una prova di caratteristica o un tiro salvezza, il warlock può aggiungere 1d10 al risultato, anche dopo aver visto il tiro ma prima che se ne applichino gli effetti. Gli utilizzi sono pari al suo modificatore di Carisma, minimo uno, e si recuperano con un riposo lungo.',
+  'fiendish-resilience':
+    'Ogni volta che completa un riposo breve o lungo, il warlock sceglie un tipo di danno diverso da forza e ottiene resistenza a quel danno finché non ne sceglie un altro con questo privilegio.',
+  'hurl-through-hell':
+    'Una volta per turno, quando colpisce una creatura con un tiro per colpire, il warlock può tentare di trascinarla nei Piani Inferiori: se il bersaglio fallisce un tiro salvezza su Carisma e non è un immondo, subisce 8d10 danni psichici ed è incapacitato fino alla fine del turno successivo del warlock, quando riappare nello spazio che occupava o in quello libero più vicino. Serve un riposo lungo per riusarlo, oppure uno slot incantesimo della Magia del patto.',
+
+  // ═══ Mago ═════════════════════════════════════════════════════════
+  'ritual-adept':
+    'Il mago può lanciare come rituale qualsiasi incantesimo con il descrittore rituale contenuto nel suo libro degli incantesimi, anche senza averlo preparato, purché per lanciarlo legga il libro.',
+  scholar:
+    'Nel corso dei suoi studi il mago si è specializzato anche in un\'altra disciplina: sceglie una fra Arcano, Indagare, Medicina, Natura, Religione e Storia in cui ha competenza e ottiene Maestria in quell\'abilità.',
+  'wizard-subclass':
+    'Il mago sceglie una sottoclasse del mago, come l\'Invocatore, e ne ottiene i privilegi al 3°, 6°, 10° e 14° livello.',
+  'memorize-spell':
+    'Quando completa un riposo breve, il mago può studiare il proprio libro degli incantesimi e sostituire uno degli incantesimi preparati di 1° livello o superiore con un altro di pari o diverso livello tratto dal libro.',
+  'wizard-subclass-feature': sub('del mago', 6),
+  'wizard-subclass-feature-2': sub('del mago', 10),
+  'wizard-subclass-feature-3': sub('del mago', 14),
+  'spell-mastery':
+    'Il mago sceglie dal suo libro un incantesimo di 1° livello e uno di 2° livello con tempo di lancio di un\'azione: sono sempre considerati preparati e può lanciarli al loro livello più basso senza consumare slot incantesimo. Al termine di un riposo lungo può sostituirli con altri dello stesso livello tratti dal libro.',
+  'signature-spells':
+    'Il mago sceglie due incantesimi di 3° livello dal suo libro: sono sempre considerati preparati e può lanciarli una volta ciascuno al 3° livello senza consumare slot incantesimo, recuperando quegli utilizzi con un riposo breve o lungo.',
+
+  // ─── Invocatore ──────────────────────────────────────────────────
+  'evocation-savant':
+    'Il mago aggiunge gratuitamente al suo libro degli incantesimi due incantesimi da mago della scuola di Invocazione non superiori al 2° livello e, ogni volta che ottiene accesso a un nuovo livello di slot incantesimo, un altro incantesimo di quella scuola.',
+  'potent-cantrip':
+    'Quando il mago lancia un trucchetto contro una creatura e la manca con il tiro per colpire, oppure quella supera il tiro salvezza, il bersaglio subisce comunque metà dei danni, ma non gli effetti aggiuntivi del trucchetto.',
+  'sculpt-spells':
+    'Quando lancia un incantesimo della scuola di Invocazione che influenza altre creature nel suo campo visivo, il mago ne sceglie un numero pari a 1 più il livello dell\'incantesimo: quelle creature superano automaticamente il tiro salvezza e non subiscono alcun danno se normalmente ne subirebbero la metà.',
+  'empowered-evocation':
+    'Quando lancia un incantesimo della scuola di Invocazione, il mago può aggiungere il suo modificatore di Intelligenza a un tiro per i danni.',
+  overchannel:
+    'Quando lancia con uno slot dal 1° al 5° livello un incantesimo che infligge danni, il mago può infliggerne il massimo. La prima volta non subisce alcun effetto avverso; se lo rifà prima di completare un riposo lungo subisce 2d12 danni necrotici per livello dell\'incantesimo, che ignorano resistenze e immunità e aumentano di 1d12 a ogni ulteriore utilizzo.',
+}

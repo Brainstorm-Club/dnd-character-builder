@@ -82,17 +82,21 @@ let _dnd24Species: readonly Race[] | null = null
 let _dnd24Classes: readonly CharacterClass[] | null = null
 let _dnd24Backgrounds: readonly Background[] | null = null
 let _dnd24Spells: readonly Spell[] | null = null
+// Descrizioni italiane dei privilegi 2024: viaggiano nel chunk della variante,
+// come per le altre, così chi non apre il 2024 non le scarica (WSG 3.8).
+let _dnd24FeatureIt: Record<string, string> | null = null
 let _toDnd24Spells: ((base: readonly Spell[]) => Spell[]) | null = null
 let _pDnd24: Promise<void> | null = null
 
 function ensureDnd2024(): Promise<void> {
-  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds) return Promise.resolve()
+  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt) return Promise.resolve()
   if (_pDnd24) return _pDnd24
   const cs = lsGet<Race[]>('dnd24-species')
   const cc = lsGet<CharacterClass[]>('dnd24-classes')
   const cb = lsGet<Background[]>('dnd24-backgrounds')
-  if (cs && cc && cb) {
-    _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb
+  const ci = lsGet<Record<string, string>>('dnd24-feature-it')
+  if (cs && cc && cb && ci) {
+    _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb; _dnd24FeatureIt = ci
     return Promise.resolve()
   }
   _pDnd24 = Promise.all([
@@ -100,13 +104,16 @@ function ensureDnd2024(): Promise<void> {
     import('./dnd2024/classes'),
     import('./dnd2024/backgrounds'),
     import('./dnd2024/spells'),
-  ]).then(([r, c, b, sp]) => {
+    import('./dnd2024/classes-it'),
+  ]).then(([r, c, b, sp, itMod]) => {
     _dnd24Species = r.dnd2024Species
     _dnd24Classes = c.dnd2024Classes
     _dnd24Backgrounds = b.dnd2024Backgrounds
+    _dnd24FeatureIt = itMod.dnd2024FeatureDescriptionsIt
     lsSet('dnd24-species', r.dnd2024Species)
     lsSet('dnd24-classes', c.dnd2024Classes)
     lsSet('dnd24-backgrounds', b.dnd2024Backgrounds)
+    lsSet('dnd24-feature-it', itMod.dnd2024FeatureDescriptionsIt)
     _toDnd24Spells = sp.toDnd2024Spells
   })
   return _pDnd24
@@ -530,8 +537,8 @@ export function getRaces(variant: GameVariant): readonly Race[] {
 /**
  * Descrizione italiana di una sottoclasse o di un suo privilegio.
  * Brancalonia e Apocalisse hanno manuali italiani, quindi l'interfaccia
- * italiana mostra il testo del manuale; D&D 5e resta in inglese, che è la
- * lingua dell'SRD da cui i suoi dati provengono.
+ * italiana mostra il testo del manuale; il 2024 ha la traduzione dell'SRD
+ * 5.2.1, che è un'edizione a sé e non condivide nulla con i testi del 2014.
  */
 export function getFeatureDescription(
   variant: GameVariant,
@@ -540,6 +547,9 @@ export function getFeatureDescription(
   fallback: string,
 ): string {
   if (locale !== 'it') return fallback
+  // Il 2024 non ricade sui testi del 2014: le regole sono diverse e id uguali
+  // (rage, extra-attack...) descriverebbero privilegi che non coincidono.
+  if (variant === 'dnd2024') return _dnd24FeatureIt?.[featureId] ?? fallback
   const variantMap = variant === 'brancalonia' ? _brancaFeatureIt
     : variant === 'apocalisse' ? _apoFeatureIt
     : null
