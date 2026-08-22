@@ -287,6 +287,21 @@ export const spellNamesIt: Record<string, string> = {
   'True Resurrection': 'Resurrezione Suprema',
   'Weird': 'Terrore',
   'Wish': 'Desiderio',
+  // ─── Brancalonia (Macaronicon, L'Impero Randella Ancora) ──────────────────
+  'Dreadful Tale': 'Storia Spaventosa',
+  'Incandescent Mark': 'Marchio Incandescente',
+  'Quality Stamp': 'Bollo di Qualita\'',
+  'Exorcism': 'Esorcismo',
+  'Angelic Emanation': 'Emanazione Angelica',
+  'Cleanse': 'Bonificare',
+  'Insurance': 'Assicurazione',
+  'Poorman\'s Feast': 'Banchetto del Pezzente',
+  'Finger of Fate': 'Dito del Fato',
+  'Extravagant Skin': 'Pelle Fandonica',
+  'Illusory Tribute': 'Tributo Illusorio',
+  'Chex': 'Chex',
+  'Roast': 'Arrostire',
+  'Misinformation': 'Disinformazione',
 }
 
 export const spellSchoolsIt: Record<string, string> = {

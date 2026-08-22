@@ -68,6 +68,7 @@ let _brancaSubclasses: readonly BrancaloniaSubclass[] | null = null
 let _brancaBurattinaio: CharacterClass | null = null
 let _brancaBackgrounds: readonly Background[] | null = null
 let _brancaRules: BrancaloniaRules | null = null
+let _brancaSpells: readonly Spell[] | null = null
 
 // Apocalisse
 let _apoRaces: readonly Race[] | null = null
@@ -89,6 +90,7 @@ let _pBrancaRaces: Promise<void> | null = null
 let _pBrancaClasses: Promise<void> | null = null
 let _pBrancaBackgrounds: Promise<void> | null = null
 let _pBrancaRules: Promise<void> | null = null
+let _pBrancaSpells: Promise<void> | null = null
 
 let _pApoRaces: Promise<void> | null = null
 let _pApoClasses: Promise<void> | null = null
@@ -245,6 +247,18 @@ function ensureBrancaRules(): Promise<void> {
   return _pBrancaRules
 }
 
+function ensureBrancaSpells(): Promise<void> {
+  if (_brancaSpells) return Promise.resolve()
+  if (_pBrancaSpells) return _pBrancaSpells
+  const cached = lsGet<Spell[]>('branca-spells')
+  if (cached) { _brancaSpells = cached; return Promise.resolve() }
+  _pBrancaSpells = import('./brancalonia/spells').then(m => {
+    _brancaSpells = m.brancaloniaSpells
+    lsSet('branca-spells', m.brancaloniaSpells)
+  })
+  return _pBrancaSpells
+}
+
 // ─── Apocalisse Module Loaders ──────────────────────────────────────────────
 
 function ensureApoRaces(): Promise<void> {
@@ -344,6 +358,7 @@ function loadsForStep(variant: GameVariant, step: number): Promise<void>[] {
       break
     case 6: // Spells
       loads.push(ensureDnd5eSpells(), ensureDnd5eRules(), ensureDnd5eClasses())
+      if (variant === 'brancalonia') loads.push(ensureBrancaSpells())
       break
     case 7: // Details
       // Races needed for size derivation
@@ -376,7 +391,7 @@ async function ensureAllForVariant(variant: GameVariant): Promise<void> {
     ensureDnd5eSpells(), ensureDnd5eEquipment(), ensureDnd5eRules(),
   ]
   if (variant === 'brancalonia') {
-    loads.push(ensureBrancaRaces(), ensureBrancaClasses(), ensureBrancaBackgrounds(), ensureBrancaRules())
+    loads.push(ensureBrancaRaces(), ensureBrancaClasses(), ensureBrancaBackgrounds(), ensureBrancaRules(), ensureBrancaSpells())
   }
   if (variant === 'apocalisse') {
     loads.push(ensureApoRaces(), ensureApoClasses(), ensureApoBackgrounds(), ensureApoRules())
@@ -401,8 +416,10 @@ export async function preloadVariantData(variant: GameVariant): Promise<void> {
  * editing a saved character). Spells are dnd5e-only, so `variant` is accepted
  * for API symmetry but not used to branch.
  */
-export async function ensureSpellData(_variant: GameVariant): Promise<void> {
-  await Promise.all([ensureDnd5eSpells(), ensureDnd5eRules(), ensureDnd5eClasses()])
+export async function ensureSpellData(variant: GameVariant): Promise<void> {
+  const loads = [ensureDnd5eSpells(), ensureDnd5eRules(), ensureDnd5eClasses()]
+  if (variant === 'brancalonia') loads.push(ensureBrancaSpells())
+  await Promise.all(loads)
 }
 
 /** Check if variant data is already cached (all modules) */
@@ -566,8 +583,12 @@ export function getEquipment(_variant: GameVariant): EquipmentSet {
 
 // ─── Spells ─────────────────────────────────────────────────────────────────
 
-export function getSpells(_variant: GameVariant): readonly Spell[] {
-  return _dnd5eSpells ?? []
+export function getSpells(variant: GameVariant): readonly Spell[] {
+  const base = _dnd5eSpells ?? []
+  // Brancalonia adds its own spells on top of the D&D list; several subclasses
+  // name them in their domain and expanded lists.
+  if (variant === 'brancalonia') return [...base, ...(_brancaSpells ?? [])]
+  return base
 }
 
 export function getSpellSlots(className: string, level: number): Record<number, number> {
@@ -654,12 +675,13 @@ export function _resetCaches(): void {
   _dnd5eEquipment = null
   _dnd5eGetSpellSlotsForLevel = _dnd5eGetMulticlassSpellSlots = null
   _brancaRaces = _brancaBackgrounds = _brancaRules = null
+  _brancaSpells = null
   _brancaTraitDescriptions = null
   _brancaSubclasses = null; _brancaBurattinaio = null
   _apoRaces = _apoBackgrounds = _apoRules = null
   _apoTraitDescriptions = null
   _apoSubclasses = null
   _pDnd5eRaces = _pDnd5eClasses = _pDnd5eBackgrounds = _pDnd5eSpells = _pDnd5eEquipment = _pDnd5eRules = null
-  _pBrancaRaces = _pBrancaClasses = _pBrancaBackgrounds = _pBrancaRules = null
+  _pBrancaRaces = _pBrancaClasses = _pBrancaBackgrounds = _pBrancaRules = _pBrancaSpells = null
   _pApoRaces = _pApoClasses = _pApoBackgrounds = _pApoRules = null
 }
