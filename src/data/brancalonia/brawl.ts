@@ -162,3 +162,8 @@ export function getBrawlClassFeature(classId: string): BrawlClassFeature | undef
 export function getBrawlAce(classId: string): BrawlClassFeature | undefined {
   return brawlAces.find(f => f.classes.includes(classId))
 }
+
+/** id usato per cercare la descrizione italiana di una mossa di classe o asso. */
+export function brawlFeatureId(name: string): string {
+  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+}

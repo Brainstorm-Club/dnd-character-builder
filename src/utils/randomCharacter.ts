@@ -174,9 +174,15 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     }
   }
 
-  // Pick random background
+  // Pick random background.
+  // In Apocalisse l'Origine è insieme razza e background — il manuale la
+  // presenta proprio in formato background — quindi le due scelte devono
+  // combaciare: un Risorto dal Limbo non può avere il background di un
+  // Risorto dall'Inferno.
   const backgrounds = getBackgrounds(variant)
-  const bg = pick(backgrounds)
+  const bg = variant === 'apocalisse'
+    ? (backgrounds.find(b => b.id === race.id) ?? pick(backgrounds))
+    : pick(backgrounds)
 
   // D&D 2024: è il background a dare i bonus di caratteristica, non la specie.
   // Elenca tre caratteristiche fra cui una sale di 2 e un'altra di 1.
@@ -210,15 +216,15 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   // Equipment: starting equipment from class + background
   const equipment = [...cls.startingEquipment, ...bg.equipment]
 
-  // Features from class at current level
+  // Features from class at current level.
+  // Solo il nome, senza "(Lv.N)": è la stessa forma che salva la procedura
+  // guidata, ed è quella che le traduzioni sanno cercare. Con il livello
+  // incollato dentro, il riepilogo e la scheda PDF restavano in inglese.
   const features = cls.features
     .filter(f => f.level <= level)
-    .map(f => `${f.name} (Lv.${f.level})`)
+    .map(f => f.name)
   if (subclass) {
-    const subFeatures = subclass.features
-      .filter(f => f.level <= level)
-      .map(f => `${f.name} (Lv.${f.level})`)
-    features.push(...subFeatures)
+    features.push(...subclass.features.filter(f => f.level <= level).map(f => f.name))
   }
 
   // Spells (if caster)

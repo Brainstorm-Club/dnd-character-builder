@@ -105,6 +105,17 @@ describe('scheda generata per ogni sistema', () => {
     })
   }
 
+
+  it("in Apocalisse l'Origine è insieme razza e background", () => {
+    // Il manuale presenta le Origini in formato background: sceglierle
+    // separatamente produceva un Risorto dal Limbo con il background di un
+    // Risorto dall'Inferno.
+    for (let i = 0; i < 15; i++) {
+      const c = generateRandomCharacter('apocalisse')
+      expect(c.background, `razza ${c.race}`).toBe(c.race)
+    }
+  })
+
   it('D&D 2024 prende i bonus di caratteristica dal background', () => {
     // Nel 2024 il background elenca tre caratteristiche: una sale di 2 e
     // un'altra di 1. Senza questo, un personaggio 2024 nascerebbe con i tiri
@@ -117,6 +128,24 @@ describe('scheda generata per ogni sistema', () => {
       expect(bonuses.map(([, v]) => v).sort(), `${c.background}`).toEqual([1, 2])
       for (const [ability] of bonuses) {
         expect(bg.abilityScoreOptions, `${c.background}: ${ability}`).toContain(ability)
+      }
+    }
+  })
+
+
+  it('salva i privilegi col nome pulito, così le traduzioni li trovano', async () => {
+    // Il generatore incollava "(Lv.1)" nel nome: il riepilogo e la scheda PDF
+    // restavano in inglese perché la ricerca in gameTerms falliva.
+    const { featureNamesIt } = await import('@/i18n/gameTerms')
+    for (const variant of VARIANTS) {
+      const c = generateRandomCharacter(variant)
+      for (const f of c.featuresTraits) {
+        expect(f, `${variant}: ${f}`).not.toMatch(/\(Lv\.\d+\)/)
+      }
+      // e almeno un privilegio deve avere una traduzione italiana
+      if (c.featuresTraits.length) {
+        const translated = c.featuresTraits.filter(f => featureNamesIt[f])
+        expect(translated.length, `${variant}: nessun privilegio tradotto`).toBeGreaterThan(0)
       }
     }
   })

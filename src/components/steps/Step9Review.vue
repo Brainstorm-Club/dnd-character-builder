@@ -10,7 +10,8 @@ import { getSpells, getClasses, getRaces, getBackgrounds, getApocalisseRules, ge
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
-import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce } from '@/data/brancalonia/brawl'
+import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce, brawlFeatureId } from '@/data/brancalonia/brawl'
+import { brawlDescriptionsIt } from '@/data/brancalonia/brawl-it'
 
 const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
@@ -137,8 +138,14 @@ const brawlKit = computed(() => {
   return {
     slots: getMoveSlots(lv),
     moves: getKnownMoveCount(lv),
-    feature: feature && { name: it ? feature.nameOriginal : feature.name, description: feature.description },
-    ace: ace && { name: it ? ace.nameOriginal : ace.name, description: ace.description },
+    feature: feature && {
+      name: it ? feature.nameOriginal : feature.name,
+      description: (it && brawlDescriptionsIt[brawlFeatureId(feature.name)]) || feature.description,
+    },
+    ace: ace && {
+      name: it ? ace.nameOriginal : ace.name,
+      description: (it && brawlDescriptionsIt[brawlFeatureId(ace.name)]) || ace.description,
+    },
   }
 })
 

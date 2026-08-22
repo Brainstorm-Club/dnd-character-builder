@@ -66,3 +66,24 @@ describe('sistema delle Risse (Manuale di Ambientazione 2.6)', () => {
     expect(getBrawlClassFeature('rogue')?.nameOriginal).toBe('Mossa Furtiva')
   })
 })
+
+describe('descrizioni italiane delle mosse', () => {
+  it('copre ogni mossa, mossa di classe e asso', async () => {
+    const { brawlDescriptionsIt } = await import('./brawl-it')
+    const { brawlFeatureId } = await import('./brawl')
+    for (const m of brawlMoves) {
+      expect(brawlDescriptionsIt[m.id], m.name).toBeDefined()
+    }
+    for (const f of [...brawlClassFeatures, ...brawlAces]) {
+      expect(brawlDescriptionsIt[brawlFeatureId(f.name)], f.name).toBeDefined()
+    }
+  })
+
+  it('non lascia testo inglese', async () => {
+    const { brawlDescriptionsIt } = await import('./brawl-it')
+    for (const [id, text] of Object.entries(brawlDescriptionsIt)) {
+      expect(text.length, id).toBeGreaterThan(40)
+      expect(text, id).not.toMatch(/\b(you can|as a bonus action|saving throw)\b/i)
+    }
+  })
+})
