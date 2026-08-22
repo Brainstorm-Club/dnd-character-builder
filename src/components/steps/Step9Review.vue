@@ -10,6 +10,7 @@ import { getSpells, getClasses, getRaces, getBackgrounds, getApocalisseRules, ge
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
+import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce } from '@/data/brancalonia/brawl'
 
 const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
@@ -124,6 +125,23 @@ function displayNameLocale(item: { name: string; nameOriginal?: string } | undef
   if (locale.value === 'it' && item.nameOriginal) return item.nameOriginal
   return item.name
 }
+// Corredo da rissa: quanti slot mossa e quante mosse spettano al personaggio,
+// più la mossa di classe e (dal 6°) l'asso nella manica.
+const brawlKit = computed(() => {
+  if (char.value.variant !== 'brancalonia' || !char.value.className) return null
+  const cls = char.value.className
+  const lv = char.value.level
+  const it = locale.value === 'it'
+  const feature = getBrawlClassFeature(cls)
+  const ace = lv >= 6 ? getBrawlAce(cls) : undefined
+  return {
+    slots: getMoveSlots(lv),
+    moves: getKnownMoveCount(lv),
+    feature: feature && { name: it ? feature.nameOriginal : feature.name, description: feature.description },
+    ace: ace && { name: it ? ace.nameOriginal : ace.name, description: ace.description },
+  }
+})
+
 const displayFeat = computed(() => {
   if (char.value.variant !== 'brancalonia' || !char.value.feat) return null
   const f = getBrancaloniaFeatById(char.value.feat)
@@ -424,6 +442,29 @@ function handleImport(event: Event) {
         <span class="text-stone-500 text-sm">{{ t('details.misdeeds') }}:</span>
         <span class="text-stone-300 text-sm ml-1">{{ char.misdeeds }}</span>
       </div>
+    </div>
+
+    <!-- Brancalonia: corredo da rissa -->
+    <div v-if="brawlKit" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
+      <h3 class="font-semibold text-red-400 mb-2">{{ t('review.brawl') }}</h3>
+      <div class="grid grid-cols-2 gap-3 text-sm mb-2">
+        <div>
+          <span class="text-stone-500">{{ t('review.moveSlots') }}:</span>
+          <span class="text-amber-400 font-bold ml-1">{{ brawlKit.slots }}</span>
+        </div>
+        <div>
+          <span class="text-stone-500">{{ t('review.knownMoves') }}:</span>
+          <span class="text-amber-400 font-bold ml-1">{{ brawlKit.moves }}</span>
+        </div>
+      </div>
+      <p v-if="brawlKit.feature" class="text-sm">
+        <span class="text-stone-200">{{ brawlKit.feature.name }}</span>
+        <span class="block text-stone-400">{{ brawlKit.feature.description }}</span>
+      </p>
+      <p v-if="brawlKit.ace" class="text-sm mt-2">
+        <span class="text-stone-200">{{ t('review.ace') }}: {{ brawlKit.ace.name }}</span>
+        <span class="block text-stone-400">{{ brawlKit.ace.description }}</span>
+      </p>
     </div>
 
     <!-- Brancalonia: talento razziale scelto -->

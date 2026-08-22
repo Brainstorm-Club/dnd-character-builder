@@ -240,7 +240,11 @@
     "shareManual": "Copy the link below to share your character:",
     "shareFailed": "Could not generate share link. Try again.",
     "levelUp": "Level Up",
-    "levelDown": "Level Down"
+    "levelDown": "Level Down",
+    "brawl": "Brawl",
+    "moveSlots": "Move slots",
+    "knownMoves": "Known moves",
+    "ace": "Ace in the Hole"
   },
   "share": {
     "error": "Invalid Share Link",

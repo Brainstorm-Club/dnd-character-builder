@@ -240,7 +240,11 @@
     "shareManual": "Copia il link qui sotto per condividere il personaggio:",
     "shareFailed": "Impossibile generare il link. Riprova.",
     "levelUp": "Sali di Livello",
-    "levelDown": "Scendi di Livello"
+    "levelDown": "Scendi di Livello",
+    "brawl": "Rissa",
+    "moveSlots": "Slot mossa",
+    "knownMoves": "Mosse conosciute",
+    "ace": "Asso nella Manica"
   },
   "share": {
     "error": "Link di Condivisione Non Valido",

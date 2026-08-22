@@ -2,6 +2,7 @@ import type { CharacterData, AbilityScores } from '@/stores/character'
 import { modifier, proficiencyBonus, formatModifier, spellSaveDC, spellAttackBonus, feetToMeters } from './calculations'
 import { apocalisseRules } from '@/data/apocalisse/rules'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
+import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce } from '@/data/brancalonia/brawl'
 import { classNamesIt, brancaloniaClassNamesIt, apocalisseClassNamesIt, raceNamesIt, subraceNamesIt, backgroundNamesIt } from '@/i18n/gameTerms'
 
 /** Capitalize a class ID for English display (e.g., "barbarian" → "Barbarian") */
@@ -185,9 +186,18 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
   fields['ProficienciesLang'] = [...char.proficienciesOther, ...char.languages.map(l => `Language: ${l}`)].join('\n')
   // Features and Traits - include Apocalisse mark/virtue/sin/humanity if applicable
   const featureLines = [...char.featuresTraits]
-  if (char.variant === 'brancalonia' && char.feat) {
-    const featObj = getBrancaloniaFeatById(char.feat)
-    if (featObj) featureLines.push(`Talento: ${featObj.nameOriginal}`)
+  if (char.variant === 'brancalonia') {
+    if (char.feat) {
+      const featObj = getBrancaloniaFeatById(char.feat)
+      if (featObj) featureLines.push(`Talento: ${featObj.nameOriginal}`)
+    }
+    if (char.className) {
+      featureLines.push(`Rissa - Slot mossa: ${getMoveSlots(char.level)}, Mosse: ${getKnownMoveCount(char.level)}`)
+      const brawlFeat = getBrawlClassFeature(char.className)
+      if (brawlFeat) featureLines.push(`Mossa di Classe: ${brawlFeat.nameOriginal}`)
+      const ace = char.level >= 6 ? getBrawlAce(char.className) : undefined
+      if (ace) featureLines.push(`Asso nella Manica: ${ace.nameOriginal}`)
+    }
   }
   if (char.variant === 'apocalisse') {
     if (char.mark) {
