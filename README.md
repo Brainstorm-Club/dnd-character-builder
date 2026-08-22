@@ -6,7 +6,7 @@ A free, open-source character builder for **D&D 5th Edition**, **Brancalonia**, 
 
 ## Features
 
-- **3 game variants**: D&D 5e (SRD), Brancalonia (Spaghetti Fantasy), Apocalisse (Dark Fantasy)
+- **4 game variants**: D&D 5e (2014), D&D 2024, Brancalonia (Spaghetti Fantasy), Apocalisse (Dark Fantasy)
 - **9-step wizard**: variant, race, class, abilities, background, equipment, spells, details, review
 - **3 ability score methods**: standard array, point buy, 4d6 drop lowest
 - **Random character generator**: one click per variant
@@ -85,6 +85,7 @@ Click **"Save Character"** on the review page. Characters are stored in your bro
 | Variant | Races | Classes | Max Level | Source |
 |---------|-------|---------|-----------|--------|
 | **D&D 5e** | 9 races, 18 with subraces | 12 classes + subclasses | 20 | [SRD 5.1](https://dnd.wizards.com/resources/systems-reference-document) and the 2014 Player's Handbook |
+| **D&D 2024** | 9 species, 24 lineages | 12 classes + subclasses | 20 | [SRD 5.2.1](https://www.dndbeyond.com/srd) (CC-BY-4.0) |
 | **Brancalonia** | 6 races | 12 subclasses | 6 | [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games?affiliate_id=2960765) |
 | **Apocalisse** | 1 race, 6 origins | 12 archetypes | 20 | [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games/category/44511/apocalisse?affiliate_id=2960765) |
 

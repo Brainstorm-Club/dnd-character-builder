@@ -26,6 +26,40 @@ come out. It is deliberately listed here rather than left implicit.
 Spell descriptions are the opening sentences of the manual text, not
 paraphrases; class feature descriptions are summaries.
 
+## D&D 2024 — SRD 5.2.1
+
+Variante separata da quella 2014, non una sua sostituzione. Due ragioni
+concrete: le sottoclassi di Brancalonia e Apocalisse citano privilegi che
+nel 2024 non esistono più (i punti ki del monaco, Deviare Proiettili), e
+`variant` è salvato nelle schede e nei link di condivisione, quindi
+ridefinire `dnd5e` avrebbe trasformato ogni personaggio già salvato.
+
+Dati trascritti dal **System Reference Document 5.2.1**, pubblicato da
+Wizards of the Coast sotto licenza CC-BY-4.0:
+
+| Cosa | Quanto |
+|------|--------|
+| Specie | 9 — senza bonus di caratteristica, che nel 2024 dà il background |
+| Discendenze | 24, modellate come sottorazze (draghi, lignaggi elfici, giganti, retaggi) |
+| Background | 4, ciascuno con tre caratteristiche e un talento d'origine |
+| Classi | 12, con 248 privilegi dal 1° al 20° e una sottoclasse ciascuna |
+
+Gli incantesimi non sono duplicati: la variante riusa i 317 del 2014
+applicando gli scostamenti dell'SRD 5.2.1 — 58 liste di classe cambiate e
+2 incantesimi usciti. Restano fuori i 23 presenti solo nel 2024.
+
+I nomi italiani dei privilegi vengono dall'edizione italiana dell'SRD
+5.2.1 (`IT_SRD_CC_v5.2.1`).
+
+## Le fonti in breve
+
+| Variante | Regole | Fonte |
+|----------|--------|-------|
+| D&D 5e | 2014 | SRD 5.1 (OGL) + Player's Handbook |
+| D&D 2024 | 2024 | SRD 5.2.1 (CC-BY-4.0) |
+| Brancalonia | 2014 | Manuale di Ambientazione, Macaronicon, L'Impero |
+| Apocalisse | 2014 | John's Guide to the Armageddon |
+
 ## Brancalonia
 
 Data transcribed from the manuals published by [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games?affiliate_id=2960765):

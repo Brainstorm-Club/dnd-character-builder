@@ -21,7 +21,8 @@ npm run audit:sci    # Run SCI carbon intensity benchmark
 - **PWA**: offline-capable with Workbox service worker
 - **Hosted**: GitHub Pages at https://brainstorm-club.github.io/dnd-character-builder/ (static, served from `/docs`)
 - **Org**: [Brainstorm-Club](https://github.com/Brainstorm-Club) — the repo lives under the organization
-- **Three game variants**: `dnd5e`, `brancalonia`, `apocalisse`
+- **Four game variants**: `dnd5e` (2014 rules), `dnd2024` (SRD 5.2.1), `brancalonia`, `apocalisse`
+  - `dnd5e` must stay on the 2014 rules: Brancalonia and Apocalisse subclasses build on it
 
 ## Brand / Design System
 
