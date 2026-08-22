@@ -106,6 +106,27 @@ describe('scheda generata per ogni sistema', () => {
   }
 
 
+
+  it('in Apocalisse ogni Ultimo ha una Virtù e un Peccato', async () => {
+    // Nel manuale sostituiscono l'allineamento: non possono restare vuoti.
+    const { apocalisseRules } = await import('./apocalisse/rules')
+    const virtues = new Set(apocalisseRules.virtues.map(v => v.id))
+    const sins = new Set(apocalisseRules.sins.map(s => s.id))
+    for (let i = 0; i < 15; i++) {
+      const c = generateRandomCharacter('apocalisse')
+      expect(virtues, `virtù "${c.virtue}"`).toContain(c.virtue)
+      expect(sins, `peccato "${c.sin}"`).toContain(c.sin)
+      // Il Marchio è facoltativo, ma se c'è deve avere uno spirito coerente
+      if (c.mark) {
+        const mark = apocalisseRules.marks.find(m => m.id === c.mark)
+        expect(mark, c.mark).toBeDefined()
+        expect(mark!.spirits.map(s => s.id), `${c.mark}/${c.markSpirit}`).toContain(c.markSpirit)
+      } else {
+        expect(c.markSpirit).toBe('')
+      }
+    }
+  })
+
   it("in Apocalisse l'Origine è insieme razza e background", () => {
     // Il manuale presenta le Origini in formato background: sceglierle
     // separatamente produceva un Risorto dal Limbo con il background di un

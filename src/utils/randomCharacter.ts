@@ -1,7 +1,7 @@
 import type { CharacterData, AbilityScores, Weapon } from '@/stores/character'
 import type { GameVariant } from '@/stores/app'
 import type { AbilityKey, CharacterClass } from '@/data/dnd5e/classes'
-import { getRaces, getClasses, getBackgrounds, getSpells, getSpellSlots, getCantripsKnown, getSpellsKnownCount, getAvailableLanguages, getMaxLevel } from '@/data'
+import { getRaces, getClasses, getBackgrounds, getSpells, getSpellSlots, getCantripsKnown, getSpellsKnownCount, getAvailableLanguages, getMaxLevel, getApocalisseRules } from '@/data'
 import { simpleWeapons, martialWeapons, armor as armorData } from '@/data/dnd5e/equipment'
 import { rollAbilityScores } from './diceRoller'
 import { modifier, totalHp, proficiencyBonus } from './calculations'
@@ -205,6 +205,26 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   )
   const languages = [...raceLanguages, ...extraLanguages]
 
+  // Apocalisse: ogni Ultimo ha una Virtù e un Peccato — nel manuale sostituiscono
+  // l'allineamento, quindi non possono restare vuoti. Il Marchio invece è
+  // facoltativo: non tutti sono penitenti del Trono o corrotti dell'Abisso.
+  let apoVirtue = ''
+  let apoSin = ''
+  let apoMark = ''
+  let apoSpirit = ''
+  if (variant === 'apocalisse') {
+    const rules = getApocalisseRules(variant)
+    if (rules) {
+      apoVirtue = pick(rules.virtues).id
+      apoSin = pick(rules.sins).id
+      if (Math.random() < 0.5) {
+        const mark = pick(rules.marks)
+        apoMark = mark.id
+        apoSpirit = pick(mark.spirits).id
+      }
+    }
+  }
+
   // Calculate HP
   const conTotal = abilityScores.con + (racialBonuses.con || 0)
   const conMod = modifier(conTotal)
@@ -323,10 +343,10 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     misdeeds: '',
     size: race.size || 'Medium',
     whacksLevel: 0,
-    mark: '',
-    markSpirit: '',
-    virtue: '',
-    sin: '',
+    mark: apoMark,
+    markSpirit: apoSpirit,
+    virtue: apoVirtue,
+    sin: apoSin,
     humanity: 10,
     sessionNotes: '',
     classes: [],

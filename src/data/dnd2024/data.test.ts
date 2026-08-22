@@ -83,3 +83,36 @@ describe('background di D&D 2024', () => {
     expect(byId.get('soldier')!.abilityScoreOptions).toEqual(['str', 'dex', 'con'])
   })
 })
+
+describe('nomi italiani dei privilegi 2024', () => {
+  it('ogni privilegio di classe ha un nome italiano', async () => {
+    const { featureNamesIt } = await import('@/i18n/gameTerms')
+    const { dnd2024Classes } = await import('./classes')
+    const missing: string[] = []
+    for (const c of dnd2024Classes) {
+      for (const f of c.features) {
+        if (!featureNamesIt[f.name]) missing.push(`${c.id}/${f.name}`)
+      }
+    }
+    expect(missing).toEqual([])
+  })
+
+  it('non lascia artefatti di colonna nei nomi', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    for (const c of dnd2024Classes) {
+      for (const f of c.features) {
+        // le tabelle del PDF portano colonne di dadi che si incollavano al nome
+        expect(f.name, `${c.id}/${f.name}`).not.toMatch(/\s(D|\d*d\d+|\d+)$/)
+        expect(f.name.length, `${c.id}/${f.name}`).toBeGreaterThan(2)
+      }
+    }
+  })
+
+  it('usa i nomi 2024, non quelli 2014', async () => {
+    const { featureNamesIt } = await import('@/i18n/gameTerms')
+    expect(featureNamesIt['Weapon Mastery']).toBe("Padronanza d'armi")
+    expect(featureNamesIt['Monk’s Focus']).toBe('Concentrazione da monaco')
+    expect(featureNamesIt['Deflect Attacks']).toBe('Devia attacchi')
+    expect(featureNamesIt['Paladin’s Smite']).toBe('Punizione del paladino')
+  })
+})
