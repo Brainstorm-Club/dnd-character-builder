@@ -8,6 +8,14 @@ export interface Background {
   name: string
   nameOriginal?: string
   description: string
+  /**
+   * D&D 2024: il background elenca tre caratteristiche, di cui una sale di 2
+   * e un'altra di 1, oppure tutte e tre di 1. Nel 2014 i bonus venivano dalla
+   * razza e questo campo resta assente.
+   */
+  abilityScoreOptions?: string[]
+  /** D&D 2024: talento d'origine concesso dal background. */
+  originFeat?: string
   /** Competenze concesse d'ufficio */
   skillProficiencies: string[]
   /**
