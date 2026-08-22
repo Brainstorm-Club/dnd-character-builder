@@ -235,6 +235,8 @@ export const brancaloniaFeatureDescriptionsIt: Record<string, string> = {
     'Dedicandosi all\'arte delle marionette e dei pupazzi, il burattinaio sviluppa dei canoni artistici, conoscenze di costruzione e di messa in scena che gli permettono di usare i propri burattini per compiere veri portenti. Ottiene due canoni al 2° livello e altri man mano che avanza, e ogni volta che acquisisce un livello può sostituire un canone che conosce con un altro che potrebbe apprendere.',
   'artistic-vocation':
     'Il burattinaio sceglie la vocazione che caratterizzerà il suo Teatro di Fandonia. Messinscena: raddoppia la propria Distanza d\'Uso e, con un\'azione, può estendere le proprie percezioni attraverso un burattino collegato fino all\'inizio del suo turno successivo, durante il quale è cieco e sordo a quanto lo circonda. Arte della Costruzione: tutte le sue creazioni sono più robuste — un burattino non collegato ha 20 punti ferita e CA 10 — e ripararle è più rapido.',
+  'asi-4':
+    'Il burattinaio aumenta di 2 un punteggio di caratteristica a sua scelta, oppure aumenta di 1 due punteggi di caratteristica a sua scelta. Con questo privilegio non può portare un punteggio di caratteristica oltre il 20.',
   masterpiece:
     'Il burattinaio crea un nuovo burattino unico e speciale, il suo capolavoro, scelto dalla lista dei capolavori.',
   mangiafuoco:

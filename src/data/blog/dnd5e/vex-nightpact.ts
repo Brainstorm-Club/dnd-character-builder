@@ -13,7 +13,7 @@ export const vexNightpact: CharacterData = {
   race: 'elf',
   subrace: 'dark-elf',
   className: 'warlock',
-  subclass: 'the-fiend',
+  subclass: 'fiend',
   level: 5,
   background: 'charlatan',
   alignment: 'ne',

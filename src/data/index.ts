@@ -89,15 +89,24 @@ let _toDnd24Spells: ((base: readonly Spell[]) => Spell[]) | null = null
 let _pDnd24: Promise<void> | null = null
 
 function ensureDnd2024(): Promise<void> {
-  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt) return Promise.resolve()
+  // `_toDnd24Spells` fa parte della condizione: senza di lui getSpells('dnd2024')
+  // ricade sulla lista 2014, ed è esattamente quello che succedeva alla seconda
+  // visita, quando i dati arrivavano dalla cache.
+  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt && _toDnd24Spells) return Promise.resolve()
   if (_pDnd24) return _pDnd24
   const cs = lsGet<Race[]>('dnd24-species')
   const cc = lsGet<CharacterClass[]>('dnd24-classes')
   const cb = lsGet<Background[]>('dnd24-backgrounds')
   const ci = lsGet<Record<string, string>>('dnd24-feature-it')
   if (cs && cc && cb && ci) {
-    _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb; _dnd24FeatureIt = ci
-    return Promise.resolve()
+    // La funzione di trasformazione non è serializzabile, quindi in cache non
+    // c'è: il modulo va importato comunque. È minuscolo — la funzione più i 23
+    // incantesimi esclusivi del 2024 — e per questo non viene messo in cache.
+    _pDnd24 = import('./dnd2024/spells').then(sp => {
+      _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb; _dnd24FeatureIt = ci
+      _toDnd24Spells = sp.toDnd2024Spells
+    })
+    return _pDnd24
   }
   _pDnd24 = Promise.all([
     import('./dnd2024/races'),

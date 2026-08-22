@@ -7,6 +7,7 @@ import type { CharacterClass, Subclass } from '@/data/dnd5e/classes'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { getClassBlurb } from '@/data/classBlurbs'
+import { THIRD_CASTER_SUBCLASSES } from '@/data/spellcasting'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 // Multiclass support (D&D 5e only)
@@ -118,10 +119,6 @@ const selectedClassLevel = computed(() =>
 const selectedSubclassObj = computed(
   () => selectedClass.value?.subclasses.find(s => s.id === selectedSubclass.value) || null,
 )
-
-// Subclasses that grant spellcasting on a third-caster chassis, i.e. the only
-// reason Fighter and Rogue carry a spellcasting block at all.
-const THIRD_CASTER_SUBCLASSES = ['eldritch-knight', 'arcane-trickster']
 
 function selectSubclass(subclassId: string) {
   if (!selectedClass.value) return

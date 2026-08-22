@@ -72,10 +72,15 @@ const className = computed(() => {
   const cls = variantClasses.value.find(c => c.id === char.value.className)
   return gt.className(cls?.name ?? char.value.className, char.value.variant)
 })
+// Stessa risoluzione del passo 3: la traduzione è indicizzata per id, e senza
+// passarci il riepilogo mostrava il dato grezzo — 'Way of the Open Hand' in
+// D&D, la forma composta 'Matador (Mattatore)' in Brancalonia e Apocalisse.
 const subclassName = computed(() => {
   if (!char.value.subclass) return ''
   const cls = variantClasses.value.find(c => c.id === char.value.className)
-  return cls?.subclasses.find(s => s.id === char.value.subclass)?.name ?? char.value.subclass
+  const raw = cls?.subclasses.find(s => s.id === char.value.subclass)?.name ?? char.value.subclass
+  const translated = gt.subclassName(char.value.subclass)
+  return translated === char.value.subclass ? raw : translated
 })
 const displayRace = computed(() => {
   const race = variantRaces.value.find(r => r.id === char.value.race)
@@ -440,7 +445,7 @@ function handleImport(event: Event) {
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
         <div>
           <span class="text-stone-500">{{ t('details.size') }}:</span>
-          <span class="text-stone-200 ml-1">{{ char.size || 'Medium' }}</span>
+          <span class="text-stone-200 ml-1">{{ gt.size(char.size || 'Medium') }}</span>
         </div>
         <div>
           <span class="text-stone-500">{{ t('details.whacksLevel') }}:</span>

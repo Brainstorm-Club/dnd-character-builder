@@ -7,6 +7,7 @@ import { rollAbilityScores } from './diceRoller'
 import { modifier, totalHp, proficiencyBonus } from './calculations'
 import { pickRandomArchetype } from '@/data/personalityArchetypes'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
+import { castsSpells } from '@/data/spellcasting'
 
 function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!
@@ -248,9 +249,13 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   // Solo il nome, senza "(Lv.N)": è la stessa forma che salva la procedura
   // guidata, ed è quella che le traduzioni sanno cercare. Con il livello
   // incollato dentro, il riepilogo e la scheda PDF restavano in inglese.
-  const features = cls.features
-    .filter(f => f.level <= level)
-    .map(f => f.name)
+  // I tratti di specie e sottorazza aprono l'elenco: senza, un elfo usciva dal
+  // generatore senza Scurovisione tanto nel riepilogo quanto nella scheda PDF.
+  const features = [
+    ...race.traits,
+    ...(subrace?.traits ?? []),
+    ...cls.features.filter(f => f.level <= level).map(f => f.name),
+  ]
   if (subclass) {
     features.push(...subclass.features.filter(f => f.level <= level).map(f => f.name))
   }
@@ -261,7 +266,11 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   let cantrips: string[] = []
   let spellsKnown: string[] = []
 
-  if (cls.spellcasting) {
+  // Guerriero e Ladro portano un blocco spellcasting di terzo grado che vale
+  // solo per Cavaliere Mistico e Mistificatore Arcano: senza questo controllo
+  // il generatore marcava come incantatore anche un Campione o un Furfante,
+  // e la scheda PDF ne riempiva i campi da incantatore.
+  if (cls.spellcasting && castsSpells(cls.spellcasting.casterType, subclass?.id ?? '')) {
     spellcastingClass = cls.id
     spellcastingAbility = cls.spellcasting.ability
 

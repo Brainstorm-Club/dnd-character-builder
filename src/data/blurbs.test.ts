@@ -4,6 +4,8 @@ import { brancaloniaRaces } from './brancalonia/races'
 import { apocalisseRaces } from './apocalisse/races'
 import { classes } from './dnd5e/classes'
 
+// getClassBlurb non copre la variante 2024: là il blurb sta sull'oggetto
+// classe, e ha un test suo più sotto.
 const VARIANTS = ['dnd5e', 'brancalonia', 'apocalisse'] as const
 
 describe('descrizioni brevi per la scelta', () => {
@@ -43,5 +45,16 @@ describe('descrizioni brevi per la scelta', () => {
   it('i blurb sono distinti fra loro', () => {
     const all = [...brancaloniaRaces, ...apocalisseRaces].map(r => r.blurb)
     expect(new Set(all).size).toBe(all.length)
+  })
+})
+
+describe('descrizioni brevi della variante 2024', () => {
+  it('ogni classe del 2024 porta il proprio blurb', async () => {
+    const { dnd2024Classes } = await import('./dnd2024/classes')
+    for (const c of dnd2024Classes) {
+      expect(c.blurb, c.id).toBeDefined()
+      expect(c.blurb!.length, c.id).toBeGreaterThan(80)
+      expect(c.blurb!.length, `${c.id} troppo lungo per una card`).toBeLessThan(260)
+    }
   })
 })

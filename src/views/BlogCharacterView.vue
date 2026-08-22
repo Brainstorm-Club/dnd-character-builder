@@ -7,8 +7,7 @@ import { useCharacterStore } from '@/stores/character'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { usePdfExport } from '@/composables/usePdfExport'
 import { generateShareUrl } from '@/utils/shareCharacter'
-import { modifier, proficiencyBonus, feetToMeters } from '@/utils/calculations'
-import { armor as armorTable } from '@/data/dnd5e/equipment'
+import { modifier, proficiencyBonus, feetToMeters, computeArmorClass } from '@/utils/calculations'
 import type { CharacterData } from '@/stores/character'
 
 const route = useRoute()
@@ -37,29 +36,9 @@ function abilityMod(ability: keyof CharacterData['abilityScores']): number {
 
 const profBonus = computed(() => char.value ? proficiencyBonus(char.value.level) : 2)
 
-const armorClass = computed(() => {
-  if (!char.value) return 10
-  const dexMod = abilityMod('dex')
-  const armorData = char.value.armor
-    ? armorTable.find(a => a.name === char.value!.armor)
-    : null
-  let ac: number
-  if (!armorData) {
-    // Unarmored: 10 + DEX mod
-    ac = 10 + dexMod
-  } else if (armorData.maxDexBonus === 0) {
-    // Heavy armor: flat baseAC
-    ac = armorData.baseAC
-  } else if (armorData.maxDexBonus !== null) {
-    // Medium armor: baseAC + min(DEX mod, maxDexBonus)
-    ac = armorData.baseAC + Math.min(dexMod, armorData.maxDexBonus)
-  } else {
-    // Light armor: baseAC + DEX mod
-    ac = armorData.baseAC + dexMod
-  }
-  if (char.value.shield) ac += 2
-  return ac
-})
+// Stesso calcolo del riepilogo e della scheda PDF: una sola implementazione,
+// così le tre CA non possono più divergere.
+const armorClass = computed(() => char.value ? computeArmorClass(char.value) : 10)
 
 const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'] as const
 const abilityLabels: Record<string, string> = {

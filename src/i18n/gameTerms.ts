@@ -94,6 +94,7 @@ export const spellNamesIt: Record<string, string> = {
   'True Strike': 'Colpo Sicuro',
   'Vicious Mockery': 'Scherno Crudele',
   // 1st Level
+  'Alarm': 'Allarme',
   'Bless': 'Benedizione',
   'Burning Hands': 'Mani Brucianti',
   'Charm Person': 'Ammaliare Persone',
@@ -105,6 +106,7 @@ export const spellNamesIt: Record<string, string> = {
   'Healing Word': 'Parola Guaritrice',
   'Hellish Rebuke': 'Punizione Infernale',
   'Hex': 'Sortilegio',
+  'Jump': 'Salto',
   'Goodberry': 'Bacche Benefiche',
   "Hunter's Mark": 'Segno del Cacciatore',
   'Mage Armor': 'Armatura Magica',
@@ -114,7 +116,12 @@ export const spellNamesIt: Record<string, string> = {
   'Sleep': 'Sonno',
   'Thunderwave': 'Onda Tonante',
   // 2nd Level
+  // Nomi dell'edizione italiana 2014, la stessa convenzione del resto della
+  // tabella: l'SRD 5.2.1 italiano li ha poi rinominati "Scopri trappole" e
+  // "Protezione dai veleni".
   'Aid': 'Aiuto',
+  'Find Traps': 'Individuazione di Trappole',
+  'Protection from Poison': 'Protezione dal Veleno',
   'Blur': 'Sfocatura',
   'Hold Person': 'Blocca Persone',
   'Invisibility': 'Invisibilità',
@@ -287,6 +294,139 @@ export const spellNamesIt: Record<string, string> = {
   'True Resurrection': 'Resurrezione Suprema',
   'Weird': 'Terrore',
   'Wish': 'Desiderio',
+  // ─── Resto dell'SRD ──────────────────────────────────────────────────────
+  // Nomi dell'edizione italiana, come il resto della tabella. Senza queste
+  // voci la lista del passo 7 e le schede di Brancalonia e Apocalisse — che
+  // restano sempre in italiano — mescolavano le due lingue.
+  'Acid Arrow': 'Freccia Acida',
+  'Alter Self': 'Alterare Se Stessi',
+  'Animal Friendship': 'Amicizia con gli Animali',
+  'Animal Messenger': 'Messaggero Animale',
+  'Animate Dead': 'Animare Morti',
+  'Arcane Lock': 'Chiusura Arcana',
+  "Arcanist's Magic Aura": 'Aura Magica dell\'Arcanista',
+  'Augury': 'Presagio',
+  'Aura of Life': 'Aura di Vita',
+  'Bane': 'Maledizione',
+  'Barkskin': 'Pelle Coriacea',
+  'Beacon of Hope': 'Faro di Speranza',
+  'Bestow Curse': 'Infliggere Maledizione',
+  'Blindness/Deafness': 'Cecità/Sordità',
+  'Blink': 'Lampeggiare',
+  'Call Lightning': 'Chiamare il Fulmine',
+  'Calm Emotions': 'Calmare Emozioni',
+  'Charm Monster': 'Ammaliare Mostri',
+  'Chromatic Orb': 'Sfera Cromatica',
+  'Clairvoyance': 'Chiaroveggenza',
+  'Color Spray': 'Spruzzo Colorato',
+  'Command': 'Comando',
+  'Comprehend Languages': 'Comprensione dei Linguaggi',
+  'Conjure Animals': 'Evocare Animali',
+  'Continual Flame': 'Fiamma Perenne',
+  'Create Food and Water': 'Creare Cibo e Acqua',
+  'Create or Destroy Water': 'Creare o Distruggere Acqua',
+  'Darkness': 'Oscurità',
+  'Darkvision': 'Scurovisione',
+  'Daylight': 'Luce del Giorno',
+  'Detect Evil and Good': 'Individuazione del Bene e del Male',
+  'Detect Poison and Disease': 'Individuazione di Veleni e Malattie',
+  'Detect Thoughts': 'Individuazione del Pensiero',
+  'Dissonant Whispers': 'Sussurri Dissonanti',
+  'Divine Favor': 'Favore Divino',
+  "Dragon's Breath": 'Soffio del Drago',
+  'Enhance Ability': 'Potenziare Caratteristica',
+  'Enlarge/Reduce': 'Ingrandire/Ridurre',
+  'Ensnaring Strike': 'Colpo Intrappolante',
+  'Entangle': 'Intralciare',
+  'Enthrall': 'Soggiogare',
+  'Expeditious Retreat': 'Ritirata Rapida',
+  'False Life': 'Vita Fittizia',
+  'Fear': 'Paura',
+  'Feather Fall': 'Caduta Morbida',
+  'Find Familiar': 'Trovare Famiglio',
+  'Find Steed': 'Trovare Destriero',
+  'Flame Blade': 'Lama Infuocata',
+  'Flaming Sphere': 'Sfera Infuocata',
+  'Floating Disk': 'Disco Fluttuante',
+  'Fog Cloud': 'Nube di Nebbia',
+  'Gaseous Form': 'Forma Gassosa',
+  'Gentle Repose': 'Riposo Tranquillo',
+  'Glyph of Warding': 'Glifo di Interdizione',
+  'Grease': 'Unto',
+  'Gust of Wind': 'Raffica di Vento',
+  'Heat Metal': 'Riscaldare Metallo',
+  'Heroism': 'Eroismo',
+  'Hideous Laughter': 'Risata Isterica',
+  'Hypnotic Pattern': 'Schema Ipnotico',
+  'Ice Knife': 'Lama di Ghiaccio',
+  'Identify': 'Identificare',
+  'Illusory Script': 'Scrittura Illusoria',
+  'Inflict Wounds': 'Infliggere Ferite',
+  'Knock': 'Apertura',
+  'Levitate': 'Levitazione',
+  'Lightning Bolt': 'Fulmine',
+  'Locate Animals or Plants': 'Localizzare Animali o Piante',
+  'Locate Object': 'Localizzare Oggetto',
+  'Longstrider': 'Passo Lungo',
+  'Magic Circle': 'Cerchio Magico',
+  'Magic Mouth': 'Bocca Magica',
+  'Magic Weapon': 'Arma Magica',
+  'Major Image': 'Immagine Maggiore',
+  'Mass Healing Word': 'Parola Guaritrice di Massa',
+  'Meld into Stone': 'Fondersi con la Pietra',
+  'Mind Spike': 'Fitta Mentale',
+  'Mirror Image': 'Immagine Speculare',
+  'Moonbeam': 'Raggio di Luna',
+  'Nondetection': 'Non Rilevamento',
+  'Phantom Steed': 'Destriero Fantasma',
+  'Plant Growth': 'Crescita Vegetale',
+  'Prayer of Healing': 'Preghiera di Guarigione',
+  'Protection from Energy': 'Protezione dall\'Energia',
+  'Protection from Evil and Good': 'Protezione dal Bene e dal Male',
+  'Purify Food and Drink': 'Purificare Cibo e Bevande',
+  'Ray of Enfeeblement': 'Raggio di Debolezza',
+  'Ray of Sickness': 'Raggio di Infermità',
+  'Remove Curse': 'Rimuovere Maledizione',
+  'Rope Trick': 'Trucco della Corda',
+  'Sanctuary': 'Santuario',
+  'Searing Smite': 'Punizione Ustionante',
+  'See Invisibility': 'Individuazione dell\'Invisibile',
+  'Sending': 'Missiva',
+  'Shatter': 'Frantumare',
+  'Silence': 'Silenzio',
+  'Silent Image': 'Immagine Silenziosa',
+  'Sleet Storm': 'Tempesta di Nevischio',
+  'Slow': 'Rallentare',
+  'Speak with Animals': 'Parlare con gli Animali',
+  'Speak with Dead': 'Parlare con i Morti',
+  'Speak with Plants': 'Parlare con le Piante',
+  'Spider Climb': 'Scalare come un Ragno',
+  'Spike Growth': 'Crescita di Spine',
+  'Stinking Cloud': 'Nube Fetida',
+  'Suggestion': 'Suggestione',
+  'Summon Dragon': 'Evocare Drago',
+  'Telepathic Bond': 'Legame Telepatico',
+  'Tiny Hut': 'Capanna Minuscola',
+  'Tongues': 'Lingue',
+  'Tsunami': 'Tsunami',
+  'Unseen Servant': 'Servitore Invisibile',
+  'Vampiric Touch': 'Tocco Vampirico',
+  'Vitriolic Sphere': 'Sfera Vetriolica',
+  'Warding Bond': 'Legame Protettivo',
+  'Water Breathing': 'Respirare sott\'Acqua',
+  'Water Walk': 'Camminare sull\'Acqua',
+  'Wind Wall': 'Muro di Vento',
+  'Zone of Truth': 'Zona di Verità',
+  // Incantesimi che esistono solo nel 2024 (src/data/dnd2024/spells-new.ts):
+  // non hanno un nome nelle edizioni italiane precedenti, quindi la voce è la
+  // traduzione letterale del titolo dell'SRD 5.2.1.
+  'Befuddlement': 'Rimbecillimento',
+  'Divine Smite': 'Punizione Divina',
+  'Elementalism': 'Elementalismo',
+  'Power Word Heal': 'Parola del Potere: Guarire',
+  'Shining Smite': 'Punizione Splendente',
+  'Sorcerous Burst': 'Scarica Stregonesca',
+  'Starry Wisp': 'Fuoco Fatuo Stellato',
   // ─── Brancalonia (Macaronicon, L'Impero Randella Ancora) ──────────────────
   'Dreadful Tale': 'Storia Spaventosa',
   'Incandescent Mark': 'Marchio Incandescente',
@@ -375,6 +515,7 @@ export const backgroundNamesIt: Record<string, string> = {
   'Fate-Touched': 'Toccato dal Fato',
   'Lyceum Student': 'Studente del Liceo',
   'Recovered Cultist': 'Cultista Redento',
+  'Guild Artisan': 'Artigiano di Gilda',
   // Brancalonia
   'Ambulant': 'Ambulante',
   'Brawler': 'Attaccabrighe',
@@ -382,6 +523,21 @@ export const backgroundNamesIt: Record<string, string> = {
   'Fugitive': 'Fuggitivo',
   'Rover': 'Brado',
   'Tough': 'Duro',
+  // Brancalonia — Macaronicon e L'Impero Randella Ancora
+  'Crosser': 'Passatore',
+  'Dispatch Rider': 'Staffetta',
+  'Enamored': 'Innamorato',
+  'Impresario': 'Impresario',
+  'Lucignolo': 'Lucignolo',
+  'Prelate': 'Prelato',
+  'Relic Hunter': 'Cacciatore di Reliquie',
+  'Fork Adept': 'Adepto della Forca',
+  'Fork Renegade': 'Rinnegato della Forca',
+  'Blazoned': 'Blasonato',
+  'Herbalist': 'Erborista',
+  'Powder Dabbler': 'Polverista',
+  'Slacker': 'Lavativo',
+  'Inspirited': 'Suscitato',
   // Apocalisse
   'Child of the Old World': 'Figlio del Vecchio Mondo',
   'Child of the Apocalypse': 'Figlio dell\'Apocalisse',
@@ -467,8 +623,48 @@ export const apocalisseClassNamesIt: Record<string, string> = {
 // ─── Race Names ─────────────────────────────────────────────────────────────
 
 /** D&D 5e race names in Italian */
-/** Race ids that are not simply their capitalised name. */
-const raceIdToName: Record<string, string> = {
+/**
+ * Id di specie il cui nome inglese non si ottiene capitalizzando le parole.
+ * Senza queste voci la scheda stampa lo slug grezzo ('risen-purgatory').
+ */
+export const raceIdToName: Record<string, string> = {
+  'child-old-world': 'Child of the Old World',
+  'child-apocalypse': 'Child of the Apocalypse',
+  'risen-hell': 'Risen from Hell',
+  'risen-heaven': 'Risen from Heaven',
+  'risen-purgatory': 'Risen from Purgatory',
+  'risen-limbo': 'Risen from Limbo',
+  'half-elf': 'Half-Elf',
+  'half-orc': 'Half-Orc',
+  'wolfcat': 'WolfCat',
+}
+
+/** Id di sottorazza/lignaggio il cui nome inglese non si ottiene capitalizzando. */
+export const subraceIdToName: Record<string, string> = {
+  // D&D 5e (2014)
+  'dark-elf': 'Dark Elf (Drow)',
+  // D&D 2024 — discendenze draconiche: il nome porta il tipo di danno
+  'black': 'Black (Acid)',
+  'blue': 'Blue (Lightning)',
+  'brass': 'Brass (Fire)',
+  'bronze': 'Bronze (Lightning)',
+  'copper': 'Copper (Acid)',
+  'gold': 'Gold (Fire)',
+  'green': 'Green (Poison)',
+  'red': 'Red (Fire)',
+  'silver': 'Silver (Cold)',
+  'white': 'White (Cold)',
+  // D&D 2024 — eredità dei goliath (apostrofo, perso dalla capitalizzazione)
+  'clouds-jaunt': "Cloud's Jaunt",
+  'fires-burn': "Fire's Burn",
+  'frosts-chill': "Frost's Chill",
+  'hills-tumble': "Hill's Tumble",
+  'stones-endurance': "Stone's Endurance",
+  'storms-thunder': "Storm's Thunder",
+}
+
+/** Id di background il cui nome inglese non si ottiene capitalizzando. */
+export const backgroundIdToName: Record<string, string> = {
   'child-old-world': 'Child of the Old World',
   'child-apocalypse': 'Child of the Apocalypse',
   'risen-hell': 'Risen from Hell',
@@ -488,6 +684,9 @@ export const raceNamesIt: Record<string, string> = {
   'Halfling': 'Halfling',
   'Human': 'Umano',
   'Tiefling': 'Tiefling',
+  // D&D 2024 (SRD 5.2.1 italiano)
+  'Goliath': 'Goliath',
+  'Orc': 'Orco',
   // Brancalonia
   'Gifted': 'Dotato',
   'Malebranche': 'Malebranche',
@@ -532,6 +731,31 @@ export const subraceNamesIt: Record<string, string> = {
   'Orcharder': 'Ortolano',
   'Ragpicker': 'Robivecchi',
   'Scrapper': 'Ferrivecchi',
+  // ─── D&D 2024 (SRD 5.2.1 italiano) ───────────────────────────────────
+  // Antenati draconici: la tabella italiana accoppia drago e tipo di danni
+  'Black (Acid)': 'Nero (Acido)',
+  'Blue (Lightning)': 'Blu (Fulmine)',
+  'Brass (Fire)': 'Ottone (Fuoco)',
+  'Bronze (Lightning)': 'Bronzo (Fulmine)',
+  'Copper (Acid)': 'Rame (Acido)',
+  'Gold (Fire)': 'Oro (Fuoco)',
+  'Green (Poison)': 'Verde (Veleno)',
+  'Red (Fire)': 'Rosso (Fuoco)',
+  'Silver (Cold)': 'Argento (Freddo)',
+  'White (Cold)': 'Bianco (Freddo)',
+  // Lignaggi elfici (Elfo alto e Elfo dei boschi restano quelli del 2014)
+  'Drow': 'Drow',
+  // Discendenza gigantica dei goliath
+  "Cloud's Jaunt": 'Salta-nuvole',
+  "Fire's Burn": 'Fuoco bruciante',
+  "Frost's Chill": 'Brivido gelante',
+  "Hill's Tumble": 'Forza della collina',
+  "Stone's Endurance": 'Resistenza della pietra',
+  "Storm's Thunder": 'Tuono tempestoso',
+  // Retaggi immondi dei tiefling
+  'Abyssal': 'Abissale',
+  'Chthonic': 'Ctonio',
+  'Infernal': 'Infernale',
 }
 
 // ─── Skill Names ────────────────────────────────────────────────────────────
@@ -575,10 +799,38 @@ export const proficiencyNamesIt: Record<string, string> = {
   'martial': 'Armi da Guerra',
   'martial weapons': 'Armi da Guerra',
   'all': 'Tutte',
+  // Competenze in armi del 2024 legate a una proprietà dell'arma
+  'martial weapons with the light property': 'Armi da Guerra con proprietà Leggera',
+  'martial weapons with the finesse or light property': 'Armi da Guerra con proprietà Accurata o Leggera',
+  // Competenze in strumenti concesse dalle classi
+  'thieves\' tools': 'Arnesi da Scasso',
+  'herbalism kit': 'Kit da Erborista',
+  'three musical instruments of your choice': 'Tre strumenti musicali a scelta',
+  'one artisan\'s tools or one musical instrument': 'Un set di attrezzi da artigiano o uno strumento musicale',
   // Tool proficiencies granted by the Puppeteer
   'mason\'s tools': 'Attrezzi da Muratore',
   'tinker\'s tools': 'Attrezzi da Calderaio',
   'woodcarver\'s tools': 'Attrezzi da Intagliatore',
+}
+
+/** Etichette inglesi delle competenze, per gli id minuscoli dei dati di classe */
+export const proficiencyNamesEn: Record<string, string> = {
+  'light': 'Light Armor',
+  'light armor': 'Light Armor',
+  'medium': 'Medium Armor',
+  'medium armor': 'Medium Armor',
+  'heavy': 'Heavy Armor',
+  'heavy armor': 'Heavy Armor',
+  'shields': 'Shields',
+  'simple': 'Simple Weapons',
+  'simple weapons': 'Simple Weapons',
+  'martial': 'Martial Weapons',
+  'martial weapons': 'Martial Weapons',
+  'all': 'All',
+  'martial weapons with the light property': 'Martial Weapons with the Light property',
+  'martial weapons with the finesse or light property': 'Martial Weapons with the Finesse or Light property',
+  'three musical instruments of your choice': 'Three musical instruments of your choice',
+  'one artisan\'s tools or one musical instrument': 'One artisan\'s tools or one musical instrument',
 }
 
 // ─── Feature Names ──────────────────────────────────────────────────────────
@@ -1231,6 +1483,51 @@ export const traitNamesIt: Record<string, string> = {
   'draconic-ancestry': 'Ascendenza Draconica',
   'breath-weapon': 'Soffio del Drago',
   'damage-resistance': 'Resistenza ai Danni',
+  // ─── Tratti delle specie di D&D 2024 (SRD 5.2.1 italiano) ─────────────────
+  // I tratti che il 2024 condivide con il 2014 (Discendenza draconica, Soffio,
+  // Eredità Fatata, Coraggioso...) sono già qui sopra: qui stanno solo quelli
+  // nuovi. Le scelte di lignaggio, discendenza e retaggio portano il nome
+  // della tabella davanti, come le altre voci a scelta di questa mappa.
+  'damage-resistance-draconic': 'Resistenza ai Danni',
+  'draconic-flight': 'Volo Draconico',
+  'dragonborn-black': 'Antenato Draconico: Nero (Acido)',
+  'dragonborn-blue': 'Antenato Draconico: Blu (Fulmine)',
+  'dragonborn-brass': 'Antenato Draconico: Ottone (Fuoco)',
+  'dragonborn-bronze': 'Antenato Draconico: Bronzo (Fulmine)',
+  'dragonborn-copper': 'Antenato Draconico: Rame (Acido)',
+  'dragonborn-gold': 'Antenato Draconico: Oro (Fuoco)',
+  'dragonborn-green': 'Antenato Draconico: Verde (Veleno)',
+  'dragonborn-red': 'Antenato Draconico: Rosso (Fuoco)',
+  'dragonborn-silver': 'Antenato Draconico: Argento (Freddo)',
+  'dragonborn-white': 'Antenato Draconico: Bianco (Freddo)',
+  'darkvision-120': 'Scurovisione',
+  'elven-lineage': 'Lignaggio Elfico',
+  'elf-drow': 'Lignaggio Elfico: Drow',
+  'elf-high-elf': 'Lignaggio Elfico: Elfo Alto',
+  'elf-wood-elf': 'Lignaggio Elfico: Elfo dei Boschi',
+  'gnomish-cunning': 'Astuzia Gnomesca',
+  'gnomish-lineage': 'Lignaggio Gnomesco',
+  'gnome-forest-gnome': 'Lignaggio Gnomesco: Gnomo delle Foreste',
+  'gnome-rock-gnome': 'Lignaggio Gnomesco: Gnomo delle Rocce',
+  'giant-ancestry': 'Discendenza Gigantica',
+  'large-form': 'Forma Grande',
+  'powerful-build': 'Costituzione Robusta',
+  'goliath-clouds-jaunt': 'Discendenza Gigantica: Salta-nuvole',
+  'goliath-fires-burn': 'Discendenza Gigantica: Fuoco Bruciante',
+  'goliath-frosts-chill': 'Discendenza Gigantica: Brivido Gelante',
+  'goliath-hills-tumble': 'Discendenza Gigantica: Forza della Collina',
+  'goliath-stones-endurance': 'Discendenza Gigantica: Resistenza della Pietra',
+  'goliath-storms-thunder': 'Discendenza Gigantica: Tuono Tempestoso',
+  'luck': 'Fortuna',
+  'resourceful': 'Intraprendente',
+  'skillful': 'Pluriabilità',
+  'versatile': 'Versatile',
+  'adrenaline-rush': 'Scarica di Adrenalina',
+  'fiendish-legacy': 'Retaggio Immondo',
+  'otherworldly-presence': 'Presenza Ultraterrena',
+  'tiefling-abyssal': 'Retaggio Immondo: Abissale',
+  'tiefling-chthonic': 'Retaggio Immondo: Ctonio',
+  'tiefling-infernal': 'Retaggio Immondo: Infernale',
   // ─── Brancalonia Racial Traits (Setting Book) ─────────────────────────────
   'skill-choice': 'Abilità',
   'feat-choice': 'Talento',
@@ -1380,22 +1677,30 @@ export const languageNamesIt: Record<string, string> = {
 
 /** Subclass name translations keyed by subclass ID */
 export const subclassNamesIt: Record<string, string> = {
-  // D&D 5e
+  // D&D 5e (2014) — chiavi uguali agli id di src/data/dnd5e/classes.ts
   'berserker': 'Berserker',
   'champion': 'Campione',
-  'circle-of-the-land': 'Circolo della Terra',
-  'college-of-lore': 'Collegio della Sapienza',
   'devotion': 'Devozione',
-  'draconic-bloodline': 'Stirpe Draconica',
-  'evocation': 'Invocazione',
+  'draconic': 'Stirpe Draconica',
+  'evocation': 'Scuola di Invocazione',
+  'fiend': 'L\'Immondo',
   'hunter': 'Cacciatore',
+  'land': 'Circolo della Terra',
   'life': 'Vita',
-  'oath-of-devotion': 'Giuramento di Devozione',
-  'path-of-the-berserker': 'Sentiero del Berserker',
-  'school-of-evocation': 'Scuola di Invocazione',
-  'the-fiend': 'L\'Immondo',
+  'lore': 'Collegio della Sapienza',
+  'open-hand': 'Via della Mano Aperta',
   'thief': 'Furfante',
-  'way-of-the-open-hand': 'Via della Mano Aperta',
+  // D&D 2024 — chiavi uguali agli id di src/data/dnd2024/classes.ts, nomi
+  // come li riporta src/data/dnd2024/classes-it.ts
+  'circle-of-the-land': 'Circolo della Terra',
+  'college-of-lore': 'Collegio del Sapere',
+  'draconic-sorcery': 'Stregoneria Draconica',
+  'evoker': 'Invocatore',
+  'fiend-patron': 'Patrono Immondo',
+  'life-domain': 'Dominio della Vita',
+  'oath-of-devotion': 'Giuramento di Devozione',
+  'path-of-the-berserker': 'Cammino del Berserker',
+  'warrior-of-the-open-hand': 'Guerriero della Mano Aperta',
   // Brancalonia — Setting Book
   'benandante': 'Benandante',
   'brigand': 'Brigante',
@@ -1667,10 +1972,50 @@ export const equipmentNamesIt: Record<string, string> = {
   'Ink that writes in colors only the Cronista can see': 'Inchiostro che scrive in colori che solo il Cronista può vedere',
 }
 
+// ─── Sizes ──────────────────────────────────────────────────────────────────
+
+/** Taglie delle creature in italiano. I dati razza le portano in inglese. */
+export const sizeNamesIt: Record<string, string> = {
+  'Tiny': 'Minuscola',
+  'Small': 'Piccola',
+  'Medium': 'Media',
+  'Large': 'Grande',
+  'Huge': 'Enorme',
+  'Gargantuan': 'Mastodontica',
+}
+
+// ─── Alignments ─────────────────────────────────────────────────────────────
+
+/** Codici di allineamento salvati sulla scheda, in italiano. */
+export const alignmentNamesIt: Record<string, string> = {
+  lg: 'Legale Buono',
+  ng: 'Neutrale Buono',
+  cg: 'Caotico Buono',
+  ln: 'Legale Neutrale',
+  tn: 'Neutrale Puro',
+  cn: 'Caotico Neutrale',
+  le: 'Legale Malvagio',
+  ne: 'Neutrale Malvagio',
+  ce: 'Caotico Malvagio',
+}
+
+/** Codici di allineamento salvati sulla scheda, in inglese. */
+export const alignmentNamesEn: Record<string, string> = {
+  lg: 'Lawful Good',
+  ng: 'Neutral Good',
+  cg: 'Chaotic Good',
+  ln: 'Lawful Neutral',
+  tn: 'True Neutral',
+  cn: 'Chaotic Neutral',
+  le: 'Lawful Evil',
+  ne: 'Neutral Evil',
+  ce: 'Chaotic Evil',
+}
+
 /**
  * Translate a game term to Italian. Returns the original if no translation exists.
  */
-export type GameTermCategory = 'weapon' | 'armor' | 'spell' | 'school' | 'damageType' | 'pack' | 'background' | 'class' | 'race' | 'subrace' | 'skill' | 'proficiency' | 'feature' | 'trait' | 'language' | 'subclass' | 'equipment'
+export type GameTermCategory = 'weapon' | 'armor' | 'spell' | 'school' | 'damageType' | 'pack' | 'background' | 'class' | 'race' | 'subrace' | 'skill' | 'proficiency' | 'feature' | 'trait' | 'language' | 'subclass' | 'equipment' | 'size' | 'alignment'
 
 /**
  * Turn a kebab-case trait id into a readable English label
@@ -1687,15 +2032,53 @@ function prettifyTraitId(id: string): string {
   return brawl ? `Brawl: ${rest}` : rest
 }
 
+/**
+ * Nome inglese di una specie/sottorazza/background a partire dal suo id.
+ * Le tabelle `*IdToName` coprono gli id che la sola capitalizzazione sbaglia
+ * ('dark-elf' non è 'Dark Elf' ma 'Dark Elf (Drow)').
+ */
+function englishNameFromId(id: string, idToName: Record<string, string>): string {
+  const mapped = idToName[id]
+  if (mapped) return mapped
+  if (!/^[a-z0-9-]+$/.test(id)) return id
+  return id.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+}
+
 export function translateGameTerm(
   name: string,
   locale: string,
   category: GameTermCategory,
   variant?: string,
 ): string {
+  // Specie, sottorazze e background arrivano tanto come nome inglese quanto
+  // come id kebab-case: l'id va risolto anche in inglese, altrimenti la scheda
+  // stampa lo slug ('risen-purgatory', 'dark-elf').
+  if (category === 'race' || category === 'subrace' || category === 'background') {
+    const itMap = category === 'race' ? raceNamesIt
+      : category === 'subrace' ? subraceNamesIt
+        : backgroundNamesIt
+    const idMap = category === 'race' ? raceIdToName
+      : category === 'subrace' ? subraceIdToName
+        : backgroundIdToName
+    const english = itMap[name] !== undefined ? name : englishNameFromId(name, idMap)
+    if (locale !== 'it') return english
+    return itMap[name] ?? itMap[english] ?? english
+  }
+  if (category === 'alignment') {
+    const map = locale === 'it' ? alignmentNamesIt : alignmentNamesEn
+    return map[name] ?? name
+  }
+  // Le competenze arrivano come id minuscoli ('light', 'martial'): anche in
+  // inglese vanno presentate per esteso, non come li scrive il file dati.
+  if (category === 'proficiency' && locale !== 'it') {
+    const titled = name.split(/[-\s]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+    return proficiencyNamesEn[name] ?? titled
+  }
   if (locale !== 'it') {
     // Trait ids are kebab-case, so they need presenting even in English.
-    if (category === 'trait') return prettifyTraitId(name)
+    // featuresTraits mescola nomi di privilegi ('Spellcasting') e id di tratti
+    // razziali ('darkvision'): anche qui l'id va presentato, non stampato.
+    if (category === 'trait' || category === 'feature') return prettifyTraitId(name)
     return name
   }
 
@@ -1712,12 +2095,6 @@ export function translateGameTerm(
       return damageTypesIt[name] ?? name
     case 'pack':
       return equipmentPacksIt[name] ?? name
-    case 'background': {
-      if (backgroundNamesIt[name]) return backgroundNamesIt[name]
-      // Try capitalizing each word (IDs may be lowercase, e.g. "folk-hero" → "Folk Hero")
-      const bgCapitalized = name.split(/[-\s]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-      return backgroundNamesIt[bgCapitalized] ?? name
-    }
     case 'class': {
       // Variant-specific dicts use lowercase IDs; standard dict uses capitalized English names.
       // Try both forms to handle either input style.
@@ -1730,22 +2107,6 @@ export function translateGameTerm(
         return apocalisseClassNamesIt[lowered] ?? apocalisseClassNamesIt[name] ?? classNamesIt[capitalized] ?? classNamesIt[name] ?? name
       }
       return classNamesIt[capitalized] ?? classNamesIt[name] ?? name
-    }
-    case 'race': {
-      if (raceNamesIt[name]) return raceNamesIt[name]
-      // Try capitalizing each word (IDs may be hyphenated, e.g. "half-elf" → "Half-Elf")
-      const raceCapitalized = name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-')
-      // Apocalisse Origin ids are multi-word kebab: 'child-old-world' has to
-      // find 'Child of the Old World', so fall back to a name lookup by id.
-      const byId = Object.entries(raceIdToName).find(([id]) => id === name)?.[1]
-      return raceNamesIt[raceCapitalized]
-        ?? raceNamesIt[raceCapitalized.replace(/-/g, ' ')]
-        ?? (byId ? raceNamesIt[byId] ?? byId : name)
-    }
-    case 'subrace': {
-      if (subraceNamesIt[name]) return subraceNamesIt[name]
-      const subCapitalized = name.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-      return subraceNamesIt[subCapitalized] ?? name
     }
     case 'skill': {
       if (skillNamesIt[name]) return skillNamesIt[name]
@@ -1769,6 +2130,8 @@ export function translateGameTerm(
       return subclassNamesIt[name] ?? name
     case 'equipment':
       return equipmentNamesIt[name] ?? name
+    case 'size':
+      return sizeNamesIt[name] ?? name
     default:
       return name
   }

@@ -1,7 +1,14 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type GameVariant = 'dnd5e' | 'dnd2024' | 'brancalonia' | 'apocalisse'
+/**
+ * Elenco delle varianti di gioco. Unica fonte di verità: le liste bianche di
+ * `importJson` e di ShareView leggono da qui, così una quinta variante non
+ * resta fuori da metà dell'app come era successo a 'dnd2024'.
+ */
+export const GAME_VARIANTS = ['dnd5e', 'dnd2024', 'brancalonia', 'apocalisse'] as const
+
+export type GameVariant = typeof GAME_VARIANTS[number]
 export type ThemeMode = 'light' | 'dark' | 'auto'
 
 /**

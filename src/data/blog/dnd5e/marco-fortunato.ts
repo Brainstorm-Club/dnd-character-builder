@@ -13,7 +13,7 @@ export const marcoFortunato: CharacterData = {
   race: 'human',
   subrace: '',
   className: 'bard',
-  subclass: 'college-of-lore',
+  subclass: 'lore',
   level: 3,
   background: 'entertainer',
   alignment: 'cg',

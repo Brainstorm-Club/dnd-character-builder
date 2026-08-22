@@ -13,7 +13,7 @@ export const rowanAshwood: CharacterData = {
   race: 'human',
   subrace: '',
   className: 'druid',
-  subclass: 'circle-of-the-land',
+  subclass: 'land',
   level: 5,
   background: 'hermit',
   alignment: 'tn',

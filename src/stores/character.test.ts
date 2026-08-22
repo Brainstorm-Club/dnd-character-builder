@@ -3,7 +3,8 @@ import { nextTick } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCharacterStore } from './character'
 import type { CharacterData } from './character'
-import { preloadVariantData } from '@/data'
+import { preloadVariantData, getClasses, getMaxLevel, getRaces } from '@/data'
+import { GAME_VARIANTS } from './app'
 
 function makeMinimalCharacter(overrides: Partial<CharacterData> = {}): Partial<CharacterData> {
   return {
@@ -19,7 +20,7 @@ function makeMinimalCharacter(overrides: Partial<CharacterData> = {}): Partial<C
 describe('useCharacterStore', () => {
   // Preload data for tests that use getClasses/getMaxLevel
   beforeAll(async () => {
-    await Promise.all([preloadVariantData('dnd5e'), preloadVariantData('brancalonia')])
+    await Promise.all(GAME_VARIANTS.map(v => preloadVariantData(v)))
   })
 
   beforeEach(() => {
@@ -262,9 +263,14 @@ describe('useCharacterStore', () => {
       expect((data as any).maliciousField).toBeUndefined()
     })
 
-    it('accepts all three variants', () => {
+    /**
+     * Impedisce il ritorno del difetto per cui 'dnd2024' mancava dalla lista
+     * bianca: il pulsante di import esisteva già, ma `importJson` sollevava
+     * MISSING_VARIANT e la pagina di condivisione mostrava l'errore.
+     */
+    it('accepts all four variants', () => {
       const store = useCharacterStore()
-      for (const variant of ['dnd5e', 'brancalonia', 'apocalisse'] as const) {
+      for (const variant of GAME_VARIANTS) {
         const json = JSON.stringify(makeMinimalCharacter({ variant }))
         const { data } = store.importJson(json)
         expect(data.variant).toBe(variant)
@@ -379,4 +385,310 @@ describe('switching game variant', () => {
     expect(store.character.background).toBe('')
     expect(store.character.variant).toBe('apocalisse')
   })
+})
+
+/**
+ * levelUp e levelDown devono restare l'uno l'inverso dell'altro, e coincidere
+ * con quello che syncClassAndLevel produce per lo stesso personaggio.
+ */
+describe('salita e discesa di livello', () => {
+  beforeAll(async () => {
+    await Promise.all(GAME_VARIANTS.map(v => preloadVariantData(v)))
+  })
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  /** Personaggio pulito di quella classe al livello indicato, già sincronizzato. */
+  function seed(variant: typeof GAME_VARIANTS[number], classId: string, level: number) {
+    const store = useCharacterStore()
+    store.resetCharacter()
+    store.character.variant = variant
+    store.character.className = classId
+    store.character.level = level
+    store.syncClassAndLevel()
+    return store
+  }
+
+  for (const variant of GAME_VARIANTS) {
+    /**
+     * Impedisce il ritorno del difetto per cui levelUp aggiungeva un privilegio
+     * solo se il nome non era già presente: ogni ripetizione di "Ability Score
+     * Improvement", "Extra Attack" e dei privilegi d'archetipo andava persa
+     * (guerriero di 20°: 13 voci invece di 22).
+     */
+    it(`${variant}: salire di livello uno alla volta dà la stessa lista di syncClassAndLevel`, () => {
+      const maxLv = getMaxLevel(variant)
+      for (const cls of getClasses(variant)) {
+        const climbing = seed(variant, cls.id, 1)
+        for (let lv = 2; lv <= maxLv; lv++) {
+          expect(climbing.levelUp(), `${variant}/${cls.id} liv.${lv}`).not.toBeNull()
+        }
+        const climbed = [...climbing.character.featuresTraits]
+
+        setActivePinia(createPinia())
+        const expected = seed(variant, cls.id, maxLv).character.featuresTraits
+
+        expect(climbed, `${variant}/${cls.id} al ${maxLv}°`).toEqual(expected)
+      }
+    })
+
+    /**
+     * Impedisce il ritorno del difetto per cui levelDown cercava i privilegi per
+     * nome e cancellava l'unica occorrenza rimasta anche quando spettava a un
+     * livello inferiore (guerriero sceso all'8° senza alcun "Ability Score
+     * Improvement", mentre al 7° ne ha due).
+     */
+    it(`${variant}: risalire e riscendere lascia la lista del livello inferiore`, () => {
+      const maxLv = getMaxLevel(variant)
+      if (maxLv < 2) return
+      for (const cls of getClasses(variant)) {
+        const store = seed(variant, cls.id, 1)
+        for (let lv = 2; lv <= maxLv; lv++) store.levelUp()
+        expect(store.levelDown(), `${variant}/${cls.id}`).not.toBeNull()
+        expect(store.character.level).toBe(maxLv - 1)
+        const descended = [...store.character.featuresTraits]
+
+        setActivePinia(createPinia())
+        const expected = seed(variant, cls.id, maxLv - 1).character.featuresTraits
+
+        expect(descended, `${variant}/${cls.id} al ${maxLv - 1}°`).toEqual(expected)
+      }
+    })
+  }
+
+  it('Brancalonia: al 6° guerriero e ladro hanno tutti i privilegi', () => {
+    // Il 6° è il livello massimo di Brancalonia, e proprio lì la vecchia
+    // levelUp perdeva un privilegio per entrambe le classi.
+    for (const classId of ['fighter', 'rogue']) {
+      const climbing = seed('brancalonia', classId, 1)
+      for (let lv = 2; lv <= 6; lv++) climbing.levelUp()
+      const climbed = [...climbing.character.featuresTraits]
+
+      setActivePinia(createPinia())
+      const expected = seed('brancalonia', classId, 6).character.featuresTraits
+      expect(climbed, classId).toEqual(expected)
+      expect(climbed.length, classId).toBe(expected.length)
+    }
+  })
+
+  /**
+   * Impedisce il ritorno del difetto per cui levelDown non ricontrollava mai
+   * `cls.subclassLevel`: un guerriero di 3° portato al 2° restava con
+   * l'Archetipo Marziale stampato su riepilogo e scheda.
+   */
+  it('scendere sotto il livello di sblocco azzera la sottoclasse', () => {
+    const store = useCharacterStore()
+    store.resetCharacter()
+    store.character.variant = 'dnd5e'
+    store.character.className = 'fighter'
+    store.character.level = 3
+    store.character.subclass = 'champion'
+    store.syncClassAndLevel()
+    expect(store.character.subclass).toBe('champion')
+
+    store.levelDown()
+
+    expect(store.character.level).toBe(2)
+    expect(store.character.subclass).toBe('')
+    // E i privilegi dell'archetipo se ne vanno con lui
+    const championFeatures = getClasses('dnd5e')
+      .find(c => c.id === 'fighter')!.subclasses
+      .find(sc => sc.id === 'champion')!.features
+      .map(f => f.name)
+    for (const feat of championFeatures) {
+      expect(store.character.featuresTraits, feat).not.toContain(feat)
+    }
+  })
+})
+
+/**
+ * I tratti di specie e sottorazza fanno parte dei privilegi della scheda tanto
+ * quanto quelli di classe: chi li perde per strada si ritrova un elfo senza
+ * Scurovisione nel riepilogo e nel PDF.
+ */
+describe('privilegi di specie', () => {
+  beforeAll(async () => {
+    await Promise.all(GAME_VARIANTS.map(v => preloadVariantData(v)))
+  })
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  for (const variant of GAME_VARIANTS) {
+    /**
+     * Impedisce il ritorno del difetto per cui computeFeatures ricostruiva
+     * l'elenco dai soli privilegi di classe e sottoclasse: bastava scegliere la
+     * classe al passo 3 o cambiare livello al passo 4 perché syncClassAndLevel
+     * cancellasse i tratti razziali di tutti e 64 i personaggi del blog.
+     */
+    it(`${variant}: syncClassAndLevel non cancella i tratti di specie`, () => {
+      const cls = getClasses(variant)[0]!
+      for (const race of getRaces(variant)) {
+        const subrace = race.subraces[0]
+        const store = useCharacterStore()
+        store.resetCharacter()
+        store.character.variant = variant
+        store.character.race = race.id
+        store.character.subrace = subrace?.id ?? ''
+        store.character.className = cls.id
+        store.character.level = 3
+
+        store.syncClassAndLevel()
+
+        for (const trait of [...race.traits, ...(subrace?.traits ?? [])]) {
+          expect(store.character.featuresTraits, `${variant}/${race.id}: ${trait}`).toContain(trait)
+        }
+        // E i privilegi di classe restano al loro posto
+        for (const feat of cls.features.filter(f => f.level <= 3)) {
+          expect(store.character.featuresTraits, feat.name).toContain(feat.name)
+        }
+      }
+    })
+  }
+})
+
+/**
+ * Scegliere la sottoclasse al passo 3 e arrivare allo stesso livello salendo
+ * di grado devono lasciare la stessa scheda.
+ */
+describe('scelta della sottoclasse', () => {
+  beforeAll(async () => {
+    await Promise.all(GAME_VARIANTS.map(v => preloadVariantData(v)))
+  })
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  for (const variant of GAME_VARIANTS) {
+    /**
+     * Impedisce il ritorno del difetto per cui setSubclass aggiungeva i
+     * privilegi solo se il nome non era già presente, mentre levelUp e
+     * syncClassAndLevel li ricostruiscono ammettendo le ripetizioni: il warlock
+     * di Lilith in Apocalisse perdeva la seconda occorrenza di "Pact Boon" e
+     * usciva con 23 privilegi invece di 24.
+     */
+    it(`${variant}: setSubclass dà la stessa lista di syncClassAndLevel`, () => {
+      const maxLv = getMaxLevel(variant)
+      for (const cls of getClasses(variant)) {
+        for (const sub of cls.subclasses) {
+          setActivePinia(createPinia())
+          const chosen = useCharacterStore()
+          chosen.resetCharacter()
+          chosen.character.variant = variant
+          chosen.character.className = cls.id
+          chosen.character.level = maxLv
+          chosen.syncClassAndLevel()
+          expect(chosen.setSubclass(sub.id), `${variant}/${cls.id}/${sub.id}`).not.toBeNull()
+
+          setActivePinia(createPinia())
+          const synced = useCharacterStore()
+          synced.resetCharacter()
+          synced.character.variant = variant
+          synced.character.className = cls.id
+          synced.character.subclass = sub.id
+          synced.character.level = maxLv
+          synced.syncClassAndLevel()
+
+          expect(chosen.character.featuresTraits, `${variant}/${cls.id}/${sub.id}`)
+            .toEqual(synced.character.featuresTraits)
+        }
+      }
+    })
+  }
+})
+
+/**
+ * Il passo 3 aggiunge e toglie classi senza passare dal passo 4 o dall'8:
+ * quello che lascia in scheda deve essere già completo.
+ */
+describe('multiclasse dal passo 3', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+  })
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  /** Personaggio di classe singola, portato al livello chiesto. */
+  function primaryAt(classId: string, level: number) {
+    setActivePinia(createPinia())
+    const store = useCharacterStore()
+    store.resetCharacter()
+    store.character.variant = 'dnd5e'
+    store.character.className = classId
+    store.character.level = level
+    store.syncClassAndLevel()
+    return store
+  }
+
+  const pairs: [string, string][] = [
+    ['fighter', 'wizard'],
+    ['cleric', 'rogue'],
+    ['barbarian', 'druid'],
+    ['rogue', 'warlock'],
+  ]
+
+  /**
+   * Impedisce il ritorno del difetto per cui addMulticlass toccava solo
+   * classi, livello e punti ferita: il guerriero che prendeva un livello da
+   * mago restava con i soli privilegi da guerriero, senza Incantesimi né
+   * Recupero Arcano, tanto nel riepilogo quanto sulla scheda.
+   */
+  for (const [primary, secondary] of pairs) {
+    it(`${primary} + ${secondary}: addMulticlass dà la stessa lista di syncClassAndLevel`, () => {
+      const added = primaryAt(primary, 5)
+      added.addMulticlass(secondary)
+      expect(added.character.level).toBe(6)
+
+      // Stessa scheda, ma ricostruita dal percorso già corretto
+      const synced = primaryAt(primary, 5)
+      synced.character.classes = [
+        { classId: primary, subclass: synced.character.subclass, level: 5, hitDie: synced.character.hitDie },
+        { classId: secondary, subclass: '', level: 1, hitDie: getClasses('dnd5e').find(c => c.id === secondary)!.hitDie },
+      ]
+      synced.character.level = 6
+      synced.syncClassAndLevel()
+
+      expect(added.character.featuresTraits, `${primary}/${secondary}`)
+        .toEqual(synced.character.featuresTraits)
+
+      // E il 1° livello della classe presa davvero c'è
+      const first = getClasses('dnd5e').find(c => c.id === secondary)!.features.filter(f => f.level === 1)
+      for (const feat of first) {
+        expect(added.character.featuresTraits, `${secondary}: ${feat.name}`).toContain(feat.name)
+      }
+    })
+  }
+
+  /**
+   * Impedisce il ritorno del difetto gemello su removeMulticlass: il livello
+   * tornava a quello della classe principale, ma i privilegi della classe
+   * tolta restavano in lista e finivano sul PDF.
+   */
+  for (const [primary, secondary] of pairs) {
+    it(`${primary} + ${secondary}: removeMulticlass riporta la lista a quella di partenza`, () => {
+      const before = primaryAt(primary, 5).character.featuresTraits.slice()
+
+      // Multiclasse costruito dal percorso già corretto, così che i privilegi
+      // della seconda classe siano davvero in lista prima di toglierla
+      const store = primaryAt(primary, 5)
+      store.character.classes = [
+        { classId: primary, subclass: store.character.subclass, level: 5, hitDie: store.character.hitDie },
+        { classId: secondary, subclass: '', level: 1, hitDie: getClasses('dnd5e').find(c => c.id === secondary)!.hitDie },
+      ]
+      store.character.level = 6
+      store.syncClassAndLevel()
+      expect(store.character.featuresTraits.length).toBeGreaterThan(before.length)
+
+      store.removeMulticlass(secondary)
+
+      expect(store.character.level).toBe(5)
+      expect(store.character.featuresTraits, `${primary}/${secondary}`).toEqual(before)
+    })
+  }
 })

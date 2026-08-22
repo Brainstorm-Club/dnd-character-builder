@@ -125,5 +125,21 @@ export function useGameTerms() {
     return translate(name, 'equipment')
   }
 
-  return { weapon, armorName, spell, school, damageType, pack, background, className, raceName, subraceName, skill, proficiency, feature, trait, language, subclassName, equipment }
+  /**
+   * Translate a creature size to Italian.
+   * @param name - English size as stored in the race data (e.g., "Medium")
+   */
+  function size(name: string): string {
+    return translate(name, 'size')
+  }
+
+  /**
+   * Translate a two-letter alignment code to the interface language.
+   * @param code - Alignment code as stored on the sheet (e.g., "cn")
+   */
+  function alignment(code: string): string {
+    return translate(code, 'alignment')
+  }
+
+  return { weapon, armorName, spell, school, damageType, pack, background, className, raceName, subraceName, skill, proficiency, feature, trait, language, subclassName, equipment, size, alignment }
 }

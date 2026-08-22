@@ -174,7 +174,7 @@ function updateLevel() {
         <!-- Size (auto from race) -->
         <div>
           <label for="branc-size" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.size') }}</label>
-          <input id="branc-size" :value="raceSize" readonly aria-readonly="true"
+          <input id="branc-size" :value="gt.size(raceSize)" readonly aria-readonly="true"
             class="w-full bg-stone-900 border border-stone-700 rounded-lg px-3 py-2 text-stone-400 cursor-not-allowed" />
         </div>
 

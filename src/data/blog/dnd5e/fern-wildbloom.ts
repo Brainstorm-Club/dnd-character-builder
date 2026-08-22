@@ -13,7 +13,7 @@ export const fernWildbloom: CharacterData = {
   race: 'elf',
   subrace: 'wood-elf',
   className: 'druid',
-  subclass: 'circle-of-the-land',
+  subclass: 'land',
   level: 3,
   background: 'outlander',
   alignment: 'ng',

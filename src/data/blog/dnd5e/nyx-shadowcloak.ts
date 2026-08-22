@@ -11,7 +11,7 @@ export const nyxShadowcloak: CharacterData = {
   name: 'Nyx Shadowcloak',
   playerName: '',
   race: 'elf',
-  subrace: 'drow',
+  subrace: 'dark-elf',
   className: 'rogue',
   subclass: 'thief',
   level: 3,

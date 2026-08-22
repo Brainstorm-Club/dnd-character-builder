@@ -17,7 +17,9 @@ import {
 } from './index'
 import type { GameVariant } from '@/stores/app'
 
-const variants: GameVariant[] = ['dnd5e', 'brancalonia', 'apocalisse']
+// Tutte e quattro: 'dnd2024' restava fuori dalle suite, ed è così che i suoi
+// difetti (lista incantesimi, import, condivisione) sono passati inosservati.
+const variants: GameVariant[] = ['dnd5e', 'dnd2024', 'brancalonia', 'apocalisse']
 
 describe('data loader', () => {
   // Preload all variants before running tests

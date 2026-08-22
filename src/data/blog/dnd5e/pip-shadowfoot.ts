@@ -11,7 +11,7 @@ export const pipShadowfoot: CharacterData = {
   name: 'Pip Shadowfoot',
   playerName: '',
   race: 'halfling',
-  subrace: 'lightfoot',
+  subrace: 'lightfoot-halfling',
   className: 'rogue',
   subclass: 'thief',
   level: 5,

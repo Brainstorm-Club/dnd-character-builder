@@ -13,7 +13,7 @@ export const skarFlamerage: CharacterData = {
   race: 'dragonborn',
   subrace: '',
   className: 'barbarian',
-  subclass: 'path-of-the-berserker',
+  subclass: 'berserker',
   level: 3,
   background: 'outlander',
   alignment: 'cn',

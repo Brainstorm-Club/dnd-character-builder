@@ -74,6 +74,14 @@ export const burattinaioBrancaloniaClass: CharacterClass = {
         'You choose the vocation that will characterize your Theatre of Extravaganza. Mise-en-scene: you double your Distance of Use, and as an action you can extend your perceptions through a bound puppet until the start of your next turn, during which you are blind and deaf to your own surroundings. Construction Art: all your creations are sturdier — an unbound puppet has 20 hit points and AC 10, and repairing a broken puppet costs you only a short rest and 15 gp.',
     },
     {
+      // Macaronicon ITA 2.2, tabella «Burattinaio» a pag. 12: il 4° livello
+      // dà l'Aumento dei Punteggi di Caratteristica, come le classi base
+      id: 'asi-4',
+      name: 'Ability Score Improvement',
+      level: 4,
+      description: 'You can increase one ability score by 2, or two ability scores by 1 each. You cannot raise a score above 20. You can take a feat instead if your DM allows it.',
+    },
+    {
       id: 'masterpiece',
       name: 'Masterpiece',
       level: 5,

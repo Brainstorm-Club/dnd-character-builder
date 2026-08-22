@@ -57,6 +57,7 @@ export const mastroGeppetto: CharacterData = {
     'Puppeteer\'s Tradition',
     'Canons',
     'Artistic Vocation',
+    'Ability Score Improvement',
     'Fatherly Love',
   ],
   backstory: 'Mastro Geppetto ha passato trent\'anni nella sua bottega di Firenzuola, intagliando marionette per i teatrini ambulanti delle feste patronali. Un giorno, per sbaglio o per destino, uno dei suoi burattini apri gli occhi e scappo dalla finestra. Da quel momento Geppetto scopri di avere un dono: i fili che tesseva potevano legare non solo il legno ma anche la volonta altrui. Abbandono la bottega per cercare il suo burattino fuggitivo, guadagnandosi da vivere con spettacoli che mescolano commedia dell\'arte e incantesimi. Le autorita lo cercano per una satira particolarmente pungente sul re, ma lui cambia citta prima che possano acchiapparlo.',

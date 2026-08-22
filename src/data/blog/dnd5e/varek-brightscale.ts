@@ -13,7 +13,7 @@ export const varekBrightscale: CharacterData = {
   race: 'dragonborn',
   subrace: '',
   className: 'paladin',
-  subclass: 'oath-of-devotion',
+  subclass: 'devotion',
   level: 5,
   background: 'noble',
   alignment: 'lg',

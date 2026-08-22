@@ -8,8 +8,12 @@ import type { CharacterData } from '@/stores/character'
 /** Maximum encoded share URL data length (bytes). Prevents abuse / DoS. */
 export const MAX_SHARE_DATA_LENGTH = 20_000
 
-/** Compact keys for the most common character fields to reduce URL size */
-const COMPACT_KEYS: Record<string, string> = {
+/**
+ * Compact keys for the most common character fields to reduce URL size.
+ * Esportata perché i test possano verificare che restino tutte distinte: una
+ * chiave usata due volte fa sparire in silenzio uno dei due campi dal link.
+ */
+export const COMPACT_KEYS: Record<string, string> = {
   variant: 'v',
   name: 'n',
   playerName: 'pn',
@@ -59,7 +63,7 @@ const COMPACT_KEYS: Record<string, string> = {
   proficienciesOther: 'po',
   coins: 'co',
   currentHp: 'chp',
-  speed: 'sp',
+  speed: 'spd',
   size: 'sz',
   whacksLevel: 'wl',
   brawlingMoves: 'bm',

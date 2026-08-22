@@ -11,7 +11,7 @@ export const bramThickfoot: CharacterData = {
   name: 'Bram Thickfoot',
   playerName: '',
   race: 'halfling',
-  subrace: 'stout',
+  subrace: 'stout-halfling',
   className: 'fighter',
   subclass: 'champion',
   level: 3,

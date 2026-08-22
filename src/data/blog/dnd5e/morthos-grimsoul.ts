@@ -13,7 +13,7 @@ export const morthosGrimsoul: CharacterData = {
   race: 'tiefling',
   subrace: '',
   className: 'warlock',
-  subclass: 'the-fiend',
+  subclass: 'fiend',
   level: 3,
   background: 'charlatan',
   alignment: 'ne',

@@ -13,7 +13,7 @@ export const zaraHellfire: CharacterData = {
   race: 'tiefling',
   subrace: '',
   className: 'sorcerer',
-  subclass: 'draconic-bloodline',
+  subclass: 'draconic',
   level: 5,
   background: 'sage',
   alignment: 'cn',

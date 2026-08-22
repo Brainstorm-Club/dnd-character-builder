@@ -13,7 +13,7 @@ export const kaelWindwalker: CharacterData = {
   race: 'elf',
   subrace: 'wood-elf',
   className: 'monk',
-  subclass: 'way-of-the-open-hand',
+  subclass: 'open-hand',
   level: 5,
   background: 'hermit',
   alignment: 'ln',

@@ -24,6 +24,23 @@ describe('burattinaio (Puppeteer)', () => {
     expect(puppeteer.subclasses.map(s => s.id)).toEqual(['mangiafuoco', 'geppetto'])
   })
 
+  /**
+   * Impedisce il ritorno del difetto per cui la tabella della classe saltava il
+   * 4° livello: un burattinaio che ci arrivava non riceveva alcun privilegio,
+   * mentre il Macaronicon ITA 2.2 a pag. 12 gli assegna l'Aumento dei Punteggi
+   * di Caratteristica.
+   */
+  it('segue la tabella dei livelli stampata nel Macaronicon', () => {
+    expect(puppeteer.features.map(f => f.level)).toEqual([1, 1, 1, 2, 3, 4, 5])
+    const asi = puppeteer.features.find(f => f.level === 4)
+    expect(asi?.id).toBe('asi-4')
+    expect(asi?.name).toBe('Ability Score Improvement')
+    // Il 6° livello arriva dalla tradizione, non dalla tabella della classe
+    for (const sub of puppeteer.subclasses) {
+      expect(sub.features.map(f => f.level), sub.id).toEqual([1, 6])
+    }
+  })
+
   it('keeps every feature within the level 6 cap of the setting', () => {
     const features = [
       ...puppeteer.features,

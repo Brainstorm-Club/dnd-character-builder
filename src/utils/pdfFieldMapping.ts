@@ -1,56 +1,154 @@
 import type { CharacterData, AbilityScores } from '@/stores/character'
-import { modifier, proficiencyBonus, formatModifier, spellSaveDC, spellAttackBonus, feetToMeters } from './calculations'
+import { modifier, proficiencyBonus, formatModifier, spellSaveDC, spellAttackBonus, feetToMeters, computeArmorClass } from './calculations'
 import { apocalisseRules } from '@/data/apocalisse/rules'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
 import { getDnd2024Feat } from '@/data/dnd2024/feats'
 import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce } from '@/data/brancalonia/brawl'
-import { classNamesIt, brancaloniaClassNamesIt, apocalisseClassNamesIt, raceNamesIt, subraceNamesIt, backgroundNamesIt } from '@/i18n/gameTerms'
+import { getSpells, getClasses, getSpellSlots, getMulticlassSpellSlots } from '@/data'
+import {
+  classNamesIt, brancaloniaClassNamesIt, apocalisseClassNamesIt,
+  equipmentNamesIt, weaponNamesIt, armorNamesIt, equipmentPacksIt,
+  translateGameTerm,
+} from '@/i18n/gameTerms'
+
+/**
+ * Lingua con cui riempire la scheda. Brancalonia e Apocalisse hanno moduli
+ * italiani e restano sempre in italiano; D&D 5e e 2024 seguono l'interfaccia.
+ */
+function sheetLocale(variant: string, uiLocale: string): string {
+  if (variant === 'brancalonia' || variant === 'apocalisse') return 'it'
+  return uiLocale === 'it' ? 'it' : 'en'
+}
 
 /** Capitalize a class ID for English display (e.g., "barbarian" → "Barbarian") */
 function capitalizeId(id: string): string {
   return id.charAt(0).toUpperCase() + id.slice(1)
 }
 
-/** Get display class name for PDF based on variant */
-function pdfClassName(classId: string, variant: string): string {
+/** 'powder-dabbler' → 'Powder Dabbler' */
+function titleCase(id: string): string {
+  return id.split(/[-\s]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+}
+
+/**
+ * Nome della classe nella lingua della scheda. Il locale arriva già calcolato
+ * da sheetLocale(): senza, D&D 5e e 2024 stampavano 'Druid 6' accanto a un
+ * background e a un allineamento già tradotti.
+ */
+function pdfClassName(classId: string, variant: string, locale = 'it'): string {
   if (variant === 'brancalonia') {
     return brancaloniaClassNamesIt[classId] ?? classNamesIt[capitalizeId(classId)] ?? capitalizeId(classId)
   }
   if (variant === 'apocalisse') {
     return apocalisseClassNamesIt[classId] ?? classNamesIt[capitalizeId(classId)] ?? capitalizeId(classId)
   }
-  return capitalizeId(classId)
+  if (locale !== 'it') return capitalizeId(classId)
+  return classNamesIt[capitalizeId(classId)] ?? capitalizeId(classId)
 }
 
-/** Get display race name for PDF based on variant */
-function pdfRaceName(raceId: string, variant: string): string {
-  if (variant === 'brancalonia' || variant === 'apocalisse') {
-    // Try direct lookup, then capitalized
-    const capitalized = raceId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-')
-    return raceNamesIt[capitalized] ?? raceNamesIt[capitalized.replace(/-/g, ' ')] ?? capitalizeId(raceId)
-  }
-  // For D&D 5e, capitalize the ID
-  return raceId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join('-')
+/**
+ * Campi della pagina incantesimi del modello D&D, raggruppati per livello.
+ *
+ * I nomi non seguono l'ordine di stampa — pdf-lib restituisce 'Spells 1015' e
+ * 'Spells 101014' in coda alla lista, mentre sulla pagina stanno in cima al
+ * blocco di 1° livello — quindi la mappa è esplicita, ricavata dalla posizione
+ * dei riquadri sulla terza pagina di public/pdf/dnd-5e-sheet.pdf.
+ */
+const DND5E_SPELL_FIELDS: Record<number, readonly string[]> = {
+  0: ['Spells 1014', 'Spells 1016', 'Spells 1017', 'Spells 1018', 'Spells 1019', 'Spells 1020', 'Spells 1021', 'Spells 1022'],
+  1: ['Spells 101014', 'Spells 1015', 'Spells 1023', 'Spells 1024', 'Spells 1025', 'Spells 1026', 'Spells 1027', 'Spells 1028', 'Spells 1029', 'Spells 1030', 'Spells 1031', 'Spells 1032', 'Spells 1033'],
+  2: ['Spells 1046', 'Spells 1034', 'Spells 1035', 'Spells 1036', 'Spells 1037', 'Spells 1038', 'Spells 1039', 'Spells 1040', 'Spells 1041', 'Spells 1042', 'Spells 1043', 'Spells 1044', 'Spells 1045'],
+  3: ['Spells 1048', 'Spells 1047', 'Spells 1049', 'Spells 1050', 'Spells 1051', 'Spells 1052', 'Spells 1053', 'Spells 1054', 'Spells 1055', 'Spells 1056', 'Spells 1057', 'Spells 1058', 'Spells 1059'],
+  4: ['Spells 1061', 'Spells 1060', 'Spells 1062', 'Spells 1063', 'Spells 1064', 'Spells 1065', 'Spells 1066', 'Spells 1067', 'Spells 1068', 'Spells 1069', 'Spells 1070', 'Spells 1071', 'Spells 1072'],
+  5: ['Spells 1074', 'Spells 1073', 'Spells 1075', 'Spells 1076', 'Spells 1077', 'Spells 1078', 'Spells 1079', 'Spells 1080', 'Spells 1081'],
+  6: ['Spells 1083', 'Spells 1082', 'Spells 1084', 'Spells 1085', 'Spells 1086', 'Spells 1087', 'Spells 1088', 'Spells 1089', 'Spells 1090'],
+  7: ['Spells 1092', 'Spells 1091', 'Spells 1093', 'Spells 1094', 'Spells 1095', 'Spells 1096', 'Spells 1097', 'Spells 1098', 'Spells 1099'],
+  8: ['Spells 10101', 'Spells 10100', 'Spells 10102', 'Spells 10103', 'Spells 10104', 'Spells 10105', 'Spells 10106'],
+  9: ['Spells 10108', 'Spells 10107', 'Spells 10109', 'Spells 101010', 'Spells 101011', 'Spells 101012', 'Spells 101013'],
 }
 
-/** Get display subrace name for PDF */
-function pdfSubraceName(subraceId: string, variant: string): string {
-  if (!subraceId) return ''
-  if (variant === 'brancalonia' || variant === 'apocalisse') {
-    const capitalized = subraceId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-    return subraceNamesIt[capitalized] ?? capitalized
-  }
-  return subraceId.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+/**
+ * Nome di un pezzo d'equipaggiamento nella lingua della scheda. I dati usano
+ * tanto nomi propri ('Chain Mail') quanto slug ('dungeoneer-pack'), quindi si
+ * provano nell'ordine le tabelle esistenti.
+ */
+function pdfEquipmentName(item: string, locale: string): string {
+  if (locale !== 'it') return item
+  const titled = titleCase(item)
+  const packKey = /-pack$/.test(item)
+    ? `${titleCase(item.replace(/-pack$/, ''))}'s Pack`
+    : ''
+  return equipmentNamesIt[item]
+    ?? equipmentNamesIt[titled]
+    ?? weaponNamesIt[titled]
+    ?? armorNamesIt[titled]
+    ?? (packKey ? equipmentPacksIt[packKey] ?? item : item)
 }
 
-/** Get display background name for PDF based on variant */
-function pdfBackgroundName(bgId: string, variant: string): string {
-  if (variant === 'brancalonia' || variant === 'apocalisse') {
-    const capitalized = bgId.split(/[-\s]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
-    return backgroundNamesIt[capitalized] ?? backgroundNamesIt[bgId] ?? capitalized
-  }
-  return bgId.split(/[-\s]/).map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' ')
+/**
+ * Nome di un incantesimo a partire dal suo id ('1-jump', 'blade-ward').
+ * Senza questa risoluzione la scheda stampava l'id grezzo.
+ */
+function pdfSpellName(spellId: string, char: CharacterData, locale: string): string {
+  const found = getSpells(char.variant).find(sp => sp.id === spellId)
+  const english = found?.name ?? titleCase(spellId.replace(/^\d+-/, ''))
+  return translateGameTerm(english, locale, 'spell')
 }
+/**
+ * Livello di un incantesimo noto. L'id di norma lo porta nel prefisso
+ * ('1-jump'), ma i 13 incantesimi esclusivi di Brancalonia ne sono privi
+ * ('chex', 'cleanse', 'illusory-tribute'): il livello va letto dai dati, e il
+ * prefisso resta solo come ripiego per un id che i dati non conoscono.
+ */
+function pdfSpellLevel(spellId: string, char: CharacterData): number {
+  const found = getSpells(char.variant).find(sp => sp.id === spellId)
+  if (found) return found.level
+  const prefixed = /^(\d+)-/.exec(spellId)
+  return prefixed ? Number(prefixed[1]) : 0
+}
+
+/**
+ * Incantesimi noti raggruppati per livello, in ordine di lista. Il livello
+ * arriva dai dati, non dal prefisso dell'id.
+ */
+function spellsByLevel(char: CharacterData): Map<number, string[]> {
+  const byLevel = new Map<number, string[]>()
+  for (const id of char.spellsKnown) {
+    const lv = pdfSpellLevel(id, char)
+    const bucket = byLevel.get(lv)
+    if (bucket) bucket.push(id)
+    else byLevel.set(lv, [id])
+  }
+  return byLevel
+}
+
+/**
+ * Slot incantesimo per livello, multiclasse compreso. La scheda si esporta a
+ * riposo compiuto, quindi 'SlotsRemaining' vale quanto 'SlotsTotal'.
+ */
+function pdfSpellSlots(char: CharacterData): Record<number, number> {
+  const classes = char.classes ?? []
+  if (classes.length >= 2) {
+    const entries = classes.map(entry => {
+      const cls = getClasses(char.variant).find(c => c.id === entry.classId)
+      // Un guerriero o un ladro senza sottoclasse da incantatore non porta
+      // nulla al livello da incantatore, come già fa il passo 7
+      const casterType = cls?.spellcasting?.casterType === 'third' && !entry.subclass
+        ? null
+        : cls?.spellcasting?.casterType ?? null
+      return { classId: entry.classId, level: entry.level, casterType }
+    })
+    const { slots, pactSlots } = getMulticlassSpellSlots(entries)
+    const merged: Record<number, number> = { ...slots }
+    for (const [lv, n] of Object.entries(pactSlots)) {
+      merged[Number(lv)] = (merged[Number(lv)] ?? 0) + n
+    }
+    return merged
+  }
+  if (!char.spellcastingClass) return {}
+  return getSpellSlots(char.spellcastingClass, char.level)
+}
+
 function totalAbility(char: CharacterData, ability: keyof AbilityScores): number {
   return char.abilityScores[ability] + (char.racialBonuses[ability] || 0)
 }
@@ -72,8 +170,9 @@ function savingThrow(char: CharacterData, ability: keyof AbilityScores): number 
   return mod + prof
 }
 
-export function getDnd5eFieldMapping(char: CharacterData): Record<string, string | boolean> {
+export function getDnd5eFieldMapping(char: CharacterData, uiLocale = 'en'): Record<string, string | boolean> {
   const prof = proficiencyBonus(char.level)
+  const loc = sheetLocale(char.variant, uiLocale)
   const fields: Record<string, string | boolean> = {}
 
   // Basic Info
@@ -81,17 +180,17 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
   const classes = char.classes ?? []
   if (classes.length >= 2) {
     fields['ClassLevel'] = classes
-      .map(c => `${pdfClassName(c.classId, char.variant)} ${c.level}`)
+      .map(c => `${pdfClassName(c.classId, char.variant, loc)} ${c.level}`)
       .join(' / ')
   } else {
-    fields['ClassLevel'] = `${pdfClassName(char.className, char.variant)} ${char.level}`
+    fields['ClassLevel'] = `${pdfClassName(char.className, char.variant, loc)} ${char.level}`
   }
-  fields['Background'] = pdfBackgroundName(char.background, char.variant)
+  fields['Background'] = translateGameTerm(char.background, loc, 'background')
   fields['PlayerName'] = char.playerName
-  const raceDisplay = pdfRaceName(char.race, char.variant)
-  const subraceDisplay = pdfSubraceName(char.subrace, char.variant)
+  const raceDisplay = translateGameTerm(char.race, loc, 'race')
+  const subraceDisplay = char.subrace ? translateGameTerm(char.subrace, loc, 'subrace') : ''
   fields['Race '] = subraceDisplay ? `${raceDisplay} (${subraceDisplay})` : raceDisplay
-  fields['Alignment'] = char.alignment
+  fields['Alignment'] = translateGameTerm(char.alignment, loc, 'alignment')
   fields['XP'] = String(char.experiencePoints)
 
   // Ability Scores
@@ -124,19 +223,22 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
   }
 
   // Combat Stats
-  fields['AC'] = String(10 + abilityMod(char, 'dex'))
+  fields['AC'] = String(computeArmorClass(char))
   fields['Initiative'] = String(abilityMod(char, 'dex'))
   fields['Speed'] = `${feetToMeters(char.speed)}m`
   fields['HPMax'] = String(char.maxHp)
   fields['HPCurrent'] = String(char.currentHp || char.maxHp)
   fields['HPTemp'] = String(char.tempHp || '')
+  // 'HDTotal' e 'HD' sono la riga «Total» e il riquadro grande della stessa
+  // casella DADI VITA: devono dire la stessa cosa. Sul multiclasse il dado è
+  // uno per classe, quindi anche 'HD' elenca le classi invece di moltiplicare
+  // il livello totale per il dado della sola classe principale.
   const hdClasses = char.classes ?? []
-  if (hdClasses.length >= 2) {
-    fields['HDTotal'] = hdClasses.map(c => `${c.level}d${c.hitDie}`).join(' + ')
-  } else {
-    fields['HDTotal'] = `${char.level}d${char.hitDie}`
-  }
-  fields['HD'] = `${char.level}d${char.hitDie}`
+  const hitDice = hdClasses.length >= 2
+    ? hdClasses.map(c => `${c.level}d${c.hitDie}`).join(' + ')
+    : `${char.level}d${char.hitDie}`
+  fields['HDTotal'] = hitDice
+  fields['HD'] = hitDice
   fields['ProfBonus'] = String(prof)
   fields['Passive'] = String(10 + skillBonus(char, 'perception', 'wis'))
 
@@ -176,22 +278,29 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
   const WPN_DMG = ['Wpn1 Damage', 'Wpn2 Damage ', 'Wpn3 Damage ', 'Wpn4 Damage', 'Wpn5 Damage']
   for (let i = 0; i < Math.min(char.weapons.length, 5); i++) {
     const wpn = char.weapons[i]!
-    fields[WPN_NAME[i]!] = wpn.name
+    fields[WPN_NAME[i]!] = translateGameTerm(wpn.name, loc, 'weapon')
     // attackBonus is already the final number, proficiency and ability included
     fields[WPN_ATK[i]!] = formatModifier(wpn.attackBonus)
     fields[WPN_DMG[i]!] = wpn.damage
   }
 
   // Equipment & Other
-  fields['Equipment'] = char.equipment.join(', ')
-  fields['ProficienciesLang'] = [...char.proficienciesOther, ...char.languages.map(l => `Language: ${l}`)].join('\n')
+  const armorLine = char.armor ? [translateGameTerm(char.armor, loc, 'armor')] : []
+  fields['Equipment'] = [...armorLine, ...char.equipment.map(e => pdfEquipmentName(e, loc))].join(', ')
+  const profLine = char.proficienciesOther.map(pr => translateGameTerm(pr, loc, 'proficiency')).join(', ')
+  const langLine = char.languages.length
+    ? `${loc === 'it' ? 'Lingue' : 'Languages'}: ${char.languages.map(l => translateGameTerm(l, loc, 'language')).join(', ')}`
+    : ''
+  fields['ProficienciesLang'] = [profLine, langLine].filter(Boolean).join('\n')
   // Features and Traits - include Apocalisse mark/virtue/sin/humanity if applicable
-  const featureLines = [...char.featuresTraits]
+  const featureLines = char.featuresTraits.map(f => translateGameTerm(f, loc, 'feature'))
   if (char.variant === 'dnd2024') {
     const bg = char.background
     const feat = char.feat ? getDnd2024Feat(char.feat) : undefined
     if (feat) featureLines.push(`Talento: ${feat.name}`)
-    if (bg) featureLines.push(`Background: ${bg}`)
+    // Il background va tradotto come nel campo dedicato: qui finiva l'id
+    // grezzo, e la scheda leggeva 'Background: acolyte'.
+    if (bg) featureLines.push(`Background: ${translateGameTerm(bg, loc, 'background')}`)
   }
   if (char.variant === 'brancalonia') {
     if (char.feat) {
@@ -264,11 +373,36 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
 
   // Page 3 - Spellcasting
   if (char.spellcastingAbility) {
-    fields['Spellcasting Class 2'] = pdfClassName(char.spellcastingClass, char.variant)
+    fields['Spellcasting Class 2'] = pdfClassName(char.spellcastingClass, char.variant, loc)
     fields['SpellcastingAbility 2'] = char.spellcastingAbility.toUpperCase()
     const sMod = abilityMod(char, char.spellcastingAbility as keyof AbilityScores)
     fields['SpellSaveDC  2'] = String(spellSaveDC(prof, sMod))
     fields['SpellAtkBonus 2'] = formatModifier(spellAttackBonus(prof, sMod))
+
+    // Incantesimi noti, un riquadro per riga e un blocco per livello: prima la
+    // pagina restava del tutto vuota, con i soli dati dell'intestazione.
+    // Il livello arriva dai dati; i trucchetti stanno in una lista a parte e
+    // riempiono il blocco 0.
+    const byLevel = spellsByLevel(char)
+    const slots = pdfSpellSlots(char)
+    for (let lv = 0; lv <= 9; lv++) {
+      const boxes = DND5E_SPELL_FIELDS[lv]!
+      const ids = lv === 0
+        ? [...char.cantrips, ...(byLevel.get(0) ?? []).filter(id => !char.cantrips.includes(id))]
+        : byLevel.get(lv) ?? []
+      const names = ids.map(sp => pdfSpellName(sp, char, loc))
+      for (let i = 0; i < Math.min(names.length, boxes.length); i++) {
+        fields[boxes[i]!] = names[i]!
+      }
+      // Slot del livello: i riquadri sono numerati 19..27 per i livelli 1..9.
+      // Un livello senza slot resta vuoto, non stampa uno 0.
+      if (lv >= 1) {
+        const n = slots[lv] ?? 0
+        const value = n > 0 ? String(n) : ''
+        fields[`SlotsTotal ${18 + lv}`] = value
+        fields[`SlotsRemaining ${18 + lv}`] = value
+      }
+    }
   }
 
   return fields
@@ -282,10 +416,10 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   fields['Nome'] = char.name
   fields['Classe'] = pdfClassName(char.className, 'brancalonia')
   fields['Liv'] = String(char.level)
-  fields['Background'] = pdfBackgroundName(char.background, 'brancalonia')
+  fields['Background'] = translateGameTerm(char.background, 'it', 'background')
   fields['Nome Giocatore'] = char.playerName
-  fields['Allineamento'] = char.alignment
-  fields['Taglia'] = char.size || 'Media'
+  fields['Allineamento'] = translateGameTerm(char.alignment, 'it', 'alignment')
+  fields['Taglia'] = translateGameTerm(char.size || 'Medium', 'it', 'size')
   fields['Bonus Competenza'] = String(prof)
   fields['Ispirazione'] = ''
 
@@ -312,7 +446,7 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   fields['TScarisma'] = String(savingThrow(char, 'cha'))
 
   // Combat
-  fields['CA '] = String(10 + abilityMod(char, 'dex'))
+  fields['CA '] = String(computeArmorClass(char))
   fields['Iniziativa'] = String(abilityMod(char, 'dex'))
   fields['Max PF'] = String(char.maxHp)
   fields['PF attuali '] = String(char.currentHp || char.maxHp)
@@ -349,18 +483,19 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   // Weapons (up to 3)
   for (let i = 0; i < Math.min(char.weapons.length, 3); i++) {
     const wpn = char.weapons[i]!
-    fields[`Arma ${i + 1}`] = wpn.name
+    fields[`Arma ${i + 1}`] = translateGameTerm(wpn.name, 'it', 'weapon')
     fields[`Bonus ${i + 1}`] = formatModifier(wpn.attackBonus)
     fields[`Danno ${i + 1}`] = wpn.damage
   }
 
   // Equipment
-  fields['Equipaggiamento'] = char.equipment.join(', ')
+  const brancArmor = char.armor ? [translateGameTerm(char.armor, 'it', 'armor')] : []
+  fields['Equipaggiamento'] = [...brancArmor, ...char.equipment.map(e => pdfEquipmentName(e, 'it'))].join(', ')
   fields['Tratti Caratteriali'] = char.personalityTraits
   fields['Ideali'] = char.ideals
   fields['Legami'] = char.bonds
   fields['Difetti'] = char.flaws
-  fields['Privilegi'] = char.featuresTraits.join('\n')
+  fields['Privilegi'] = char.featuresTraits.map(f => translateGameTerm(f, 'it', 'feature')).join('\n')
   fields['Alleati'] = char.allies
   const noteContent = [char.backstory, char.sessionNotes].filter(Boolean).join('\n\n')
   fields['Note'] = noteContent
@@ -379,14 +514,22 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
     const sMod = abilityMod(char, char.spellcastingAbility as keyof AbilityScores)
     fields['CD TS incantesimi'] = String(spellSaveDC(prof, sMod))
     fields['Bonus al copire incanteismi'] = formatModifier(spellAttackBonus(prof, sMod))
-    fields['Trucchetti'] = char.cantrips.join(', ')
-    fields['Incantesimi livello 1 '] = char.spellsKnown.filter(s => s.startsWith('1-')).join(', ')
-    fields['Incantesimi livello 2'] = char.spellsKnown.filter(s => s.startsWith('2-')).join(', ')
-    fields['Incantesimi livello 3'] = char.spellsKnown.filter(s => s.startsWith('3-')).join(', ')
+    // Il livello arriva dai dati: gli incantesimi esclusivi di Brancalonia non
+    // hanno il prefisso numerico nell'id e altrimenti sparirebbero dalla scheda
+    const byLevel = spellsByLevel(char)
+    const spellList = (lv: number) => (byLevel.get(lv) ?? [])
+      .map(sp => pdfSpellName(sp, char, 'it'))
+      .join(', ')
+    fields['Trucchetti'] = [...char.cantrips, ...(byLevel.get(0) ?? []).filter(id => !char.cantrips.includes(id))]
+      .map(sp => pdfSpellName(sp, char, 'it'))
+      .join(', ')
+    fields['Incantesimi livello 1 '] = spellList(1)
+    fields['Incantesimi livello 2'] = spellList(2)
+    fields['Incantesimi livello 3'] = spellList(3)
   }
 
   // Brawling
-  fields['Mosse'] = char.brawlingMoves.join(', ')
+  fields['Mosse'] = char.brawlingMoves.map(m => translateGameTerm(m, 'it', 'trait')).join(', ')
 
   return fields
 }

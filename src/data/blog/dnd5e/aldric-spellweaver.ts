@@ -13,7 +13,7 @@ export const aldricSpellweaver: CharacterData = {
   race: 'elf',
   subrace: 'high-elf',
   className: 'wizard',
-  subclass: 'school-of-evocation',
+  subclass: 'evocation',
   level: 5,
   background: 'sage',
   alignment: 'ln',

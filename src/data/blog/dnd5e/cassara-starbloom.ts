@@ -13,7 +13,7 @@ export const cassaraStarbloom: CharacterData = {
   race: 'half-elf',
   subrace: '',
   className: 'sorcerer',
-  subclass: 'draconic-bloodline',
+  subclass: 'draconic',
   level: 3,
   background: 'noble',
   alignment: 'cg',

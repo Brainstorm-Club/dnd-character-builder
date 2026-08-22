@@ -3,7 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore, clampToMaxLevel } from '@/stores/character'
-import { useAppStore } from '@/stores/app'
+import { useAppStore, GAME_VARIANTS } from '@/stores/app'
 import { decodeCharacterFromUrl, MAX_SHARE_DATA_LENGTH } from '@/utils/shareCharacter'
 
 const route = useRoute()
@@ -24,8 +24,7 @@ onMounted(() => {
     }
 
     const partial = decodeCharacterFromUrl(data)
-    const validVariants = ['dnd5e', 'brancalonia', 'apocalisse']
-    if (!partial.variant || !validVariants.includes(partial.variant)) {
+    if (!partial.variant || !(GAME_VARIANTS as readonly string[]).includes(partial.variant)) {
       error.value = true
       return
     }

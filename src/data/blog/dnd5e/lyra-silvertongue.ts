@@ -13,7 +13,7 @@ export const lyraSilvertongue: CharacterData = {
   race: 'half-elf',
   subrace: '',
   className: 'bard',
-  subclass: 'college-of-lore',
+  subclass: 'lore',
   level: 5,
   background: 'entertainer',
   alignment: 'cg',

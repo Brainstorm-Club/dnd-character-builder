@@ -1,6 +1,7 @@
 import { ref } from 'vue'
 import { PDFDocument } from 'pdf-lib'
 import { useCharacterStore } from '@/stores/character'
+import { useAppStore } from '@/stores/app'
 import type { CharacterData } from '@/stores/character'
 import { getDnd5eFieldMapping, getBrancaloniaFieldMapping } from '@/utils/pdfFieldMapping'
 
@@ -51,9 +52,12 @@ export function usePdfExport() {
       const pdfDoc = await PDFDocument.load(pdfBytes)
       const form = pdfDoc.getForm()
 
+      // La scheda D&D segue la lingua dell'interfaccia; quelle di Brancalonia
+      // e Apocalisse restano in italiano (lo decide getDnd5eFieldMapping).
+      const uiLocale = useAppStore().locale
       const fieldMapping = char.variant === 'brancalonia'
         ? getBrancaloniaFieldMapping(char)
-        : getDnd5eFieldMapping(char)
+        : getDnd5eFieldMapping(char, uiLocale)
 
       const MAX_FIELD_LENGTH = 1000
       const skippedFields: string[] = []

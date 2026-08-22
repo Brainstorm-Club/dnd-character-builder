@@ -1,8 +1,9 @@
 import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { GameVariant } from './app'
-import { modifier, proficiencyBonus, hpPerLevel, totalHp } from '@/utils/calculations'
-import { getMaxLevel, getClasses } from '@/data'
+import { GAME_VARIANTS } from './app'
+import { modifier, proficiencyBonus, hpPerLevel, totalHp, computeArmorClass } from '@/utils/calculations'
+import { getMaxLevel, getClasses, getRaces } from '@/data'
 
 export interface AbilityScores {
   str: number
@@ -200,6 +201,83 @@ export function clampToMaxLevel(char: CharacterData): boolean {
   return true
 }
 
+/**
+ * Voci di classe da cui derivano privilegi e sottoclassi: le entrate del
+ * multiclasse se ce n'è più di una, altrimenti la sola classe principale.
+ */
+function classEntriesOf(char: CharacterData): { classId: string; subclass: string; level: number }[] {
+  if (char.classes.length >= 2) {
+    return char.classes.map(c => ({ classId: c.classId, subclass: c.subclass, level: c.level }))
+  }
+  return [{ classId: char.className, subclass: char.subclass, level: char.level }]
+}
+
+/** Tratti concessi dalla specie e dalla sottorazza del personaggio. */
+function racialTraitsOf(char: CharacterData): string[] {
+  const race = getRaces(char.variant).find(r => r.id === char.race)
+  if (!race) return []
+  const subrace = race.subraces.find(s => s.id === char.subrace)
+  return [...race.traits, ...(subrace?.traits ?? [])]
+}
+
+/**
+ * Elenco dei privilegi spettanti al personaggio così com'è adesso: i tratti di
+ * specie e sottorazza, poi per ogni classe quelli fino al livello raggiunto in
+ * quella classe, seguiti da quelli della sua sottoclasse.
+ *
+ * Unica fonte di verità per syncClassAndLevel, levelUp e levelDown: finché i
+ * tre percorsi ricostruiscono la stessa lista, salire e riscendere di livello
+ * resta un'operazione reversibile. I tratti razziali sono ricalcolati e non
+ * solo conservati perché la procedura guidata non li ha mai scritti: senza,
+ * un elfo restava senza Scurovisione tanto nel riepilogo quanto nel PDF.
+ */
+function computeFeatures(char: CharacterData): string[] {
+  const allClasses = getClasses(char.variant)
+  const out: string[] = [...racialTraitsOf(char)]
+  for (const entry of classEntriesOf(char)) {
+    const cls = allClasses.find(c => c.id === entry.classId)
+    if (!cls) continue
+    out.push(...cls.features.filter(f => f.level <= entry.level).map(f => f.name))
+    const sub = cls.subclasses.find(s => s.id === entry.subclass)
+    if (sub) out.push(...sub.features.filter(f => f.level <= entry.level).map(f => f.name))
+  }
+  return out
+}
+
+/**
+ * Toglie le sottoclassi che il personaggio non ha (più) il livello per avere,
+ * sulla classe principale e su ogni voce del multiclasse.
+ */
+function revokeUnearnedSubclasses(char: CharacterData): void {
+  const allClasses = getClasses(char.variant)
+  const primary = allClasses.find(c => c.id === char.className)
+  if (primary) {
+    const primaryLevel = char.classes.length >= 2
+      ? (char.classes.find(c => c.classId === char.className)?.level ?? char.level)
+      : char.level
+    const chosen = primary.subclasses.find(s => s.id === char.subclass)
+    if (char.subclass && (!chosen || primaryLevel < primary.subclassLevel)) char.subclass = ''
+  }
+  for (const entry of char.classes) {
+    const cls = allClasses.find(c => c.id === entry.classId)
+    if (!cls) continue
+    const chosen = cls.subclasses.find(s => s.id === entry.subclass)
+    if (entry.subclass && (!chosen || entry.level < cls.subclassLevel)) entry.subclass = ''
+  }
+}
+
+/** Differenza fra due liste di privilegi, ripetizioni comprese. */
+function featureDiff(from: string[], to: string[]): string[] {
+  const pool = [...to]
+  const out: string[] = []
+  for (const name of from) {
+    const i = pool.indexOf(name)
+    if (i >= 0) pool.splice(i, 1)
+    else out.push(name)
+  }
+  return out
+}
+
 export const useCharacterStore = defineStore('character', () => {
   const character = ref<CharacterData>(createEmptyCharacter())
   const savedCharacters = ref<CharacterData[]>([])
@@ -231,10 +309,7 @@ export const useCharacterStore = defineStore('character', () => {
 
   const profBonus = computed(() => proficiencyBonus(character.value.level))
 
-  const armorClass = computed(() => {
-    // Base AC = 10 + DEX mod (unarmored)
-    return 10 + abilityModifiers.value.dex
-  })
+  const armorClass = computed(() => computeArmorClass(character.value))
 
   const initiative = computed(() => abilityModifiers.value.dex)
 
@@ -333,6 +408,12 @@ export const useCharacterStore = defineStore('character', () => {
     )
     char.maxHp += hpPerLevel(newCls.hitDie, conMod)
     char.currentHp = char.maxHp
+
+    // I privilegi vanno ricostruiti come fanno setSubclass, levelUp e
+    // levelDown: senza, la nuova classe non porta in dote nemmeno il proprio
+    // 1° livello, e il riepilogo resta a quelli della sola classe di partenza
+    revokeUnearnedSubclasses(char)
+    char.featuresTraits = computeFeatures(char)
   }
 
   /**
@@ -369,6 +450,11 @@ export const useCharacterStore = defineStore('character', () => {
     }
     char.maxHp = Math.max(hp, 1)
     char.currentHp = char.maxHp
+
+    // Come in addMulticlass: togliere la classe deve togliere anche i suoi
+    // privilegi, altrimenti restano nel riepilogo e finiscono sulla scheda
+    revokeUnearnedSubclasses(char)
+    char.featuresTraits = computeFeatures(char)
   }
 
   /**
@@ -393,36 +479,18 @@ export const useCharacterStore = defineStore('character', () => {
     if (subclassId && !cls.subclasses.some(s => s.id === subclassId)) return null
 
     const entry = char.classes.find(c => c.classId === targetClassId)
-    const classLevel = entry ? entry.level : char.level
-    const previous = entry ? entry.subclass : char.subclass
-
-    // Drop the features granted by the subclass being replaced
-    const removedFeatures: string[] = []
-    if (previous && previous !== subclassId) {
-      const prevSub = cls.subclasses.find(s => s.id === previous)
-      for (const feat of prevSub?.features ?? []) {
-        const i = char.featuresTraits.indexOf(feat.name)
-        if (i >= 0) {
-          char.featuresTraits.splice(i, 1)
-          removedFeatures.push(feat.name)
-        }
-      }
-    }
 
     if (entry) entry.subclass = subclassId
     if (targetClassId === char.className) char.subclass = subclassId
 
-    // Grant every subclass feature the character already qualifies for
-    const newFeatures: string[] = []
-    if (subclassId && classLevel >= cls.subclassLevel) {
-      const sub = cls.subclasses.find(s => s.id === subclassId)
-      for (const feat of sub?.features.filter(f => f.level <= classLevel) ?? []) {
-        if (!char.featuresTraits.includes(feat.name)) {
-          char.featuresTraits.push(feat.name)
-          newFeatures.push(feat.name)
-        }
-      }
-    }
+    // Ricostruzione, non aggiunta per nome: deduplicando si perdeva la seconda
+    // occorrenza di un privilegio che classe e sottoclasse portano entrambe
+    // allo stesso livello (Pact Boon del warlock e di Lilith in Apocalisse), e
+    // la lista finiva diversa da quella di syncClassAndLevel.
+    const before = [...char.featuresTraits]
+    char.featuresTraits = computeFeatures(char)
+    const newFeatures = featureDiff(char.featuresTraits, before)
+    const removedFeatures = featureDiff(before, char.featuresTraits)
 
     // Auto-save if the character exists in saved list
     const idx = savedCharacters.value.findIndex(c => c.id === char.id)
@@ -453,14 +521,8 @@ export const useCharacterStore = defineStore('character', () => {
     if (!cls) return
 
     char.hitDie = cls.hitDie
-    const chosen = cls.subclasses.find(s => s.id === char.subclass)
-    if (char.subclass && (!chosen || char.level < cls.subclassLevel)) char.subclass = ''
-    const sub = cls.subclasses.find(s => s.id === char.subclass)
-
-    char.featuresTraits = [
-      ...cls.features.filter(f => f.level <= char.level).map(f => f.name),
-      ...(sub?.features.filter(f => f.level <= char.level).map(f => f.name) ?? []),
-    ]
+    revokeUnearnedSubclasses(char)
+    char.featuresTraits = computeFeatures(char)
 
     const conMod = modifier(char.abilityScores.con + (char.racialBonuses.con || 0))
     char.maxHp = totalHp(cls.hitDie, conMod, char.level)
@@ -475,10 +537,7 @@ export const useCharacterStore = defineStore('character', () => {
     const conMod = modifier(
       char.abilityScores.con + (char.racialBonuses.con || 0),
     )
-    const allClasses = getClasses(char.variant)
     let hitDieForLevel: number
-    let targetClassId: string
-    let targetSubclass: string
 
     if (char.classes.length >= 2 && classId) {
       // Multiclass: level up specific class
@@ -487,14 +546,10 @@ export const useCharacterStore = defineStore('character', () => {
       entry.level += 1
       char.level = char.classes.reduce((sum, c) => sum + c.level, 0)
       hitDieForLevel = entry.hitDie
-      targetClassId = entry.classId
-      targetSubclass = entry.subclass
     } else {
       // Single class or multiclass without specific target
       char.level += 1
       hitDieForLevel = char.hitDie
-      targetClassId = char.className
-      targetSubclass = char.subclass
 
       // Also update classes array entry if populated
       if (char.classes.length >= 1) {
@@ -508,35 +563,13 @@ export const useCharacterStore = defineStore('character', () => {
     char.maxHp += hpGained
     char.currentHp = char.maxHp
 
-    // Gather new features from the class/subclass leveled up
-    const newFeatures: string[] = []
-    const cls = allClasses.find(c => c.id === targetClassId)
-    if (cls) {
-      // Use the class-specific level for features
-      const classLevel = char.classes.length >= 2
-        ? (char.classes.find(c => c.classId === targetClassId)?.level ?? char.level)
-        : char.level
-      const classFeats = cls.features.filter(f => f.level === classLevel)
-      for (const feat of classFeats) {
-        if (!char.featuresTraits.includes(feat.name)) {
-          char.featuresTraits.push(feat.name)
-          newFeatures.push(feat.name)
-        }
-      }
-      // Subclass features
-      if (targetSubclass) {
-        const sub = cls.subclasses.find(s => s.id === targetSubclass)
-        if (sub) {
-          const subFeats = sub.features.filter(f => f.level === classLevel)
-          for (const feat of subFeats) {
-            if (!char.featuresTraits.includes(feat.name)) {
-              char.featuresTraits.push(feat.name)
-              newFeatures.push(feat.name)
-            }
-          }
-        }
-      }
-    }
+    // Ricostruisce l'elenco dei privilegi invece di aggiungere quelli nuovi:
+    // così le voci che si ripetono a livelli diversi (Aumento dei Punteggi di
+    // Caratteristica, Attacco Extra, i privilegi d'archetipo) vengono contate
+    // tutte, e la lista resta identica a quella di syncClassAndLevel.
+    const before = [...char.featuresTraits]
+    char.featuresTraits = computeFeatures(char)
+    const newFeatures = featureDiff(char.featuresTraits, before)
 
     // Auto-save if the character exists in saved list
     const idx = savedCharacters.value.findIndex(c => c.id === char.id)
@@ -554,29 +587,19 @@ export const useCharacterStore = defineStore('character', () => {
     const conMod = modifier(
       char.abilityScores.con + (char.racialBonuses.con || 0),
     )
-    const allClasses = getClasses(char.variant)
     let hitDieForLevel: number
-    let targetClassId: string
-    let targetSubclass: string
-    let removedClassLevel: number
 
     if (char.classes.length >= 2 && classId) {
       // Multiclass: level down specific class
       const entry = char.classes.find(c => c.classId === classId)
       if (!entry || entry.level <= 1) return null
-      removedClassLevel = entry.level
       entry.level -= 1
       char.level = char.classes.reduce((sum, c) => sum + c.level, 0)
       hitDieForLevel = entry.hitDie
-      targetClassId = entry.classId
-      targetSubclass = entry.subclass
     } else {
       // Single class or multiclass without specific target
-      removedClassLevel = char.level
       char.level -= 1
       hitDieForLevel = char.hitDie
-      targetClassId = char.className
-      targetSubclass = char.subclass
 
       // Also update classes array entry if populated
       if (char.classes.length >= 1) {
@@ -590,32 +613,17 @@ export const useCharacterStore = defineStore('character', () => {
     char.maxHp = Math.max(1, char.maxHp - hpLost)
     char.currentHp = Math.min(char.currentHp, char.maxHp)
 
-    // Remove the features that were granted at the removed level
-    const removedFeatures: string[] = []
-    const cls = allClasses.find(c => c.id === targetClassId)
-    if (cls) {
-      const classFeats = cls.features.filter(f => f.level === removedClassLevel)
-      for (const feat of classFeats) {
-        const i = char.featuresTraits.indexOf(feat.name)
-        if (i >= 0) {
-          char.featuresTraits.splice(i, 1)
-          removedFeatures.push(feat.name)
-        }
-      }
-      if (targetSubclass) {
-        const sub = cls.subclasses.find(s => s.id === targetSubclass)
-        if (sub) {
-          const subFeats = sub.features.filter(f => f.level === removedClassLevel)
-          for (const feat of subFeats) {
-            const i = char.featuresTraits.indexOf(feat.name)
-            if (i >= 0) {
-              char.featuresTraits.splice(i, 1)
-              removedFeatures.push(feat.name)
-            }
-          }
-        }
-      }
-    }
+    // Scendendo si può finire sotto il livello di sblocco della sottoclasse:
+    // va revocata prima di ricalcolare i privilegi, altrimenti la scheda
+    // continua a stampare un archetipo che il personaggio non ha più.
+    revokeUnearnedSubclasses(char)
+
+    // Ricostruzione, non rimozione per nome: cercare il nome cancellava
+    // l'unica occorrenza rimasta di un privilegio ripetuto (un guerriero di 7°
+    // ha due "Ability Score Improvement") anche quando spettava ancora.
+    const before = [...char.featuresTraits]
+    char.featuresTraits = computeFeatures(char)
+    const removedFeatures = featureDiff(before, char.featuresTraits)
 
     // Auto-save if the character exists in saved list
     const idx = savedCharacters.value.findIndex(c => c.id === char.id)
@@ -650,8 +658,7 @@ export const useCharacterStore = defineStore('character', () => {
     const errors: string[] = []
 
     // Validate variant
-    const validVariants = ['dnd5e', 'brancalonia', 'apocalisse']
-    if (!raw.variant || !validVariants.includes(raw.variant as string)) {
+    if (!raw.variant || !(GAME_VARIANTS as readonly string[]).includes(raw.variant as string)) {
       errors.push('MISSING_VARIANT')
     }
 
