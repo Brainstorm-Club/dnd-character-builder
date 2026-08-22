@@ -56,6 +56,7 @@ export const sangueAntico: CharacterData = {
     'Sorcerous Origin',
     'Font of Magic',
     'Metamagic',
+    'Ability Score Improvement',
     'Otherworldly Ancestor',
     'Otherworldly Sign',
     'Ancestor\'s Protection',

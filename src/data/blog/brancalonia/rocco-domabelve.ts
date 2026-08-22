@@ -58,6 +58,7 @@ export const roccoDomabelve: CharacterData = {
     'Spellcasting',
     'Ranger Archetype',
     'Primeval Awareness',
+    'Ability Score Improvement',
     'Master of Performance',
     'Eye of the Matador',
   ],

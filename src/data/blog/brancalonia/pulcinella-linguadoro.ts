@@ -57,6 +57,7 @@ export const pulcinellaLinguadoro: CharacterData = {
     'Song of Rest',
     'Bard College',
     'Expertise',
+    'Ability Score Improvement',
     'College of Carnival',
     'Bonus Proficiencies',
     'Slapstick',

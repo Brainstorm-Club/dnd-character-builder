@@ -61,6 +61,8 @@ export const gabrielRovina: CharacterData = {
     'Divine Smite',
     'Divine Health',
     'Sacred Oath',
+    'Ability Score Improvement',
+    'Extra Attack',
     'Channel Divinity: Memento Mori',
     'Channel Divinity: Ultima Forsan',
     'Divine Ruin',

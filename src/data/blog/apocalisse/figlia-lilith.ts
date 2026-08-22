@@ -57,6 +57,7 @@ export const figliaLilith: CharacterData = {
     'Pact Magic',
     'Eldritch Invocations',
     'Pact Boon',
+    'Ability Score Improvement',
     'Expanded Spell List',
     'Shielding Veils',
     'Fierce Savagery of Lilith',

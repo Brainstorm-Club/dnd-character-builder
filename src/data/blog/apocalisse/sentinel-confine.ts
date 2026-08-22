@@ -58,6 +58,8 @@ export const sentinelConfine: CharacterData = {
     'Spellcasting',
     'Ranger Archetype',
     'Primeval Awareness',
+    'Ability Score Improvement',
+    'Extra Attack',
     'Improved Perception',
     'Sentinel on the Border',
     'Frontier Training',

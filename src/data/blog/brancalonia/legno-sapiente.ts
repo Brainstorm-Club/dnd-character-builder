@@ -58,6 +58,7 @@ export const legnoSapiente: CharacterData = {
     'Spellcasting',
     'Arcane Recovery',
     'Arcane Tradition',
+    'Ability Score Improvement',
     'Treasure Seeker',
     'Magic Items Expert',
     'Magical Trinkets',

@@ -59,6 +59,8 @@ export const suoraCenere: CharacterData = {
     'Divine Domain',
     'Channel Divinity',
     'Channel Divinity: Turn Undead',
+    'Ability Score Improvement',
+    'Destroy Undead (CR 1/2)',
     'Bells of Destruction',
     'Ruining and Mending',
     'Channel Divinity: Devastation',

@@ -55,6 +55,8 @@ export const marcusUltimo: CharacterData = {
     'Second Wind',
     'Action Surge',
     'Martial Archetype',
+    'Ability Score Improvement',
+    'Extra Attack',
     'Whirling Steel',
     'Formidable Warrior',
   ],

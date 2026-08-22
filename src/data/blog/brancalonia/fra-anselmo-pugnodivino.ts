@@ -55,6 +55,8 @@ export const fraAnselmoPugnodivino: CharacterData = {
     'Unarmored Movement',
     'Monastic Tradition',
     'Deflect Missiles',
+    'Ability Score Improvement',
+    'Slow Fall',
     'Way of the Brawly Rule',
     'Turn the Other Cheek',
   ],

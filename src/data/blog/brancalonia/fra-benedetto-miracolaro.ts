@@ -56,6 +56,7 @@ export const fraBenedettoMiracolaro: CharacterData = {
     'Divine Domain',
     'Channel Divinity',
     'Channel Divinity: Turn Undead',
+    'Ability Score Improvement',
     'Calendar Domain',
     'Call on the Saints',
     'Channel Divinity: Recite the Calendar',

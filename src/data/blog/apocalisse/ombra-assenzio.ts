@@ -59,6 +59,8 @@ export const ombraAssenzio: CharacterData = {
     'Thieves\' Cant',
     'Cunning Action',
     'Roguish Archetype',
+    'Ability Score Improvement',
+    'Uncanny Dodge',
     'Wormwood Addiction',
     'Wormwood Shroud',
   ],

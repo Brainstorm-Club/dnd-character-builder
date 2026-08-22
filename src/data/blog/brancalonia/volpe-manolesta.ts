@@ -56,6 +56,7 @@ export const volpeManolesta: CharacterData = {
     'Thieves\' Cant',
     'Cunning Action',
     'Roguish Archetype',
+    'Ability Score Improvement',
     'Brigandage',
     'The Fine Art of Ambushing',
   ],

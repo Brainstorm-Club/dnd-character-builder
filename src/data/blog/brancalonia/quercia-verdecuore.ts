@@ -56,6 +56,8 @@ export const querciaVerdecuore: CharacterData = {
     'Spellcasting',
     'Wild Shape',
     'Druid Circle',
+    'Wild Shape improvement',
+    'Ability Score Improvement',
     'Glimpse Beyond the Veil',
     'Circle Spells',
   ],

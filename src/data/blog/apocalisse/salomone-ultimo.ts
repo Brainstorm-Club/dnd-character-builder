@@ -54,6 +54,7 @@ export const salomoneUltimo: CharacterData = {
     'Spellcasting',
     'Arcane Recovery',
     'Arcane Tradition',
+    'Ability Score Improvement',
     'Initiate of the School of Solomon',
     'Solomon\'s Warding',
   ],

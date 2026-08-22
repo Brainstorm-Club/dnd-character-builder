@@ -50,8 +50,6 @@ export const cornoduro: CharacterData = {
     'darkvision',
     'brawl-hellbrawl',
     'infernal-helltraits',
-    'Hellfeet',
-    'Hellears',
     'Unarmored Defense',
     'Martial Arts',
     'Ki',

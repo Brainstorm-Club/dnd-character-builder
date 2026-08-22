@@ -55,6 +55,7 @@ export const stregaMalocchio: CharacterData = {
     'Sorcerous Origin',
     'Font of Magic',
     'Metamagic',
+    'Ability Score Improvement',
     'Extravaganza',
     'Preventive Magic',
     'Protected by Fate',

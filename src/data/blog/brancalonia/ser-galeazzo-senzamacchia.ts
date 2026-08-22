@@ -58,6 +58,7 @@ export const serGaleazzoSenzamacchia: CharacterData = {
     'Divine Smite',
     'Divine Health',
     'Sacred Oath',
+    'Ability Score Improvement',
     'Oath of Knightly Erring',
     'Channel Divinity',
   ],

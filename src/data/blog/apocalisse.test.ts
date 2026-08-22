@@ -91,11 +91,14 @@ describe('apocalisse blog characters', () => {
       for (const r of required) {
         expect(char.featuresTraits, r).toContain(r)
       }
-      // Nothing from a level the character has not reached yet
+      // Nothing from a level the character has not reached yet. A name can
+      // repeat across levels (Ability Score Improvement), so only names that
+      // appear at no reachable level count as too high.
+      const reachable = new Set(required)
       const tooHigh = [
         ...cls!.features.filter(f => f.level > char.level).map(f => f.name),
         ...(sub?.features.filter(f => f.level > char.level).map(f => f.name) ?? []),
-      ]
+      ].filter(name => !reachable.has(name))
       for (const t of tooHigh) {
         expect(char.featuresTraits, `${t} is above level ${char.level}`).not.toContain(t)
       }

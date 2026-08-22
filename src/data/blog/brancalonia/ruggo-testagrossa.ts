@@ -55,6 +55,7 @@ export const ruggoTestagrossa: CharacterData = {
     'Reckless Attack',
     'Danger Sense',
     'Primal Path',
+    'Ability Score Improvement',
     'Path of Unheard-of Ferocity',
     'Savage Courage',
   ],

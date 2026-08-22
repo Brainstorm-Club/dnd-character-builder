@@ -56,6 +56,8 @@ export const spinaVeleno: CharacterData = {
     'Spellcasting',
     'Wild Shape',
     'Druid Circle',
+    'Wild Shape improvement',
+    'Ability Score Improvement',
     'Circle Spells',
     'Plagued Wild Shape',
     'Excruciating Contagion',
