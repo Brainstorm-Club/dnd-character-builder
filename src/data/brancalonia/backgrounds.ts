@@ -139,8 +139,271 @@ export const brancaloniaBackgrounds: readonly Background[] = [
         'You look so damn tough and intimidating that everyone you meet realizes straight away that you\'re no joke. When you interact with others using your Notoriety, you count it as one level higher.',
     },
   },
-] as const
 
-export function getBrancaloniaBackgroundById(id: string): Background | undefined {
-  return brancaloniaBackgrounds.find(b => b.id === id)
-}
+  // ═══ Macaronicon 2.2 ═══════════════════════════════════════════════
+
+  // ─── Crosser (Passatore) ──────────────────────────────────────────
+  {
+    id: 'crosser',
+    name: 'Crosser',
+    nameOriginal: 'Passatore',
+    description:
+      'You are an expert in land smuggling, especially through mountain passes, impassable rivers, swamps, woods, and every sort of natural obstacle. You move alone or in very small groups, along paths and tracks that guards and soldiers cannot find. The most feared and priciest crossers know the secrets of the Mistide, and how to get goods and people in and out of Penumbria.',
+    skillProficiencies: ['stealth', 'survival'],
+    toolProficiencies: ['Vehicles (land and water)'],
+    languages: 1,
+    equipment: ["A set of traveler's clothes", 'A pouch containing 15 sp'],
+    feature: {
+      name: 'Boundless',
+      description:
+        'You are an expert in crossing borders by land, avoiding checkpoints, environmental dangers, and problems of every sort, all while going unnoticed. This also extends to any Fumarea crossing by land, for which you need not roll any survival check.',
+    },
+  },
+
+  // ─── Dispatch Rider (Staffetta) ───────────────────────────────────
+  {
+    id: 'dispatch-rider',
+    name: 'Dispatch Rider',
+    nameOriginal: 'Staffetta',
+    description:
+      'Whistling wind, raging storms, a pair of shoddy shoes: if the captain gives the order, someone has to go out into the night to deliver orders and messages of primary importance. That someone is you.',
+    skillProficiencies: ['athletics', 'survival'],
+    toolProficiencies: ['One type of game set', 'Vehicles (land)'],
+    languages: 0,
+    equipment: ['A rank insignia', 'A pouch containing a secret communication'],
+    feature: {
+      name: 'Through Good and Bad Weather',
+      description:
+        'Dispatch riders have learned to be unstoppable, delivering their messages at any cost. When you travel, you ignore effects that slow your march.',
+    },
+  },
+
+  // ─── Enamored (Innamorato) ────────────────────────────────────────
+  {
+    id: 'enamored',
+    name: 'Enamored',
+    nameOriginal: 'Innamorato',
+    description:
+      'A privileged, well-educated youth, expert in the liberal arts and sophisticated hobbies, raised to become a flirt, a diplomat, a gigolo, a courtier. Prying skirmishes, complicated love customs, jealous pranks, and dramatic heartaches fill your nights and days — and behind them lies a life dedicated to building and managing personal relationships.',
+    skillProficiencies: ['history', 'persuasion'],
+    toolProficiencies: ['One type of musical instrument', "Calligrapher's supplies"],
+    languages: 1,
+    equipment: [
+      'A musical instrument (one of your choice)',
+      'A collection of love letters',
+      'A book of poetry',
+      'Ink and an ink pen',
+      'A pouch containing 15 sp',
+    ],
+    feature: {
+      name: 'Courtesy',
+      description:
+        'Accustomed to softness, kindness, and refinement of all kinds, you use poetry, urbane manners, grace, and flirtation to obtain small favors and privileges, especially among notables and bigwigs or among kind-hearted people.',
+    },
+  },
+
+  // ─── Impresario (Impresario) ──────────────────────────────────────
+  {
+    id: 'impresario',
+    name: 'Impresario',
+    nameOriginal: 'Impresario',
+    description:
+      'You scout talent, book venues, and keep a travelling company on the road. Where others see a bare square you see a stage, and where others see a crowd you see an audience that has not paid yet.',
+    skillProficiencies: ['insight', 'persuasion'],
+    toolProficiencies: ['Two types of gaming set'],
+    languages: 2,
+    equipment: ['A book containing the names of aspiring stage performers', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'The Art of Making Do',
+      description:
+        'You are used to facing unexpected events of all kinds and you are always able to patch things up somehow, improvising components to put together a valid representation of what you need.',
+    },
+  },
+
+  // ─── Lucignolo (Lucignolo) ────────────────────────────────────────
+  {
+    id: 'lucignolo',
+    name: 'Lucignolo',
+    nameOriginal: 'Lucignolo',
+    description:
+      'You have one foot in the Kingdom and one in the Extravaganza, that fairy world of pleasures and dangers where those who enter rarely come back the same. You know its doors, its prices, and how to leave before the bill comes due.',
+    skillProficiencies: ['deception', 'persuasion'],
+    toolProficiencies: ['Two types of game set'],
+    languages: 1,
+    equipment: ['A set of common clothes', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'My Dinner with Fairies',
+      description:
+        "Accustomed to entering and exiting the Extravaganza's world, you know how to find its passages and how to deal with the fey who guard them.",
+    },
+  },
+
+  // ─── Prelate (Prelato) ────────────────────────────────────────────
+  {
+    id: 'prelate',
+    name: 'Prelate',
+    nameOriginal: 'Prelato',
+    description:
+      'You hold a position in the hierarchy of the Creed. Whether you earned it, bought it, or inherited it, the robe opens doors that no blade could.',
+    skillProficiencies: ['persuasion', 'religion'],
+    toolProficiencies: [],
+    languages: 2,
+    equipment: ['A golden holy symbol', 'A book of prayers', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'Deference and Influence',
+      description:
+        'Thanks to your prominent position, you are held in deference by the faithful and by the lesser clergy, who will grant you hospitality, information, and small favors.',
+    },
+  },
+
+  // ─── Relic Hunter (Cacciatore di Reliquie) ────────────────────────
+  {
+    id: 'relic-hunter',
+    name: 'Relic Hunter',
+    nameOriginal: 'Cacciatore di Reliquie',
+    description:
+      'The Kingdom is full of saints, and therefore of their bones, teeth, shrouds, and splinters. You track them down, authenticate them — or make them authentic — and place them with whoever pays best.',
+    skillProficiencies: ['investigation', 'history'],
+    toolProficiencies: ["Thieves' tools", "Calligrapher's supplies"],
+    languages: 1,
+    equipment: ['A parchment case filled with study notes', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'Relic Academic',
+      description:
+        "Thanks to your license, you can access the Creed's archives, consult its registries of relics, and question the clergy who keep them.",
+    },
+  },
+
+  // ═══ L'Impero Randella Ancora! 1.0 ═════════════════════════════════
+
+  // ─── Fork Adept (Adepto della Forca) ──────────────────────────────
+  {
+    id: 'fork-adept',
+    name: 'Fork Adept',
+    nameOriginal: 'Adepto della Forca',
+    description:
+      'You were trained in the Scaffold Sanctuary of Aquisgrama, in the mystical arts the Order of the Fork draws from its death sentences. You wear its cape and answer to its hierarchy.',
+    skillProficiencies: ['acrobatics', 'deception'],
+    toolProficiencies: [],
+    languages: 0,
+    equipment: ['A cape of the Order', 'An Imperial symbol', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'Fork Feat',
+      description:
+        'You gain an additional feat of your choice when you select this background. It must be chosen from the Fork feats list.',
+    },
+  },
+
+  // ─── Fork Renegade (Rinnegato della Forca) ────────────────────────
+  {
+    id: 'fork-renegade',
+    name: 'Fork Renegade',
+    nameOriginal: 'Rinnegato della Forca',
+    description:
+      'You turned your back on the Order of the Fork and have spent your life fighting it, or eluding its retribution. You kept its powers; the Order has not forgotten.',
+    skillProficiencies: ['acrobatics', 'deception'],
+    toolProficiencies: [],
+    languages: 0,
+    equipment: ['An outfit useful to conceal yourself', 'Forged documents', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'Fork Feat',
+      description:
+        'You gain an additional feat of your choice from the Fork feats list, and you keep it even after turning your back on the Order. You must still spend one whole hour meditating when you awaken to control this power.',
+    },
+  },
+
+  // ─── Blazoned (Blasonato) ─────────────────────────────────────────
+  {
+    id: 'blazoned',
+    name: 'Blazoned',
+    nameOriginal: 'Blasonato',
+    description:
+      'You carry a certificate of nobility of questionable provenance and a coat of arms nobody has ever verified. The trick is not the paper: it is the voice you use when you present it.',
+    skillProficiencies: ['deception', 'intimidation'],
+    toolProficiencies: [],
+    languages: 2,
+    equipment: ['A questionable certificate of nobility', 'A rusty blade', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'High and Mighty Voice',
+      description:
+        'You are a seasoned swindler who can obtain any certificate, letter of introduction, or writ of passage — and make it sound genuine when you read it aloud.',
+    },
+  },
+
+  // ─── Herbalist (Erborista) ────────────────────────────────────────
+  {
+    id: 'herbalist',
+    name: 'Herbalist',
+    nameOriginal: 'Erborista',
+    description:
+      'You treat what the Kingdom breaks: fevers, wounds, poisonings, and the occasional curse. Half your art is in the herbs, and half in knowing which patient can pay.',
+    skillProficiencies: ['medicine', 'nature'],
+    toolProficiencies: ["Alchemist's supplies", "Healer's kit"],
+    languages: 0,
+    equipment: ['Worn gloves', "A healer's kit", 'A pouch containing 10 sp'],
+    feature: {
+      name: 'Practicalist or Herbailiff',
+      description:
+        'You choose one of two callings when you take this background: the practicalist, who treats people, or the herbailiff, who deals in the herbs themselves.',
+    },
+  },
+
+  // ─── Powder Dabbler (Polverista) ──────────────────────────────────
+  {
+    id: 'powder-dabbler',
+    name: 'Powder Dabbler',
+    nameOriginal: 'Polverista',
+    description:
+      'Gunpowder is new to the Kingdom of the Bounty and nobody quite trusts it — least of all the people who make it. You are one of them.',
+    skillProficiencies: ['insight', 'history'],
+    toolProficiencies: ['Gunpowder jug'],
+    languages: 0,
+    equipment: ['3 flawed pomegrenades', 'A pouch containing 15 sp'],
+    feature: {
+      name: "Grandma's Powders",
+      description:
+        'Exploiting your bizarre notions, you can show off your unusual knowledge to win the favor of your neighbors and of anyone curious about the new art of black powder.',
+    },
+  },
+
+  // ─── Slacker (Lavativo) ───────────────────────────────────────────
+  {
+    id: 'slacker',
+    name: 'Slacker',
+    nameOriginal: 'Lavativo',
+    description:
+      'How did you come to this? You did not, actually — what you have done is follow someone else and live off the results of their success. The slacker is the quintessential soul of Brancalonia: a never-do-well with no ambitions, whose one gift is an utter, unrestrained laziness refined into a form of art.',
+    skillProficiencies: [],
+    toolProficiencies: [],
+    languages: 0,
+    equipment: [
+      'An inherited heirloom',
+      'A stolen jacket',
+      'A mismatched certification',
+      'A pouch with 30 sp that fell into your hands in a sheer stroke of luck',
+    ],
+    feature: {
+      name: 'The Art of Opportunism',
+      description:
+        'You can turn a failed ability check or saving throw into an automatic success, at the expense of an allied creature within reach.',
+    },
+  },
+
+  // ─── Inspirited (Suscitato) ───────────────────────────────────────
+  {
+    id: 'inspirited',
+    name: 'Inspirited',
+    nameOriginal: 'Suscitato',
+    description:
+      'Your very essence is shrouded in mystery and confusion. Rather than a past, you have a question, and you chose early to focus on the conundrum of your own nature — which is how you came to the Unknown Language, the secret code that hints at the mysteries of creation itself.',
+    skillProficiencies: ['arcana', 'insight'],
+    toolProficiencies: [],
+    languages: 1,
+    equipment: ['A leftover from your native place', 'A strange trinket', 'A pouch containing 15 sp'],
+    feature: {
+      name: 'No Past, Violent Future',
+      description:
+        'A man without a past is a man without bonds. You begin with 2 fewer Misdeeds, but each Misdeed you commit produces a bounty with two additional coins.',
+    },
+  },
+]
