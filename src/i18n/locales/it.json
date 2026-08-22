@@ -335,7 +335,8 @@
   },
   "gdpr": {
     "banner": "Questa app funziona interamente nel tuo browser. Nessun dato viene inviato a server esterni. Utilizziamo solo un cookie tecnico per salvare la preferenza della lingua.",
-    "accept": "Ho capito"
+    "accept": "Ho capito",
+    "label": "Informativa sui cookie"
   },
   "alignments": {
     "lg": "Legale Buono",

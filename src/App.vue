@@ -72,8 +72,8 @@ function acceptGdpr() {
     <div
       v-if="showCookieBanner"
       class="fixed bottom-0 left-0 right-0 bg-stone-800 border-t border-amber-700/30 p-4 z-50 shadow-lg"
-      role="alertdialog"
-      aria-labelledby="gdpr-title"
+      role="region"
+      :aria-label="t('gdpr.label')"
       aria-describedby="gdpr-desc"
     >
       <div class="container mx-auto flex flex-col sm:flex-row items-center gap-4 max-w-4xl">

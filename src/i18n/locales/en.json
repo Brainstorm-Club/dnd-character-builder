@@ -335,7 +335,8 @@
   },
   "gdpr": {
     "banner": "This app works entirely in your browser. No data is sent to any server. We only use a technical cookie to save your language preference.",
-    "accept": "Got it"
+    "accept": "Got it",
+    "label": "Cookie notice"
   },
   "alignments": {
     "lg": "Lawful Good",
