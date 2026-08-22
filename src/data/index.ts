@@ -130,10 +130,8 @@ function ensureDnd5eClasses(): Promise<void> {
     import('./dnd5e/classes-it'),
   ]).then(([m, itMod]) => {
     _dnd5eClasses = m.classes
-    _dnd5eFeatureIt = {
-      desc: itMod.dnd5eFeatureDescriptionsIt,
-      names: itMod.dnd5eFeatureNamesIt,
-    }
+    // I nomi dei privilegi D&D vivono in gameTerms: qui solo le descrizioni.
+    _dnd5eFeatureIt = { desc: itMod.dnd5eFeatureDescriptionsIt, names: {} }
     lsSet('dnd5e-classes', m.classes)
     lsSet('dnd5e-feature-it', _dnd5eFeatureIt)
   })

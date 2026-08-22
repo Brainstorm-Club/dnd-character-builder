@@ -66,23 +66,34 @@ describe('privilegi delle classi base D&D in italiano', () => {
   })
 
   it('non traduce id che non esistono fra i privilegi di classe base', async () => {
-    const { dnd5eFeatureDescriptionsIt, dnd5eFeatureNamesIt } = await import('./dnd5e/classes-it')
+    const { dnd5eFeatureDescriptionsIt } = await import('./dnd5e/classes-it')
     const { classes } = await import('./dnd5e/classes')
     const ids = new Set(classes.flatMap(c => c.features.map(f => f.id)))
     for (const id of Object.keys(dnd5eFeatureDescriptionsIt)) expect(ids, id).toContain(id)
-    for (const id of Object.keys(dnd5eFeatureNamesIt)) expect(ids, id).toContain(id)
   })
 
-  it('usa i nomi ufficiali dell\'SRD italiano', async () => {
-    const { dnd5eFeatureNamesIt: n } = await import('./dnd5e/classes-it')
-    expect(n['rage']).toBe('Ira')
-    expect(n['second-wind']).toBe('Recuperare energie')
-    expect(n['action-surge']).toBe('Azione impetuosa')
-    expect(n['sneak-attack']).toBe('Attacco furtivo')
-    expect(n['cunning-action']).toBe('Azione scaltra')
-    expect(n['uncanny-dodge']).toBe('Schivata prodigiosa')
-    expect(n['jack-of-all-trades']).toBe('Factotum')
-    expect(n['stroke-of-luck']).toBe('Pietra della buona fortuna')
+  it('nomina i privilegi con i termini ufficiali dell\'SRD italiano', async () => {
+    // I nomi vivono in gameTerms, un'unica mappa per tutta l'app: la lista
+    // dei privilegi, il riepilogo e la scheda PDF leggono da lì.
+    const { featureNamesIt } = await import('@/i18n/gameTerms')
+    const expected: Record<string, string> = {
+      Rage: 'Ira',
+      'Second Wind': 'Recuperare energie',
+      'Action Surge': 'Azione impetuosa',
+      'Sneak Attack': 'Attacco furtivo',
+      'Cunning Action': 'Azione scaltra',
+      'Uncanny Dodge': 'Schivata prodigiosa',
+      'Jack of All Trades': 'Factotum',
+      // Il corpo dell'SRD dice "Colpo di fortuna"; "Pietra della buona
+      // fortuna" è l'oggetto magico omonimo, non il privilegio del ladro.
+      'Stroke of Luck': 'Colpo di fortuna',
+      Evasion: 'Elusione',
+      'Eldritch Invocations': 'Suppliche occulte',
+      'Reckless Attack': 'Attacco irruento',
+    }
+    for (const [en, it] of Object.entries(expected)) {
+      expect(featureNamesIt[en], en).toBe(it)
+    }
   })
 
   it('descrive le regole 2014, non quelle 2024', async () => {
@@ -102,6 +113,40 @@ describe('privilegi delle classi base D&D in italiano', () => {
     for (const [id, text] of Object.entries(d)) {
       expect(text.length, id).toBeGreaterThan(40)
       expect(text, id).not.toMatch(/\b(you can|your|the target|saving throw|hit points)\b/i)
+    }
+  })
+})
+
+describe('un solo nome italiano per privilegio', () => {
+  it('i file di traduzione non ridefiniscono i nomi che stanno in gameTerms', async () => {
+    // Il difetto che questo test previene: la lista dei privilegi mostrava un
+    // nome e il riepilogo un altro, perché esistevano due mappe.
+    const dnd = await import('./dnd5e/classes-it')
+    expect('dnd5eFeatureNamesIt' in dnd, 'i nomi D&D vanno in gameTerms').toBe(false)
+  })
+
+  it('gameTerms nomina ogni privilegio di classe base', async () => {
+    const { featureNamesIt } = await import('@/i18n/gameTerms')
+    const { classes } = await import('./dnd5e/classes')
+    for (const c of classes) {
+      for (const f of c.features) {
+        expect(featureNamesIt[f.name], `${c.id}/${f.name}`).toBeDefined()
+      }
+    }
+  })
+
+  it('usa la forma dell\'SRD, non la maiuscola di stile inglese', async () => {
+    const { featureNamesIt } = await import('@/i18n/gameTerms')
+    const { classes } = await import('./dnd5e/classes')
+    for (const c of classes) {
+      for (const f of c.features) {
+        const it = featureNamesIt[f.name]
+        if (!it) continue
+        // l'SRD italiano scrive "Attacco furtivo", non "Attacco Furtivo"
+        const words = it.replace(/\(.*\)/, '').trim().split(' ').slice(1)
+        const capitalised = words.filter(w => /^[A-ZÀ-Ü]/.test(w) && w.length > 3)
+        expect(capitalised, `${f.name} -> ${it}`).toEqual([])
+      }
     }
   })
 })
