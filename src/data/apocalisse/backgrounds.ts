@@ -13,8 +13,9 @@ export const apocalisseBackgrounds: readonly Background[] = [
     nameOriginal: 'Figlio del Vecchio Mondo',
     description:
       'You were born before the Apocalypse and remember the old civilization. Your knowledge of the world that was gives you unique insight into the ruins and relics scattered across the Plain of Armageddon.',
-    skillProficiencies: ['arcana', 'history'],
-    toolProficiencies: ['Herbalism kit', 'Artisan\'s tools'],
+    skillProficiencies: [],
+    skillChoices: [{ count: 2, from: ['arcana', 'medicine', 'nature', 'perception', 'religion', 'history'] }, { count: 1, from: [] }],
+    toolProficiencies: ["Herbalist's kit", "One type of artisan's tools of your choice"],
     languages: 1,
     equipment: [
       'Herbalism kit',
@@ -35,8 +36,9 @@ export const apocalisseBackgrounds: readonly Background[] = [
     nameOriginal: 'Figlio dell\'Apocalisse',
     description:
       'You were born after the End Times and know nothing but the harsh reality of the Plain of Armageddon. The wasteland is your home, and survival is your birthright.',
-    skillProficiencies: ['survival', 'athletics'],
-    toolProficiencies: ['Artisan\'s tools'],
+    skillProficiencies: [],
+    skillChoices: [{ count: 1, from: ['athletics', 'stealth', 'perception', 'survival'] }, { count: 1, from: [] }],
+    toolProficiencies: ["One type of artisan's tools of your choice"],
     languages: 0,
     equipment: [
       'Artisan\'s tools',
@@ -57,7 +59,8 @@ export const apocalisseBackgrounds: readonly Background[] = [
     nameOriginal: 'Risorto dall\'Inferno',
     description:
       'You died and your soul descended to Hell, only to be cast back to the world of the living. The infernal flames have left their mark on you, granting dark powers but also eternal torment.',
-    skillProficiencies: ['deception', 'intimidation'],
+    skillProficiencies: [],
+    skillChoices: [{ count: 2, from: ['arcana', 'stealth', 'deception', 'intimidation', 'perception', 'sleight-of-hand', 'religion'] }],
     toolProficiencies: [],
     languages: 1,
     equipment: [
@@ -79,7 +82,8 @@ export const apocalisseBackgrounds: readonly Background[] = [
     nameOriginal: 'Risorto dal Paradiso',
     description:
       'You died and your soul ascended to Heaven, only to be sent back to the mortal world. The celestial light still glows faintly within you, granting healing and protective powers.',
-    skillProficiencies: ['medicine', 'persuasion'],
+    skillProficiencies: [],
+    skillChoices: [{ count: 2, from: ['arcana', 'insight', 'medicine', 'perception', 'persuasion', 'religion'] }],
     toolProficiencies: [],
     languages: 1,
     equipment: [
@@ -101,7 +105,8 @@ export const apocalisseBackgrounds: readonly Background[] = [
     nameOriginal: 'Risorto dal Purgatorio',
     description:
       'You died and your soul was sent to Purgatory, enduring trials of purification on its slopes before being returned to the world. The mountain has hardened your body and spirit.',
-    skillProficiencies: ['nature', 'survival'],
+    skillProficiencies: [],
+    skillChoices: [{ count: 1, from: ['nature', 'perception', 'survival'] }],
     toolProficiencies: [],
     languages: 1,
     equipment: [
@@ -123,9 +128,10 @@ export const apocalisseBackgrounds: readonly Background[] = [
     nameOriginal: 'Risorto dal Limbo',
     description:
       'You died and your soul was trapped in Limbo, the realm of the unbaptized and the great thinkers. There you gained vast knowledge from the greatest minds of history before being returned to the world.',
-    skillProficiencies: ['arcana', 'history'],
+    skillProficiencies: [],
+    skillChoices: [{ count: 2, from: ['arcana', 'investigation', 'intimidation', 'performance', 'nature', 'persuasion', 'religion', 'history'] }],
     toolProficiencies: [],
-    languages: 1,
+    languages: 0,
     equipment: [
       'A book of ancient knowledge',
       'Ink and quill',

@@ -86,3 +86,35 @@ describe('apocalisse archetypes', () => {
     }
   })
 })
+
+describe('Origini in formato background (John\'s Guide 1.0)', () => {
+  it('lascia scegliere le abilità come fa il manuale', async () => {
+    const { apocalisseBackgrounds } = await import('./backgrounds')
+    // Il manuale dice "due fra Arcano, Medicina, ...": nessuna Origine
+    // concede competenze d'ufficio.
+    for (const bg of apocalisseBackgrounds) {
+      expect(bg.skillProficiencies, bg.name).toEqual([])
+      expect(bg.skillChoices?.length, bg.name).toBeGreaterThan(0)
+    }
+  })
+
+  it('rispecchia il numero di scelte e la lingua extra di ogni Origine', async () => {
+    const { apocalisseBackgrounds } = await import('./backgrounds')
+    const expected: Record<string, { slots: number; pool: number; langs: number }> = {
+      'child-old-world':  { slots: 3, pool: 6, langs: 1 },  // 2 fra 6, + 1 qualsiasi, Lingua del Vecchio Mondo
+      'child-apocalypse': { slots: 2, pool: 4, langs: 0 },  // 1 fra 4, + 1 qualsiasi
+      'risen-hell':       { slots: 2, pool: 7, langs: 1 },  // 2 fra 7, Infernale
+      'risen-heaven':     { slots: 2, pool: 6, langs: 1 },  // 2 fra 6, Celestiale
+      'risen-purgatory':  { slots: 1, pool: 3, langs: 1 },  // 1 fra 3, Lingua del Vecchio Mondo
+      'risen-limbo':      { slots: 2, pool: 8, langs: 0 },  // 2 fra 8
+    }
+    for (const bg of apocalisseBackgrounds) {
+      const e = expected[bg.id]
+      expect(e, bg.id).toBeDefined()
+      const slots = (bg.skillChoices ?? []).reduce((n, c) => n + c.count, 0)
+      expect(slots, bg.name).toBe(e!.slots)
+      expect(bg.skillChoices![0]!.from.length, bg.name).toBe(e!.pool)
+      expect(bg.languages, bg.name).toBe(e!.langs)
+    }
+  })
+})

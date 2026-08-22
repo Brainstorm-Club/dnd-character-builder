@@ -8,7 +8,14 @@ export interface Background {
   name: string
   nameOriginal?: string
   description: string
+  /** Competenze concesse d'ufficio */
   skillProficiencies: string[]
+  /**
+   * Competenze a scelta. Le Origini di Apocalisse concedono per esempio
+   * "due fra Arcano, Medicina, Natura...": `from` vuoto significa una
+   * qualsiasi abilità.
+   */
+  skillChoices?: { count: number; from: string[] }[]
   toolProficiencies: string[]
   languages: number
   equipment: string[]

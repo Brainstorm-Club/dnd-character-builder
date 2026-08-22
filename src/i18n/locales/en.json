@@ -128,7 +128,8 @@
     "bonds": "Bonds",
     "flaws": "Flaws",
     "skillProficiencies": "Skill Proficiencies",
-    "languageChoices": "language(s) of your choice"
+    "languageChoices": "language(s) of your choice",
+    "chooseSkills": "Choose {count} skill(s)"
   },
   "equipment": {
     "title": "Equipment",

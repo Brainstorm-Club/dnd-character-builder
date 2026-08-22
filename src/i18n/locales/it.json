@@ -128,7 +128,8 @@
     "bonds": "Legami",
     "flaws": "Difetti",
     "skillProficiencies": "Competenze nelle Abilita'",
-    "languageChoices": "linguaggi a scelta"
+    "languageChoices": "linguaggi a scelta",
+    "chooseSkills": "Scegli {count} abilità"
   },
   "equipment": {
     "title": "Equipaggiamento",

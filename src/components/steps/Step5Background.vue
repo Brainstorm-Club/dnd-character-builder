@@ -26,15 +26,54 @@ function skillDisplayName(skillId: string): string {
 const backgrounds = computed(() => getBackgrounds(characterStore.character.variant))
 const selectedBg = ref<Background | null>(null)
 
-function selectBackground(bg: Background) {
-  selectedBg.value = bg
-  characterStore.character.background = bg.id
-  // Add background skill proficiencies (don't duplicate)
-  for (const skill of bg.skillProficiencies) {
+// Competenze scelte dal giocatore, una casella per slot. Le Origini di
+// Apocalisse concedono "due fra Arcano, Medicina, ...": fissarne due
+// d'ufficio toglieva al giocatore una scelta che il manuale gli dà.
+const chosenSkills = ref<string[][]>([])
+
+function resetSkillChoices(bg: Background | null) {
+  chosenSkills.value = (bg?.skillChoices ?? []).map(c => Array(c.count).fill(''))
+}
+
+/** Abilità ancora offerte da uno slot: né già concesse né già scelte altrove. */
+function skillOptions(tierIdx: number, slotIdx: number): string[] {
+  const bg = selectedBg.value
+  if (!bg) return []
+  const tier = bg.skillChoices?.[tierIdx]
+  const pool = tier && tier.from.length ? tier.from : SKILLS.map(s => s.id)
+  const taken = new Set(bg.skillProficiencies)
+  chosenSkills.value.forEach((tierSlots, ti) =>
+    tierSlots.forEach((s, si) => {
+      if (s && !(ti === tierIdx && si === slotIdx)) taken.add(s)
+    }),
+  )
+  return pool.filter(s => !taken.has(s))
+}
+
+function chooseSkill(tierIdx: number, slotIdx: number, skill: string) {
+  const tier = chosenSkills.value[tierIdx]
+  if (!tier) return
+  tier[slotIdx] = skill
+  applySkills()
+}
+
+/** Riscrive le competenze del background: le fisse più quelle scelte. */
+function applySkills() {
+  const bg = selectedBg.value
+  if (!bg) return
+  const granted = [...bg.skillProficiencies, ...chosenSkills.value.flat().filter(Boolean)]
+  for (const skill of granted) {
     if (!characterStore.character.skillProficiencies.includes(skill)) {
       characterStore.character.skillProficiencies.push(skill)
     }
   }
+}
+
+function selectBackground(bg: Background) {
+  selectedBg.value = bg
+  characterStore.character.background = bg.id
+  resetSkillChoices(bg)
+  applySkills()
 }
 </script>
 
@@ -64,7 +103,27 @@ function selectBackground(bg: Background) {
       <div class="space-y-3 text-sm">
         <div>
           <h4 class="font-semibold text-stone-300">{{ t('background.skillProficiencies') }}</h4>
-          <p class="text-stone-400">{{ selectedBg.skillProficiencies.map(skillDisplayName).join(', ') }}</p>
+          <p v-if="selectedBg.skillProficiencies.length" class="text-stone-400">{{ selectedBg.skillProficiencies.map(skillDisplayName).join(', ') }}</p>
+          <div v-for="(tier, ti) in selectedBg.skillChoices ?? []" :key="ti" class="mt-2">
+            <p class="text-xs text-stone-500 mb-1">
+              {{ t('background.chooseSkills', { count: tier.count }) }}
+            </p>
+            <div class="flex gap-2 flex-wrap">
+              <select
+                v-for="slot in tier.count"
+                :key="slot"
+                class="bg-stone-900 border border-stone-700 rounded px-2 py-1 text-sm text-stone-200"
+                :aria-label="t('background.chooseSkills', { count: tier.count })"
+                :value="chosenSkills[ti]?.[slot - 1] || ''"
+                @change="chooseSkill(ti, slot - 1, ($event.target as HTMLSelectElement).value)"
+              >
+                <option value="">—</option>
+                <option v-for="s in skillOptions(ti, slot - 1)" :key="s" :value="s">
+                  {{ skillDisplayName(s) }}
+                </option>
+              </select>
+            </div>
+          </div>
         </div>
         <div v-if="selectedBg.toolProficiencies.length">
           <h4 class="font-semibold text-stone-300">Strumenti</h4>
