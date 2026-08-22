@@ -819,11 +819,11 @@ export const featureNamesIt: Record<string, string> = {
   // Swordfighter (Fighter)
   'School of Fencing': 'Scuola di Scherma',
   // Friar (Monk)
-  'Way of the Brawly Rule': 'Via della Condotta Manesca',
+  'Way of the Brawly Rule': 'Via della Regola Manesca',
   'Turn the Other Cheek': 'Porgi l\'Altra Guancia',
   'The Iron & Feather Hand Technique': 'Tecnica della Mano di Ferro e di Piuma',
   // Knight-Errant (Paladin)
-  'Oath of Knightly Erring': 'Giuramento della Cavalleresca Erranza',
+  'Oath of Knightly Erring': 'Dettami del Cavaliere Errante',
   // Matador (Ranger)
   'Master of Performance': 'Maestro dell\'Esibizione',
   'Eye of the Matador': 'Occhio del Mattatore',
@@ -897,22 +897,22 @@ export const featureNamesIt: Record<string, string> = {
   'Avatar of Heresy': 'Avatar dell\'Eresia',
   // Circle of Plagues (Druid)
   'Circle Spells': 'Incantesimi del Circolo',
-  'Plagued Wild Shape': 'Forma Selvatica Infetta',
+  'Plagued Wild Shape': 'Forma Selvatica Piagata',
   'Excruciating Contagion': 'Contagio Straziante',
-  'Plagued Palms': 'Palmi Infetti',
-  'Subjugated Plague': 'Piaga Soggiogata',
-  'Deadly Miasma': 'Miasma Mortale',
+  'Plagued Palms': 'Palmi Piagati',
+  'Subjugated Plague': 'Dominare la Piaga',
+  'Deadly Miasma': 'Miasma Esiziale',
   // Furioso (Fighter)
   'Whirling Steel': 'Turbine di Acciaio',
-  'Formidable Warrior': 'Guerriero Formidabile',
+  'Formidable Warrior': 'Combattente Formidabile',
   'Furious Assault': 'Assalto Furioso',
   'Improved Whirling Steel': 'Turbine di Acciaio Migliorato',
   'Recklessness': 'Avventatezza',
-  'Ready to Die': 'Pronto a Morire',
+  'Ready to Die': 'Pronto alla Morte',
   // Wormwood Specter (Rogue)
-  'Wormwood Addiction': 'Dipendenza dall\'Assenzio',
-  'Wormwood Shroud': 'Sudario dell\'Assenzio',
-  'Improved Wormwood Shroud': 'Sudario dell\'Assenzio Migliorato',
+  'Wormwood Addiction': 'Imbevuto di Assenzio',
+  'Wormwood Shroud': 'Coltre di Assenzio',
+  'Improved Wormwood Shroud': 'Coltre di Assenzio Migliorata',
   'Misty Form': 'Forma Caliginosa',
   'Evanescence': 'Evanescenza',
   // School of Solomon (Wizard)
@@ -920,7 +920,7 @@ export const featureNamesIt: Record<string, string> = {
   'Solomon\'s Warding': 'Protezione di Salomone',
   'Summon Otherworldly Spirit': 'Evoca Spirito Ultraterreno',
   'Master of the School of Solomon': 'Maestro della Scuola di Salomone',
-  'Summon Greater Otherworldly Spirit': 'Evoca Spirito Ultraterreno Maggiore',
+  'Summon Greater Otherworldly Spirit': 'Ultraterreno Maggiore',
   // Way of the Seven Seals (Monk)
   'Seal of Conquest': 'Sigillo della Conquista',
   'Seal of War': 'Sigillo della Guerra',
@@ -938,8 +938,8 @@ export const featureNamesIt: Record<string, string> = {
   'Herald of the End of the World': 'Araldo della Fine del Mondo',
   // Bastion (Ranger)
   'Frontier Training': 'Addestramento di Frontiera',
-  'Egregious Training': 'Addestramento Egregio',
-  'Tireless Shooter': 'Tiratore Instancabile',
+  'Egregious Training': 'Addestramento d\'Eccellenza',
+  'Tireless Shooter': 'Cecchino Instancabile',
   'Bullseye': 'Centro Perfetto',
   // Otherworldly Heritage (Sorcerer)
   'Otherworldly Ancestor': 'Antenato Ultraterreno',
@@ -953,7 +953,7 @@ export const featureNamesIt: Record<string, string> = {
   'Fierce Savagery of Lilith': 'Selvaggia Ferocia di Lilith',
   'Indomitable Freedom of Lilith': 'Libertà Indomabile di Lilith',
   'Rebellion Against Fate': 'Ribellione contro il Destino',
-  'Ultimate Freedom of Lilith': 'Libertà Suprema di Lilith',
+  'Ultimate Freedom of Lilith': 'Liberazione Assoluta di Lilith',
   // ─── Brancalonia — Macaronicon Subclass Features ───────────────────────
   // Mountaineer (Barbarian)
   'Mountaineer Path': 'Cammino del Montanaro',
@@ -961,7 +961,7 @@ export const featureNamesIt: Record<string, string> = {
   'Blend': 'Miscela',
   // Guappo (Bard)
   'Competence Bonus': 'Competenze Bonus',
-  'Implied Folksong': 'Canzonetta Sottintesa',
+  'Implied Folksong': 'Canzone Sottintesa',
   'Unambiguous Violence': 'Violenza Beneinesa',
   'Do Be Cruel': 'Infierire',
   // Exorcist (Cleric)
@@ -976,7 +976,7 @@ export const featureNamesIt: Record<string, string> = {
   'Training of the Guard': 'Addestramento della Guardia',
   'Sacred Svanzic Dogma': 'Sacri Dogmi di Svanzica',
   // Gallant Knight (Paladin)
-  'Oath of Love': 'Giuramento d\'Amore',
+  'Oath of Love': 'Dettami del Cavalier Servente',
   // Rat Catcher (Ranger)
   'Rat Catcher\'s Magic': 'Magia dell\'Acchiapparatti',
   'Torch Bearer': 'Portatore della Torcia',

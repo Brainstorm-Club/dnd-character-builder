@@ -64,6 +64,7 @@ let _dnd5eGetMulticlassSpellSlots: ((classes: any[]) => { slots: Record<number, 
 // Brancalonia
 let _brancaRaces: readonly Race[] | null = null
 let _brancaTraitDescriptions: { en: Record<string, string>; it: Record<string, string> } | null = null
+let _brancaFeatureIt: { desc: Record<string, string>; names: Record<string, string> } | null = null
 let _brancaSubclasses: readonly BrancaloniaSubclass[] | null = null
 let _brancaBurattinaio: CharacterClass | null = null
 let _brancaBackgrounds: readonly Background[] | null = null
@@ -73,6 +74,7 @@ let _brancaSpells: readonly Spell[] | null = null
 // Apocalisse
 let _apoRaces: readonly Race[] | null = null
 let _apoTraitDescriptions: { en: Record<string, string>; it: Record<string, string> } | null = null
+let _apoFeatureIt: { desc: Record<string, string>; names: Record<string, string> } | null = null
 let _apoSubclasses: readonly ApocalisseSubclass[] | null = null
 let _apoBackgrounds: readonly Background[] | null = null
 let _apoRules: ApocalisseRules | null = null
@@ -199,23 +201,31 @@ function ensureBrancaRaces(): Promise<void> {
 }
 
 function ensureBrancaClasses(): Promise<void> {
-  if (_brancaSubclasses && _brancaBurattinaio) return Promise.resolve()
+  if (_brancaSubclasses && _brancaBurattinaio && _brancaFeatureIt) return Promise.resolve()
   if (_pBrancaClasses) return _pBrancaClasses
   const cachedSubs = lsGet<BrancaloniaSubclass[]>('branca-subclasses')
   const cachedBurat = lsGet<CharacterClass>('branca-burattinaio')
-  if (cachedSubs && cachedBurat) {
+  const cachedIt = lsGet<{ desc: Record<string, string>; names: Record<string, string> }>('branca-feature-it')
+  if (cachedSubs && cachedBurat && cachedIt) {
     _brancaSubclasses = cachedSubs
     _brancaBurattinaio = cachedBurat
+    _brancaFeatureIt = cachedIt
     return Promise.resolve()
   }
   _pBrancaClasses = Promise.all([
     import('./brancalonia/classes'),
     import('./brancalonia/burattinaio'),
-  ]).then(([classMod, buratMod]) => {
+    import('./brancalonia/classes-it'),
+  ]).then(([classMod, buratMod, itMod]) => {
     _brancaSubclasses = classMod.brancaloniaSubclasses
     _brancaBurattinaio = buratMod.burattinaioBrancaloniaClass
+    _brancaFeatureIt = {
+      desc: itMod.brancaloniaFeatureDescriptionsIt,
+      names: itMod.brancaloniaFeatureNamesIt,
+    }
     lsSet('branca-subclasses', classMod.brancaloniaSubclasses)
     lsSet('branca-burattinaio', buratMod.burattinaioBrancaloniaClass)
+    lsSet('branca-feature-it', _brancaFeatureIt)
   })
   return _pBrancaClasses
 }
@@ -287,13 +297,26 @@ function ensureApoRaces(): Promise<void> {
 }
 
 function ensureApoClasses(): Promise<void> {
-  if (_apoSubclasses) return Promise.resolve()
+  if (_apoSubclasses && _apoFeatureIt) return Promise.resolve()
   if (_pApoClasses) return _pApoClasses
   const cached = lsGet<ApocalisseSubclass[]>('apo-subclasses')
-  if (cached) { _apoSubclasses = cached; return Promise.resolve() }
-  _pApoClasses = import('./apocalisse/classes').then(m => {
+  const cachedIt = lsGet<{ desc: Record<string, string>; names: Record<string, string> }>('apo-feature-it')
+  if (cached && cachedIt) {
+    _apoSubclasses = cached
+    _apoFeatureIt = cachedIt
+    return Promise.resolve()
+  }
+  _pApoClasses = Promise.all([
+    import('./apocalisse/classes'),
+    import('./apocalisse/classes-it'),
+  ]).then(([m, itMod]) => {
     _apoSubclasses = m.apocalisseSubclasses
+    _apoFeatureIt = {
+      desc: itMod.apocalisseFeatureDescriptionsIt,
+      names: itMod.apocalisseFeatureNamesIt,
+    }
     lsSet('apo-subclasses', m.apocalisseSubclasses)
+    lsSet('apo-feature-it', _apoFeatureIt)
   })
   return _pApoClasses
 }
@@ -452,6 +475,39 @@ export function getRaces(variant: GameVariant): readonly Race[] {
  * always-loaded Italian dictionary (WSG 3.8), so it costs nothing to players
  * who never open that variant. Returns '' for variants without descriptions.
  */
+/**
+ * Descrizione italiana di una sottoclasse o di un suo privilegio.
+ * Brancalonia e Apocalisse hanno manuali italiani, quindi l'interfaccia
+ * italiana mostra il testo del manuale; D&D 5e resta in inglese, che è la
+ * lingua dell'SRD da cui i suoi dati provengono.
+ */
+export function getFeatureDescription(
+  variant: GameVariant,
+  featureId: string,
+  locale: string,
+  fallback: string,
+): string {
+  if (locale !== 'it') return fallback
+  const maps = variant === 'brancalonia' ? _brancaFeatureIt
+    : variant === 'apocalisse' ? _apoFeatureIt
+    : null
+  return maps?.desc[featureId] ?? fallback
+}
+
+/** Nome italiano di un privilegio, come stampato nel manuale. */
+export function getFeatureName(
+  variant: GameVariant,
+  featureId: string,
+  locale: string,
+  fallback: string,
+): string {
+  if (locale !== 'it') return fallback
+  const maps = variant === 'brancalonia' ? _brancaFeatureIt
+    : variant === 'apocalisse' ? _apoFeatureIt
+    : null
+  return maps?.names[featureId] ?? fallback
+}
+
 export function getTraitDescription(
   variant: GameVariant,
   traitId: string,

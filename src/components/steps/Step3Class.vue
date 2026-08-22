@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { getClasses } from '@/data'
+import { getClasses, getFeatureDescription, getFeatureName } from '@/data'
 import type { CharacterClass, Subclass } from '@/data/dnd5e/classes'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
@@ -10,7 +10,7 @@ import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 // Multiclass support (D&D 5e only)
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
 const gt = useGameTerms()
 
@@ -186,6 +186,17 @@ function addSecondaryClass(clsId: string) {
 function removeSecondaryClass(clsId: string) {
   characterStore.removeMulticlass(clsId)
 }
+// Brancalonia e Apocalisse hanno manuali italiani: in italiano mostriamo il
+// loro testo. D&D 5e resta in inglese, la lingua dell'SRD da cui viene.
+function featureText(feature: { id?: string; name: string; description?: string }): string {
+  const v = characterStore.character.variant
+  return getFeatureDescription(v, feature.id ?? '', locale.value, feature.description ?? '')
+}
+function featureLabel(feature: { id?: string; name: string }): string {
+  const v = characterStore.character.variant
+  return getFeatureName(v, feature.id ?? '', locale.value, gt.feature(feature.name))
+}
+
 </script>
 
 <template>
@@ -265,8 +276,8 @@ function removeSecondaryClass(clsId: string) {
         <div class="space-y-2">
           <div v-for="feature in selectedClass.features.filter(f => f.level <= characterStore.character.level)" :key="feature.name" class="text-sm">
             <span class="text-amber-400 font-medium">Lv.{{ feature.level }}:</span>
-            <span class="text-stone-400 ml-1">{{ gt.feature(feature.name) }}</span>
-            <p v-if="feature.description" class="text-stone-500 text-xs ml-4">{{ feature.description }}</p>
+            <span class="text-stone-400 ml-1">{{ featureLabel(feature) }}</span>
+            <p v-if="feature.description" class="text-stone-500 text-xs ml-4">{{ featureText(feature) }}</p>
           </div>
         </div>
       </div>
@@ -296,15 +307,15 @@ function removeSecondaryClass(clsId: string) {
 
           <!-- Selected subclass details -->
           <div v-if="selectedSubclassObj" class="mt-3 text-sm">
-            <p class="text-stone-400">{{ selectedSubclassObj.description }}</p>
+            <p class="text-stone-400">{{ featureText(selectedSubclassObj) }}</p>
             <div v-if="selectedSubclassObj.features.length" class="mt-2 space-y-2">
               <div
                 v-for="feature in selectedSubclassObj.features.filter(f => f.level <= selectedClassLevel)"
                 :key="feature.name"
               >
                 <span class="text-amber-400 font-medium">Lv.{{ feature.level }}:</span>
-                <span class="text-stone-400 ml-1">{{ gt.feature(feature.name) }}</span>
-                <p v-if="feature.description" class="text-stone-500 text-xs ml-4">{{ feature.description }}</p>
+                <span class="text-stone-400 ml-1">{{ featureLabel(feature) }}</span>
+                <p v-if="feature.description" class="text-stone-500 text-xs ml-4">{{ featureText(feature) }}</p>
               </div>
             </div>
           </div>
