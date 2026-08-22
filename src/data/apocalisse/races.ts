@@ -12,6 +12,8 @@ export const apocalisseRaces: readonly Race[] = [
     id: 'child-old-world',
     name: 'Child of the Old World',
     nameOriginal: 'Figlio del Vecchio Mondo',
+    blurb:
+      'Ricorda il mondo di prima e ne porta il sapere: due abilità fra le più erudite, più una a scelta, e la Lingua del Vecchio Mondo. Il più colto degli Ultimi.',
     description:
       'You remember the world before the Apocalypse. The old cities, the lost knowledge, the comforts that once existed. You carry the wisdom and skills of a dead civilization into this shattered new world.',
     abilityBonuses: { str: 1, dex: 1, con: 1, int: 1, wis: 1, cha: 1 },
@@ -30,6 +32,8 @@ export const apocalisseRaces: readonly Race[] = [
   {
     id: 'child-apocalypse',
     name: 'Child of the Apocalypse',
+    blurb:
+      'Nato dopo l\'Apertura dei Sigilli, non ha mai visto altro che rovina. Temprato dalle tempeste della Fine: punti ferita in più e istinto di sopravvivenza.',
     nameOriginal: 'Figlio dell\'Apocalisse',
     description:
       'Born after the End Times, you know nothing of the old world. The Plain of Armageddon is your home, and you have grown tough and resilient in its harsh embrace.',
@@ -50,6 +54,8 @@ export const apocalisseRaces: readonly Race[] = [
   {
     id: 'risen-hell',
     name: 'Risen from Hell',
+    blurb:
+      'È morto, è finito all\'Inferno e ne è tornato. Scurovisione, Infernale e le abilità dei dannati: inganno, intimidazione e furtività.',
     nameOriginal: 'Risorto dall\'Inferno',
     description:
       'You died and were cast into the infernal depths. Somehow, you clawed your way back to the world of the living, bearing the scars and dark knowledge of your time in Hell.',
@@ -73,6 +79,8 @@ export const apocalisseRaces: readonly Race[] = [
     id: 'risen-heaven',
     name: 'Risen from Heaven',
     nameOriginal: 'Risorto dal Paradiso',
+    blurb:
+      'È morto, ha visto il Paradiso e ne è stato rimandato indietro. Vista cieca, Celestiale e le abilità di chi cura e persuade.',
     description:
       'You knew the peace of Heaven, but were returned to the mortal world. You carry a faint celestial warmth and the longing for a paradise you can no longer reach.',
     abilityBonuses: {},
@@ -95,6 +103,8 @@ export const apocalisseRaces: readonly Race[] = [
     id: 'risen-purgatory',
     name: 'Risen from Purgatory',
     nameOriginal: 'Risorto dal Purgatorio',
+    blurb:
+      'Ha scalato la montagna della purificazione e il corpo se lo ricorda. Vista cieca ampia e incantesimi appresi durante la salita infinita.',
     description:
       'You endured the purification of Purgatory, climbing the terraces of atonement until you were returned to the mortal world. Your body and spirit have been tempered by the experience.',
     abilityBonuses: {},
@@ -119,6 +129,8 @@ export const apocalisseRaces: readonly Race[] = [
     id: 'risen-limbo',
     name: 'Risen from Limbo',
     nameOriginal: 'Risorto dal Limbo',
+    blurb:
+      'Torna dal castello degli Spiriti Magni, dove si discuteva per l\'eternità. La scelta di abilità più ampia di tutte, e magie apprese conversando coi grandi.',
     description:
       'You lingered in Limbo, the grey realm between life and death, between salvation and damnation. You returned with uncanny insight and a deep understanding of the apocalyptic creatures that now roam the world.',
     abilityBonuses: {},

@@ -15,6 +15,12 @@ export interface Race {
   /** Original name in the setting's language (e.g. Italian for Brancalonia) */
   nameOriginal?: string
   description?: string
+  /**
+   * Due o tre righe mostrate sulla card di scelta: servono a far capire al
+   * volo la differenza fra due opzioni vicine — un morgante e un selvatico,
+   * un nano e un halfling — senza aprire il dettaglio.
+   */
+  blurb?: string
   abilityBonuses: Partial<AbilityScores>
   /**
    * Free ability score increases the player assigns. Each entry is one tier:

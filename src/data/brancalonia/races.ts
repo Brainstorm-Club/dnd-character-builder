@@ -8,6 +8,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'human',
     name: 'Human',
     nameOriginal: 'Umano',
+    blurb:
+      'Nove persone su dieci nel Regno sono umane. Nessun bonus fisso: due caratteristiche a scelta più un talento, quindi la razza che si adatta a qualunque idea.',
     description:
       'Nine out of ten people you meet in the Kingdom are human. The salt of the earth and the cannon fodder of every war, they are the village people and the mercenaries, those who harvest the cotton, the rice and the wheat. Along with their more common variants — sylvans, gifted and morgants — humans believe themselves the only self-aware species in the known world, all the others having magical or supernatural origins. Pantegans, mandrakes and wolfcats disagree entirely.',
     abilityBonuses: {},
@@ -28,6 +30,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'gifted',
     name: 'Gifted',
     nameOriginal: 'Dotato',
+    blurb:
+      'Umani nati con un dono soprannaturale e un marchio visibile che lo tradisce. Come gli umani scelgono dove mettere i bonus, ma in cambio del talento hanno un potere innato.',
     description:
       'Gifted are not a species distinct from humans but humans born with, or touched during their lifetime by, a supernatural talent — and they usually bear a visible mark of it. Traditions differ on where the gift comes from: descent from a malebranche, a special planetary conjunction, being a seventh child, born with a caul or prematurely, blessed by a saint, exchanged in the cradle, born during a storm, chosen by the fairies, or simply because their mother sneezed in the wrong direction. Commoners meet them with mistrust as often as with reverence — a talent like that could mean a heretic, or a blessing.',
     abilityBonuses: {},
@@ -48,6 +52,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'malebranche',
     name: 'Malebranche',
     nameOriginal: 'Malebranche',
+    blurb:
+      'Diavoli ribelli che hanno lasciato l\'Inferno per rivedere le stelle. CON e CHA, scurovisione e resistenza al fuoco: il corpo a corpo carismatico, con l\'aria di chi ne ha viste troppe.',
     description:
       'Former subjects of Lucifuge who rebelled and left Inferno to see the stars again — the Great Refusal. The first was the legendary Diavolmanno, the "Great Human Devil", who afterwards found work as a circus attraction; several hundred of the damned have followed his example since. They incarnate in bodies very close to human physiology but keep their bestial features, and the Great Beast looks upon these "twice-rebels" with hatred. Then again, the Great Beast looks at everyone like that, so who gives a damn.',
     abilityBonuses: { con: 1, cha: 2 },
@@ -67,6 +73,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'marionette',
     name: 'Marionette',
     nameOriginal: 'Marionetta',
+    blurb:
+      'Burattini senzienti di legno turchino, nati adulti quanto li ha fatti il falegname. Piccoli e lenti, ma non mangiano, non respirano e si smontano un pezzo alla volta.',
     description:
       'Sentient puppets carved from triflewood, born at the moment of their manufacture with whatever age the carpenter gave them. In the old days people took them for feys and miraculous beings; these days they are mostly employed as entertainers, actors and musicians, which has won them widespread acceptance and done them a bad service at the same time — most commoners see them as buffoons and heckle them with "Make us laugh, puppet" for their whole lives. Their most ancient and powerful dynasty is that of the Cherries, celebrated puppeteers in their own right.',
     abilityBonuses: { dex: 1, con: 1 },
@@ -115,6 +123,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'morgant',
     name: 'Morgant',
     nameOriginal: 'Morgante',
+    blurb:
+      'Semigiganti di due metri e mezzo, famosi per abbuffate, bevute e risse. STR e CON al massimo del Regno: se cerchi il muro che regge la prima fila, è questo.',
     description:
       'Commonly considered demi-giants, though whether they truly descend from giants remains a mystery. Typically seven to nine feet tall, morgants are famous for their binging, their drinking and their brawling, and armies enlist them as champions and stormtroopers — so everyone takes them for formidable raiders and dealers of slaps. Truth be told they are meek and accommodating, closer in disposition to cattle than to bloodthirsty predators. But of course, Inferno knows no fury like a good person turned bad.',
     abilityBonuses: { str: 2, con: 2 },
@@ -135,6 +145,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'sylvan',
     name: 'Sylvan',
     nameOriginal: 'Selvatico',
+    blurb:
+      'Ominidi più ferini e rustici dell\'uomo comune, cacciatori-raccoglitori delle terre incontaminate. CON e WIS: resistenza e istinto, più che forza bruta.',
     description:
       'The last specimens of a race of hominids more feral and rustic than the common human, with much thicker body hair, more agile and muscular bodies, fiercer features and tougher mettle. The difference is almost entirely cultural: sylvan tribes build no shelters of brick or stone, work no land and raise no livestock — they are hunter-gatherers who live in pristine wilderness. Their lore is oral, and they know as many stories and songs by heart as humans have ever written in books.',
     abilityBonuses: { con: 2, wis: 1 },
@@ -157,6 +169,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'wolfcat',
     name: 'WolfCat',
     nameOriginal: 'Gatto Lupesco',
+    blurb:
+      'Felini in postura umana, spadaccini, musici e poeti dalle millanterie leggendarie. DEX e CHA, taglia Piccola ma velocità piena: il duellante agile e sbruffone.',
     description:
       'Probably spawned by Extravaganza, wolfcats have roamed the Kingdom since the early centuries of the Thousand Years\' War. The size of catpards and lynxes, they are felines that have adopted human-like posture, language and skills. Undressed and on all fours they look like ordinary cats; upright and civilized they are the equal of any human. They are known as skilled swordplayers, musicians and poets, proverbial for their pranks, their boastfulness and their sense of honor — and for the high-sounding, entirely fictitious titles they award themselves.',
     abilityBonuses: { dex: 2, cha: 1 },
@@ -179,6 +193,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'nonexistent',
     name: 'Nonexistent',
     nameOriginal: 'Inesistente',
+    blurb:
+      'Un vestito vuoto che cammina e parla: pura coscienza chiusa in un abito. CON e nessun corpo da ferire, ma distruggi le vesti e l\'inesistente non c\'è più.',
     description:
       'A nonexistent looks like empty clothes, armor or a cloak wandering about on its own as a knight, paladin, thief or sorcerer. They cover themselves carefully so the void beneath the cape stays hidden, speak through some form of ventriloquism, and perceive the world through senses much like human ones. Remove or destroy their garments and a nonexistent is simply not there anymore. Pure abstract consciousness enclosed in cloth, they are famed for a will and a self-determination far firmer than that of beings made of flesh.',
     abilityBonuses: { con: 2 },
@@ -200,6 +216,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'pantegan',
     name: 'Pantegan',
     nameOriginal: 'Pantegano',
+    blurb:
+      'Il popolo murino: piccoli topi-uomini di ingegno finissimo, imbattibili nel falsificare e nell\'esplorare i sottosuoli. DEX e CON, taglia Piccola e passo corto.',
     description:
       'The "murine people": small rat-men of magical or paradoxical origin, with prominent ears and teeth, sharp faces, very thin hands and a characteristic hairless tail. Chronicles of the Archaic Age already mention a kingdom of mice, so pantegans have prowled the shores of the Middle Sea since the dawn of history. Today they live on the edge of fiefdoms and cities, particularly good at engineering, goldsmithing and precision craftsmanship, highly skilled at counterfeiting anything, and unmatched at exploring what lies underground.',
     abilityBonuses: { dex: 2, con: 1 },
@@ -224,6 +242,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'arcimboldo',
     name: 'Arcimboldo',
     nameOriginal: 'Arcimboldo',
+    blurb:
+      'Una coscienza sbocciata da un mucchio di oggetti: una natura morta che cammina. CON, e i pezzi del proprio corpo si staccano e si rimpiazzano con quel che si trova.',
     description:
       'An emerging consciousness sprung from a heap of assorted objects and bound to that heap: an arcimboldo is a walking still life. Vegetables, scrap metal or a wardrobe\'s worth of clothes assemble into a humanoid shape and start to think, talk and want things. Far from being a simple agglomeration of junk, an arcimboldo is a person in every sense — usually a cheerful companion or an endearing scoundrel, eager to see the world, and greeted in many dives and villages with cheers and curiosity.',
     abilityBonuses: { con: 2 },
@@ -263,6 +283,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'jackrabid',
     name: 'Jackrabid',
     nameOriginal: 'Bieconiglio',
+    blurb:
+      'Lagomorfi aggressivi scesi con gli eserciti imperiali, occhi interamente rossi e vista acutissima. DEX e STR, e 10,5 metri di velocità: nessuno nel Regno corre di più.',
     description:
       'Among the most stealthy and aggressive beings that came down into the Kingdom with the Imperial armies. Scholars call them lagomorphs or rabbitfolk; commoners call them worse. Jackrabids are always fighting, robbing, stalking or spying, and the Altomannian companies that recruit them expect them to charge from the front without flinching. Their entirely red eyes give them keen sight and a distinctly intimidating look.',
     abilityBonuses: { dex: 2, str: 1 },
@@ -285,6 +307,8 @@ export const brancaloniaRaces: readonly Race[] = [
     id: 'paraghoul',
     name: 'Paraghoul',
     nameOriginal: 'Paragulo',
+    blurb:
+      'Gente morta che ha imbrogliato Sorella Morte ed è tornata. Cuore fermo, sangue immobile, INT: passa per vivo senza farsi notare, e la morte non lo spaventa più.',
     description:
       'People who died and then, one way or another, cheated Sister Death and came back. Their heart has stopped and their blood no longer flows, but they are just regular folk with merits and flaws, and a paraghoul can easily disguise their nature and walk among the living unnoticed. Rumor makes them the hidden rulers and strategists of the ghouls, which does nothing for first impressions — but many cunning leaders find that a henchman who can deal with death without flinching is a gambit that pays off.',
     abilityBonuses: { int: 1 },

@@ -6,6 +6,7 @@ import { getClasses, getFeatureDescription, getFeatureName } from '@/data'
 import type { CharacterClass, Subclass } from '@/data/dnd5e/classes'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
+import { getClassBlurb } from '@/data/classBlurbs'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 // Multiclass support (D&D 5e only)
@@ -189,6 +190,10 @@ function removeSecondaryClass(clsId: string) {
 // In italiano mostriamo il testo dei manuali italiani: quelli di Brancalonia
 // e Apocalisse per i contenuti propri, l'SRD 5.2.1 italiano come autorità
 // terminologica per i privilegi delle classi base di D&D.
+function classBlurb(cls: { id: string }): string | undefined {
+  return getClassBlurb(characterStore.character.variant, cls.id)
+}
+
 function featureText(feature: { id?: string; name: string; description?: string }): string {
   const v = characterStore.character.variant
   return getFeatureDescription(v, feature.id ?? '', locale.value, feature.description ?? '')
@@ -217,6 +222,7 @@ function featureLabel(feature: { id?: string; name: string }): string {
       >
         <h3 class="font-bold text-amber-400 text-sm">{{ gt.className(cls.name, variant) }}</h3>
         <p class="text-xs text-stone-500 mt-1">d{{ cls.hitDie }} &bull; {{ cls.primaryAbility.map((a: string) => a.toUpperCase()).join(', ') }}</p>
+        <p v-if="classBlurb(cls)" class="text-xs text-stone-400/90 mt-2 leading-snug">{{ classBlurb(cls) }}</p>
       </button>
     </div>
 

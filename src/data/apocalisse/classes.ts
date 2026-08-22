@@ -7,6 +7,8 @@ export interface ApocalisseSubclass {
   name: string
   nameOriginal?: string
   description: string
+  /** Due o tre righe mostrate sulla card di scelta. Vedi Race.blurb. */
+  blurb?: string
   features: ClassFeature[]
 }
 

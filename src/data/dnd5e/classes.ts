@@ -32,6 +32,8 @@ export interface CharacterClass {
   id: string
   name: string
   description: string
+  /** Due o tre righe mostrate sulla card di scelta. Vedi Race.blurb. */
+  blurb?: string
   hitDie: number
   primaryAbility: AbilityKey[]
   savingThrows: [AbilityKey, AbilityKey]

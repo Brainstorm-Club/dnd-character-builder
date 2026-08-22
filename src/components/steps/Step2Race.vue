@@ -153,6 +153,7 @@ function bonusString(bonuses: Record<string, number>): string {
         <h3 class="font-bold text-amber-400">{{ gt.raceName(race.name) }}</h3>
         <p class="text-xs text-stone-400 mt-1">{{ bonusString(race.abilityBonuses) }}</p>
         <p class="text-xs text-stone-500 mt-1">{{ t('race.speed') }}: {{ feetToMeters(race.speed) }}m &bull; {{ race.size }}</p>
+        <p v-if="race.blurb" class="text-xs text-stone-400/90 mt-2 leading-snug">{{ race.blurb }}</p>
       </button>
     </div>
 
