@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getRaces, getTraitDescription } from '@/data'
 import { getAvailableFeats } from '@/data/brancalonia/feats'
+import { getFeatsByCategory } from '@/data/dnd2024/feats'
 import type { Race } from '@/data/dnd5e/races'
 import type { AbilityScores } from '@/stores/character'
 import { formatModifier, feetToMeters } from '@/utils/calculations'
@@ -22,16 +23,26 @@ const races = computed(() => getRaces(characterStore.character.variant))
 
 // Il tratto feat-choice (umano brancalone) concede un talento a scelta:
 // senza un elenco da cui pescare il tratto restava una promessa vuota.
-const hasFeatChoice = computed(
-  () =>
-    characterStore.character.variant === 'brancalonia' &&
-    [...(selectedRace.value?.traits ?? []), ...(selectedSubraceObj.value?.traits ?? [])].includes(
-      'feat-choice',
-    ),
-)
-const availableFeats = computed(() =>
-  getAvailableFeats([selectedRace.value?.id ?? '', selectedSubrace.value].filter(Boolean)),
-)
+const hasFeatChoice = computed(() => {
+  const traits = [...(selectedRace.value?.traits ?? []), ...(selectedSubraceObj.value?.traits ?? [])]
+  if (characterStore.character.variant === 'brancalonia') return traits.includes('feat-choice')
+  // D&D 2024: l'umano prende un talento d'origine in più con Versatile.
+  if (characterStore.character.variant === 'dnd2024') return traits.includes('versatile')
+  return false
+})
+
+const availableFeats = computed(() => {
+  if (characterStore.character.variant === 'dnd2024') {
+    return getFeatsByCategory('origin').map(f => ({
+      id: f.id,
+      name: f.name,
+      nameOriginal: f.name,
+      description: f.description,
+      benefits: [] as string[],
+    }))
+  }
+  return getAvailableFeats([selectedRace.value?.id ?? '', selectedSubrace.value].filter(Boolean))
+})
 function selectFeat(id: string) {
   characterStore.character.feat = characterStore.character.feat === id ? '' : id
 }

@@ -283,7 +283,9 @@
     "noResults": "No results",
     "loading": "Loading...",
     "unnamed": "Unnamed",
-    "stepProgress": "Step {current} of {total}"
+    "stepProgress": "Step {current} of {total}",
+    "discardWarning": "Going back to variant selection discards the character in progress. You have not saved it yet.",
+    "discardConfirm": "Discard and start over"
   },
   "validation": {
     "selectRace": "Select a race before continuing",

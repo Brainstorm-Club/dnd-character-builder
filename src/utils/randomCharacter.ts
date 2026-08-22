@@ -6,6 +6,7 @@ import { simpleWeapons, martialWeapons, armor as armorData } from '@/data/dnd5e/
 import { rollAbilityScores } from './diceRoller'
 import { modifier, totalHp, proficiencyBonus } from './calculations'
 import { pickRandomArchetype } from '@/data/personalityArchetypes'
+import { getFeatsByCategory } from '@/data/dnd2024/feats'
 
 function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!
@@ -174,6 +175,13 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     }
   }
 
+  // D&D 2024: l'umano prende un talento d'origine a scelta con Versatile.
+  let originFeat = ''
+  if (variant === 'dnd2024' && race.traits.includes('versatile')) {
+    const origins = getFeatsByCategory('origin')
+    if (origins.length) originFeat = pick(origins).id
+  }
+
   // Pick random background.
   // In Apocalisse l'Origine è insieme razza e background — il manuale la
   // presenta proprio in formato background — quindi le due scelte devono
@@ -297,6 +305,7 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     playerName: '',
     race: race.id,
     subrace: subrace?.id || '',
+    feat: originFeat,
     className: cls.id,
     subclass: subclass?.id || '',
     level,

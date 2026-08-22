@@ -2,6 +2,7 @@ import type { CharacterData, AbilityScores } from '@/stores/character'
 import { modifier, proficiencyBonus, formatModifier, spellSaveDC, spellAttackBonus, feetToMeters } from './calculations'
 import { apocalisseRules } from '@/data/apocalisse/rules'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
+import { getDnd2024Feat } from '@/data/dnd2024/feats'
 import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce } from '@/data/brancalonia/brawl'
 import { classNamesIt, brancaloniaClassNamesIt, apocalisseClassNamesIt, raceNamesIt, subraceNamesIt, backgroundNamesIt } from '@/i18n/gameTerms'
 
@@ -186,6 +187,12 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
   fields['ProficienciesLang'] = [...char.proficienciesOther, ...char.languages.map(l => `Language: ${l}`)].join('\n')
   // Features and Traits - include Apocalisse mark/virtue/sin/humanity if applicable
   const featureLines = [...char.featuresTraits]
+  if (char.variant === 'dnd2024') {
+    const bg = char.background
+    const feat = char.feat ? getDnd2024Feat(char.feat) : undefined
+    if (feat) featureLines.push(`Talento: ${feat.name}`)
+    if (bg) featureLines.push(`Background: ${bg}`)
+  }
   if (char.variant === 'brancalonia') {
     if (char.feat) {
       const featObj = getBrancaloniaFeatById(char.feat)

@@ -20,6 +20,56 @@ describe('barra dei passi', () => {
     push.mockClear()
   })
 
+  it('chiede conferma prima di scartare un personaggio non salvato', async () => {
+    const store = useCharacterStore()
+    store.character.variant = 'brancalonia'
+    store.character.race = 'morgant'
+    store.character.className = 'barbarian'
+
+    const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
+    await wrapper.findAll('button')[0]!.trigger('click')
+    await wrapper.vm.$nextTick()
+
+    // primo clic: avverte e non tocca nulla
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(true)
+    expect(push).not.toHaveBeenCalled()
+    expect(store.character.race).toBe('morgant')
+
+    // conferma: scarta e va in home
+    const confirm = wrapper.findAll('[role="alertdialog"] button')[0]!
+    await confirm.trigger('click')
+    await wrapper.vm.$nextTick()
+    expect(push).toHaveBeenCalledWith('/')
+    expect(store.character.race).toBe('')
+  })
+
+  it('non disturba se il personaggio è appena iniziato', async () => {
+    const store = useCharacterStore()
+    store.character.variant = 'dnd5e'
+
+    const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
+    await wrapper.findAll('button')[0]!.trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(false)
+    expect(push).toHaveBeenCalledWith('/')
+  })
+
+  it('non disturba se il personaggio è già salvato', async () => {
+    const store = useCharacterStore()
+    store.character.variant = 'dnd5e'
+    store.character.race = 'human'
+    store.character.name = 'Test'
+    store.savedCharacters.push({ ...store.character })
+
+    const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
+    await wrapper.findAll('button')[0]!.trigger('click')
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(false)
+    expect(push).toHaveBeenCalledWith('/')
+  })
+
   it('il passo Variante riporta alla home e azzera il personaggio', async () => {
     const store = useCharacterStore()
     const app = useAppStore()
@@ -32,6 +82,8 @@ describe('barra dei passi', () => {
 
     const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
     await wrapper.findAll('button')[0]!.trigger('click')
+    await wrapper.vm.$nextTick()
+    await wrapper.findAll('[role="alertdialog"] button')[0]!.trigger('click')
     await wrapper.vm.$nextTick()
 
     // Restando nel wizard, riscegliere la stessa variante non azzerava nulla:

@@ -10,6 +10,7 @@ import { getSpells, getClasses, getRaces, getBackgrounds, getApocalisseRules, ge
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
+import { getDnd2024Feat } from '@/data/dnd2024/feats'
 import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce, brawlFeatureId } from '@/data/brancalonia/brawl'
 import { brawlDescriptionsIt } from '@/data/brancalonia/brawl-it'
 
@@ -150,7 +151,12 @@ const brawlKit = computed(() => {
 })
 
 const displayFeat = computed(() => {
-  if (char.value.variant !== 'brancalonia' || !char.value.feat) return null
+  if (!char.value.feat) return null
+  if (char.value.variant === 'dnd2024') {
+    const f = getDnd2024Feat(char.value.feat)
+    return f ? { name: f.name, benefits: [f.description] } : null
+  }
+  if (char.value.variant !== 'brancalonia') return null
   const f = getBrancaloniaFeatById(char.value.feat)
   if (!f) return null
   return { name: locale.value === 'it' ? f.nameOriginal : f.name, benefits: f.benefits }

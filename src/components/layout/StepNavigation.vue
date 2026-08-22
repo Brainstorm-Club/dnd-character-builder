@@ -13,6 +13,23 @@ const characterStore = useCharacterStore()
 
 const stepKeys = STEP_KEYS
 const isLoading = ref(false)
+const confirmingReset = ref(false)
+
+/** Il personaggio in corso ha qualcosa che andrebbe perso tornando indietro? */
+function hasUnsavedWork(): boolean {
+  const c = characterStore.character
+  const started = Boolean(c.race || c.className || c.name)
+  if (!started) return false
+  const saved = characterStore.savedCharacters.some(s => s.id === c.id)
+  return !saved
+}
+
+function discardAndGoHome() {
+  confirmingReset.value = false
+  characterStore.resetCharacter()
+  appStore.resetSteps()
+  router.push('/')
+}
 
 // I dati della variante sono caricati su richiesta (WSG 3.8). Saltando a un
 // passo dalla barra senza caricarli prima, il passo compariva vuoto.
@@ -23,9 +40,13 @@ async function goToStep(idx: number) {
   // personaggio: restando nel wizard, riscegliere la stessa variante lasciava
   // in piedi razza, classe, incantesimi ed equipaggiamento già scelti.
   if (idx === 0) {
-    characterStore.resetCharacter()
-    appStore.resetSteps()
-    router.push('/')
+    // Chiedi conferma solo se c'è davvero qualcosa da perdere: un personaggio
+    // appena iniziato, o già salvato, si scarta senza disturbare.
+    if (hasUnsavedWork() && !confirmingReset.value) {
+      confirmingReset.value = true
+      return
+    }
+    discardAndGoHome()
     return
   }
 
@@ -77,5 +98,28 @@ async function goToStep(idx: number) {
         <span v-if="idx < stepKeys.length - 1" class="text-stone-600 mx-1" aria-hidden="true">&rsaquo;</span>
       </li>
     </ol>
+
+    <div
+      v-if="confirmingReset"
+      class="mt-3 flex flex-wrap items-center gap-3 rounded-lg border border-amber-700/50 bg-amber-950/30 px-4 py-3"
+      role="alertdialog"
+      aria-labelledby="reset-confirm-text"
+    >
+      <p id="reset-confirm-text" class="text-sm text-stone-300 grow">
+        {{ t('common.discardWarning') }}
+      </p>
+      <button
+        class="px-3 py-1.5 rounded text-sm font-semibold bg-red-700 hover:bg-red-600 text-stone-100 cursor-pointer"
+        @click="discardAndGoHome"
+      >
+        {{ t('common.discardConfirm') }}
+      </button>
+      <button
+        class="px-3 py-1.5 rounded text-sm bg-stone-700 hover:bg-stone-600 text-stone-200 cursor-pointer"
+        @click="confirmingReset = false"
+      >
+        {{ t('common.cancel') }}
+      </button>
+    </div>
   </nav>
 </template>

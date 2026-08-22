@@ -43,10 +43,17 @@ Wizards of the Coast sotto licenza CC-BY-4.0:
 | Discendenze | 24, modellate come sottorazze (draghi, lignaggi elfici, giganti, retaggi) |
 | Background | 4, ciascuno con tre caratteristiche e un talento d'origine |
 | Classi | 12, con 248 privilegi dal 1° al 20° e una sottoclasse ciascuna |
+| Talenti | 16: 3 d'origine, 2 generali, 4 di stile di combattimento, 7 doni epici |
+| Padronanza d'armi | Le 8 proprietà, assegnate a 36 armi su 37 |
 
 Gli incantesimi non sono duplicati: la variante riusa i 317 del 2014
 applicando gli scostamenti dell'SRD 5.2.1 — 58 liste di classe cambiate e
-2 incantesimi usciti. Restano fuori i 23 presenti solo nel 2024.
+2 incantesimi usciti — e aggiunge i 23 che esistono solo nel 2024. La
+lista è completa rispetto all'SRD.
+
+La rete è l'unica arma senza padronanza: nel manuale ha solo la proprietà
+Speciale. L'SRD contiene una sola sottoclasse per classe; le altre stanno
+nel Player's Handbook.
 
 I nomi italiani dei privilegi vengono dall'edizione italiana dell'SRD
 5.2.1 (`IT_SRD_CC_v5.2.1`).

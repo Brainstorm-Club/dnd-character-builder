@@ -5,9 +5,10 @@ import { useCharacterStore } from '@/stores/character'
 import { modifier, proficiencyBonus } from '@/utils/calculations'
 import { getEquipment } from '@/data'
 import { useGameTerms } from '@/composables/useGameTerms'
+import { getWeaponMastery } from '@/data/dnd2024/mastery'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
 const gt = useGameTerms()
 
@@ -16,6 +17,18 @@ const selectedWeapons = ref<string[]>([])
 const selectedArmor = ref('')
 const hasShield = ref(false)
 const customEquipment = ref('')
+
+// D&D 2024: barbaro, guerriero, ladro, paladino e ranger sbloccano la
+// proprietà di padronanza delle armi che impugnano. Mostrarla accanto
+// all'arma è l'unico modo perché il giocatore la veda quando sceglie.
+const MASTERY_CLASSES = ['barbarian', 'fighter', 'rogue', 'paladin', 'ranger']
+
+function masteryLabel(weaponName: string): string {
+  if (characterStore.character.variant !== 'dnd2024') return ''
+  if (!MASTERY_CLASSES.includes(characterStore.character.className)) return ''
+  const m = getWeaponMastery(weaponName)
+  return m ? ` · ${locale.value === 'it' ? m.nameIt : m.name}` : ''
+}
 
 function toggleWeapon(weaponName: string) {
   const idx = selectedWeapons.value.indexOf(weaponName)
@@ -94,7 +107,7 @@ function removeItem(idx: number) {
               : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
             :aria-pressed="selectedWeapons.includes(wpn.name)"
           >
-            {{ gt.weapon(wpn.name) }} ({{ wpn.damage }})
+            {{ gt.weapon(wpn.name) }} ({{ wpn.damage }}){{ masteryLabel(wpn.name) }}
           </button>
         </div>
       </div>
@@ -112,7 +125,7 @@ function removeItem(idx: number) {
               : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
             :aria-pressed="selectedWeapons.includes(wpn.name)"
           >
-            {{ gt.weapon(wpn.name) }} ({{ wpn.damage }})
+            {{ gt.weapon(wpn.name) }} ({{ wpn.damage }}){{ masteryLabel(wpn.name) }}
           </button>
         </div>
       </div>

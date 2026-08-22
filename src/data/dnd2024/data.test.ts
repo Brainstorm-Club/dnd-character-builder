@@ -156,3 +156,113 @@ describe('coerenza delle classi 2024', () => {
     }
   })
 })
+
+describe('incantesimi 2024', () => {
+  it('include i 23 che esistono solo nell\'SRD 5.2.1', async () => {
+    const { toDnd2024Spells } = await import('./spells')
+    const { dnd2024OnlySpells } = await import('./spells-new')
+    const { spells } = await import('../dnd5e/spells')
+    const list = toDnd2024Spells(spells)
+    const names = new Set(list.map(s => s.name))
+    for (const s of dnd2024OnlySpells) expect(names, s.name).toContain(s.name)
+    expect(dnd2024OnlySpells).toHaveLength(23)
+  })
+
+  it('toglie quelli usciti dall\'SRD e non crea doppioni', async () => {
+    const { toDnd2024Spells } = await import('./spells')
+    const { spells } = await import('../dnd5e/spells')
+    const list = toDnd2024Spells(spells)
+    const names = list.map(s => s.name)
+    expect(new Set(names).size, 'nomi duplicati').toBe(names.length)
+    expect(new Set(list.map(s => s.id)).size, 'id duplicati').toBe(list.length)
+    expect(names).not.toContain('Blade Ward')
+    expect(names).not.toContain('Feeblemind')
+  })
+
+  it('ha metadati completi su ogni incantesimo aggiunto', async () => {
+    const { dnd2024OnlySpells } = await import('./spells-new')
+    for (const s of dnd2024OnlySpells) {
+      expect(s.castingTime, s.name).toBeTruthy()
+      expect(s.range, s.name).toBeTruthy()
+      expect(s.components, s.name).toMatch(/^[VSM](, [VSM])*$/)
+      expect(s.duration, s.name).toBeTruthy()
+      expect(s.description.length, s.name).toBeGreaterThan(40)
+      expect(s.classes.length, s.name).toBeGreaterThan(0)
+    }
+  })
+
+  it('assegna solo classi valide', async () => {
+    const { dnd2024OnlySpells } = await import('./spells-new')
+    const CL = ['bard','cleric','druid','paladin','ranger','sorcerer','warlock','wizard']
+    for (const s of dnd2024OnlySpells) {
+      for (const c of s.classes) expect(CL, `${s.name}: ${c}`).toContain(c)
+    }
+  })
+})
+
+describe('talenti 2024', () => {
+  it('ha i 16 dell\'SRD 5.2.1, divisi per categoria', async () => {
+    const { dnd2024Feats, getFeatsByCategory } = await import('./feats')
+    expect(dnd2024Feats).toHaveLength(16)
+    expect(getFeatsByCategory('origin').map(f => f.id).sort())
+      .toEqual(['alert', 'magic-initiate', 'savage-attacker'])
+    expect(getFeatsByCategory('general')).toHaveLength(2)
+    expect(getFeatsByCategory('fighting-style')).toHaveLength(4)
+    expect(getFeatsByCategory('epic-boon')).toHaveLength(7)
+  })
+
+  it('descrive ogni talento e ne segna i requisiti', async () => {
+    const { dnd2024Feats } = await import('./feats')
+    for (const f of dnd2024Feats) {
+      expect(f.description.length, f.name).toBeGreaterThan(50)
+      // i talenti d'origine non hanno requisiti, gli altri sì
+      if (f.category === 'origin') expect(f.prerequisite, f.name).toBeUndefined()
+      else expect(f.prerequisite, f.name).toBeTruthy()
+    }
+  })
+
+  it('i background rimandano a talenti d\'origine che esistono', async () => {
+    const { dnd2024Backgrounds } = await import('./backgrounds')
+    const { getFeatsByCategory } = await import('./feats')
+    const origins = getFeatsByCategory('origin').map(f => f.name)
+    for (const b of dnd2024Backgrounds) {
+      // "Magic Initiate (Cleric)" rimanda al talento "Magic Initiate"
+      const base = b.originFeat!.replace(/\s*\(.*\)$/, '')
+      expect(origins, `${b.name}: ${b.originFeat}`).toContain(base)
+    }
+  })
+})
+
+describe('padronanza d\'armi 2024', () => {
+  it('ha le 8 proprietà dell\'SRD, con nome italiano', async () => {
+    const { masteryProperties } = await import('./mastery')
+    expect(masteryProperties).toHaveLength(8)
+    expect(masteryProperties.map(p => p.id).sort())
+      .toEqual(['cleave', 'graze', 'nick', 'push', 'sap', 'slow', 'topple', 'vex'])
+    for (const p of masteryProperties) {
+      expect(p.nameIt, p.name).toBeTruthy()
+      expect(p.description.length, p.name).toBeGreaterThan(60)
+    }
+  })
+
+  it('assegna una padronanza a ogni arma che l\'app conosce', async () => {
+    const { getWeaponMastery } = await import('./mastery')
+    const { simpleWeapons, martialWeapons } = await import('../dnd5e/equipment')
+    const senza: string[] = []
+    for (const w of [...simpleWeapons, ...martialWeapons]) {
+      if (!getWeaponMastery(w.name)) senza.push(w.name)
+    }
+    // La rete è l'unica senza: nel manuale ha solo la proprietà Speciale.
+    expect(senza).toEqual(['Net'])
+  })
+
+  it('usa le proprietà giuste per un campione noto', async () => {
+    const { getWeaponMastery } = await import('./mastery')
+    expect(getWeaponMastery('Greataxe')?.id).toBe('cleave')
+    expect(getWeaponMastery('Greatsword')?.id).toBe('graze')
+    expect(getWeaponMastery('Dagger')?.id).toBe('nick')
+    expect(getWeaponMastery('Quarterstaff')?.id).toBe('topple')
+    expect(getWeaponMastery('Rapier')?.id).toBe('vex')
+    expect(getWeaponMastery('Longsword')?.id).toBe('sap')
+  })
+})

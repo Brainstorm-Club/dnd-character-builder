@@ -5,10 +5,11 @@
 // sono usciti dall'SRD. Invece di duplicare 317 incantesimi, la variante 2024
 // riusa quelli esistenti applicando queste differenze.
 //
-// NOTA: 23 incantesimi presenti nell'SRD 5.2.1 non sono ancora nei dati
-// dell'app; per quelli la lista 2024 resta incompleta.
+// I 23 presenti solo nell'SRD 5.2.1 stanno in spells-new.ts e vengono
+// aggiunti qui: la lista 2024 è completa rispetto all'SRD.
 
 import type { Spell } from '../dnd5e/spells'
+import { dnd2024OnlySpells } from './spells-new'
 
 /** Liste di classe 2024 per gli incantesimi che le cambiano rispetto al 2014. */
 const CLASS_OVERRIDES: Record<string, string[]> = {
@@ -77,12 +78,17 @@ const REMOVED_IN_2024 = new Set<string>(['Blade Ward', 'Feeblemind'])
 
 /** Applica gli scostamenti 2024 alla lista incantesimi di base. */
 export function toDnd2024Spells(base: readonly Spell[]): Spell[] {
-  return base
+  const adjusted = base
     .filter(s => !REMOVED_IN_2024.has(s.name))
     .map(s => {
       const classes = CLASS_OVERRIDES[s.name]
       return classes ? { ...s, classes } : s
     })
+  // I 23 che esistono solo nel 2024 si aggiungono in coda, ordinati per
+  // livello e nome come il resto della lista.
+  const known = new Set(adjusted.map(s => s.name))
+  const extra = dnd2024OnlySpells.filter(s => !known.has(s.name))
+  return [...adjusted, ...extra].sort((a, b) => a.level - b.level || a.name.localeCompare(b.name))
 }
 
 export const dnd2024SpellListChanges = {

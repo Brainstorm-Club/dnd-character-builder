@@ -283,7 +283,9 @@
     "noResults": "Nessun risultato",
     "loading": "Caricamento...",
     "unnamed": "Senza Nome",
-    "stepProgress": "Passo {current} di {total}"
+    "stepProgress": "Passo {current} di {total}",
+    "discardWarning": "Tornando alla scelta della variante il personaggio in corso viene scartato. Non lo hai ancora salvato.",
+    "discardConfirm": "Scarta e ricomincia"
   },
   "validation": {
     "selectRace": "Seleziona una razza prima di continuare",
