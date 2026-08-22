@@ -116,3 +116,43 @@ describe('nomi italiani dei privilegi 2024', () => {
     expect(featureNamesIt['Paladin’s Smite']).toBe('Punizione del paladino')
   })
 })
+
+describe('coerenza delle classi 2024', () => {
+  it('ogni incantatore ha il privilegio che gli dà gli incantesimi', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    for (const c of dnd2024Classes) {
+      if (!c.spellcasting) continue
+      const names = c.features.map(f => f.name)
+      const hasIt = names.includes('Spellcasting') || names.includes('Pact Magic')
+      expect(hasIt, `${c.id}: nessun privilegio di incantesimi`).toBe(true)
+    }
+  })
+
+  it('non ha privilegi duplicati allo stesso livello', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    for (const c of dnd2024Classes) {
+      const seen = new Set<string>()
+      for (const f of c.features) {
+        const key = `${f.level}/${f.name}`
+        expect(seen.has(key), `${c.id}: ${key} due volte`).toBe(false)
+        seen.add(key)
+      }
+      expect(new Set(c.features.map(f => f.id)).size, `${c.id}: id duplicati`).toBe(c.features.length)
+    }
+  })
+
+  it('sceglie la sottoclasse al 3° livello, come vuole il 2024', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    for (const c of dnd2024Classes) expect(c.subclassLevel, c.id).toBe(3)
+  })
+
+  it('paladino e ranger lanciano incantesimi dal 1° livello', async () => {
+    const { dnd2024Classes } = await import('./classes')
+    for (const id of ['paladin', 'ranger']) {
+      const c = dnd2024Classes.find(x => x.id === id)!
+      const sc = c.features.find(f => f.name === 'Spellcasting')
+      expect(sc, `${id}: manca Spellcasting`).toBeDefined()
+      expect(sc!.level, `${id}: nel 2024 parte dal 1°, non dal 2°`).toBe(1)
+    }
+  })
+})
