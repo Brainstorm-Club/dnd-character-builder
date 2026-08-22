@@ -84,7 +84,7 @@ Click **"Save Character"** on the review page. Characters are stored in your bro
 
 | Variant | Races | Classes | Max Level | Source |
 |---------|-------|---------|-----------|--------|
-| **D&D 5e** | 9 SRD races | 12 classes + subclasses | 20 | [SRD 5.1](https://dnd.wizards.com/resources/systems-reference-document) |
+| **D&D 5e** | 9 races, 18 with subraces | 12 classes + subclasses | 20 | [SRD 5.1](https://dnd.wizards.com/resources/systems-reference-document) and the 2014 Player's Handbook |
 | **Brancalonia** | 6 races | 12 subclasses | 6 | [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games?affiliate_id=2960765) |
 | **Apocalisse** | 1 race, 6 origins | 12 archetypes | 20 | [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games/category/44511/apocalisse?affiliate_id=2960765) |
 
@@ -139,4 +139,4 @@ The interface wears the **[Brainstorm Club design system](https://github.com/Bra
 
 ## Credits
 
-A [Brainstorm Club](https://github.com/Brainstorm-Club) project — the tabletop gaming association of Faenza. Built with Vue 3 and Anthropic Claude. D&D 5e content from the [Systems Reference Document 5.1](https://dnd.wizards.com/resources/systems-reference-document) under the Open Gaming License. Brancalonia and Apocalisse are products of [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games?affiliate_id=2960765).
+A [Brainstorm Club](https://github.com/Brainstorm-Club) project — the tabletop gaming association of Faenza. Built with Vue 3 and Anthropic Claude. Most D&D 5e content comes from the [Systems Reference Document 5.1](https://dnd.wizards.com/resources/systems-reference-document), published by Wizards of the Coast under the Open Gaming License. Some of it does not: 13 spells (Counterspell, Eldritch Blast, Hex, Hunter's Mark and others), 12 of the 13 backgrounds, and several subraces come from the 2014 Player's Handbook, which the SRD does not cover. That material is used here for reference and is not licensed under the OGL — see [DATA-SOURCES.md](DATA-SOURCES.md). Brancalonia and Apocalisse are products of [Acheron Games](https://www.drivethrurpg.com/en/publisher/9086/acheron-games?affiliate_id=2960765).
