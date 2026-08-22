@@ -75,6 +75,7 @@ let _brancaSpells: readonly Spell[] | null = null
 let _apoRaces: readonly Race[] | null = null
 let _apoTraitDescriptions: { en: Record<string, string>; it: Record<string, string> } | null = null
 let _apoFeatureIt: { desc: Record<string, string>; names: Record<string, string> } | null = null
+let _dnd5eFeatureIt: { desc: Record<string, string>; names: Record<string, string> } | null = null
 let _apoSubclasses: readonly ApocalisseSubclass[] | null = null
 let _apoBackgrounds: readonly Background[] | null = null
 let _apoRules: ApocalisseRules | null = null
@@ -115,13 +116,26 @@ function ensureDnd5eRaces(): Promise<void> {
 }
 
 function ensureDnd5eClasses(): Promise<void> {
-  if (_dnd5eClasses) return Promise.resolve()
+  if (_dnd5eClasses && _dnd5eFeatureIt) return Promise.resolve()
   if (_pDnd5eClasses) return _pDnd5eClasses
   const cached = lsGet<CharacterClass[]>('dnd5e-classes')
-  if (cached) { _dnd5eClasses = cached; return Promise.resolve() }
-  _pDnd5eClasses = import('./dnd5e/classes').then(m => {
+  const cachedIt = lsGet<{ desc: Record<string, string>; names: Record<string, string> }>('dnd5e-feature-it')
+  if (cached && cachedIt) {
+    _dnd5eClasses = cached
+    _dnd5eFeatureIt = cachedIt
+    return Promise.resolve()
+  }
+  _pDnd5eClasses = Promise.all([
+    import('./dnd5e/classes'),
+    import('./dnd5e/classes-it'),
+  ]).then(([m, itMod]) => {
     _dnd5eClasses = m.classes
+    _dnd5eFeatureIt = {
+      desc: itMod.dnd5eFeatureDescriptionsIt,
+      names: itMod.dnd5eFeatureNamesIt,
+    }
     lsSet('dnd5e-classes', m.classes)
+    lsSet('dnd5e-feature-it', _dnd5eFeatureIt)
   })
   return _pDnd5eClasses
 }
@@ -488,10 +502,13 @@ export function getFeatureDescription(
   fallback: string,
 ): string {
   if (locale !== 'it') return fallback
-  const maps = variant === 'brancalonia' ? _brancaFeatureIt
+  const variantMap = variant === 'brancalonia' ? _brancaFeatureIt
     : variant === 'apocalisse' ? _apoFeatureIt
     : null
-  return maps?.desc[featureId] ?? fallback
+  // Brancalonia e Apocalisse costruiscono sulle classi base di D&D: i loro
+  // privilegi vanno tradotti anche lì, altrimenti nella stessa schermata si
+  // vedrebbero due lingue accostate.
+  return variantMap?.desc[featureId] ?? _dnd5eFeatureIt?.desc[featureId] ?? fallback
 }
 
 /** Nome italiano di un privilegio, come stampato nel manuale. */
@@ -502,10 +519,10 @@ export function getFeatureName(
   fallback: string,
 ): string {
   if (locale !== 'it') return fallback
-  const maps = variant === 'brancalonia' ? _brancaFeatureIt
+  const variantMap = variant === 'brancalonia' ? _brancaFeatureIt
     : variant === 'apocalisse' ? _apoFeatureIt
     : null
-  return maps?.names[featureId] ?? fallback
+  return variantMap?.names[featureId] ?? _dnd5eFeatureIt?.names[featureId] ?? fallback
 }
 
 export function getTraitDescription(

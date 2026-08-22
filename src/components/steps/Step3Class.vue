@@ -186,8 +186,9 @@ function addSecondaryClass(clsId: string) {
 function removeSecondaryClass(clsId: string) {
   characterStore.removeMulticlass(clsId)
 }
-// Brancalonia e Apocalisse hanno manuali italiani: in italiano mostriamo il
-// loro testo. D&D 5e resta in inglese, la lingua dell'SRD da cui viene.
+// In italiano mostriamo il testo dei manuali italiani: quelli di Brancalonia
+// e Apocalisse per i contenuti propri, l'SRD 5.2.1 italiano come autorità
+// terminologica per i privilegi delle classi base di D&D.
 function featureText(feature: { id?: string; name: string; description?: string }): string {
   const v = characterStore.character.variant
   return getFeatureDescription(v, feature.id ?? '', locale.value, feature.description ?? '')
