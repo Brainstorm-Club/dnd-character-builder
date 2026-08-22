@@ -16,6 +16,7 @@ const appStore = useAppStore()
 const gt = useGameTerms()
 
 const fileInputDnd5e = ref<HTMLInputElement | null>(null)
+const fileInputDnd2024 = ref<HTMLInputElement | null>(null)
 const fileInputBrancalonia = ref<HTMLInputElement | null>(null)
 const fileInputApocalisse = ref<HTMLInputElement | null>(null)
 const importMessage = ref<{ type: 'error' | 'warning' | 'success'; text: string } | null>(null)
@@ -41,7 +42,7 @@ async function randomChar(variant: GameVariant) {
 
 function triggerImport(variant: GameVariant) {
   importMessage.value = null
-  const refs = { dnd5e: fileInputDnd5e, brancalonia: fileInputBrancalonia, apocalisse: fileInputApocalisse }
+  const refs = { dnd5e: fileInputDnd5e, dnd2024: fileInputDnd2024, brancalonia: fileInputBrancalonia, apocalisse: fileInputApocalisse }
   refs[variant].value?.click()
 }
 
@@ -110,6 +111,7 @@ function dismissMessage() {
 
 const variants: { id: GameVariant; emoji: string; color: string; border: string }[] = [
   { id: 'dnd5e', emoji: '🐉', color: 'amber', border: 'border-amber-600/40' },
+  { id: 'dnd2024', emoji: '⚔️', color: 'sky', border: 'border-sky-600/40' },
   { id: 'brancalonia', emoji: '🥘', color: 'emerald', border: 'border-emerald-600/40' },
   { id: 'apocalisse', emoji: '🔥', color: 'red', border: 'border-red-600/40' },
 ]
@@ -142,6 +144,7 @@ const variants: { id: GameVariant; emoji: string; color: string; border: string 
 
     <!-- Hidden file inputs for each variant -->
     <input ref="fileInputDnd5e" type="file" accept=".json" class="hidden" @change="handleImport($event, 'dnd5e')" aria-hidden="true" tabindex="-1" />
+    <input ref="fileInputDnd2024" type="file" accept=".json" class="hidden" @change="handleImport($event, 'dnd2024')" aria-hidden="true" tabindex="-1" />
     <input ref="fileInputBrancalonia" type="file" accept=".json" class="hidden" @change="handleImport($event, 'brancalonia')" aria-hidden="true" tabindex="-1" />
     <input ref="fileInputApocalisse" type="file" accept=".json" class="hidden" @change="handleImport($event, 'apocalisse')" aria-hidden="true" tabindex="-1" />
 
@@ -162,6 +165,7 @@ const variants: { id: GameVariant; emoji: string; color: string; border: string 
             :class="[
               'w-full px-4 py-2.5 font-semibold rounded-lg transition-colors cursor-pointer text-sm',
               v.id === 'dnd5e' ? 'bg-amber-600 hover:bg-amber-500 text-stone-900' :
+              v.id === 'dnd2024' ? 'bg-sky-600 hover:bg-sky-500 text-stone-900' :
               v.id === 'brancalonia' ? 'bg-emerald-600 hover:bg-emerald-500 text-stone-900' :
               'bg-red-600 hover:bg-red-500 text-stone-100'
             ]"
@@ -213,6 +217,7 @@ const variants: { id: GameVariant; emoji: string; color: string; border: string 
               :class="[
                 'text-xs uppercase px-2 py-0.5 rounded',
                 char.variant === 'dnd5e' ? 'bg-amber-900/40 text-amber-400' :
+                char.variant === 'dnd2024' ? 'bg-sky-900/40 text-sky-400' :
                 char.variant === 'brancalonia' ? 'bg-emerald-900/40 text-emerald-400' :
                 'bg-red-900/40 text-red-400'
               ]"

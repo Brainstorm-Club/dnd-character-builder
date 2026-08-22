@@ -178,6 +178,14 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   const backgrounds = getBackgrounds(variant)
   const bg = pick(backgrounds)
 
+  // D&D 2024: è il background a dare i bonus di caratteristica, non la specie.
+  // Elenca tre caratteristiche fra cui una sale di 2 e un'altra di 1.
+  if (bg.abilityScoreOptions && bg.abilityScoreOptions.length >= 2) {
+    const [major, minor] = pickN(bg.abilityScoreOptions, 2) as (keyof AbilityScores)[]
+    if (major) racialBonuses[major] = (racialBonuses[major] || 0) + 2
+    if (minor) racialBonuses[minor] = (racialBonuses[minor] || 0) + 1
+  }
+
   // Skill proficiencies: from class + background (deduplicated)
   const classSkills = pickN(cls.skillChoices, cls.numSkillChoices)
   const allSkillIds = [...new Set([...classSkills, ...bg.skillProficiencies])]

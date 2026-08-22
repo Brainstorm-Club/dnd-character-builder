@@ -20,7 +20,8 @@
     "randomApocalisse": "Random Apocalisse",
     "savedCharacters": "Saved Characters",
     "importJson": "Import JSON",
-    "newFrom": "From Scratch"
+    "newFrom": "From Scratch",
+    "randomDnd2024": "Random D&D 2024"
   },
   "import": {
     "parseError": "The file does not contain valid JSON. Make sure it is a .json file exported from this app.",
@@ -70,7 +71,9 @@
     "dnd5ePromo": "If you like D&D 5e, buy the manuals on",
     "dnd5eFeatures": "12 classes • 9 races • Level 1-20",
     "brancaloniaFeatures": "22 subclasses • 12 races • Level 1-6",
-    "apocalisseFeatures": "12 archetypes • 6 origins • Level 1-20"
+    "apocalisseFeatures": "12 archetypes • 6 origins • Level 1-20",
+    "dnd2024": "D&D 2024",
+    "dnd2024Desc": "The updated edition of Dungeons & Dragons: species no longer grant ability score bonuses — the background does, along with an origin feat."
   },
   "race": {
     "title": "Choose Race",
@@ -368,7 +371,8 @@
       "all": "All",
       "dnd5e": "D&D 5e",
       "brancalonia": "Brancalonia",
-      "apocalisse": "Apocalisse"
+      "apocalisse": "Apocalisse",
+      "dnd2024": "D&D 2024"
     },
     "meta": {
       "listTitle": "Pre-Made Characters | D&D Character Builder",

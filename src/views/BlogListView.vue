@@ -18,6 +18,7 @@ const filteredCharacters = computed(() => {
 const filters: { id: 'all' | GameVariant; key: string }[] = [
   { id: 'all', key: 'blog.filters.all' },
   { id: 'dnd5e', key: 'blog.filters.dnd5e' },
+  { id: 'dnd2024', key: 'blog.filters.dnd2024' },
   { id: 'brancalonia', key: 'blog.filters.brancalonia' },
   { id: 'apocalisse', key: 'blog.filters.apocalisse' },
 ]
@@ -25,6 +26,7 @@ const filters: { id: 'all' | GameVariant; key: string }[] = [
 function variantColor(variant: GameVariant): string {
   switch (variant) {
     case 'dnd5e': return 'bg-amber-900/40 text-amber-400'
+    case 'dnd2024': return 'bg-sky-900/40 text-sky-400'
     case 'brancalonia': return 'bg-emerald-900/40 text-emerald-400'
     case 'apocalisse': return 'bg-red-900/40 text-red-400'
   }
@@ -33,6 +35,7 @@ function variantColor(variant: GameVariant): string {
 function variantBorder(variant: GameVariant): string {
   switch (variant) {
     case 'dnd5e': return 'border-amber-600/40 hover:border-amber-500/60'
+    case 'dnd2024': return 'border-sky-600/40 hover:border-sky-500/60'
     case 'brancalonia': return 'border-emerald-600/40 hover:border-emerald-500/60'
     case 'apocalisse': return 'border-red-600/40 hover:border-red-500/60'
   }

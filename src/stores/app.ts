@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 
-export type GameVariant = 'dnd5e' | 'brancalonia' | 'apocalisse'
+export type GameVariant = 'dnd5e' | 'dnd2024' | 'brancalonia' | 'apocalisse'
 export type ThemeMode = 'light' | 'dark' | 'auto'
 
 /**

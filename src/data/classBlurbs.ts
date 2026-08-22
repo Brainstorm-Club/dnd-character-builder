@@ -94,13 +94,17 @@ const apocalisse: Record<string, string> = {
     'Il mago della Scuola di Salomone vincola e comanda gli spiriti ultraterreni: evoca immondi e celestiali, e si scherma dietro uno schermo cabalistico.',
 }
 
+// La variante 2024 porta il blurb sull'oggetto classe, perché i suoi
+// privilegi sono diversi da quelli del 2014: qui non serve una mappa.
 const BY_VARIANT: Record<GameVariant, Record<string, string>> = {
   dnd5e,
+  dnd2024: {},
   brancalonia,
   apocalisse,
 }
 
 /** Blurb della classe per la variante in corso, con ricaduta su quello di D&D. */
 export function getClassBlurb(variant: GameVariant, classId: string): string | undefined {
+  if (variant === 'dnd2024') return undefined
   return BY_VARIANT[variant]?.[classId] ?? dnd5e[classId]
 }

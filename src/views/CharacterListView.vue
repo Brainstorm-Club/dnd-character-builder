@@ -18,11 +18,13 @@ const variantSections: { id: GameVariant; emoji: string; color: string; border: 
   { id: 'dnd5e', emoji: '\uD83D\uDC09', color: 'amber', border: 'border-amber-600/40' },
   { id: 'brancalonia', emoji: '\uD83C\uDF72', color: 'emerald', border: 'border-emerald-600/40' },
   { id: 'apocalisse', emoji: '\uD83D\uDD25', color: 'red', border: 'border-red-600/40' },
+  { id: 'dnd2024', emoji: '\u2694\uFE0F', color: 'sky', border: 'border-sky-600/40' },
 ]
 
 const groupedCharacters = computed(() => {
   const groups: Record<GameVariant, typeof characterStore.savedCharacters> = {
     dnd5e: [],
+    dnd2024: [],
     brancalonia: [],
     apocalisse: [],
   }

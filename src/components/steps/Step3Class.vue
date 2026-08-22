@@ -190,8 +190,8 @@ function removeSecondaryClass(clsId: string) {
 // In italiano mostriamo il testo dei manuali italiani: quelli di Brancalonia
 // e Apocalisse per i contenuti propri, l'SRD 5.2.1 italiano come autorità
 // terminologica per i privilegi delle classi base di D&D.
-function classBlurb(cls: { id: string }): string | undefined {
-  return getClassBlurb(characterStore.character.variant, cls.id)
+function classBlurb(cls: { id: string; blurb?: string }): string | undefined {
+  return cls.blurb ?? getClassBlurb(characterStore.character.variant, cls.id)
 }
 
 function featureText(feature: { id?: string; name: string; description?: string }): string {

@@ -20,7 +20,8 @@
     "randomApocalisse": "Casuale Apocalisse",
     "savedCharacters": "Personaggi Salvati",
     "importJson": "Importa JSON",
-    "newFrom": "Da Zero"
+    "newFrom": "Da Zero",
+    "randomDnd2024": "D&D 2024 casuale"
   },
   "import": {
     "parseError": "Il file non contiene JSON valido. Assicurati che sia un file .json esportato dall'app.",
@@ -70,7 +71,9 @@
     "dnd5ePromo": "Se ti piace D&D 5e, compra i manuali su",
     "dnd5eFeatures": "12 classi • 9 razze • Livello 1-20",
     "brancaloniaFeatures": "22 sottoclassi • 12 razze • Livello 1-6",
-    "apocalisseFeatures": "12 archetipi • 6 origini • Livello 1-20"
+    "apocalisseFeatures": "12 archetipi • 6 origini • Livello 1-20",
+    "dnd2024": "D&D 2024",
+    "dnd2024Desc": "L'edizione aggiornata di Dungeons & Dragons: le specie non danno più bonus alle caratteristiche, li dà il background insieme a un talento d'origine."
   },
   "race": {
     "title": "Scegli la Razza",
@@ -368,7 +371,8 @@
       "all": "Tutti",
       "dnd5e": "D&D 5e",
       "brancalonia": "Brancalonia",
-      "apocalisse": "Apocalisse"
+      "apocalisse": "Apocalisse",
+      "dnd2024": "D&D 2024"
     },
     "meta": {
       "listTitle": "Personaggi Pronti | D&D Character Builder",

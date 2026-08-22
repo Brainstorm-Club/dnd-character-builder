@@ -76,6 +76,41 @@ let _apoRaces: readonly Race[] | null = null
 let _apoTraitDescriptions: { en: Record<string, string>; it: Record<string, string> } | null = null
 let _apoFeatureIt: { desc: Record<string, string>; names: Record<string, string> } | null = null
 let _dnd5eFeatureIt: { desc: Record<string, string>; names: Record<string, string> } | null = null
+
+// ─── D&D 2024 (SRD 5.2.1) ───────────────────────────────────────────────
+let _dnd24Species: readonly Race[] | null = null
+let _dnd24Classes: readonly CharacterClass[] | null = null
+let _dnd24Backgrounds: readonly Background[] | null = null
+let _dnd24Spells: readonly Spell[] | null = null
+let _toDnd24Spells: ((base: readonly Spell[]) => Spell[]) | null = null
+let _pDnd24: Promise<void> | null = null
+
+function ensureDnd2024(): Promise<void> {
+  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds) return Promise.resolve()
+  if (_pDnd24) return _pDnd24
+  const cs = lsGet<Race[]>('dnd24-species')
+  const cc = lsGet<CharacterClass[]>('dnd24-classes')
+  const cb = lsGet<Background[]>('dnd24-backgrounds')
+  if (cs && cc && cb) {
+    _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb
+    return Promise.resolve()
+  }
+  _pDnd24 = Promise.all([
+    import('./dnd2024/races'),
+    import('./dnd2024/classes'),
+    import('./dnd2024/backgrounds'),
+    import('./dnd2024/spells'),
+  ]).then(([r, c, b, sp]) => {
+    _dnd24Species = r.dnd2024Species
+    _dnd24Classes = c.dnd2024Classes
+    _dnd24Backgrounds = b.dnd2024Backgrounds
+    lsSet('dnd24-species', r.dnd2024Species)
+    lsSet('dnd24-classes', c.dnd2024Classes)
+    lsSet('dnd24-backgrounds', b.dnd2024Backgrounds)
+    _toDnd24Spells = sp.toDnd2024Spells
+  })
+  return _pDnd24
+}
 let _apoSubclasses: readonly ApocalisseSubclass[] | null = null
 let _apoBackgrounds: readonly Background[] | null = null
 let _apoRules: ApocalisseRules | null = null
@@ -374,17 +409,20 @@ function loadsForStep(variant: GameVariant, step: number): Promise<void>[] {
     case 1: // Abilities and starting level — no data needed
       break
     case 2: // Race
-      if (variant === 'brancalonia') loads.push(ensureBrancaRaces())
+      if (variant === 'dnd2024') loads.push(ensureDnd2024())
+      else if (variant === 'brancalonia') loads.push(ensureBrancaRaces())
       else if (variant === 'apocalisse') loads.push(ensureApoRaces())
       else loads.push(ensureDnd5eRaces())
       break
     case 3: // Class
+      if (variant === 'dnd2024') { loads.push(ensureDnd2024()); break }
       loads.push(ensureDnd5eClasses())
       if (variant === 'brancalonia') loads.push(ensureBrancaClasses())
       if (variant === 'apocalisse') loads.push(ensureApoClasses())
       break
     case 4: // Background
-      if (variant === 'brancalonia') loads.push(ensureBrancaBackgrounds())
+      if (variant === 'dnd2024') loads.push(ensureDnd2024())
+      else if (variant === 'brancalonia') loads.push(ensureBrancaBackgrounds())
       else if (variant === 'apocalisse') loads.push(ensureApoBackgrounds())
       else loads.push(ensureDnd5eBackgrounds())
       break
@@ -425,6 +463,7 @@ async function ensureAllForVariant(variant: GameVariant): Promise<void> {
     ensureDnd5eRaces(), ensureDnd5eClasses(), ensureDnd5eBackgrounds(),
     ensureDnd5eSpells(), ensureDnd5eEquipment(), ensureDnd5eRules(),
   ]
+  if (variant === 'dnd2024') loads.push(ensureDnd2024())
   if (variant === 'brancalonia') {
     loads.push(ensureBrancaRaces(), ensureBrancaClasses(), ensureBrancaBackgrounds(), ensureBrancaRules(), ensureBrancaSpells())
   }
@@ -474,6 +513,7 @@ export function isVariantLoaded(variant: GameVariant): boolean {
 // ─── Races ──────────────────────────────────────────────────────────────────
 
 export function getRaces(variant: GameVariant): readonly Race[] {
+  if (variant === 'dnd2024') return _dnd24Species ?? []
   switch (variant) {
     case 'brancalonia': return _brancaRaces ?? []
     case 'apocalisse': return _apoRaces ?? []
@@ -539,6 +579,7 @@ export function getTraitDescription(
 // ─── Classes ────────────────────────────────────────────────────────────────
 
 export function getClasses(variant: GameVariant): readonly CharacterClass[] {
+  if (variant === 'dnd2024') return _dnd24Classes ?? []
   if (!_dnd5eClasses) return []
 
   switch (variant) {
@@ -587,6 +628,7 @@ export function getBrancaloniaSubclasses(variant: GameVariant): readonly Brancal
 // ─── Backgrounds ────────────────────────────────────────────────────────────
 
 export function getBackgrounds(variant: GameVariant): readonly Background[] {
+  if (variant === 'dnd2024') return _dnd24Backgrounds ?? []
   switch (variant) {
     case 'brancalonia': return _brancaBackgrounds ?? []
     case 'apocalisse': return _apoBackgrounds ?? []
@@ -659,6 +701,12 @@ export function getSpells(variant: GameVariant): readonly Spell[] {
   // Brancalonia adds its own spells on top of the D&D list; several subclasses
   // name them in their domain and expanded lists.
   if (variant === 'brancalonia') return [...base, ...(_brancaSpells ?? [])]
+  // Il 2024 riusa gli stessi incantesimi con le liste di classe aggiornate.
+  if (variant === 'dnd2024') {
+    if (!_toDnd24Spells || base.length === 0) return base
+    if (!_dnd24Spells) _dnd24Spells = _toDnd24Spells(base)
+    return _dnd24Spells
+  }
   return base
 }
 
