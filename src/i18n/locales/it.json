@@ -73,7 +73,8 @@
     "brancaloniaFeatures": "22 sottoclassi • 12 razze • Livello 1-6",
     "apocalisseFeatures": "12 archetipi • 6 origini • Livello 1-20",
     "dnd2024": "D&D 2024",
-    "dnd2024Desc": "L'edizione aggiornata di Dungeons & Dragons: le specie non danno più bonus alle caratteristiche, li dà il background insieme a un talento d'origine."
+    "dnd2024Desc": "L'edizione aggiornata di Dungeons & Dragons: le specie non danno più bonus alle caratteristiche, li dà il background insieme a un talento d'origine.",
+    "dnd2024Features": "9 specie • 12 classi • livello massimo 20 • SRD 5.2.1"
   },
   "race": {
     "title": "Scegli la Razza",

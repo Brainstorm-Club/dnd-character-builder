@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAppStore, STEP_KEYS } from '@/stores/app'
 import { useCharacterStore } from '@/stores/character'
 import { ensureStepData } from '@/data'
 
 const { t } = useI18n()
+const router = useRouter()
 const appStore = useAppStore()
 const characterStore = useCharacterStore()
 
@@ -15,6 +17,18 @@ const isLoading = ref(false)
 // I dati della variante sono caricati su richiesta (WSG 3.8). Saltando a un
 // passo dalla barra senza caricarli prima, il passo compariva vuoto.
 async function goToStep(idx: number) {
+  // Il passo "Variante" riporta alla home invece di aprire il primo passo del
+  // wizard. La home è il vero selettore di variante — ha tutte e quattro,
+  // l'archivio e l'importazione — e ripartire da lì azzera davvero il
+  // personaggio: restando nel wizard, riscegliere la stessa variante lasciava
+  // in piedi razza, classe, incantesimi ed equipaggiamento già scelti.
+  if (idx === 0) {
+    characterStore.resetCharacter()
+    appStore.resetSteps()
+    router.push('/')
+    return
+  }
+
   const variant = characterStore.character.variant
   if (variant) {
     isLoading.value = true

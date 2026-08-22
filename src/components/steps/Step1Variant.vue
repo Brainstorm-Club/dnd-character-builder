@@ -28,7 +28,7 @@ async function selectVariant(variant: GameVariant) {
   <section aria-labelledby="variant-heading">
     <h2 id="variant-heading" class="text-2xl font-bold text-amber-500 mb-6">{{ t('variant.title') }}</h2>
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6" role="radiogroup" :aria-label="t('variant.title')">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" role="radiogroup" :aria-label="t('variant.title')">
       <button
         @click="selectVariant('dnd5e')"
         class="group bg-stone-800 border-2 rounded-xl p-6 text-left transition-all cursor-pointer hover:shadow-lg"
@@ -41,6 +41,22 @@ async function selectVariant(variant: GameVariant) {
         <p class="text-stone-400 text-sm">{{ t('variant.dnd5eDesc') }}</p>
         <div class="mt-4 text-xs text-stone-500">
           {{ t('variant.dnd5eFeatures') }}
+        </div>
+      </button>
+
+
+      <button
+        @click="selectVariant('dnd2024')"
+        class="group bg-stone-800 border-2 rounded-xl p-6 text-left transition-all cursor-pointer hover:shadow-lg"
+        :class="characterStore.character.variant === 'dnd2024' ? 'border-amber-500 shadow-amber-500/20' : 'border-stone-700 hover:border-amber-600/50'"
+        role="radio"
+        :aria-checked="characterStore.character.variant === 'dnd2024'"
+      >
+        <div class="text-4xl mb-3" aria-hidden="true">&#x2694;&#xFE0F;</div>
+        <h3 class="text-xl font-bold text-amber-400 mb-2">{{ t('variant.dnd2024') }}</h3>
+        <p class="text-stone-400 text-sm">{{ t('variant.dnd2024Desc') }}</p>
+        <div class="mt-4 text-xs text-stone-500">
+          {{ t('variant.dnd2024Features') }}
         </div>
       </button>
 

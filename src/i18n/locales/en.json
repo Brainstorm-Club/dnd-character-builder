@@ -73,7 +73,8 @@
     "brancaloniaFeatures": "22 subclasses • 12 races • Level 1-6",
     "apocalisseFeatures": "12 archetypes • 6 origins • Level 1-20",
     "dnd2024": "D&D 2024",
-    "dnd2024Desc": "The updated edition of Dungeons & Dragons: species no longer grant ability score bonuses — the background does, along with an origin feat."
+    "dnd2024Desc": "The updated edition of Dungeons & Dragons: species no longer grant ability score bonuses — the background does, along with an origin feat.",
+    "dnd2024Features": "9 species • 12 classes • max level 20 • SRD 5.2.1"
   },
   "race": {
     "title": "Choose Race",
