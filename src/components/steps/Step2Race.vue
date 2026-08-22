@@ -3,6 +3,7 @@ import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getRaces, getTraitDescription } from '@/data'
+import { getAvailableFeats } from '@/data/brancalonia/feats'
 import type { Race } from '@/data/dnd5e/races'
 import type { AbilityScores } from '@/stores/character'
 import { formatModifier, feetToMeters } from '@/utils/calculations'
@@ -19,6 +20,23 @@ function traitDescription(traitId: string): string {
 
 const races = computed(() => getRaces(characterStore.character.variant))
 
+// Il tratto feat-choice (umano brancalone) concede un talento a scelta:
+// senza un elenco da cui pescare il tratto restava una promessa vuota.
+const hasFeatChoice = computed(
+  () =>
+    characterStore.character.variant === 'brancalonia' &&
+    [...(selectedRace.value?.traits ?? []), ...(selectedSubraceObj.value?.traits ?? [])].includes(
+      'feat-choice',
+    ),
+)
+const availableFeats = computed(() =>
+  getAvailableFeats([selectedRace.value?.id ?? '', selectedSubrace.value].filter(Boolean)),
+)
+function selectFeat(id: string) {
+  characterStore.character.feat = characterStore.character.feat === id ? '' : id
+}
+
+
 const selectedRace = ref<Race | null>(null)
 const selectedSubrace = ref<string>('')
 const selectedSubraceObj = computed(
@@ -33,6 +51,7 @@ watch(
       selectedRace.value = null
       selectedSubrace.value = ''
       resetChoices(null)
+      characterStore.character.feat = ''
     }
   },
 )
@@ -203,6 +222,31 @@ function bonusString(bonuses: Record<string, number>): string {
             <span v-if="traitDescription(trait)" class="block ml-3 text-stone-400/80">{{ traitDescription(trait) }}</span>
           </li>
         </ul>
+      </div>
+
+      <!-- Talento a scelta (Brancalonia) -->
+      <div v-if="hasFeatChoice" class="mt-4">
+        <h4 class="font-semibold text-stone-300 mb-2">{{ t('race.chooseFeat') }}</h4>
+        <div class="space-y-2" role="radiogroup" :aria-label="t('race.chooseFeat')">
+          <button
+            v-for="feat in availableFeats"
+            :key="feat.id"
+            type="button"
+            role="radio"
+            :aria-checked="characterStore.character.feat === feat.id"
+            class="w-full text-left px-3 py-2 rounded border text-sm transition-colors"
+            :class="characterStore.character.feat === feat.id
+              ? 'bg-red-900/40 border-red-700 text-stone-100'
+              : 'bg-stone-800 border-stone-700 text-stone-300 hover:bg-stone-700'"
+            @click="selectFeat(feat.id)"
+          >
+            <span class="font-medium">{{ locale === 'it' ? feat.nameOriginal : feat.name }}</span>
+            <span class="block text-stone-400/80 mt-0.5">{{ feat.description }}</span>
+            <ul class="mt-1 ml-3 list-disc text-stone-400/70 space-y-0.5">
+              <li v-for="(b, i) in feat.benefits" :key="i">{{ b }}</li>
+            </ul>
+          </button>
+        </div>
       </div>
 
       <!-- Subraces -->

@@ -50,6 +50,7 @@ const COMPACT_KEYS: Record<string, string> = {
   virtue: 'vr',
   sin: 'si',
   humanity: 'hu',
+  feat: 'fe',
   sessionNotes: 'nt',
   classes: 'cl',
 

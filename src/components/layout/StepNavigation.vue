@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/stores/app'
+import { useAppStore, STEP_KEYS } from '@/stores/app'
 
 const { t } = useI18n()
 const appStore = useAppStore()
 
-const stepKeys = ['variant', 'race', 'class', 'abilities', 'background', 'equipment', 'spells', 'details', 'review']
+const stepKeys = STEP_KEYS
 </script>
 
 <template>

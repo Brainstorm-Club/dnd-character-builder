@@ -33,6 +33,8 @@ export interface CharacterData {
   playerName: string
   race: string
   subrace: string
+  /** Talento razziale scelto (Brancalonia: tratto feat-choice). Assente nelle schede salvate prima della sua introduzione. */
+  feat?: string
   className: string
   subclass: string
   level: number
@@ -107,6 +109,7 @@ function createEmptyCharacter(): CharacterData {
     playerName: '',
     race: '',
     subrace: '',
+    feat: '',
     className: '',
     subclass: '',
     level: 1,

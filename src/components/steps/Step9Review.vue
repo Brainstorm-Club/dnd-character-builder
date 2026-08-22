@@ -9,6 +9,7 @@ import { SKILLS } from '@/data/dnd5e/skills'
 import { getSpells, getClasses, getRaces, getBackgrounds, getApocalisseRules, getMaxLevel, getWhacksLevels } from '@/data'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
+import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
 
 const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
@@ -123,6 +124,13 @@ function displayNameLocale(item: { name: string; nameOriginal?: string } | undef
   if (locale.value === 'it' && item.nameOriginal) return item.nameOriginal
   return item.name
 }
+const displayFeat = computed(() => {
+  if (char.value.variant !== 'brancalonia' || !char.value.feat) return null
+  const f = getBrancaloniaFeatById(char.value.feat)
+  if (!f) return null
+  return { name: locale.value === 'it' ? f.nameOriginal : f.name, benefits: f.benefits }
+})
+
 const displayMark = computed(() => {
   if (!char.value.mark) return '--'
   const mark = apoRules.value?.marks.find(m => m.id === char.value.mark)
@@ -416,6 +424,15 @@ function handleImport(event: Event) {
         <span class="text-stone-500 text-sm">{{ t('details.misdeeds') }}:</span>
         <span class="text-stone-300 text-sm ml-1">{{ char.misdeeds }}</span>
       </div>
+    </div>
+
+    <!-- Brancalonia: talento razziale scelto -->
+    <div v-if="displayFeat" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
+      <h3 class="font-semibold text-red-400 mb-2">{{ t('race.chooseFeat') }}</h3>
+      <p class="text-stone-200 text-sm">{{ displayFeat.name }}</p>
+      <ul class="mt-1 ml-4 list-disc text-stone-400 text-sm space-y-0.5">
+        <li v-for="(b, i) in displayFeat.benefits" :key="i">{{ b }}</li>
+      </ul>
     </div>
 
     <!-- Apocalisse: Mark, Virtue, Sin, Humanity -->

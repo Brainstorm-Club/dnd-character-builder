@@ -81,7 +81,8 @@
     "size": "Taglia",
     "subrace": "Sottorazza",
     "chooseBonuses": "Bonus Caratteristica a Scelta",
-    "bonusTier": "{amount} a {count} caratteristiche a scelta"
+    "bonusTier": "{amount} a {count} caratteristiche a scelta",
+    "chooseFeat": "Talento a scelta"
   },
   "class": {
     "title": "Scegli la Classe",

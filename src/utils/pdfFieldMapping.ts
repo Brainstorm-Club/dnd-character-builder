@@ -1,6 +1,7 @@
 import type { CharacterData, AbilityScores } from '@/stores/character'
 import { modifier, proficiencyBonus, formatModifier, spellSaveDC, spellAttackBonus, feetToMeters } from './calculations'
 import { apocalisseRules } from '@/data/apocalisse/rules'
+import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
 import { classNamesIt, brancaloniaClassNamesIt, apocalisseClassNamesIt, raceNamesIt, subraceNamesIt, backgroundNamesIt } from '@/i18n/gameTerms'
 
 /** Capitalize a class ID for English display (e.g., "barbarian" → "Barbarian") */
@@ -184,6 +185,10 @@ export function getDnd5eFieldMapping(char: CharacterData): Record<string, string
   fields['ProficienciesLang'] = [...char.proficienciesOther, ...char.languages.map(l => `Language: ${l}`)].join('\n')
   // Features and Traits - include Apocalisse mark/virtue/sin/humanity if applicable
   const featureLines = [...char.featuresTraits]
+  if (char.variant === 'brancalonia' && char.feat) {
+    const featObj = getBrancaloniaFeatById(char.feat)
+    if (featObj) featureLines.push(`Talento: ${featObj.nameOriginal}`)
+  }
   if (char.variant === 'apocalisse') {
     if (char.mark) {
       const markObj = apocalisseRules.marks.find(m => m.id === char.mark)

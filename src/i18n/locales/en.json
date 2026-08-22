@@ -81,7 +81,8 @@
     "size": "Size",
     "subrace": "Subrace",
     "chooseBonuses": "Ability Score Increases of Your Choice",
-    "bonusTier": "{amount} to {count} abilities of your choice"
+    "bonusTier": "{amount} to {count} abilities of your choice",
+    "chooseFeat": "Choose a feat"
   },
   "class": {
     "title": "Choose Class",

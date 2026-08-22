@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { defineAsyncComponent, computed, ref, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useAppStore } from '@/stores/app'
+import { useAppStore, STEP_KEYS } from '@/stores/app'
 import { useCharacterStore } from '@/stores/character'
 import { ensureStepData } from '@/data'
 import StepNavigation from '@/components/layout/StepNavigation.vue'
@@ -33,7 +33,7 @@ const steps = [
   defineAsyncComponent(() => import('@/components/steps/Step9Review.vue')),
 ]
 
-const stepKeys = ['variant', 'abilities', 'race', 'class', 'background', 'equipment', 'spells', 'details', 'review']
+const stepKeys = STEP_KEYS
 
 // ─── Step Validation ──────────────────────────────────────────────────────
 const validationMessage = ref('')
