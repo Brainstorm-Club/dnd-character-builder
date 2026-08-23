@@ -1,6 +1,6 @@
 {
-  "commit": "fa773ea",
-  "date": "2026-08-23T10:08:09.276Z",
+  "commit": "a1059fd",
+  "date": "2026-08-23T10:43:53.196Z",
   "machine": "14-inch MacBook Pro M1 Pro, 16GB, macOS 15",
   "lcaSource": "Apple 14-inch MacBook Pro PER Oct 2021",
   "constants": {
@@ -12,67 +12,67 @@
   "results": [
     {
       "service": "data-load-dnd5e",
-      "wallTimeMs": 15,
+      "wallTimeMs": 13,
       "inputBytes": 0,
       "outputBytes": 0,
-      "sciMgCO2eq": 25.1
+      "sciMgCO2eq": 22.342
     },
     {
       "service": "data-load-brancalonia",
-      "wallTimeMs": 6,
+      "wallTimeMs": 75,
       "inputBytes": 0,
       "outputBytes": 0,
-      "sciMgCO2eq": 10.486
+      "sciMgCO2eq": 124.367
     },
     {
       "service": "data-load-dnd2024",
       "wallTimeMs": 10,
       "inputBytes": 0,
       "outputBytes": 0,
-      "sciMgCO2eq": 17.413
+      "sciMgCO2eq": 16.762
     },
     {
       "service": "data-load-apocalisse",
-      "wallTimeMs": 5,
+      "wallTimeMs": 4,
       "inputBytes": 0,
       "outputBytes": 0,
-      "sciMgCO2eq": 8.647
+      "sciMgCO2eq": 6.912
     },
     {
       "service": "calculations-1000x",
       "wallTimeMs": 2,
       "inputBytes": 0,
       "outputBytes": 0,
-      "sciMgCO2eq": 2.787
+      "sciMgCO2eq": 2.994
     },
     {
       "service": "json-serialize-character",
-      "wallTimeMs": 0,
+      "wallTimeMs": 1,
       "inputBytes": 0,
       "outputBytes": 776,
-      "sciMgCO2eq": 0.733
+      "sciMgCO2eq": 0.87
     },
     {
       "service": "build-output-analysis",
       "wallTimeMs": 1,
-      "inputBytes": 5736824,
+      "inputBytes": 5748608,
       "outputBytes": 0,
-      "sciMgCO2eq": 1.553
+      "sciMgCO2eq": 1.213
     },
     {
       "service": "pdf-template-read",
       "wallTimeMs": 2,
       "inputBytes": 0,
       "outputBytes": 3289123,
-      "sciMgCO2eq": 2.69
+      "sciMgCO2eq": 2.7
     },
     {
       "service": "i18n-load-single-locale",
-      "wallTimeMs": 83,
+      "wallTimeMs": 4,
       "inputBytes": 0,
       "outputBytes": 0,
-      "sciMgCO2eq": 138.329
+      "sciMgCO2eq": 6.922
     }
   ],
-  "totalSciMg": 207.738
+  "totalSciMg": 185.082
 }

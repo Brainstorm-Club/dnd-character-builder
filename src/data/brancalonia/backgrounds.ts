@@ -58,7 +58,12 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     languages: 1,
     equipment: [
       'A copy of your home region\'s book of laws',
-      'A bottle of black ink and a pen',
+      // Il manuale italiano conta calamaio e pennino come due voci separate
+      // ("un calamaio di inchiostro nero, un pennino"); qui erano fuse in
+      // 'A bottle of black ink and a pen'. Separate anche nell'innamorato,
+      // per contare l'equipaggiamento come lo conta il manuale.
+      'A bottle of black ink',
+      'An ink pen',
       'A parchment',
       'A set of fine clothes',
       'A pouch containing 20 sp',
@@ -170,7 +175,17 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['athletics', 'survival'],
     toolProficiencies: ['One type of game set', 'Vehicles (land)'],
     languages: 0,
-    equipment: ['A rank insignia', 'A pouch containing a secret communication'],
+    // Mancavano tre voci su cinque e la borsa era senza importo: il Macaronicon
+    // dà «una mostrina con i gradi, una borsa con una tasca segreta per i
+    // dispacci, una serie di dadi o un mazzo di minchiate, un abito comune,
+    // una borsa con 10 ma». Prima: solo mostrina e "a secret communication".
+    equipment: [
+      'A rank insignia',
+      'A pouch containing a secret pocket for dispatches',
+      'A dice set or a poppycock card deck',
+      'A set of common clothes',
+      'A pouch containing 10 sp',
+    ],
     feature: {
       name: 'Through Good and Bad Weather',
       description:
@@ -192,7 +207,10 @@ export const brancaloniaBackgrounds: readonly Background[] = [
       'A musical instrument (one of your choice)',
       'A collection of love letters',
       'A book of poetry',
-      'Ink and an ink pen',
+      // Come per l'azzeccagarbugli: il manuale (e anche l'edizione inglese,
+      // «ink (one ounce bottle), an ink pen») conta due voci, non una.
+      'A bottle of black ink',
+      'An ink pen',
       'A pouch containing 15 sp',
     ],
     feature: {
@@ -212,7 +230,16 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['insight', 'persuasion'],
     toolProficiencies: ['Two types of gaming set'],
     languages: 2,
-    equipment: ['A book containing the names of aspiring stage performers', 'A pouch containing 15 sp'],
+    // Mancava l'abito e la borsa era di 15 ma: il Macaronicon dà «un libro con
+    // segnati i nomi di aspiranti teatranti, un abito di buona fattura, una
+    // borsa con 20 ma». L'abito resta distinto da 'A set of fine clothes'
+    // (l'"abito pregiato" dell'azzeccagarbugli) perché il manuale italiano usa
+    // due diciture diverse e la scheda deve mostrarle diverse.
+    equipment: [
+      'A book containing the names of aspiring stage performers',
+      'A well-made outfit',
+      'A pouch containing 20 sp',
+    ],
     feature: {
       name: 'The Art of Making Do',
       description:
@@ -230,7 +257,10 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['deception', 'persuasion'],
     toolProficiencies: ['Two types of game set'],
     languages: 1,
-    equipment: ['A set of common clothes', 'A pouch containing 15 sp'],
+    // Mancava il Cimelio aggiuntivo. Il Macaronicon dà «un abito comune, una
+    // borsa con 15 ma, un Cimelio aggiuntivo»: il trofeo da rissa e la mappa
+    // delle locande sono dell'attaccabrighe, non del lucignolo.
+    equipment: ['A set of common clothes', 'A pouch containing 15 sp', 'One additional Memorabilia'],
     feature: {
       name: 'My Dinner with Fairies',
       description:
@@ -248,7 +278,16 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['persuasion', 'religion'],
     toolProficiencies: [],
     languages: 2,
-    equipment: ['A golden holy symbol', 'A book of prayers', 'A pouch containing 15 sp'],
+    // Mancavano le vesti e la borsa era di 15 ma: il Macaronicon dà «un simbolo
+    // sacro d'oro, un libro di preghiere, vesti da sacerdote, una borsa con
+    // 25 ma». La voce non è 'Vestments' perché quella chiave è già dei
+    // paramenti sacri dell'accolito 5e e in italiano suona diversa.
+    equipment: [
+      'A golden holy symbol',
+      'A book of prayers',
+      'Priest\'s vestments',
+      'A pouch containing 25 sp',
+    ],
     feature: {
       name: 'Deference and Influence',
       description:
@@ -266,7 +305,16 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['investigation', 'history'],
     toolProficiencies: ["Thieves' tools", "Calligrapher's supplies"],
     languages: 1,
-    equipment: ['A parchment case filled with study notes', 'A pouch containing 15 sp'],
+    // Mancavano piede di porco e abito, la custodia era senza le mappe e la
+    // borsa era di 15 ma invece di 10: il Macaronicon dà «una custodia per
+    // pergamene piena di appunti di studio e mappe, un piede di porco, un
+    // abito da viaggiatore, una borsa con 10 ma».
+    equipment: [
+      'A parchment case filled with study notes and maps',
+      'A crowbar',
+      'A set of traveler\'s clothes',
+      'A pouch containing 10 sp',
+    ],
     feature: {
       name: 'Relic Academic',
       description:
@@ -286,7 +334,9 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['acrobatics', 'deception'],
     toolProficiencies: [],
     languages: 0,
-    equipment: ['A cape of the Order', 'An Imperial symbol', 'A pouch containing 15 sp'],
+    // La borsa era di 15 ma: L'Impero Randella Ancora dà «una cappa
+    // dell'Ordine, un simbolo imperiale e una borsa con 20 ma».
+    equipment: ['A cape of the Order', 'An Imperial symbol', 'A pouch containing 20 sp'],
     feature: {
       name: 'Fork Feat',
       description:
@@ -322,7 +372,18 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['deception', 'intimidation'],
     toolProficiencies: [],
     languages: 2,
-    equipment: ['A questionable certificate of nobility', 'A rusty blade', 'A pouch containing 15 sp'],
+    // Mancavano due voci e la borsa era di 15 ma: L'Impero Randella Ancora dà
+    // «un attestato di nobiltà discutibile, una bolla nobiliare arrugginita,
+    // un salvacondotto scaduto, delle vesti nobiliari rattoppate e una borsa
+    // con 25 ma». 'A rusty blade' era una lama arrugginita, ma la bolla
+    // nobiliare è un sigillo: l'edizione inglese scrive «a rusty noble seal».
+    equipment: [
+      'A questionable certificate of nobility',
+      'A rusty noble seal',
+      'An expired pass permit',
+      'A patched noble outfit',
+      'A pouch containing 25 sp',
+    ],
     feature: {
       name: 'High and Mighty Voice',
       description:
@@ -358,7 +419,11 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['insight', 'history'],
     toolProficiencies: ['Gunpowder jug'],
     languages: 0,
-    equipment: ['3 flawed pomegrenades', 'A pouch containing 15 sp'],
+    // La borsa non c'è. Sia l'edizione italiana sia quella inglese de L'Impero
+    // Randella Ancora si fermano a «Equipaggiamento: 3 melagranate scadenti»,
+    // senza denaro: il polveriere spende tutto in ordigni. La borsa con 15 ma
+    // che avevamo era inventata.
+    equipment: ['3 flawed pomegrenades'],
     feature: {
       name: "Grandma's Powders",
       description:
@@ -399,7 +464,15 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['arcana', 'insight'],
     toolProficiencies: [],
     languages: 1,
-    equipment: ['A leftover from your native place', 'A strange trinket', 'A pouch containing 15 sp'],
+    // 'A strange trinket' era un ninnolo qualsiasi, ma L'Impero Randella
+    // Ancora dà «una strana ricevuta che attesta una compravendita
+    // misconosciuta» («a strange receipt detailing an unknown purchase»):
+    // è un documento, ed è l'indizio sulla natura del suscitato.
+    equipment: [
+      'A leftover from your native place',
+      'A strange receipt detailing an unknown purchase',
+      'A pouch containing 15 sp',
+    ],
     feature: {
       name: 'No Past, Violent Future',
       description:
