@@ -184,7 +184,9 @@
     "ritual": "Rituale",
     "levelShort": "Liv.",
     "slots": "slot",
-    "showDetail": "Dettagli di {name}"
+    "showDetail": "Dettagli di {name}",
+    "atHigherLevels": "A livelli superiori",
+    "srdCredit": "Testo italiano dall'SRD di Wizards of the Coast, CC-BY-4.0 —"
   },
   "details": {
     "title": "Dettagli del Personaggio",
@@ -298,7 +300,9 @@
     "discardConfirm": "Scarta e ricomincia",
     "close": "Chiudi",
     "changeLanguage": "Cambia lingua",
-    "availableLanguages": "Lingue disponibili"
+    "availableLanguages": "Lingue disponibili",
+    "srdNoItalian": "Descrizione non presente nell'SRD italiano.",
+    "srdEnglishOnly": "Testo originale dell'SRD, in inglese: l'edizione italiana non lo riporta."
   },
   "validation": {
     "selectRace": "Seleziona una razza prima di continuare",
@@ -311,6 +315,7 @@
     "brainstorm": "Brainstorm Club",
     "brainstormTitle": "L'associazione ludica faentina dietro questo progetto",
     "privacy": "Privacy Policy",
+    "credits": "Crediti",
     "license": "Licenza MIT",
     "wsg": "Web Sustainability",
     "wsgTitle": "Questo sito segue le W3C Web Sustainability Guidelines",
@@ -338,6 +343,19 @@
     "lcaSource": "Fonte LCA",
     "methodology": "Metodologia",
     "methodologyText": "Ogni operazione viene profilata misurando il tempo di esecuzione reale con performance.now(). L'energia (E) si calcola dal tempo e dalla potenza del dispositivo, l'intensità di carbonio (I) usa la mediana delle grid europee, le emissioni embodied (M) vengono ammortizzate sulla vita utile del dispositivo. Il punteggio SCI segue la specifica GSF: SCI = ((E x I) + M) / R, dove R = 1 operazione."
+  },
+  "credits": {
+    "title": "Crediti",
+    "intro": "Il testo integrale degli incantesimi in italiano viene dalle edizioni italiane degli SRD di Wizards of the Coast, pubblicate sotto licenza Creative Commons Attribuzione 4.0 Internazionale. La licenza chiede che l'attribuzione stia dove il materiale si legge: eccola, nella forma in cui l'editore la richiede.",
+    "srd51Title": "D&D 5e — regole 2014 (SRD 5.1)",
+    "srd51": "Questo lavoro include materiale del System Reference Document 5.1 (“SRD 5.1”) di Wizards of the Coast LLC disponibile al sito https://dnd.wizards.com/it/resources/systems-reference-document. L'SRD 5.1 è concesso in licenza sotto l'Attribuzione 4.0 Internazionale di Creative Commons disponibile al sito https://creativecommons.org/licenses/by/4.0/legalcode.it.",
+    "srd521Title": "D&D 2024 (SRD 5.2.1)",
+    "srd521": "Quest'opera include materiale tratto dal System Reference Document 5.2.1 (\"SRD 5.2.1\") di Wizards of the Coast LLC, disponibile all'indirizzo https://www.dndbeyond.com/srd. Il SRD 5.2.1 è concesso in licenza ai sensi della licenza di attribuzione 4.0 Internazionale di Creative Commons, disponibile all'indirizzo https://creativecommons.org/licenses/by/4.0/legalcode.",
+    "missingTitle": "Cosa non c'è",
+    "missing": "Blade Ward e Hex non stanno nell'SRD 5.1 ma nel Player's Handbook: l'app ne mostra il nome italiano e la descrizione sintetica inglese, senza testo integrale. Gli incantesimi di Brancalonia e Apocalisse sono materiale di Acheron Games e hanno la loro descrizione nei rispettivi dati.",
+    "moreTitle": "Tutte le fonti",
+    "more": "L'elenco completo di ciò che l'app spedisce e da dove viene sta in DATA-SOURCES.md, nel repository.",
+    "moreLink": "Vedi DATA-SOURCES.md"
   },
   "privacy": {
     "title": "Privacy Policy",

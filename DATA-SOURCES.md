@@ -16,15 +16,28 @@ Handbook* and are used here for reference:
 
 | What | Detail |
 |------|--------|
-| 13 spells | Blade Ward, Compulsion, Counterspell, Druidcraft, Eldritch Blast, Fire Bolt, Guardian of Faith, Hellish Rebuke, Hex, Hunter's Mark, Poison Spray, Spare the Dying, Vicious Mockery |
+| 2 spells | Blade Ward, Hex |
 | 12 backgrounds | The SRD contains only Acolyte |
 | Several subraces | The SRD contains one subrace per race at most |
+
+**That row used to say thirteen spells.** It listed Blade Ward, Compulsion,
+Counterspell, Druidcraft, Eldritch Blast, Fire Bolt, Guardian of Faith,
+Hellish Rebuke, Hex, Hunter's Mark, Poison Spray, Spare the Dying and Vicious
+Mockery. The number was established by matching all thirteen ids against the
+index of the **Italian** SRD 5.1 compendium (see *Italian spell text* below):
+eleven of them are in it — Compulsione, Controincantesimo, Artificio druidico,
+Deflagrazione occulta, Dardo di fuoco, Guardiano della fede, Intimorire
+infernale, Marchio del cacciatore, Spruzzo velenoso, Salvare i morenti, Beffa
+crudele — and only *Blade Ward* and *Hex* are genuinely absent. The check is a
+test, not a claim: `src/data/spells-it.test.ts` re-derives the two from the
+data and fails if the list moves.
 
 If the project needs to sit strictly inside the OGL, that material has to
 come out. It is deliberately listed here rather than left implicit.
 
-Spell descriptions are the opening sentences of the manual text, not
-paraphrases; class feature descriptions are summaries.
+English spell descriptions are the opening sentences of the manual text, not
+paraphrases; the **Italian** text is the whole entry (see below). Class feature
+descriptions are summaries.
 
 ## D&D 2024 — SRD 5.2.1
 
@@ -72,6 +85,88 @@ Apocalisse.
 > https://www.dndbeyond.com/srd. L'SRD 5.2.1 è concesso in licenza ai sensi
 > della licenza Creative Commons Attribuzione 4.0 Internazionale, disponibile
 > all'indirizzo https://creativecommons.org/licenses/by/4.0/legalcode.
+
+## Italian spell text — SRD 5.1 e SRD 5.2.1 italiani
+
+I **nomi** degli incantesimi erano tradotti da tempo (`src/i18n/gameTerms.ts`,
+351 voci); il **testo** no. Le descrizioni inglesi qui sopra sono le prime
+frasi del manuale: bastano a costruire un personaggio, non a giocarlo — manca
+proprio la parte che serve quando l'incantesimo si usa.
+
+`src/data/dnd5e/spells-it.ts` e `src/data/dnd2024/spells-it.ts` portano il
+testo **integrale in italiano**, preso dalle edizioni italiane degli SRD:
+
+| Edizione | Fonte | Coperti |
+|----------|-------|---------|
+| 2014 | SRD 5.1 italiano | 315 su 317 — mancano *Blade Ward* e *Hex* |
+| 2024 | SRD 5.2.1 italiano | 338 su 338 |
+
+I due senza testo restano con la descrizione inglese: non si inventa nulla e
+non si copia dal *Player's Handbook*, che non è ridistribuibile.
+
+I due file sono **generati**, non scritti a mano:
+
+```
+node scripts/import-spells-it.mjs [--companion <percorso>]
+node scripts/import-spells-it.mjs --check      # in CI: fallisce se sono disallineati
+```
+
+La fonte è il compendio di [dnd-companion](https://github.com/Brainstorm-Club/dnd-companion),
+che sta fuori da questo repository (`--companion`, o `DND_COMPANION_DIR`, o il
+percorso standard `../brainstorm/dnd-companion`). L'aggancio fra l'id inglese
+del builder e il record italiano è il `ponte.json` del compendio. Lo script è
+deterministico: stesso compendio, stesso file byte per byte.
+
+Sono ~600 KB di prosa, il blocco di dati più grosso dell'app: stanno in due
+chunk a sé (`game-dnd5e-spells-it`, `game-dnd24-spells-it`) importati solo con
+interfaccia italiana, solo nel passo incantesimi, solo per la variante in uso.
+Il bundle iniziale non cambia.
+
+### Attribuzione CC-BY-4.0
+
+Entrambi gli SRD italiani sono sotto **Creative Commons Attribuzione 4.0
+Internazionale**, che richiede l'attribuzione nella forma pubblicata
+dall'editore. Le due dichiarazioni sono riportate **verbatim** qui e nella
+pagina Crediti dell'app (`/credits`, `src/views/CreditsView.vue`), oltre che in
+calce al testo dentro il riquadro di dettaglio di ogni incantesimo.
+
+> Questo lavoro include materiale del System Reference Document 5.1 (“SRD 5.1”) di Wizards of the Coast LLC
+> disponibile al sito https://dnd.wizards.com/it/resources/systems-reference-document. L'SRD 5.1 è concesso in
+> licenza sotto l'Attribuzione 4.0 Internazionale di Creative Commons disponibile al sito
+> https://creativecommons.org/licenses/by/4.0/legalcode.it.
+
+> Quest'opera include materiale tratto dal System Reference Document 5.2.1 ("SRD 5.2.1") di Wizards of the Coast
+> LLC, disponibile all'indirizzo https://www.dndbeyond.com/srd. Il SRD 5.2.1 è concesso in licenza ai sensi
+> della licenza di attribuzione 4.0 Internazionale di Creative Commons, disponibile all'indirizzo
+> https://creativecommons.org/licenses/by/4.0/legalcode.
+
+Nota: la sezione *D&D 2024* qui sopra riporta la stessa dichiarazione 5.2.1
+riscritta con le virgolette caporali. Quella lì vale per i privilegi e le
+tabelle; questa è la forma verbatim, ed è quella che l'app mostra.
+
+### Come è stato estratto il testo (e come si sbagliava prima)
+
+Vale per questo testo e per ogni altra estrazione da PDF di questo progetto,
+`CLAUDE.md` compreso.
+
+Il difetto noto — «sessanta descrizioni su 307 illeggibili», commit `2807243` —
+viene dall'**intreccio delle colonne** di `pdftotext -layout`: su una pagina a
+due colonne quel flag conserva la posizione orizzontale e cuce insieme la riga
+di sinistra e quella di destra, per cui una frase comincia a metà di un'altra.
+
+Togliere `-layout` non è la soluzione, ma non è nemmeno il disastro che sembra:
+senza flag l'ordine di lettura è **giusto quasi ovunque**. Il residuo è
+circoscritto e sempre lo stesso — su una decina di pagine per edizione il
+riquadro colorato dell'intestazione di scuola esce dal flusso del testo e
+finisce a valle del corpo, attaccando a un incantesimo l'intestazione di quello
+dopo. Difetto raro ma velenoso, perché produce record plausibili e sbagliati.
+
+La soluzione è **`-bbox-layout`**: restituisce ogni parola con le sue
+coordinate, si ricostruiscono le colonne dalle `x` e si legge ciascuna dall'alto
+in basso. Le intestazioni fuori flusso si riconoscono dalla posizione e non
+dall'aspetto del testo, e vengono anche i rientri di capoverso, che
+l'estrazione piatta butta via. È il metodo con cui è stato prodotto il
+compendio da cui questi due file arrivano.
 
 ## Condizioni
 
