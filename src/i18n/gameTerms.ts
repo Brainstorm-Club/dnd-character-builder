@@ -1684,6 +1684,10 @@ export const languageNamesIt: Record<string, string> = {
   'Draconian': 'Draconiano',
   'Macaronic': 'Maccheronico',
   'Bedamn': 'Male Parole',
+  'Unknown Language': 'Lingua Ignota',
+  // La vecchia chiave resta: i personaggi salvati prima del rinomino hanno
+  // 'Lingua Ignota' scritto nel proprio elenco di lingue, e senza questa riga
+  // un giocatore inglese se la vedrebbe comparire in italiano sulla scheda.
   'Lingua Ignota': 'Lingua Ignota',
   'Petroglyphic': 'Petroglifico',
   'Racket': 'Baccaglio',

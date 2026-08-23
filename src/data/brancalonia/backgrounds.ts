@@ -4,9 +4,11 @@ import type { Background } from '../dnd5e/backgrounds'
 // insegna («Linguaggi: Baccaglio»), non lo lasciano a scelta: `languageNames`
 // riporta quei nomi così il generatore non sorteggi una lingua qualsiasi.
 // I nomi sono quelli con cui l'app conosce le lingue in `rules.ts` — Racket,
-// Macaronic, Draconian, Petroglyphic, Lingua Ignota — perché è quell'elenco che
-// `getAvailableLanguages` restituisce e su cui il resto dell'app fa i confronti;
-// l'edizione inglese ufficiale scrive invece «Petroglyph» e «Unknown Language».
+// Macaronic, Draconian, Petroglyphic, Unknown Language — perché è quell'elenco
+// che `getAvailableLanguages` restituisce e su cui il resto dell'app confronta.
+// Una sola dicitura resta diversa da una riga del manuale, e la differenza è
+// del manuale: il glossario definisce la lingua «Petroglyphic», mentre la riga
+// del background brado scrive «Petroglyph». Vale la definizione.
 // Dove la riga «Linguaggi:» sul manuale non c'è affatto — attaccabrighe,
 // staffetta, adepto e rinnegato della Forca, erborista, polverista, lavativo —
 // il campo resta assente: nessun linguaggio, non uno a scelta.
@@ -311,7 +313,7 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     toolProficiencies: [],
     languages: 2,
     // Macaronicon 2.2, «Linguaggi: Draconiano, Lingua Ignota».
-    languageNames: ['Draconian', 'Lingua Ignota'],
+    languageNames: ['Draconian', 'Unknown Language'],
     // Mancavano le vesti e la borsa era di 15 ma: il Macaronicon dà «un simbolo
     // sacro d'oro, un libro di preghiere, vesti da sacerdote, una borsa con
     // 25 ma». La voce non è 'Vestments' perché quella chiave è già dei
@@ -516,7 +518,7 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     languages: 1,
     // L'Impero Randella Ancora 1.0, «Linguaggi: Lingua Ignota»: è la
     // cosa che definisce il suscitato, il codice segreto del creato.
-    languageNames: ['Lingua Ignota'],
+    languageNames: ['Unknown Language'],
     // 'A strange trinket' era un ninnolo qualsiasi, ma L'Impero Randella
     // Ancora dà «una strana ricevuta che attesta una compravendita
     // misconosciuta» («a strange receipt detailing an unknown purchase»):

@@ -167,7 +167,11 @@ export const languages: readonly BrancaloniaLanguage[] = [
   },
   {
     id: 'lingua-ignota',
-    name: 'Lingua Ignota',
+    // L'edizione inglese la chiama 'Unknown Language' ovunque la si usi in
+    // gioco; «Lingua Ignota» compare una volta sola, nel glossario, come
+    // termine italiano glossato fra parentesi. Qui i nomi sono in inglese e
+    // l'italiano sta in gameTerms, quindi vale la dicitura di gioco.
+    name: 'Unknown Language',
     description:
       'Also called the Language of the Birds, this is the tongue of celestials, angels and the inhabitants of Urania, used for the most complex prophecies and the most sacred texts. Only a few hermits and mystics who roam the Kingdom seem to understand it — though some say it is an inner language accessible to anyone pure enough, or drunk enough.',
     speakers: 'Celestials, angels, hermits and mystics',
