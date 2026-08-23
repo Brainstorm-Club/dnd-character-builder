@@ -110,3 +110,78 @@ This project follows the [W3C Web Sustainability Guidelines 1.0](https://www.w3.
 - All four variants export to their own PDF sheet. The Apocalisse template shipped
   without any AcroForm fields, so its 114 fields were authored for this project and
   the publisher's order watermark was stripped from the content stream.
+
+## Verifying Your Own Work
+
+These rules come from mistakes made repeatedly in this codebase. The dominant
+failure was not buggy project code — it was **buggy throwaway verification
+scripts whose output was then believed**.
+
+### The check is more likely wrong than the code
+
+Before acting on a script that reports a defect, prove the script works: run it
+against one case you know is good and one you know is bad. If it can't tell them
+apart, fix the check first.
+
+Real cases: a contrast audit used the wrong hex for `--bsc-carbone` (`#131112`
+instead of `#181617`) and reported 4.69:1 for a pair that was actually 4.49:1 —
+an inaccessible component nearly shipped into the shared design system. The same
+audit later compared a dark-theme token against light-theme surfaces and
+"found" three defects that did not exist.
+
+### Field names here do not match intuition — read the interface first
+
+`CharacterData` has `armor`, not `equipment.armor`. Spells live in `cantrips`,
+`spellsKnown` and `spellsPrepared` — there is no `spells`. A spell reference may
+be an id (`3-fireball`, `vicious-mockery`) **or** a name (`Fireball`): resolve
+both, or half the data silently fails to match. The `useGameTerms()` composable
+returns `armorName`, not `armor`; `dnd5e/equipment.ts` exports `armor`, not
+`armorTable`. In `pdfFieldMapping.ts`, `Spells 1015` is a level-1 slot, not
+level 0 — read `DND5E_SPELL_FIELDS` rather than guessing from the field name.
+
+### When data disagrees with a rule you implemented, suspect the rule
+
+Hand-authored game data is usually right, because it came from a manual.
+Two blog monks appeared to have wrong attack bonuses; the data was correct and
+the code did not know that Martial Arts lets a monk use Dexterity with monk
+weapons. Check the manual before "fixing" data.
+
+### Fuzzy matching against a manual is a hypothesis, not a result
+
+Matching manual passages to data records by shared words was wrong 3 times out
+of 20. Anchor on the printed heading above the passage, and verify each match
+before writing. If a record has no such line in the manual, the answer is
+"none", never "the one from the neighbouring block".
+
+### Extraction and refactoring break at the cut boundaries
+
+When moving code between components, the errors are at the edges: host-specific
+markup dragged into a shared component, an opening tag left behind, a helper
+deleted that was still needed (`spellName()` — its loss printed raw spell ids on
+the sheet). After any extraction, run `vue-tsc` **and** check which symbols
+became unused in the source file: each one is either dead code to remove or
+something you forgot to move.
+
+### `vitest` does not type-check
+
+A test file can pass `npm run test` with dozens of TS errors. Always run
+`npx vue-tsc --noEmit -p tsconfig.app.json` before believing a green suite.
+Watch for import names shadowing globals: `import it from './it.json'` silently
+replaces vitest's `it` and the file collects zero tests.
+
+### Two-column PDF extraction
+
+Every PDF in `manuali/` and `schede/` is laid out in two columns. Linearising a
+page glues the columns together: text starts mid-word, tables land inside prose,
+sections swallow the next heading — and whole records disappear (the `Skilled`
+feat was absorbed into `savage-attacker` and went missing from the data). Always
+crop columns separately, dehyphenate line ends, and close a record on section
+headings as well as on the next record. Then check the result mechanically: no
+entry may start lowercase, end without punctuation, contain a run of digits, or
+carry the running footer.
+
+### Browser verification
+
+Screenshots of content below the fold often fail to composite in the preview
+pane. `read_page` and `javascript_tool` measurements are both faster and stronger
+evidence — prefer them, and use screenshots for the visual gestalt only.
