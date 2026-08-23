@@ -164,7 +164,7 @@ function pdfSpellSlots(char: CharacterData): Record<number, number> {
         : cls?.spellcasting?.casterType ?? null
       return { classId: entry.classId, level: entry.level, casterType }
     })
-    const { slots, pactSlots } = getMulticlassSpellSlots(entries)
+    const { slots, pactSlots } = getMulticlassSpellSlots(entries, char.variant)
     const merged: Record<number, number> = { ...slots }
     for (const [lv, n] of Object.entries(pactSlots)) {
       merged[Number(lv)] = (merged[Number(lv)] ?? 0) + n
@@ -172,7 +172,10 @@ function pdfSpellSlots(char: CharacterData): Record<number, number> {
     return merged
   }
   if (!char.spellcastingClass) return {}
-  return getSpellSlots(char.spellcastingClass, char.level)
+  // La variante serviva anche qui: senza, la scheda esportata di un paladino
+  // 2024 di 1º livello usciva senza slot, e un guerriero 2024 ne riceveva da
+  // terzo incantatore, che nel 2024 non e'.
+  return getSpellSlots(char.spellcastingClass, char.level, char.variant)
 }
 
 function totalAbility(char: CharacterData, ability: keyof AbilityScores): number {

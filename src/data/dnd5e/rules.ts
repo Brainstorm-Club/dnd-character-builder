@@ -109,6 +109,18 @@ const CASTER_MULTIPLIERS: Record<CasterType, number> = {
   pact: 0, // Warlock pact magic is separate
 }
 
+/** Come arrotondare i livelli dei semi-incantatori nel conto multiclasse. */
+export type HalfCasterRounding = 'down' | 'up'
+
+export interface MulticlassOptions {
+  /**
+   * Nel 2014 metà dei livelli di paladino e ranger si arrotonda per difetto,
+   * ed è il valore predefinito qui. L'SRD 5.2.1 arrotonda per eccesso: quella
+   * regola è dichiarata in `src/data/dnd2024/rules.ts`, non qui.
+   */
+  halfCasterRounding?: HalfCasterRounding
+}
+
 /**
  * Calculate multiclass spell slots.
  * Each class contributes to the effective caster level based on its type.
@@ -116,7 +128,11 @@ const CASTER_MULTIPLIERS: Record<CasterType, number> = {
  */
 export function getMulticlassSpellSlots(
   classes: { classId: string; level: number; casterType: CasterType | null }[],
+  options: MulticlassOptions = {},
 ): { slots: Record<number, number>; pactSlots: Record<number, number> } {
+  // L'arrotondamento riguarda solo i semi-incantatori: il terzo incantatore
+  // resta per difetto in entrambe le edizioni (e nel 2024 non esiste affatto).
+  const roundHalf = options.halfCasterRounding === 'up' ? Math.ceil : Math.floor
   let effectiveCasterLevel = 0
   const pactSlots: Record<number, number> = {}
 
@@ -130,7 +146,8 @@ export function getMulticlassSpellSlots(
         pactSlots[pact.slotLevel] = (pactSlots[pact.slotLevel] || 0) + pact.slots
       }
     } else {
-      effectiveCasterLevel += Math.floor(cls.level * CASTER_MULTIPLIERS[cls.casterType])
+      const round = cls.casterType === 'half' ? roundHalf : Math.floor
+      effectiveCasterLevel += round(cls.level * CASTER_MULTIPLIERS[cls.casterType])
     }
   }
 

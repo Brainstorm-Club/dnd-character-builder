@@ -411,3 +411,67 @@ describe('mappa dei campi della scheda PDF', () => {
   })
 
 })
+
+/**
+ * Gli slot sulla scheda esportata nascevano dalla tabella del 2014 anche per
+ * un personaggio 2024: `pdfSpellSlots` chiamava `getSpellSlots` senza passare
+ * la variante. Un paladino 2024 di 1º livello usciva quindi con i riquadri
+ * vuoti, e il multiclasse contava i suoi livelli per difetto invece che per
+ * eccesso.
+ */
+describe('scheda 2024: gli slot vengono dalle regole del 2024', () => {
+  beforeAll(async () => {
+    setActivePinia(createPinia())
+    await Promise.all([preloadVariantData('dnd2024'), preloadVariantData('dnd5e')])
+  })
+
+  /** Casella 'SlotsTotal N' del livello di incantesimo dato. */
+  const slotBox = (lv: number) => `SlotsTotal ${18 + lv}`
+
+  function paladin(variant: 'dnd5e' | 'dnd2024', level: number): CharacterData {
+    const c = generateRandomCharacter(variant, level)
+    c.className = 'paladin'
+    c.level = level
+    c.spellcastingAbility = 'cha'
+    c.spellcastingClass = 'paladin'
+    c.classes = []
+    return c
+  }
+
+  it('il paladino 2024 di 1º livello ha due slot sulla scheda, quello 2014 nessuno', () => {
+    expect(getDnd5eFieldMapping(paladin('dnd2024', 1), 'it')[slotBox(1)]).toBe('2')
+    expect(getDnd5eFieldMapping(paladin('dnd5e', 1), 'it')[slotBox(1)]).toBe('')
+  })
+
+  it('a ogni livello i riquadri seguono la tabella della propria edizione', () => {
+    for (const variant of ['dnd5e', 'dnd2024'] as const) {
+      for (let level = 1; level <= 20; level++) {
+        const fields = getDnd5eFieldMapping(paladin(variant, level), 'it')
+        const slots = getSpellSlots('paladin', level, variant)
+        for (let lv = 1; lv <= 9; lv++) {
+          const expected = slots[lv] ? String(slots[lv]) : ''
+          expect(fields[slotBox(lv)], `${variant} paladino ${level}, slot di ${lv}º`).toBe(expected)
+        }
+      }
+    }
+  })
+
+  it('il multiclasse 2024 conta i livelli da paladino per eccesso', () => {
+    // Paladino 1/mago 1: nel 2024 è un incantatore di 2º livello (tre slot di
+    // 1º), nel 2014 di 1º (due slot).
+    const build = (variant: 'dnd5e' | 'dnd2024') => {
+      const c = generateRandomCharacter(variant, 2)
+      c.className = 'paladin'
+      c.level = 2
+      c.spellcastingAbility = 'cha'
+      c.spellcastingClass = 'paladin'
+      c.classes = [
+        { classId: 'paladin', level: 1, subclass: '', hitDie: 10 },
+        { classId: 'wizard', level: 1, subclass: '', hitDie: 6 },
+      ]
+      return getDnd5eFieldMapping(c, 'it')
+    }
+    expect(build('dnd2024')[slotBox(1)]).toBe('3')
+    expect(build('dnd5e')[slotBox(1)]).toBe('2')
+  })
+})
