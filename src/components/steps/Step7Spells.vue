@@ -125,10 +125,11 @@ const spellsMode = computed<SpellcastingMode>(() => {
 const spellsListLabel = computed(() =>
   spellsMode.value === 'prepared' ? t('spells.preparedSpells') : t('spells.knownSpells'))
 
-// Numero da manuale di incantesimi che la scheda può portare.
-// `null` = il dato non c'è (nel 2024 viene dalla colonna «Prepared Spells»
-// della tabella di classe, che non è ancora nei dati): meglio non mostrare
-// nessun numero che mostrare quello del 2014.
+// Numero da manuale di incantesimi che la scheda può portare: nel 2014 la
+// formula «modificatore + livello», nel 2024 la colonna «Incantesimi
+// preparati» della tabella di classe. `null` = il dato non c'è ancora (i dati
+// della variante stanno arrivando): meglio non mostrare nessun numero che
+// mostrare quello di un'altra edizione.
 const rawSpellsCount = computed<number | null>(() => {
   let total = 0
   for (const e of casterProfiles.value) {

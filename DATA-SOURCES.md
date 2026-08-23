@@ -58,6 +58,21 @@ nel Player's Handbook.
 I nomi italiani dei privilegi vengono dall'edizione italiana dell'SRD
 5.2.1 (`IT_SRD_CC_v5.2.1`).
 
+La colonna **Incantesimi preparati** delle otto classi incantatrici
+(`src/data/dnd2024/prepared.ts`) viene dalle stesse tabelle di classe
+dell'SRD 5.2.1 italiano, estratte con `pdftotext -layout` e già verificate
+nel pacchetto dati di [dnd-companion](https://github.com/Brainstorm-Club/dnd-companion);
+`scripts/import-prepared-2024.ts` la trascrive da lì senza reinterpretarla.
+Nel 2024 quel numero è stampato livello per livello e non è più la formula
+2014 «modificatore + livello», che resta in uso per `dnd5e`, Brancalonia e
+Apocalisse.
+
+> Quest'opera include materiale tratto dal System Reference Document 5.2.1
+> («SRD 5.2.1») di Wizards of the Coast LLC, disponibile all'indirizzo
+> https://www.dndbeyond.com/srd. L'SRD 5.2.1 è concesso in licenza ai sensi
+> della licenza Creative Commons Attribuzione 4.0 Internazionale, disponibile
+> all'indirizzo https://creativecommons.org/licenses/by/4.0/legalcode.
+
 ## Le fonti in breve
 
 | Variante | Regole | Fonte |

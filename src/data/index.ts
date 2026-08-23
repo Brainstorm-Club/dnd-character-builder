@@ -93,13 +93,17 @@ let _dnd24HalfCasterSlots: ((level: number) => Record<number, number>) | null = 
 // eccesso, non per difetto: il conto e' un altro e vive nel modulo 2024.
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let _dnd24MulticlassSpellSlots: ((classes: any[]) => { slots: Record<number, number>; pactSlots: Record<number, number> }) | null = null
+// Colonna «Incantesimi preparati» delle tabelle di classe 2024: una funzione,
+// quindi fuori dalla cache di localStorage come `_toDnd24Spells`.
+let _dnd24Prepared: ((classId: string, level: number) => number | null) | null = null
 let _pDnd24: Promise<void> | null = null
 
 function ensureDnd2024(): Promise<void> {
   // `_toDnd24Spells` fa parte della condizione: senza di lui getSpells('dnd2024')
   // ricade sulla lista 2014, ed è esattamente quello che succedeva alla seconda
   // visita, quando i dati arrivavano dalla cache.
-  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt && _toDnd24Spells && _dnd24HalfCasterSlots && _dnd24MulticlassSpellSlots) return Promise.resolve()
+  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt && _toDnd24Spells
+    && _dnd24HalfCasterSlots && _dnd24MulticlassSpellSlots && _dnd24Prepared) return Promise.resolve()
   if (_pDnd24) return _pDnd24
   const cs = lsGet<Race[]>('dnd24-species')
   const cc = lsGet<CharacterClass[]>('dnd24-classes')
@@ -112,11 +116,13 @@ function ensureDnd2024(): Promise<void> {
     _pDnd24 = Promise.all([
       import('./dnd2024/spells'),
       import('./dnd2024/rules'),
-    ]).then(([sp, ru]) => {
+      import('./dnd2024/prepared'),
+    ]).then(([sp, ru, pr]) => {
       _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb; _dnd24FeatureIt = ci
       _toDnd24Spells = sp.toDnd2024Spells
       _dnd24HalfCasterSlots = ru.getHalfCasterSlotsForLevel2024
       _dnd24MulticlassSpellSlots = ru.getMulticlassSpellSlots2024
+      _dnd24Prepared = pr.getPreparedSpells2024
     })
     return _pDnd24
   }
@@ -127,7 +133,8 @@ function ensureDnd2024(): Promise<void> {
     import('./dnd2024/spells'),
     import('./dnd2024/classes-it'),
     import('./dnd2024/rules'),
-  ]).then(([r, c, b, sp, itMod, ru]) => {
+    import('./dnd2024/prepared'),
+  ]).then(([r, c, b, sp, itMod, ru, pr]) => {
     _dnd24Species = r.dnd2024Species
     _dnd24Classes = c.dnd2024Classes
     _dnd24Backgrounds = b.dnd2024Backgrounds
@@ -139,6 +146,7 @@ function ensureDnd2024(): Promise<void> {
     _toDnd24Spells = sp.toDnd2024Spells
     _dnd24HalfCasterSlots = ru.getHalfCasterSlotsForLevel2024
     _dnd24MulticlassSpellSlots = ru.getMulticlassSpellSlots2024
+    _dnd24Prepared = pr.getPreparedSpells2024
   })
   return _pDnd24
 }
@@ -551,7 +559,7 @@ export function isVariantLoaded(variant: GameVariant): boolean {
     // incantesimi ricade su quella del 2014.
     case 'dnd2024':
       return dnd5eLoaded && !!_dnd24Species && !!_dnd24Classes && !!_dnd24Backgrounds
-        && !!_dnd24FeatureIt && !!_toDnd24Spells
+        && !!_dnd24FeatureIt && !!_toDnd24Spells && !!_dnd24Prepared
     default:
       return dnd5eLoaded
   }
@@ -818,7 +826,7 @@ export function getSpellcastingProfile(
   const cantrips = sc.cantripsKnown[idx] ?? 0
 
   if (sc.preparedCaster) {
-    return { mode: 'prepared', cantrips, spellsCount: preparedSpellsCount(variant, sc, level, abilityModifiers) }
+    return { mode: 'prepared', cantrips, spellsCount: preparedSpellsCount(variant, className, sc, level, abilityModifiers) }
   }
   if (sc.spellsKnown) {
     const kIdx = Math.min(level - 1, sc.spellsKnown.length - 1)
@@ -830,17 +838,23 @@ export function getSpellcastingProfile(
 
 function preparedSpellsCount(
   variant: GameVariant,
+  className: string,
   sc: NonNullable<CharacterClass['spellcasting']>,
   level: number,
   abilityModifiers: Record<keyof AbilityScores, number>,
 ): number | null {
   // Nel 2024 il numero di incantesimi preparati viene da una colonna della
-  // tabella di classe ("Prepared Spells"), non dalla formula 2014
-  // «modificatore + livello». Quella colonna non è ancora nei dati (in
-  // src/data/dnd2024/classes.ts c'è solo cantripsKnown), quindi qui si
-  // dichiara «non lo so»: stampare il numero del 2014 sarebbe una regola
-  // sbagliata spacciata per buona.
-  if (variant === 'dnd2024') return null
+  // tabella di classe («Incantesimi preparati»), non dalla formula 2014
+  // «modificatore + livello»: non dipende dalla caratteristica, e paladino,
+  // ranger, warlock e mago hanno progressioni diverse fra loro. La colonna sta
+  // in dnd2024/prepared.ts, generata dall'SRD 5.2.1.
+  if (variant === 'dnd2024') {
+    // Se il modulo del 2024 non è ancora arrivato resta il «non lo so» di
+    // prima: meglio nessun numero che il conto di un'altra edizione.
+    return _dnd24Prepared?.(className, level) ?? null
+  }
+  // Il 2014 (e con lui Brancalonia e Apocalisse, che ne riusano il telaio)
+  // resta sulla formula del suo manuale.
   const abilityMod = abilityModifiers[sc.ability] ?? 0
   return Math.max(1, abilityMod + level)
 }
@@ -947,6 +961,7 @@ export function _resetCaches(): void {
   _toDnd24Spells = null
   _dnd24HalfCasterSlots = null
   _dnd24MulticlassSpellSlots = null
+  _dnd24Prepared = null
   _pDnd24 = null
   _pDnd5eRaces = _pDnd5eClasses = _pDnd5eBackgrounds = _pDnd5eSpells = _pDnd5eEquipment = _pDnd5eRules = null
   _pBrancaRaces = _pBrancaClasses = _pBrancaBackgrounds = _pBrancaRules = _pBrancaSpells = null

@@ -208,12 +208,23 @@ describe('data loader', () => {
       }
     })
 
-    it('nel 2024 il numero di incantesimi preparati è ignoto, non quello del 2014', () => {
-      // La colonna «Prepared Spells» della tabella di classe non è ancora nei
-      // dati (src/data/dnd2024/classes.ts porta solo cantripsKnown). Meglio
-      // dichiarare «non lo so» che spacciare per buono il conto del 2014.
-      expect(getSpellcastingProfile('bard', 5, mods, 'dnd2024').spellsCount).toBeNull()
+    it('nel 2024 il numero di incantesimi preparati viene dalla tabella di classe', () => {
+      // Colonna «Incantesimi preparati» dell'SRD 5.2.1, non la formula 2014.
+      expect(getSpellcastingProfile('bard', 5, mods, 'dnd2024').spellsCount).toBe(9)
       expect(getSpellcastingProfile('bard', 5, mods, 'dnd5e').spellsCount).toBe(8)
+    })
+
+    it('nel 2024 il conteggio non dipende dalla caratteristica', () => {
+      // Nel 2014 il preparato è «modificatore + livello»; nel 2024 è stampato.
+      // Se cambiando il modificatore il numero si muove, è tornata la formula.
+      const alto = { str: 0, dex: 0, con: 0, int: 5, wis: 5, cha: 5 }
+      const basso = { str: 0, dex: 0, con: 0, int: -1, wis: -1, cha: -1 }
+      for (const id of ['bard', 'cleric', 'druid', 'paladin', 'ranger', 'sorcerer', 'warlock', 'wizard']) {
+        const a = getSpellcastingProfile(id, 7, alto, 'dnd2024').spellsCount
+        const b = getSpellcastingProfile(id, 7, basso, 'dnd2024').spellsCount
+        expect(a, id).toBe(b)
+        expect(a, id).toBeGreaterThan(0)
+      }
     })
 
     it('nel 2014 il prepared-caster resta modificatore + livello (minimo 1)', () => {
@@ -241,10 +252,78 @@ describe('data loader', () => {
       expect(getSpellsKnownCount('bard', 5, mods)).toBe(8)
     })
 
-    it('getSpellsKnownCount non inventa un numero quando il dato manca', () => {
-      // Il vecchio conteggio (numero secco) non sa dire «ignoto»: torna 0, e
-      // chi vuole la verità usa getSpellcastingProfile.
-      expect(getSpellsKnownCount('bard', 5, mods, 'dnd2024')).toBe(0)
+    it('getSpellsKnownCount dà il numero vero anche nel 2024', () => {
+      // Prima tornava 0 perché la colonna non era nei dati: il generatore
+      // casuale pescava zero incantesimi per ogni incantatore del 2024.
+      expect(getSpellsKnownCount('bard', 5, mods, 'dnd2024')).toBe(9)
+      expect(getSpellsKnownCount('wizard', 20, mods, 'dnd2024')).toBe(25)
+      expect(getSpellsKnownCount('paladin', 1, mods, 'dnd2024')).toBe(2)
+      // Chi non lancia resta a zero.
+      expect(getSpellsKnownCount('fighter', 5, mods, 'dnd2024')).toBe(0)
+    })
+
+    /**
+     * La progressione importata, confrontata dove conta con la variante 2014
+     * che le sta accanto: sono due modelli diversi e devono restare tali.
+     */
+    describe('la colonna «Incantesimi preparati» del 2024', () => {
+      const zero = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 }
+      const conteggio = (id: string, lv: number, v: GameVariant) =>
+        getSpellcastingProfile(id, lv, zero, v).spellsCount
+
+      const tabelle: Record<string, number[]> = {
+        bard:     [4, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 16, 17, 17, 18, 18, 19, 20, 21, 22],
+        cleric:   [4, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 16, 17, 17, 18, 18, 19, 20, 21, 22],
+        druid:    [4, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 16, 17, 17, 18, 18, 19, 20, 21, 22],
+        paladin:  [2, 3, 4, 5, 6, 6, 7, 7, 9, 9, 10, 10, 11, 11, 12, 12, 14, 14, 15, 15],
+        ranger:   [2, 3, 4, 5, 6, 6, 7, 7, 9, 9, 10, 10, 11, 11, 12, 12, 14, 14, 15, 15],
+        sorcerer: [2, 4, 6, 7, 9, 10, 11, 12, 14, 15, 16, 16, 17, 17, 18, 18, 19, 20, 21, 22],
+        warlock:  [2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 11, 11, 12, 12, 13, 13, 14, 14, 15, 15],
+        wizard:   [4, 5, 6, 7, 9, 10, 11, 12, 14, 15, 16, 16, 17, 18, 19, 21, 22, 23, 24, 25],
+      }
+
+      for (const [id, attesa] of Object.entries(tabelle)) {
+        it(`${id}: livello per livello, dal 1° al 20°`, () => {
+          const letta = Array.from({ length: 20 }, (_, i) => conteggio(id, i + 1, 'dnd2024'))
+          expect(letta).toEqual(attesa)
+        })
+      }
+
+      it('il mago si stacca dagli altri incantatori pieni dal 13° livello in su', () => {
+        for (let lv = 1; lv <= 12; lv++) {
+          expect(conteggio('wizard', lv, 'dnd2024'), `${lv}°`).toBe(conteggio('bard', lv, 'dnd2024'))
+        }
+        const coda = Array.from({ length: 10 }, (_, i) => conteggio('wizard', i + 11, 'dnd2024'))
+        expect(coda).toEqual([16, 16, 17, 18, 19, 21, 22, 23, 24, 25])
+        // Dal 14° in poi il numero non coincide più con quello del bardo.
+        for (let lv = 14; lv <= 20; lv++) {
+          expect(conteggio('wizard', lv, 'dnd2024'), `${lv}°`)
+            .not.toBe(conteggio('bard', lv, 'dnd2024'))
+        }
+        expect(conteggio('wizard', 20, 'dnd2024')).toBe(25)
+      })
+
+      it('sopra il 20° livello il numero non sfonda la tabella', () => {
+        expect(conteggio('wizard', 21, 'dnd2024')).toBe(25)
+        expect(conteggio('bard', 99, 'dnd2024')).toBe(22)
+      })
+
+      it('il 2014 non si muove: resta modificatore + livello, per tutte le sue varianti', () => {
+        const mods14 = { str: 0, dex: 0, con: 0, int: 3, wis: 2, cha: 1 }
+        for (const v of ['dnd5e', 'brancalonia', 'apocalisse'] as GameVariant[]) {
+          // Mago: INT +3 al 5° → 8 preparati, non i 9 della tabella 2024.
+          expect(getSpellcastingProfile('wizard', 5, mods14, v).spellsCount, v).toBe(8)
+          expect(getSpellcastingProfile('cleric', 5, mods14, v).spellsCount, v).toBe(7)
+          expect(getSpellcastingProfile('druid', 1, mods14, v).spellsCount, v).toBe(3)
+          // Bardo, stregone, ranger e warlock nel 2014 conoscono, non preparano.
+          expect(getSpellcastingProfile('bard', 5, mods14, v).mode, v).toBe('known')
+          expect(getSpellcastingProfile('sorcerer', 5, mods14, v).mode, v).toBe('known')
+          expect(getSpellcastingProfile('ranger', 5, mods14, v).mode, v).toBe('known')
+          expect(getSpellcastingProfile('warlock', 5, mods14, v).mode, v).toBe('known')
+        }
+        // E il numero del 2014 continua a seguire la caratteristica.
+        expect(getSpellcastingProfile('wizard', 5, { ...mods14, int: 0 }, 'dnd5e').spellsCount).toBe(5)
+      })
     })
 
     it('il burattinaio di Brancalonia è una classe conosciuta e non lancia', () => {
