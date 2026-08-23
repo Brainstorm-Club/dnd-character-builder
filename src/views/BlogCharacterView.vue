@@ -29,9 +29,31 @@ const shareMessage = ref('')
 
 // ─── Actions ────────────────────────────────────────────────────────────────
 
+/**
+ * I campi di prosa dei personaggi pronti stanno nei dati in inglese e hanno la
+ * traduzione italiana nei file di lingua — è per questo che la pagina si legge
+ * in italiano. Il PDF però esportava il dato grezzo, e usciva una scheda
+ * italiana con tratti, ideali, legami e difetti in inglese. Qui il personaggio
+ * viene tradotto PRIMA di darlo all'esportazione.
+ */
+const CAMPI_TRADOTTI = [
+  'personalityTraits', 'ideals', 'bonds', 'flaws', 'eyes', 'hair', 'skin', 'age',
+] as const
+
+function personaggioTradotto(): CharacterData | undefined {
+  if (!char.value) return undefined
+  const copia: CharacterData = JSON.parse(JSON.stringify(char.value))
+  for (const campo of CAMPI_TRADOTTI) {
+    const tradotto = charField(campo)
+    if (tradotto) (copia as unknown as Record<string, unknown>)[campo] = tradotto
+  }
+  return copia
+}
+
 async function downloadPdf() {
-  if (!char.value) return
-  await exportPdfFor(char.value)
+  const c = personaggioTradotto()
+  if (!c) return
+  await exportPdfFor(c)
 }
 
 function downloadJson() {
