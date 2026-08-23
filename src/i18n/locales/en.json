@@ -12,7 +12,7 @@
   },
   "home": {
     "welcome": "Welcome to Character Builder",
-    "description": "Create and manage your characters for D&D 5e, Brancalonia and Apocalisse. Works entirely in your browser, no sign-up required and no data sent to any server.",
+    "description": "Create and manage your characters for D&D 5e, D&D 2024, Brancalonia and Apocalisse. Works entirely in your browser, no sign-up required and no data sent to any server.",
     "startButton": "Create a New Character",
     "randomButton": "Random",
     "randomDnd5e": "Random D&D 5e",
@@ -380,7 +380,7 @@
     },
     "meta": {
       "listTitle": "Pre-Made Characters | D&D Character Builder",
-      "listDescription": "Browse and download ready-to-play characters for D&D 5e, Brancalonia, and Apocalisse. Free PDF sheets, JSON export, and more."
+      "listDescription": "Browse and download ready-to-play characters for D&D 5e, D&D 2024, Brancalonia, and Apocalisse. Free PDF sheets, JSON export, and more."
     },
     "characters": {
       "ranger-elf-elara-nightwhisper": {

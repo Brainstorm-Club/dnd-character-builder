@@ -109,11 +109,13 @@ function dismissMessage() {
   importMessage.value = null
 }
 
+// Ordine delle schede in home, due per riga: prima le due ambientazioni
+// italiane, poi le due edizioni di D&D su cui sono costruite.
 const variants: { id: GameVariant; emoji: string; color: string; border: string }[] = [
-  { id: 'dnd5e', emoji: '🐉', color: 'amber', border: 'border-amber-600/40' },
-  { id: 'dnd2024', emoji: '⚔️', color: 'sky', border: 'border-sky-600/40' },
   { id: 'brancalonia', emoji: '🥘', color: 'emerald', border: 'border-emerald-600/40' },
   { id: 'apocalisse', emoji: '🔥', color: 'red', border: 'border-red-600/40' },
+  { id: 'dnd5e', emoji: '🐉', color: 'amber', border: 'border-amber-600/40' },
+  { id: 'dnd2024', emoji: '⚔️', color: 'sky', border: 'border-sky-600/40' },
 ]
 </script>
 
@@ -149,7 +151,7 @@ const variants: { id: GameVariant; emoji: string; color: string; border: string 
     <input ref="fileInputApocalisse" type="file" accept=".json" class="hidden" @change="handleImport($event, 'apocalisse')" aria-hidden="true" tabindex="-1" />
 
     <!-- Variant cards -->
-    <div class="w-full max-w-3xl grid grid-cols-1 md:grid-cols-3 gap-6">
+    <div class="w-full max-w-3xl grid grid-cols-1 md:grid-cols-2 gap-6">
       <article
         v-for="v in variants"
         :key="v.id"

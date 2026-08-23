@@ -12,7 +12,7 @@
   },
   "home": {
     "welcome": "Benvenuto nel Character Builder",
-    "description": "Crea e gestisci i tuoi personaggi per D&D 5e, Brancalonia e Apocalisse. Funziona interamente nel browser, senza registrazione e senza inviare dati a nessun server.",
+    "description": "Crea e gestisci i tuoi personaggi per D&D 5e, D&D 2024, Brancalonia e Apocalisse. Funziona interamente nel browser, senza registrazione e senza inviare dati a nessun server.",
     "startButton": "Crea un Nuovo Personaggio",
     "randomButton": "Casuale",
     "randomDnd5e": "Casuale D&D 5e",
@@ -380,7 +380,7 @@
     },
     "meta": {
       "listTitle": "Personaggi Pronti | D&D Character Builder",
-      "listDescription": "Sfoglia e scarica personaggi pronti per D&D 5e, Brancalonia e Apocalisse. Schede PDF gratuite, esportazione JSON e altro."
+      "listDescription": "Sfoglia e scarica personaggi pronti per D&D 5e, D&D 2024, Brancalonia e Apocalisse. Schede PDF gratuite, esportazione JSON e altro."
     },
     "characters": {
       "ranger-elf-elara-nightwhisper": {
