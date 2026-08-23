@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore, clampToMaxLevel, migrateCharacter } from '@/stores/character'
 import { useAppStore, GAME_VARIANTS } from '@/stores/app'
-import { decodeCharacterFromUrl, MAX_SHARE_DATA_LENGTH } from '@/utils/shareCharacter'
+import { decodeCharacterAny, MAX_SHARE_DATA_LENGTH } from '@/utils/shareCharacter'
 
 const route = useRoute()
 const router = useRouter()
@@ -54,7 +54,10 @@ function cancelOverwrite() {
   router.replace('/')
 }
 
-onMounted(() => {
+// Asincrono perche' il formato compresso — quello che sta in un QR code — si
+// rigonfia con uno stream. I link del formato vecchio passano di qui lo stesso
+// e continuano a funzionare.
+onMounted(async () => {
   try {
     const data = route.params.data as string
     if (!data || data.length > MAX_SHARE_DATA_LENGTH) {
@@ -62,7 +65,7 @@ onMounted(() => {
       return
     }
 
-    const partial = decodeCharacterFromUrl(data)
+    const partial = await decodeCharacterAny(data)
     if (!partial.variant || !(GAME_VARIANTS as readonly string[]).includes(partial.variant)) {
       error.value = true
       return
