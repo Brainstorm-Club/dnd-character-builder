@@ -185,3 +185,26 @@ carry the running footer.
 Screenshots of content below the fold often fail to composite in the preview
 pane. `read_page` and `javascript_tool` measurements are both faster and stronger
 evidence — prefer them, and use screenshots for the visual gestalt only.
+
+## Filesystem Boundaries
+
+A worktree session of this project copied its own work back onto the trunk:
+
+```
+cp src/components/steps/Step3Class.test.ts \
+   /Users/fullo/Development/dnd-builder/src/components/steps/Step3Class.test.ts
+```
+
+Don't. A worktree that writes into the main checkout has stopped isolating anything, and
+it sets up a merge that silently drops one of the two versions. Run the tests inside the
+worktree; if the trunk genuinely needs the change, stop and say so.
+
+The same boundary applies outward: write only under the session's working directory.
+Worktrees belong in `.claude/worktrees/<name>` inside the project — never as sibling
+folders in `~/Development`, which is how the neighbouring `feedreader` repo ended up
+scattering 36 of them across the root. Scratch files go in the session scratchpad, not in
+`/tmp`, not in the home directory, not in the repo.
+
+This project itself was created from a session running in `~/Development/brainstorm`,
+along with `harp-builder`. Creating a new project beside the current one, cloning a repo
+into the root, or writing into another project's folder: ask first, naming the exact path.
