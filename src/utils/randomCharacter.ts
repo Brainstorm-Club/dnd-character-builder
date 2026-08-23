@@ -194,12 +194,21 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   const allSkillIds = [...new Set([...classSkills, ...bg.skillProficiencies])]
 
   // Languages
+  // Quando il manuale NOMINA i linguaggi del background sono quelli e non altri:
+  // il sorteggio faceva parlare Draconiano a un ambulante che il Manuale di
+  // Ambientazione manda in giro col Baccaglio. Il sorteggio resta per i
+  // background che il manuale lascia davvero a scelta (i 5e «two of your
+  // choice»), dove l'unica cosa scritta è quanti.
+  // Il filtro sui linguaggi di razza evita i doppioni: in Apocalisse l'Origine
+  // è insieme razza e background e la lingua nominata compare già fra le sue.
   const allLanguages = getAvailableLanguages(variant)
   const raceLanguages = [...race.languages]
-  const extraLanguages = pickN(
-    allLanguages.filter(l => !raceLanguages.includes(l)),
-    bg.languages,
-  )
+  const extraLanguages = bg.languageNames?.length
+    ? bg.languageNames.filter(l => !raceLanguages.includes(l))
+    : pickN(
+        allLanguages.filter(l => !raceLanguages.includes(l)),
+        bg.languages,
+      )
   const languages = [...raceLanguages, ...extraLanguages]
 
   // Apocalisse: ogni Ultimo ha una Virtù e un Peccato — nel manuale sostituiscono

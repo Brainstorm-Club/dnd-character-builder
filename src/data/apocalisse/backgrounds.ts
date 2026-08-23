@@ -17,6 +17,9 @@ export const apocalisseBackgrounds: readonly Background[] = [
     skillChoices: [{ count: 2, from: ['arcana', 'medicine', 'nature', 'perception', 'religion', 'history'] }, { count: 1, from: [] }],
     toolProficiencies: ["Herbalist's kit", "One type of artisan's tools of your choice"],
     languages: 1,
+    // Manuale ITA 1.0, «Linguaggio Extra: Il personaggio conosce la Lingua
+    // del Vecchio Mondo».
+    languageNames: ['Old World Tongue'],
     equipment: [
       'Herbalism kit',
       'Artisan\'s tools',
@@ -63,6 +66,8 @@ export const apocalisseBackgrounds: readonly Background[] = [
     skillChoices: [{ count: 2, from: ['arcana', 'stealth', 'deception', 'intimidation', 'perception', 'sleight-of-hand', 'religion'] }],
     toolProficiencies: [],
     languages: 1,
+    // Manuale ITA 1.0, «Linguaggio Extra: Infernale».
+    languageNames: ['Infernal'],
     equipment: [
       'A censer of brimstone incense',
       'Dark robes',
@@ -86,6 +91,8 @@ export const apocalisseBackgrounds: readonly Background[] = [
     skillChoices: [{ count: 2, from: ['arcana', 'insight', 'medicine', 'perception', 'persuasion', 'religion'] }],
     toolProficiencies: [],
     languages: 1,
+    // Manuale ITA 1.0, «Linguaggio Extra: Celestiale».
+    languageNames: ['Celestial'],
     equipment: [
       'A holy symbol',
       'White robes',
@@ -109,6 +116,10 @@ export const apocalisseBackgrounds: readonly Background[] = [
     skillChoices: [{ count: 1, from: ['nature', 'perception', 'survival'] }],
     toolProficiencies: [],
     languages: 1,
+    // Manuale ITA 1.0, «Linguaggio Extra: Il personaggio conosce la Lingua
+    // del Vecchio Mondo», la stessa del figlio del Vecchio Mondo: chi ha
+    // scalato il Purgatorio è morto da pochi decenni e quel mondo lo ricorda.
+    languageNames: ['Old World Tongue'],
     equipment: [
       'A walking staff',
       'A waterskin',
