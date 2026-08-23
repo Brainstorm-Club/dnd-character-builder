@@ -2,7 +2,8 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { getClasses, getFeatureDescription, getFeatureName } from '@/data'
+import { getClasses, getFeatureName } from '@/data'
+import { testoPrivilegio, type TestoSrd } from '@/data/srdText'
 import type { CharacterClass, Subclass } from '@/data/dnd5e/classes'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
@@ -322,9 +323,28 @@ function classBlurb(cls: { id: string; blurb?: string }): string | undefined {
   return cls.blurb ?? getClassBlurb(characterStore.character.variant, cls.id)
 }
 
-function featureText(feature: { id?: string; name: string; description?: string }): string {
+function statoPrivilegio(feature: { id?: string; description?: string }): TestoSrd {
   const v = characterStore.character.variant
-  return getFeatureDescription(v, feature.id ?? '', locale.value, feature.description ?? '')
+  return testoPrivilegio(v, feature.id ?? '', locale.value, feature.description ?? '')
+}
+
+function featureText(feature: { id?: string; name: string; description?: string }): string {
+  const testo = statoPrivilegio(feature)
+  return testo.stato === 'assente' ? '' : testo.testo
+}
+
+/**
+ * La riga che dichiara com'è messo il testo di un privilegio, o '' se non
+ * serve. Le venti sottoclassi del 2014 non hanno traduzione italiana nell'SRD
+ * 5.1: finora il passo Classe ne stampava il testo inglese senza dirlo, in
+ * mezzo a un'interfaccia italiana. Ora lo etichetta, invece di lasciar
+ * credere che quella sia l'edizione italiana.
+ */
+function featureNote(feature: { id?: string; description?: string }): string {
+  const testo = statoPrivilegio(feature)
+  if (testo.stato === 'assente') return t('common.srdNoItalian')
+  if (testo.stato === 'soloInglese') return t('common.srdEnglishOnly')
+  return ''
 }
 function featureLabel(feature: { id?: string; name: string }): string {
   const v = characterStore.character.variant
@@ -440,6 +460,7 @@ function featureLabel(feature: { id?: string; name: string }): string {
             <p v-if="feature.description" class="ml-4">
               <ConditionText :text="featureText(feature)" :variant="variant" text-class="text-stone-500 text-xs" />
             </p>
+            <p v-if="featureNote(feature)" class="ml-4 text-stone-500 text-xs">{{ featureNote(feature) }}</p>
           </div>
         </div>
       </div>
@@ -472,6 +493,7 @@ function featureLabel(feature: { id?: string; name: string }): string {
             <p>
               <ConditionText :text="featureText(selectedSubclassObj)" :variant="variant" text-class="text-stone-400" />
             </p>
+            <p v-if="featureNote(selectedSubclassObj)" class="text-stone-500 text-xs">{{ featureNote(selectedSubclassObj) }}</p>
             <div v-if="selectedSubclassObj.features.length" class="mt-2 space-y-2">
               <div
                 v-for="feature in selectedSubclassObj.features.filter(f => f.level <= selectedClassLevel)"
@@ -482,6 +504,7 @@ function featureLabel(feature: { id?: string; name: string }): string {
                 <p v-if="feature.description" class="ml-4">
                   <ConditionText :text="featureText(feature)" :variant="variant" text-class="text-stone-500 text-xs" />
                 </p>
+                <p v-if="featureNote(feature)" class="ml-4 text-stone-500 text-xs">{{ featureNote(feature) }}</p>
               </div>
             </div>
           </div>
