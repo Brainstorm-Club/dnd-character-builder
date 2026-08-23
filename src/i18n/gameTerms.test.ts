@@ -173,7 +173,7 @@ describe('nomi di gioco', () => {
 
 /**
  * L'equipaggiamento dei background di Brancalonia è scritto per esteso nei dati
- * (`src/data/brancalonia/backgrounds.ts`) e non passa da nessuna tabella: 44
+ * (`src/data/brancalonia/backgrounds.ts`) e non passa da nessuna tabella: 51
  * voci distinte finivano sulla scheda italiana in inglese, in mezzo al resto
  * tradotto — «A pouch containing 15 sp» accanto a «Un abito comune».
  *
@@ -190,8 +190,8 @@ describe('equipaggiamento dei background di Brancalonia', () => {
     return [...new Set(tutte)].sort()
   }
 
-  it('ne conta 44 distinte, come i manuali', () => {
-    expect(voci()).toHaveLength(44)
+  it('ne conta 51 distinte, come i manuali', () => {
+    expect(voci()).toHaveLength(51)
   })
 
   it('nessuna resta in inglese su una scheda italiana', () => {

@@ -2034,7 +2034,7 @@ export const equipmentNamesIt: Record<string, string> = {
   'Ink that writes in colors only the Cronista can see': 'Inchiostro che scrive in colori che solo il Cronista può vedere',
 
   // ── Brancalonia: dotazione dei background ────────────────────────────────
-  // Quarantaquattro voci scritte per esteso in `src/data/brancalonia/
+  // Cinquantuno voci scritte per esteso in `src/data/brancalonia/
   // backgrounds.ts` e mai passate da una tabella: su una scheda italiana
   // uscivano in inglese in mezzo al resto tradotto.
   //
@@ -2067,7 +2067,9 @@ export const equipmentNamesIt: Record<string, string> = {
   'A pendant of Saint Marauda': 'Un ciondolo di Santa Predatoria',
   'A poppycock card deck or another game': 'Un mazzo di minchiate o un altro gioco',
   // ── Macaronicon
-  'A parchment case filled with study notes': 'Una custodia per pergamene piena di appunti di studio',
+  'A parchment case filled with study notes and maps':
+    'Una custodia per pergamene piena di appunti di studio e mappe',
+  'A crowbar': 'Un piede di porco',
   'A book containing the names of aspiring stage performers': 'Un libro con segnati i nomi di aspiranti teatranti',
   'A musical instrument (one of your choice)': 'Uno strumento musicale (a scelta)',
   'A collection of love letters': 'Una raccolta di lettere d\'amore',
@@ -2075,21 +2077,23 @@ export const equipmentNamesIt: Record<string, string> = {
   'Ink and an ink pen': 'Un calamaio di inchiostro nero e un pennino',
   'A golden holy symbol': 'Un simbolo sacro d\'oro',
   'A book of prayers': 'Un libro di preghiere',
+  'Vestments': 'Vesti da sacerdote',
+  'A pouch containing 25 sp': 'Una borsa con 25 ma',
   'A rank insignia': 'Una mostrina con i gradi',
-  // I nostri dati troncano la voce della staffetta a "a secret communication":
-  // sul manuale è una borsa con una tasca segreta per i dispacci, ed è così
-  // che va letta in italiano.
-  'A pouch containing a secret communication': 'Una borsa con una tasca segreta per i dispacci',
+  'A pouch containing a secret pocket for dispatches': 'Una borsa con una tasca segreta per i dispacci',
+  'A dice set or a poppycock card deck': 'Una serie di dadi o un mazzo di minchiate',
+  // Il lucignolo si porta dietro un Cimelio in più: sul manuale è l'ultima
+  // voce della riga di equipaggiamento, non un tiro sulla tabella.
+  'One additional Memorabilia': 'Un Cimelio aggiuntivo',
   // ── L'Impero Randella Ancora
   'A cape of the Order': 'Una cappa dell\'Ordine',
   'An Imperial symbol': 'Un simbolo imperiale',
   'An outfit useful to conceal yourself': 'Un vestito utile per nascondersi',
   'Forged documents': 'Documenti contraffatti',
   'A questionable certificate of nobility': 'Un attestato di nobiltà discutibile',
-  // "A rusty blade" nei nostri dati è una lama arrugginita, ma sul manuale il
-  // blasonato non porta una lama: porta "una bolla nobiliare arrugginita"
-  // ("a rusty noble seal" nell'edizione inglese). L'italiano segue il manuale.
-  'A rusty blade': 'Una bolla nobiliare arrugginita',
+  'A rusty noble seal': 'Una bolla nobiliare arrugginita',
+  'An expired pass permit': 'Un salvacondotto scaduto',
+  'A patched noble outfit': 'Delle vesti nobiliari rattoppate',
   'Worn gloves': 'Guanti consunti',
   'A healer\'s kit': 'Borsa del guaritore',
   'An inherited heirloom': 'Un monile ereditato',
@@ -2098,10 +2102,8 @@ export const equipmentNamesIt: Record<string, string> = {
   'A pouch with 30 sp that fell into your hands in a sheer stroke of luck': 'Una borsa con 30 ma caduta nelle sue mani per pura fortuna',
   '3 flawed pomegrenades': '3 melagranate scadenti',
   'A leftover from your native place': 'Un rimasuglio del luogo di origine',
-  // Anche qui i dati accorciano: sul manuale l'inspiritato non ha un ninnolo
-  // qualsiasi ma "una strana ricevuta che attesta una compravendita
-  // misconosciuta" ("a strange receipt detailing an unknown purchase").
-  'A strange trinket': 'Una strana ricevuta che attesta una compravendita misconosciuta',
+  'A strange receipt detailing an unknown purchase':
+    'Una strana ricevuta che attesta una compravendita misconosciuta',
 }
 
 // ─── Sizes ──────────────────────────────────────────────────────────────────

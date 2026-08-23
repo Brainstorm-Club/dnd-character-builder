@@ -170,7 +170,13 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['athletics', 'survival'],
     toolProficiencies: ['One type of game set', 'Vehicles (land)'],
     languages: 0,
-    equipment: ['A rank insignia', 'A pouch containing a secret communication'],
+    equipment: [
+      'A rank insignia',
+      'A pouch containing a secret pocket for dispatches',
+      'A dice set or a poppycock card deck',
+      'A set of common clothes',
+      'A pouch containing 10 sp',
+    ],
     feature: {
       name: 'Through Good and Bad Weather',
       description:
@@ -212,7 +218,11 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['insight', 'persuasion'],
     toolProficiencies: ['Two types of gaming set'],
     languages: 2,
-    equipment: ['A book containing the names of aspiring stage performers', 'A pouch containing 15 sp'],
+    equipment: [
+      'A book containing the names of aspiring stage performers',
+      'A set of fine clothes',
+      'A pouch containing 20 sp',
+    ],
     feature: {
       name: 'The Art of Making Do',
       description:
@@ -230,7 +240,7 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['deception', 'persuasion'],
     toolProficiencies: ['Two types of game set'],
     languages: 1,
-    equipment: ['A set of common clothes', 'A pouch containing 15 sp'],
+    equipment: ['A set of common clothes', 'A pouch containing 15 sp', 'One additional Memorabilia'],
     feature: {
       name: 'My Dinner with Fairies',
       description:
@@ -248,7 +258,12 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['persuasion', 'religion'],
     toolProficiencies: [],
     languages: 2,
-    equipment: ['A golden holy symbol', 'A book of prayers', 'A pouch containing 15 sp'],
+    equipment: [
+      'A golden holy symbol',
+      'A book of prayers',
+      'Vestments',
+      'A pouch containing 25 sp',
+    ],
     feature: {
       name: 'Deference and Influence',
       description:
@@ -266,7 +281,12 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['investigation', 'history'],
     toolProficiencies: ["Thieves' tools", "Calligrapher's supplies"],
     languages: 1,
-    equipment: ['A parchment case filled with study notes', 'A pouch containing 15 sp'],
+    equipment: [
+      'A parchment case filled with study notes and maps',
+      'A crowbar',
+      "A set of traveler's clothes",
+      'A pouch containing 10 sp',
+    ],
     feature: {
       name: 'Relic Academic',
       description:
@@ -286,7 +306,7 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['acrobatics', 'deception'],
     toolProficiencies: [],
     languages: 0,
-    equipment: ['A cape of the Order', 'An Imperial symbol', 'A pouch containing 15 sp'],
+    equipment: ['A cape of the Order', 'An Imperial symbol', 'A pouch containing 20 sp'],
     feature: {
       name: 'Fork Feat',
       description:
@@ -322,7 +342,13 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['deception', 'intimidation'],
     toolProficiencies: [],
     languages: 2,
-    equipment: ['A questionable certificate of nobility', 'A rusty blade', 'A pouch containing 15 sp'],
+    equipment: [
+      'A questionable certificate of nobility',
+      'A rusty noble seal',
+      'An expired pass permit',
+      'A patched noble outfit',
+      'A pouch containing 25 sp',
+    ],
     feature: {
       name: 'High and Mighty Voice',
       description:
@@ -358,7 +384,7 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['insight', 'history'],
     toolProficiencies: ['Gunpowder jug'],
     languages: 0,
-    equipment: ['3 flawed pomegrenades', 'A pouch containing 15 sp'],
+    equipment: ['3 flawed pomegrenades'],
     feature: {
       name: "Grandma's Powders",
       description:
@@ -399,7 +425,11 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['arcana', 'insight'],
     toolProficiencies: [],
     languages: 1,
-    equipment: ['A leftover from your native place', 'A strange trinket', 'A pouch containing 15 sp'],
+    equipment: [
+      'A leftover from your native place',
+      'A strange receipt detailing an unknown purchase',
+      'A pouch containing 15 sp',
+    ],
     feature: {
       name: 'No Past, Violent Future',
       description:
