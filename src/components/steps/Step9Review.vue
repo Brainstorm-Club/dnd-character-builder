@@ -581,14 +581,18 @@ function handleImport(event: Event) {
 
     <!-- Export Buttons -->
     <div class="flex flex-wrap gap-3 mt-6 no-print" role="group" :aria-label="t('review.export')">
+      <!-- I tre bottoni il cui colore porta un significato — salva, esporta,
+           condividi — usano le varianti semantiche del design system, che
+           scelgono anche il primo piano giusto (cambia da colore a colore).
+           I due grigi restano utility: il DS non ha un neutro per i bottoni. -->
       <!-- Persist -->
       <button @click="saveChar"
-        class="px-6 py-2 bg-green-700 hover:bg-green-600 text-white font-semibold rounded-lg transition-colors cursor-pointer">
+        class="bsc-btn bsc-btn--successo bsc-btn--testo-fedele cursor-pointer">
         <span aria-hidden="true">💾</span> {{ t('review.save') }}
       </button>
       <!-- Export -->
       <button @click="exportPdf" :disabled="exporting"
-        class="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-stone-900 font-semibold rounded-lg transition-colors disabled:opacity-50 cursor-pointer">
+        class="bsc-btn bsc-btn--attenzione bsc-btn--testo-fedele disabled:opacity-50 cursor-pointer">
         <span aria-hidden="true">📄</span> {{ exporting ? t('common.loading') : t('review.exportPdf') }}
       </button>
       <button @click="downloadJson"
@@ -603,7 +607,7 @@ function handleImport(event: Event) {
       </button>
       <!-- Share -->
       <button @click="shareCharacter"
-        class="px-6 py-2 bg-blue-700 hover:bg-blue-600 text-white rounded-lg transition-colors cursor-pointer">
+        class="bsc-btn bsc-btn--info bsc-btn--testo-fedele cursor-pointer">
         <span aria-hidden="true">🔗</span> {{ t('review.shareUrl') }}
       </button>
       <!-- Level progression -->
