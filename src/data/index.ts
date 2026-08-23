@@ -86,13 +86,16 @@ let _dnd24Spells: readonly Spell[] | null = null
 // come per le altre, così chi non apre il 2024 non le scarica (WSG 3.8).
 let _dnd24FeatureIt: Record<string, string> | null = null
 let _toDnd24Spells: ((base: readonly Spell[]) => Spell[]) | null = null
+// Semi-incantatori 2024: paladino e ranger hanno una tabella di slot propria
+// (primo slot al 1º livello, non al 2º), che non sta nel modulo 2014.
+let _dnd24HalfCasterSlots: ((level: number) => Record<number, number>) | null = null
 let _pDnd24: Promise<void> | null = null
 
 function ensureDnd2024(): Promise<void> {
   // `_toDnd24Spells` fa parte della condizione: senza di lui getSpells('dnd2024')
   // ricade sulla lista 2014, ed è esattamente quello che succedeva alla seconda
   // visita, quando i dati arrivavano dalla cache.
-  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt && _toDnd24Spells) return Promise.resolve()
+  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt && _toDnd24Spells && _dnd24HalfCasterSlots) return Promise.resolve()
   if (_pDnd24) return _pDnd24
   const cs = lsGet<Race[]>('dnd24-species')
   const cc = lsGet<CharacterClass[]>('dnd24-classes')
@@ -102,9 +105,13 @@ function ensureDnd2024(): Promise<void> {
     // La funzione di trasformazione non è serializzabile, quindi in cache non
     // c'è: il modulo va importato comunque. È minuscolo — la funzione più i 23
     // incantesimi esclusivi del 2024 — e per questo non viene messo in cache.
-    _pDnd24 = import('./dnd2024/spells').then(sp => {
+    _pDnd24 = Promise.all([
+      import('./dnd2024/spells'),
+      import('./dnd2024/rules'),
+    ]).then(([sp, ru]) => {
       _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb; _dnd24FeatureIt = ci
       _toDnd24Spells = sp.toDnd2024Spells
+      _dnd24HalfCasterSlots = ru.getHalfCasterSlotsForLevel2024
     })
     return _pDnd24
   }
@@ -114,7 +121,8 @@ function ensureDnd2024(): Promise<void> {
     import('./dnd2024/backgrounds'),
     import('./dnd2024/spells'),
     import('./dnd2024/classes-it'),
-  ]).then(([r, c, b, sp, itMod]) => {
+    import('./dnd2024/rules'),
+  ]).then(([r, c, b, sp, itMod, ru]) => {
     _dnd24Species = r.dnd2024Species
     _dnd24Classes = c.dnd2024Classes
     _dnd24Backgrounds = b.dnd2024Backgrounds
@@ -124,6 +132,7 @@ function ensureDnd2024(): Promise<void> {
     lsSet('dnd24-backgrounds', b.dnd2024Backgrounds)
     lsSet('dnd24-feature-it', itMod.dnd2024FeatureDescriptionsIt)
     _toDnd24Spells = sp.toDnd2024Spells
+    _dnd24HalfCasterSlots = ru.getHalfCasterSlotsForLevel2024
   })
   return _pDnd24
 }
@@ -838,7 +847,14 @@ export function getSpellSlots(
   if (!_dnd5eGetSpellSlotsForLevel) return {}
   const cls = findSpellcastingClass(variant, className)
   if (!cls?.spellcasting) return {}
-  return _dnd5eGetSpellSlotsForLevel(cls.spellcasting.casterType, level)
+  const casterType = cls.spellcasting.casterType
+  // Nel 2024 paladino e ranger ottengono il primo slot al 1º livello: la
+  // tabella del 2014 li lascerebbe senza magia al 1º e sfaserebbe tutto il
+  // resto della progressione. Le altre varianti restano sul telaio 2014.
+  if (variant === 'dnd2024' && casterType === 'half' && _dnd24HalfCasterSlots) {
+    return _dnd24HalfCasterSlots(level)
+  }
+  return _dnd5eGetSpellSlotsForLevel(casterType, level)
 }
 
 export function getCantripsKnown(className: string, level: number, variant: GameVariant = 'dnd5e'): number {
@@ -919,6 +935,7 @@ export function _resetCaches(): void {
   _dnd24Species = _dnd24Classes = _dnd24Backgrounds = _dnd24Spells = null
   _dnd24FeatureIt = null
   _toDnd24Spells = null
+  _dnd24HalfCasterSlots = null
   _pDnd24 = null
   _pDnd5eRaces = _pDnd5eClasses = _pDnd5eBackgrounds = _pDnd5eSpells = _pDnd5eEquipment = _pDnd5eRules = null
   _pBrancaRaces = _pBrancaClasses = _pBrancaBackgrounds = _pBrancaRules = _pBrancaSpells = null
