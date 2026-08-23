@@ -29,7 +29,7 @@ export const fizzleGearspark: CharacterData = {
   languages: ['Common', 'Gnomish', 'Draconic'],
   proficienciesOther: ['dagger', 'dart', 'sling', 'quarterstaff', 'light crossbow'],
   weapons: [
-    { name: 'Quarterstaff', attackBonus: 0, damage: '1d6-1' },
+    { name: 'Quarterstaff', attackBonus: 1, damage: '1d6-1' },
     { name: 'Light Crossbow', attackBonus: 4, damage: '1d8+2' },
   ],
   armor: '',

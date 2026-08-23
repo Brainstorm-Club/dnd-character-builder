@@ -50,6 +50,7 @@ export const vexNightpact: CharacterData = {
   bonds: 'A powerful fiend holds the other end of my pact, and I dread the day it comes to collect what I truly owe.',
   flaws: 'I can\'t resist swindling people who are more powerful than me, and I\'m convinced I can talk my way out of any situation.',
   featuresTraits: [
+    'Expanded Spell List',
     'Superior Darkvision',
     'Keen Senses',
     'Fey Ancestry',

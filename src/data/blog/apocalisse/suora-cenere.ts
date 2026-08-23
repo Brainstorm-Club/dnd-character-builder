@@ -76,7 +76,7 @@ export const suoraCenere: CharacterData = {
   treasure: 'A feather from her former wings, now grey and brittle',
   spellcastingClass: 'cleric',
   spellcastingAbility: 'wis',
-  cantrips: ['Sacred Flame', 'Guidance', 'Spare the Dying'],
+  cantrips: ['Sacred Flame', 'Guidance', 'Spare the Dying', 'Light'],
   spellsKnown: [],
   spellsPrepared: ['Cure Wounds', 'Healing Word', 'Bless', 'Shield of Faith', 'Aid', 'Spirit Guardians', 'Revivify', 'Lesser Restoration'],
   hitDie: 8,

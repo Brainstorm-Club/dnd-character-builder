@@ -71,7 +71,7 @@ export const lyraSilvertongue: CharacterData = {
   treasure: 'An ornate silver lute pick given by her mentor Orso',
   spellcastingClass: 'bard',
   spellcastingAbility: 'cha',
-  cantrips: ['Vicious Mockery', 'Minor Illusion'],
+  cantrips: ['Vicious Mockery', 'Minor Illusion', 'Prestidigitation'],
   spellsKnown: ['Healing Word', 'Faerie Fire', 'Thunderwave', 'Charm Person', 'Hold Person', 'Invisibility', 'Dispel Magic', 'Cure Wounds'],
   spellsPrepared: [],
   hitDie: 8,

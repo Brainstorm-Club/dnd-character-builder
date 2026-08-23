@@ -76,7 +76,7 @@ export const elaraNightwhisper: CharacterData = {
   spellcastingClass: 'ranger',
   spellcastingAbility: 'wis',
   cantrips: [],
-  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Goodberry', 'Pass without Trace'],
+  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Speak with Animals', 'Pass without Trace'],
   spellsPrepared: [],
   hitDie: 10,
   // Level 5 Ranger: 10+4(CON) at L1, avg(5+1+4)=10 per level after → 14 + 10*4 = 54

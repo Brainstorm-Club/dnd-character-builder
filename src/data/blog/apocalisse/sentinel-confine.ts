@@ -76,7 +76,7 @@ export const sentinelConfine: CharacterData = {
   spellcastingClass: 'ranger',
   spellcastingAbility: 'wis',
   cantrips: [],
-  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Goodberry', 'Pass without Trace'],
+  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Speak with Animals', 'Pass without Trace'],
   spellsPrepared: [],
   hitDie: 10,
   maxHp: 49,

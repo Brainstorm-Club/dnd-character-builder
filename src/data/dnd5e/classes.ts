@@ -805,6 +805,7 @@ export const classes: readonly CharacterClass[] = [
         name: 'The Fiend',
         description: 'You have made a pact with a fiend from the lower planes of existence.',
         features: [
+          { id: 'fiend-expanded-spells', name: 'Expanded Spell List', level: 1, description: 'The Fiend lets you choose from an expanded list of spells when you learn a warlock spell. The following spells are added to the warlock spell list for you: burning hands and command (1st), blindness/deafness and scorching ray (2nd), fireball and stinking cloud (3rd), fire shield and wall of fire (4th), flame strike and hallow (5th).' },
           { id: 'dark-ones-blessing', name: 'Dark One\'s Blessing', level: 1, description: 'When you reduce a hostile creature to 0 hit points, you gain temporary hit points equal to your Charisma modifier + your warlock level (minimum of 1).' },
         ],
       },

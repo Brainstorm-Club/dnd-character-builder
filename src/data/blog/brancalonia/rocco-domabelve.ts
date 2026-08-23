@@ -74,7 +74,7 @@ export const roccoDomabelve: CharacterData = {
   spellcastingClass: 'ranger',
   spellcastingAbility: 'wis',
   cantrips: [],
-  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Goodberry'],
+  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Speak with Animals'],
   spellsPrepared: [],
   hitDie: 10,
   maxHp: 36,

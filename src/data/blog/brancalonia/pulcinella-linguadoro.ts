@@ -74,7 +74,7 @@ export const pulcinellaLinguadoro: CharacterData = {
   treasure: 'A jeweled mask worth more than he\'ll ever admit',
   spellcastingClass: 'bard',
   spellcastingAbility: 'cha',
-  cantrips: ['Vicious Mockery', 'Minor Illusion'],
+  cantrips: ['Vicious Mockery', 'Minor Illusion', 'Prestidigitation'],
   spellsKnown: ['Healing Word', 'Faerie Fire', 'Charm Person', 'Thunderwave', 'Hold Person', 'Invisibility', 'Cure Wounds'],
   spellsPrepared: [],
   hitDie: 8,

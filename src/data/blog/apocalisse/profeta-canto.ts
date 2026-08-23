@@ -76,7 +76,7 @@ export const profetaCanto: CharacterData = {
   treasure: 'A shard of cathedral glass that hums when held',
   spellcastingClass: 'bard',
   spellcastingAbility: 'cha',
-  cantrips: ['Vicious Mockery', 'Minor Illusion'],
+  cantrips: ['Vicious Mockery', 'Minor Illusion', 'Prestidigitation'],
   spellsKnown: ['Healing Word', 'Faerie Fire', 'Charm Person', 'Thunderwave', 'Hold Person', 'Invisibility', 'Dispel Magic', 'Cure Wounds'],
   spellsPrepared: [],
   hitDie: 8,

@@ -73,7 +73,7 @@ export const sangueAntico: CharacterData = {
   treasure: 'A crystal vial containing a drop of pure Limbo essence',
   spellcastingClass: 'sorcerer',
   spellcastingAbility: 'cha',
-  cantrips: ['Fire Bolt', 'Chill Touch', 'Prestidigitation', 'Light'],
+  cantrips: ['Fire Bolt', 'Chill Touch', 'Prestidigitation', 'Light', 'Mage Hand'],
   spellsKnown: ['Shield', 'Magic Missile', 'Scorching Ray', 'Counterspell', 'Fireball', 'Misty Step'],
   spellsPrepared: [],
   hitDie: 6,

@@ -30,7 +30,7 @@ export const morthosGrimsoul: CharacterData = {
   languages: ['Common', 'Infernal', 'Abyssal'],
   proficienciesOther: ['light armor', 'simple weapons'],
   weapons: [
-    { name: 'Quarterstaff', attackBonus: 0, damage: '1d6-1' },
+    { name: 'Quarterstaff', attackBonus: 1, damage: '1d6-1' },
     { name: 'Light Crossbow', attackBonus: 4, damage: '1d8+2' },
   ],
   armor: 'Leather',
@@ -51,6 +51,7 @@ export const morthosGrimsoul: CharacterData = {
   bonds: 'Somewhere in the Nine Hells my patron holds the contract I signed in blood; I will find a way to reclaim it and free myself on my own terms.',
   flaws: 'I compulsively lie even when the truth would serve me better, a habit that has cost me every genuine friendship I have ever had.',
   featuresTraits: [
+    'Expanded Spell List',
     'Darkvision',
     'Hellish Resistance',
     'Infernal Legacy',
@@ -71,7 +72,7 @@ export const morthosGrimsoul: CharacterData = {
   treasure: 'A tarnished silver coin that always lands on the same side, a gift from his patron',
   spellcastingClass: 'warlock',
   spellcastingAbility: 'cha',
-  cantrips: ['Eldritch Blast', 'Minor Illusion', 'Chill Touch'],
+  cantrips: ['Eldritch Blast', 'Minor Illusion'],
   spellsKnown: ['Hex', 'Burning Hands', 'Hold Person', 'Misty Step'],
   spellsPrepared: [],
   hitDie: 8,

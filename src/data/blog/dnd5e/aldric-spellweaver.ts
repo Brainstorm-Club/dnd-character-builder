@@ -72,7 +72,7 @@ export const aldricSpellweaver: CharacterData = {
   treasure: 'A crystalline lens that reveals invisible ink when held to the eye',
   spellcastingClass: 'wizard',
   spellcastingAbility: 'int',
-  cantrips: ['Fire Bolt', 'Mage Hand', 'Light', 'Prestidigitation'],
+  cantrips: ['Fire Bolt', 'Mage Hand', 'Light', 'Prestidigitation', 'Minor Illusion'],
   spellsKnown: [],
   spellsPrepared: ['Magic Missile', 'Shield', 'Mage Armor', 'Scorching Ray', 'Misty Step', 'Fireball', 'Counterspell', 'Fly'],
   hitDie: 6,

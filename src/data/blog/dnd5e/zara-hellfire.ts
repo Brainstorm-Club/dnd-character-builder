@@ -71,7 +71,7 @@ export const zaraHellfire: CharacterData = {
   treasure: 'A fragment of dragon scale embedded in a silver pendant',
   spellcastingClass: 'sorcerer',
   spellcastingAbility: 'cha',
-  cantrips: ['Fire Bolt', 'Ray of Frost', 'Prestidigitation', 'Light'],
+  cantrips: ['Fire Bolt', 'Ray of Frost', 'Prestidigitation', 'Light', 'Mage Hand'],
   spellsKnown: ['Burning Hands', 'Shield', 'Scorching Ray', 'Misty Step', 'Fireball', 'Counterspell'],
   spellsPrepared: [],
   hitDie: 6,

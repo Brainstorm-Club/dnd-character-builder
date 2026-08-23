@@ -64,6 +64,21 @@ import { cornoduro } from './brancalonia/cornoduro'
 import { volpinaDelBosco } from './brancalonia/volpina-delbosco'
 import { bambolaFatata } from './brancalonia/bambola-fatata'
 
+// ─── D&D 2024 Character Imports ─────────────────────────────────────────────
+
+import { vaskaStonemarch } from './dnd2024/vaska-stonemarch'
+import { wrenApplecross } from './dnd2024/wren-applecross'
+import { dagraEmberhearth } from './dnd2024/dagra-emberhearth'
+import { sylwenThornhollow } from './dnd2024/sylwen-thornhollow'
+import { corvinAshmere } from './dnd2024/corvin-ashmere'
+import { grashQuickfist } from './dnd2024/grash-quickfist'
+import { vaelothSunscale } from './dnd2024/vaeloth-sunscale'
+import { pibTanglewood } from './dnd2024/pib-tanglewood'
+import { sableDuskrend } from './dnd2024/sable-duskrend'
+import { ignisEmberclaw } from './dnd2024/ignis-emberclaw'
+import { malachaiVoidwhisper } from './dnd2024/malachai-voidwhisper'
+import { ilyanaStarweave } from './dnd2024/ilyana-starweave'
+
 // ─── Apocalisse Character Imports ───────────────────────────────────────────
 
 import { damienCavaliereNero } from './apocalisse/damien-cavaliere-nero'
@@ -478,6 +493,80 @@ export const blogCharacters: BlogCharacter[] = [
     variant: 'apocalisse',
     characterData: cronistaOblio,
     tags: ['risen-limbo', 'wizard', 'solomon', 'apocalisse'],
+  },
+
+  // ── D&D 2024 (12 characters) ──────────────────────────────────────────
+  {
+    slug: 'barbarian-goliath-vaska-stonemarch',
+    variant: 'dnd2024',
+    characterData: vaskaStonemarch,
+    tags: ['goliath', 'stones-endurance', 'barbarian', 'path-of-the-berserker', 'dnd2024'],
+  },
+  {
+    slug: 'bard-halfling-wren-applecross',
+    variant: 'dnd2024',
+    characterData: wrenApplecross,
+    tags: ['halfling', 'bard', 'college-of-lore', 'dnd2024'],
+  },
+  {
+    slug: 'cleric-dwarf-dagra-emberhearth',
+    variant: 'dnd2024',
+    characterData: dagraEmberhearth,
+    tags: ['dwarf', 'cleric', 'life-domain', 'dnd2024'],
+  },
+  {
+    slug: 'druid-elf-sylwen-thornhollow',
+    variant: 'dnd2024',
+    characterData: sylwenThornhollow,
+    tags: ['elf', 'wood-elf', 'druid', 'circle-of-the-land', 'dnd2024'],
+  },
+  {
+    slug: 'fighter-human-corvin-ashmere',
+    variant: 'dnd2024',
+    characterData: corvinAshmere,
+    tags: ['human', 'fighter', 'champion', 'dnd2024'],
+  },
+  {
+    slug: 'monk-orc-grash-quickfist',
+    variant: 'dnd2024',
+    characterData: grashQuickfist,
+    tags: ['orc', 'monk', 'warrior-of-the-open-hand', 'dnd2024'],
+  },
+  {
+    slug: 'paladin-dragonborn-vaeloth-sunscale',
+    variant: 'dnd2024',
+    characterData: vaelothSunscale,
+    tags: ['dragonborn', 'gold', 'paladin', 'oath-of-devotion', 'dnd2024'],
+  },
+  {
+    slug: 'ranger-gnome-pib-tanglewood',
+    variant: 'dnd2024',
+    characterData: pibTanglewood,
+    tags: ['gnome', 'forest-gnome', 'ranger', 'hunter', 'dnd2024'],
+  },
+  {
+    slug: 'rogue-tiefling-sable-duskrend',
+    variant: 'dnd2024',
+    characterData: sableDuskrend,
+    tags: ['tiefling', 'infernal', 'rogue', 'thief', 'dnd2024'],
+  },
+  {
+    slug: 'sorcerer-dragonborn-ignis-emberclaw',
+    variant: 'dnd2024',
+    characterData: ignisEmberclaw,
+    tags: ['dragonborn', 'red', 'sorcerer', 'draconic-sorcery', 'dnd2024'],
+  },
+  {
+    slug: 'warlock-tiefling-malachai-voidwhisper',
+    variant: 'dnd2024',
+    characterData: malachaiVoidwhisper,
+    tags: ['tiefling', 'abyssal', 'warlock', 'fiend-patron', 'dnd2024'],
+  },
+  {
+    slug: 'wizard-elf-ilyana-starweave',
+    variant: 'dnd2024',
+    characterData: ilyanaStarweave,
+    tags: ['elf', 'high-elf', 'wizard', 'evoker', 'dnd2024'],
   },
 ]
 

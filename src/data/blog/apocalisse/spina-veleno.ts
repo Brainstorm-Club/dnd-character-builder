@@ -75,7 +75,7 @@ export const spinaVeleno: CharacterData = {
   spellcastingAbility: 'wis',
   cantrips: ['Druidcraft', 'Poison Spray', 'Produce Flame'],
   spellsKnown: [],
-  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Goodberry', 'Hold Person', 'Pass without Trace', 'Thunderwave', 'Dispel Magic', 'Lesser Restoration'],
+  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Entangle', 'Hold Person', 'Pass without Trace', 'Thunderwave', 'Dispel Magic', 'Lesser Restoration'],
   hitDie: 8,
   maxHp: 43,
   currentHp: 43,

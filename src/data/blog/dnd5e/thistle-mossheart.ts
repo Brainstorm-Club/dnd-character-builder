@@ -73,7 +73,7 @@ export const thistleMossheart: CharacterData = {
   spellcastingClass: 'ranger',
   spellcastingAbility: 'wis',
   cantrips: [],
-  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Goodberry'],
+  spellsKnown: ['Hunter\'s Mark', 'Cure Wounds', 'Speak with Animals'],
   spellsPrepared: [],
   hitDie: 10,
   // Level 1: 10 + CON mod(2) = 12; Levels 2-3: 2 * (6 + 2) = 16; Total = 28

@@ -71,7 +71,7 @@ export const stregaMalocchio: CharacterData = {
   treasure: 'A black cat skull that whispers secrets at midnight',
   spellcastingClass: 'sorcerer',
   spellcastingAbility: 'cha',
-  cantrips: ['Chill Touch', 'Prestidigitation', 'Minor Illusion', 'Poison Spray'],
+  cantrips: ['Chill Touch', 'Prestidigitation', 'Minor Illusion', 'Poison Spray', 'Mage Hand'],
   spellsKnown: ['Charm Person', 'Shield', 'Scorching Ray', 'Misty Step', 'Burning Hands'],
   spellsPrepared: [],
   hitDie: 6,

@@ -76,7 +76,7 @@ export const animaErrante: CharacterData = {
   treasure: 'A coin from Purgatory that is always warm to the touch, bearing a face on one side and flames on the other',
   spellcastingClass: 'warlock',
   spellcastingAbility: 'cha',
-  cantrips: ['Eldritch Blast', 'Chill Touch', 'Minor Illusion'],
+  cantrips: ['Eldritch Blast', 'Minor Illusion'],
   spellsKnown: ['Hex', 'Charm Person', 'Hold Person', 'Hellish Rebuke'],
   spellsPrepared: [],
   hitDie: 8,

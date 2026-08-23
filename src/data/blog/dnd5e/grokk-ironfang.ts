@@ -79,7 +79,7 @@ export const grokkIronfang: CharacterData = {
   maxHp: 50,
   currentHp: 50,
   tempHp: 0,
-  speed: 30,
+  speed: 40,
   brawlingMoves: [],
   misdeeds: '',
   size: 'Medium',

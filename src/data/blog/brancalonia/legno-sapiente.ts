@@ -74,7 +74,7 @@ export const legnoSapiente: CharacterData = {
   treasure: 'His creator\'s battered spellbook with notes in the margins',
   spellcastingClass: 'wizard',
   spellcastingAbility: 'int',
-  cantrips: ['Fire Bolt', 'Mage Hand', 'Prestidigitation'],
+  cantrips: ['Fire Bolt', 'Mage Hand', 'Prestidigitation', 'Minor Illusion'],
   spellsKnown: [],
   spellsPrepared: ['Magic Missile', 'Shield', 'Sleep', 'Scorching Ray', 'Web', 'Misty Step', 'Mage Armor'],
   hitDie: 6,

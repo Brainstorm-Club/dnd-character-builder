@@ -1,0 +1,122 @@
+import type { CharacterData } from '@/stores/character'
+
+/**
+ * Sylwen Thornhollow — Elf (Wood Elf) Druid (Circle Of The Land) livello 3
+ *
+ * Regole 2024. La specie non dà bonus alle caratteristiche: quelli vengono dal
+ * background (Sage: wis: 2, int: 1) insieme al talento d'origine.
+ * In `cantrips` stanno solo i trucchetti della classe; quelli che arrivano
+ * dalla discendenza o dal talento sono elencati fra i privilegi.
+ */
+export const sylwenThornhollow: CharacterData = {
+  id: 'blog-druid-elf-sylwen-thornhollow',
+  variant: 'dnd2024',
+  name: 'Sylwen Thornhollow',
+  playerName: '',
+  race: 'elf',
+  subrace: 'wood-elf',
+  feat: 'magic-initiate',
+  className: 'druid',
+  subclass: 'circle-of-the-land',
+  level: 3,
+  background: 'sage',
+  alignment: 'n',
+  experiencePoints: 900,
+  // Acquisto a punti (27): str: 8, dex: 14, con: 13, int: 12, wis: 15, cha: 10
+  abilityScores: { str: 8, dex: 14, con: 13, int: 12, wis: 15, cha: 10 },
+  // Background Sage: wis: 2, int: 1 — totali STR 8, DEX 14, CON 13, INT 13, WIS 17, CHA 10
+  racialBonuses: { wis: 2, int: 1 },
+  skillProficiencies: [
+    'arcana',
+    'history',
+    'nature',
+    'survival',
+  ],
+  skillExpertise: [],
+  savingThrowProficiencies: ['int', 'wis'],
+  languages: [
+    'Common',
+    'Elvish',
+    'Sylvan',
+  ],
+  proficienciesOther: [
+    'light armor',
+    'shields',
+    'simple weapons',
+    'herbalism kit',
+  ],
+  weapons: [
+    { name: 'Quarterstaff', attackBonus: 1, damage: '1d6-1' },
+    { name: 'Sickle', attackBonus: 1, damage: '1d4-1' },
+  ],
+  armor: 'Leather',
+  shield: false,
+  equipment: [
+    'Quarterstaff',
+    'Leather Armor',
+    'Druidic Focus',
+    'Herbalism Kit',
+    'Explorers Pack',
+  ],
+  coins: { cp: 0, sp: 0, ep: 0, gp: 9, pp: 0 },
+  personalityTraits: 'I answer questions with other questions, mostly because the second question is usually the one that matters.',
+  ideals: 'Balance. A forest that is only protected stops being a forest and becomes a garden, and gardens need gardeners forever.',
+  bonds: 'The Thornhollow is not a family name, it is a place, and it is nine miles of woodland that nobody else has agreed to speak for.',
+  flaws: 'I have more patience for a two-hundred-year-old oak than for a frightened villager, and it shows on my face.',
+  featuresTraits: [
+    'Druidic',
+    'Spellcasting',
+    'Wild Shape',
+    'Wild Companion',
+    'Druid Subclass: Circle of the Land',
+    'Circle of the Land Spells',
+    'Land’s Aid',
+    'Darkvision',
+    'Elven Lineage: Wood Elf',
+    'Fey Ancestry',
+    'Keen Senses',
+    'Trance',
+    'Origin Feat: Magic Initiate (Wizard)',
+  ],
+  backstory: 'Sylwen was apprenticed to a scholar in a lowland city for eleven years and was, by every account, excellent at it. She came home to find that a drainage scheme had taken a third of the Thornhollow while she was learning to read about it. The Circle took her in without much comment and taught her that the land argues back if you know how to listen. She still keeps the scholar\'s habits — notes, cross-references, a horror of unsupported claims — and applies them to root systems and water tables instead of manuscripts.',
+  age: '106',
+  height: '5\'7"',
+  weight: '125 lbs',
+  eyes: 'Moss green',
+  hair: 'Dark brown, threaded with dry grass',
+  skin: 'Warm brown',
+  allies: 'The Circle of the Thornhollow — four druids and a great many opinions',
+  treasure: 'A field notebook, half botany and half grievance, going back thirty years',
+  spellcastingClass: 'druid',
+  spellcastingAbility: 'wis',
+  cantrips: [
+    'Druidcraft',
+    'Produce Flame',
+  ],
+  spellsKnown: [],
+  spellsPrepared: [
+    'Entangle',
+    'Cure Wounds',
+    'Faerie Fire',
+    'Thunderwave',
+    'Speak with Animals',
+    'Goodberry',
+  ],
+  hitDie: 8,
+  // PF: 1° liv 8 + COS 1; livelli successivi 2 × (5 + 1)
+  maxHp: 21,
+  currentHp: 21,
+  tempHp: 0,
+  speed: 35,
+  brawlingMoves: [],
+  misdeeds: '',
+  size: 'Medium',
+  whacksLevel: 0,
+  mark: '',
+  markSpirit: '',
+  virtue: '',
+  sin: '',
+  humanity: 10,
+  sessionNotes: '',
+  classes: [],
+}

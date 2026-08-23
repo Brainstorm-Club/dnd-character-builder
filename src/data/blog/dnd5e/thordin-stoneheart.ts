@@ -73,7 +73,7 @@ export const thordinStoneheart: CharacterData = {
   treasure: 'A silver holy symbol set with a garnet',
   spellcastingClass: 'cleric',
   spellcastingAbility: 'wis',
-  cantrips: ['Sacred Flame', 'Guidance', 'Light'],
+  cantrips: ['Sacred Flame', 'Guidance', 'Light', 'Spare the Dying'],
   spellsKnown: [],
   spellsPrepared: ['Cure Wounds', 'Healing Word', 'Bless', 'Shield of Faith', 'Aid', 'Lesser Restoration', 'Spirit Guardians', 'Revivify'],
   hitDie: 8,

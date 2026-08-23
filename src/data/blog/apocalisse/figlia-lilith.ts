@@ -75,7 +75,7 @@ export const figliaLilith: CharacterData = {
   spellcastingClass: 'warlock',
   spellcastingAbility: 'cha',
   cantrips: ['Eldritch Blast', 'Chill Touch', 'Minor Illusion'],
-  spellsKnown: ['Hex', 'Hellish Rebuke', 'Hold Person', 'Misty Step', 'Counterspell', 'Fireball'],
+  spellsKnown: ['Hex', 'Hellish Rebuke', 'Hold Person', 'Misty Step', 'Counterspell', 'Fly'],
   spellsPrepared: [],
   hitDie: 8,
   maxHp: 38,

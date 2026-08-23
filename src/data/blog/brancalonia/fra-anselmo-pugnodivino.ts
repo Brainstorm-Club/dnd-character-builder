@@ -78,7 +78,7 @@ export const fraAnselmoPugnodivino: CharacterData = {
   maxHp: 31,
   currentHp: 31,
   tempHp: 0,
-  speed: 30, // Base 30 + 10 Monk Unarmored Movement at level 4
+  speed: 40, // Base 30 + 10 Monk Unarmored Movement at level 4
   brawlingMoves: ['Pugno del Giusto', 'Calcio Rotante del Frate', 'Gomitata Benedetta'],
   misdeeds: 'Ha picchiato tre guardie cittadine che estorcevano denaro ai mendicanti.',
   size: 'Medium',

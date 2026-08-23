@@ -68,7 +68,7 @@ export const rowanAshwood: CharacterData = {
   spellcastingAbility: 'wis',
   cantrips: ['Druidcraft', 'Produce Flame', 'Shillelagh'],
   spellsKnown: [],
-  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Thunderwave', 'Goodberry', 'Pass without Trace', 'Hold Person', 'Lesser Restoration', 'Dispel Magic'],
+  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Thunderwave', 'Entangle', 'Pass without Trace', 'Hold Person', 'Lesser Restoration', 'Dispel Magic'],
   hitDie: 8,
   // Level 1: 8 + CON(2) = 10; Levels 2-5: 4 * (5 + 2) = 28; Total = 38
   maxHp: 38,

@@ -89,10 +89,10 @@ export const fernWildbloom: CharacterData = {
   treasure: 'A polished river stone etched with a druidic glyph meaning "growth"',
   spellcastingClass: 'druid',
   spellcastingAbility: 'wis',
-  cantrips: ['Druidcraft', 'Produce Flame', 'Shillelagh'],
+  cantrips: ['Produce Flame', 'Shillelagh'],
   spellsKnown: [],
   // Druids prepare spells: WIS mod(3) + level(3) = 6 prepared
-  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Thunderwave', 'Goodberry', 'Healing Word', 'Pass without Trace'],
+  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Thunderwave', 'Entangle', 'Healing Word', 'Pass without Trace'],
   hitDie: 8,
   // HP: L1 = 8 + CON mod(2) = 10; L2-3 = 2 * (avg 5 + CON mod 2) = 14; Total = 24
   maxHp: 24,

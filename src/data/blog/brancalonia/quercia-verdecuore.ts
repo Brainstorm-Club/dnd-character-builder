@@ -74,7 +74,7 @@ export const querciaVerdecuore: CharacterData = {
   spellcastingAbility: 'wis',
   cantrips: ['Druidcraft', 'Produce Flame', 'Shillelagh'],
   spellsKnown: [],
-  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Goodberry', 'Pass without Trace', 'Hold Person', 'Thunderwave', 'Lesser Restoration'],
+  spellsPrepared: ['Cure Wounds', 'Faerie Fire', 'Entangle', 'Pass without Trace', 'Hold Person', 'Thunderwave', 'Lesser Restoration'],
   hitDie: 8,
   maxHp: 35,
   currentHp: 35,
