@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getSpells, getSpellSlots, getCantripsKnown, getSpellsKnownCount, getClasses, getMulticlassSpellSlots, ensureSpellData } from '@/data'
@@ -195,8 +195,58 @@ function toggleSpell(spellId: string) {
   else if (characterStore.character.spellsKnown.length < maxSpellsKnown.value) characterStore.character.spellsKnown.push(spellId)
 }
 
-function showDetail(spell: Spell) {
+// ─── Dettaglio incantesimo: apertura, fuoco, chiusura ──────────────────────
+const detailDialogEl = ref<HTMLElement | null>(null)
+// Da dove è partita l'apertura: alla chiusura il fuoco deve tornare lì, non
+// finire sul <body> lasciando chi naviga da tastiera a ripartire da capo.
+const detailOpener = ref<HTMLElement | null>(null)
+
+async function showDetail(spell: Spell, opener?: EventTarget | null) {
+  detailOpener.value = (opener as HTMLElement | null)
+    ?? (document.activeElement as HTMLElement | null)
   selectedSpellDetail.value = spell
+  await nextTick()
+  // Il riquadro è modale: senza spostarci il fuoco un lettore di schermo
+  // continuerebbe a leggere la lista sotto, che nel frattempo è inerte.
+  detailDialogEl.value?.focus()
+}
+
+function closeDetail() {
+  if (!selectedSpellDetail.value) return
+  selectedSpellDetail.value = null
+  const back = detailOpener.value
+  detailOpener.value = null
+  back?.focus()
+}
+
+/** Selettore dei nodi tabulabili dentro il riquadro (per il giro del Tab). */
+const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])'
+
+function onDetailKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') {
+    e.preventDefault()
+    closeDetail()
+    return
+  }
+  if (e.key !== 'Tab') return
+  const root = detailDialogEl.value
+  if (!root) return
+  const nodes = Array.from(root.querySelectorAll<HTMLElement>(FOCUSABLE))
+  if (!nodes.length) {
+    // Nessun comando dentro: il Tab non deve poter uscire da un dialogo modale.
+    e.preventDefault()
+    return
+  }
+  const first = nodes[0]!
+  const last = nodes[nodes.length - 1]!
+  const current = document.activeElement
+  if (e.shiftKey && (current === first || current === root)) {
+    e.preventDefault()
+    last.focus()
+  } else if (!e.shiftKey && current === last) {
+    e.preventDefault()
+    first.focus()
+  }
 }
 </script>
 
@@ -218,15 +268,15 @@ function showDetail(spell: Spell) {
             <span class="text-amber-400 font-medium ml-1">{{ characterStore.character.spellcastingAbility.toUpperCase() }}</span>
           </div>
           <div v-for="(slots, level) in spellSlots" :key="level">
-            <span class="text-stone-400">Lv.{{ level }}:</span>
-            <span class="text-amber-400 font-medium ml-1">{{ slots }} slot</span>
+            <span class="text-stone-400">{{ t('spells.levelShort') }}{{ level }}:</span>
+            <span class="text-amber-400 font-medium ml-1">{{ slots }} {{ t('spells.slots') }}</span>
           </div>
         </div>
         <div v-if="hasPactSlots" class="flex flex-wrap gap-4 text-sm mt-2 pt-2 border-t border-stone-700">
           <div class="text-purple-400 font-medium">{{ t('spells.pactMagic') }}:</div>
           <div v-for="(slots, level) in pactSlots" :key="'pact-' + level">
-            <span class="text-stone-400">Lv.{{ level }}:</span>
-            <span class="text-purple-400 font-medium ml-1">{{ slots }} slot</span>
+            <span class="text-stone-400">{{ t('spells.levelShort') }}{{ level }}:</span>
+            <span class="text-purple-400 font-medium ml-1">{{ slots }} {{ t('spells.slots') }}</span>
           </div>
         </div>
       </div>
@@ -280,23 +330,36 @@ function showDetail(spell: Spell) {
           <span class="text-sm text-stone-500" aria-live="polite">({{ characterStore.character.cantrips.length }}/{{ maxCantrips }})</span>
         </h3>
         <div class="flex flex-wrap gap-2" role="group" :aria-label="t('spells.cantrips')">
-          <button
+          <!-- Due comandi distinti e affiancati: il chip sceglie, la "i" mostra
+               il dettaglio. Annidare il secondo dentro il primo darebbe un
+               <button> dentro un <button>, che il browser scarta. -->
+          <span
             v-for="spell in cantrips"
             :key="spell.id"
-            @click="toggleCantrip(spell.id)"
-            @contextmenu.prevent="showDetail(spell)"
-            class="px-3 py-1 rounded text-xs transition-colors cursor-pointer"
-            :class="characterStore.character.cantrips.includes(spell.id)
-              ? 'bg-amber-600 text-stone-900 font-medium'
-              : characterStore.character.cantrips.length >= maxCantrips
-                ? 'bg-stone-800 text-stone-600'
-                : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
-            :title="spell.description"
-            :aria-pressed="characterStore.character.cantrips.includes(spell.id)"
-            :aria-disabled="!characterStore.character.cantrips.includes(spell.id) && characterStore.character.cantrips.length >= maxCantrips"
+            class="inline-flex items-stretch rounded overflow-hidden"
           >
-            {{ gt.spell(spell.name) }}
-          </button>
+            <button
+              type="button"
+              @click="toggleCantrip(spell.id)"
+              @contextmenu.prevent="showDetail(spell, $event.currentTarget)"
+              class="px-3 py-1 text-xs transition-colors cursor-pointer"
+              :class="characterStore.character.cantrips.includes(spell.id)
+                ? 'bg-amber-600 text-stone-900 font-medium'
+                : characterStore.character.cantrips.length >= maxCantrips
+                  ? 'bg-stone-800 text-stone-600'
+                  : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
+              :aria-pressed="characterStore.character.cantrips.includes(spell.id)"
+              :aria-disabled="!characterStore.character.cantrips.includes(spell.id) && characterStore.character.cantrips.length >= maxCantrips"
+            >
+              {{ gt.spell(spell.name) }}
+            </button>
+            <button
+              type="button"
+              class="px-2 py-1 text-xs bg-stone-700 text-stone-400 hover:bg-stone-600 hover:text-amber-400 cursor-pointer border-l border-stone-800"
+              :aria-label="t('spells.showDetail', { name: gt.spell(spell.name) })"
+              @click="showDetail(spell, $event.currentTarget)"
+            >&#9432;</button>
+          </span>
           <p v-if="!cantrips.length" class="text-sm text-stone-500">{{ t('spells.noneForClass') }}</p>
         </div>
       </div>
@@ -308,45 +371,63 @@ function showDetail(spell: Spell) {
           <span class="text-sm text-stone-500" aria-live="polite">({{ characterStore.character.spellsKnown.length }}/{{ maxSpellsKnown }})</span>
         </h3>
         <div class="space-y-1" role="group" :aria-label="t('spells.knownSpells')">
-          <button
-            v-for="spell in leveledSpells"
-            :key="spell.id"
-            @click="toggleSpell(spell.id)"
-            @contextmenu.prevent="showDetail(spell)"
-            class="w-full text-left px-3 py-2 rounded text-sm transition-colors cursor-pointer flex items-center justify-between"
-            :class="characterStore.character.spellsKnown.includes(spell.id)
-              ? 'bg-amber-600/20 border border-amber-600 text-stone-200'
-              : characterStore.character.spellsKnown.length >= maxSpellsKnown
-                ? 'bg-stone-800 text-stone-600'
-                : 'bg-stone-800 text-stone-300 hover:bg-stone-700 border border-stone-700'"
-            :aria-pressed="characterStore.character.spellsKnown.includes(spell.id)"
-            :aria-disabled="!characterStore.character.spellsKnown.includes(spell.id) && characterStore.character.spellsKnown.length >= maxSpellsKnown"
-          >
-            <span>
-              <span class="font-medium">{{ gt.spell(spell.name) }}</span>
-              <span class="text-stone-500 ml-2">Lv.{{ spell.level }} - {{ gt.school(spell.school) }}</span>
-              <span
-                v-if="spell.ritual"
-                class="ml-2 px-1.5 py-0.5 text-[10px] uppercase tracking-wide rounded bg-amber-900/40 text-amber-300 border border-amber-800"
-                :title="t('spells.ritual')"
-              >{{ t('spells.ritual') }}</span>
-            </span>
-            <span class="text-xs text-stone-500">{{ spell.castingTime }}</span>
-          </button>
+          <div v-for="spell in leveledSpells" :key="spell.id" class="flex items-stretch gap-1">
+            <button
+              type="button"
+              @click="toggleSpell(spell.id)"
+              @contextmenu.prevent="showDetail(spell, $event.currentTarget)"
+              class="flex-1 text-left px-3 py-2 rounded text-sm transition-colors cursor-pointer flex items-center justify-between"
+              :class="characterStore.character.spellsKnown.includes(spell.id)
+                ? 'bg-amber-600/20 border border-amber-600 text-stone-200'
+                : characterStore.character.spellsKnown.length >= maxSpellsKnown
+                  ? 'bg-stone-800 text-stone-600'
+                  : 'bg-stone-800 text-stone-300 hover:bg-stone-700 border border-stone-700'"
+              :aria-pressed="characterStore.character.spellsKnown.includes(spell.id)"
+              :aria-disabled="!characterStore.character.spellsKnown.includes(spell.id) && characterStore.character.spellsKnown.length >= maxSpellsKnown"
+            >
+              <span>
+                <span class="font-medium">{{ gt.spell(spell.name) }}</span>
+                <span class="text-stone-500 ml-2">{{ t('spells.levelShort') }}{{ spell.level }} - {{ gt.school(spell.school) }}</span>
+                <span
+                  v-if="spell.ritual"
+                  class="ml-2 px-1.5 py-0.5 text-[10px] uppercase tracking-wide rounded bg-amber-900/40 text-amber-300 border border-amber-800"
+                >{{ t('spells.ritual') }}</span>
+              </span>
+              <span class="text-xs text-stone-500">{{ spell.castingTime }}</span>
+            </button>
+            <button
+              type="button"
+              class="px-3 rounded text-sm bg-stone-800 border border-stone-700 text-stone-400 hover:bg-stone-700 hover:text-amber-400 cursor-pointer"
+              :aria-label="t('spells.showDetail', { name: gt.spell(spell.name) })"
+              @click="showDetail(spell, $event.currentTarget)"
+            >&#9432;</button>
+          </div>
           <p v-if="!leveledSpells.length" class="text-sm text-stone-500">{{ t('spells.noneAtLevel') }}</p>
         </div>
       </div>
 
       <!-- Spell Detail Modal -->
       <div v-if="selectedSpellDetail" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 p-4"
-        @click.self="selectedSpellDetail = null" role="dialog" aria-modal="true" :aria-label="gt.spell(selectedSpellDetail.name)">
-        <div class="bg-stone-800 border border-stone-600 rounded-xl p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto">
+        @click.self="closeDetail()">
+        <!-- role/aria-modal e tabindex stanno sul riquadro, non sullo sfondo:
+             è il riquadro a ricevere il fuoco e a intercettare Esc e Tab. -->
+        <div
+          ref="detailDialogEl"
+          role="dialog"
+          aria-modal="true"
+          tabindex="-1"
+          :aria-label="gt.spell(selectedSpellDetail.name)"
+          @keydown="onDetailKeydown"
+          class="bg-stone-800 border border-stone-600 rounded-xl p-6 max-w-lg w-full max-h-[80vh] overflow-y-auto"
+        >
           <div class="flex justify-between items-start mb-3">
             <h3 class="text-lg font-bold text-amber-400">{{ gt.spell(selectedSpellDetail.name) }}</h3>
-            <button @click="selectedSpellDetail = null" class="text-stone-500 hover:text-stone-300 cursor-pointer" :aria-label="t('common.cancel')">&times;</button>
+            <button type="button" @click="closeDetail()" class="text-stone-500 hover:text-stone-300 cursor-pointer" :aria-label="t('common.close')">&times;</button>
           </div>
           <div class="space-y-2 text-sm text-stone-400">
-            <p><strong>{{ t('spells.level') }}:</strong> {{ selectedSpellDetail.level === 0 ? t('spells.cantrips') : selectedSpellDetail.level }}</p>
+            <!-- common.level e non spells.level: quest'ultima è "Livello {level}"
+                 e senza il parametro stampava l'etichetta monca. -->
+            <p><strong>{{ t('common.level') }}:</strong> {{ selectedSpellDetail.level === 0 ? t('spells.cantrips') : selectedSpellDetail.level }}</p>
             <p><strong>{{ t('spells.school') }}:</strong> {{ gt.school(selectedSpellDetail.school) }}</p>
             <p><strong>{{ t('spells.castingTime') }}:</strong> {{ selectedSpellDetail.castingTime }}</p>
             <p><strong>{{ t('spells.range') }}:</strong> {{ selectedSpellDetail.range }}</p>

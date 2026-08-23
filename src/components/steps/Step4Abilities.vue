@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import type { AbilityScores } from '@/stores/character'
@@ -55,6 +55,27 @@ const pointBuyScores = ref<Record<keyof AbilityScores, number>>({
   str: 8, dex: 8, con: 8, int: 8, wis: 8, cha: 8,
 })
 const remaining = computed(() => pointBuyRemaining(Object.values(pointBuyScores.value)))
+
+/**
+ * I contatori del point buy partono dai punteggi che il personaggio ha già.
+ * Restando fermi a 8 il solo tocco del selettore di metodo azzerava una scheda
+ * caricata a 8/8/8/8/8/8, senza chiedere conferma e senza modo di tornare
+ * indietro. Il point buy ammette 8-15: fuori da lì si limita al bordo, così i
+ * costi restano calcolabili anche su punteggi nati da un tiro di dadi.
+ */
+function restorePointBuy() {
+  for (const a of abilities) {
+    const score = characterStore.character.abilityScores[a]
+    pointBuyScores.value[a] = Math.min(15, Math.max(8, score))
+  }
+}
+restorePointBuy()
+
+// `<KeepAlive>` in BuilderView non rimonta il passo fra un avanti e un indietro,
+// ma caricare una scheda salvata, rientrare nel builder o importare un JSON
+// sostituisce l'intero personaggio: senza questo i contatori restano su quelli
+// del personaggio precedente.
+watch(() => characterStore.character.id, () => restorePointBuy())
 
 function adjustPointBuy(ability: keyof AbilityScores, delta: number) {
   const newVal = pointBuyScores.value[ability] + delta

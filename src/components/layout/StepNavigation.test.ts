@@ -43,19 +43,30 @@ describe('barra dei passi', () => {
     expect(store.character.race).toBe('')
   })
 
-  it('non disturba se il personaggio è appena iniziato', async () => {
+  /**
+   * La conferma era condizionata a `hasUnsavedWork()`, che è falsa per tutta
+   * la prima metà del percorso: variante, caratteristiche e livello scelti
+   * sparivano al primo clic sul pallino «1» senza una parola.
+   */
+  it('chiede conferma anche a personaggio appena iniziato', async () => {
     const store = useCharacterStore()
-    store.character.variant = 'dnd5e'
+    const app = useAppStore()
+    store.character.variant = 'brancalonia'
+    store.character.abilityScores.str = 17
+    store.character.level = 4
+    app.setStep(1)
 
     const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
     await wrapper.findAll('button')[0]!.trigger('click')
     await wrapper.vm.$nextTick()
 
-    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(false)
-    expect(push).toHaveBeenCalledWith('/')
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(true)
+    expect(push).not.toHaveBeenCalled()
+    expect(store.character.abilityScores.str).toBe(17)
+    expect(store.character.level).toBe(4)
   })
 
-  it('non disturba se il personaggio è già salvato', async () => {
+  it('chiede conferma anche se il personaggio è già salvato', async () => {
     const store = useCharacterStore()
     store.character.variant = 'dnd5e'
     store.character.race = 'human'
@@ -66,8 +77,81 @@ describe('barra dei passi', () => {
     await wrapper.findAll('button')[0]!.trigger('click')
     await wrapper.vm.$nextTick()
 
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(true)
+    expect(push).not.toHaveBeenCalled()
+  })
+
+  it('annullando la conferma non si perde niente', async () => {
+    const store = useCharacterStore()
+    store.character.variant = 'dnd5e'
+    store.character.race = 'human'
+
+    const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
+    await wrapper.findAll('button')[0]!.trigger('click')
+    await wrapper.vm.$nextTick()
+    await wrapper.findAll('[role="alertdialog"] button')[1]!.trigger('click')
+    await wrapper.vm.$nextTick()
+
     expect(wrapper.find('[role="alertdialog"]').exists()).toBe(false)
-    expect(push).toHaveBeenCalledWith('/')
+    expect(push).not.toHaveBeenCalled()
+    expect(store.character.race).toBe('human')
+  })
+
+  /**
+   * `currentStep` viene ripescato dal localStorage: senza il riallineamento
+   * all'ingresso si rientrava nel riepilogo di un personaggio che non ha
+   * ancora una classe, perché il wizard controlla i requisiti solo in avanti.
+   */
+  it('al rientro riporta il passo al primo non completato', () => {
+    const store = useCharacterStore()
+    const app = useAppStore()
+    store.character.variant = 'dnd5e'
+    app.setStep(8)
+
+    mount(StepNavigation, { global: { plugins: [i18n] } })
+
+    expect(app.currentStep).toBe(2)
+  })
+
+  it('al rientro lascia stare un passo che il personaggio si è guadagnato', () => {
+    const store = useCharacterStore()
+    const app = useAppStore()
+    store.character.variant = 'dnd5e'
+    store.character.race = 'human'
+    store.character.className = 'fighter'
+    store.character.background = 'soldier'
+    app.setStep(8)
+
+    mount(StepNavigation, { global: { plugins: [i18n] } })
+
+    expect(app.currentStep).toBe(8)
+  })
+
+  /**
+   * Il numero del passo non raggiunto era stone-500 su stone-700: 2,87:1.
+   * Su mobile è l'unico contenuto del pulsante, perché l'etichetta è nascosta.
+   */
+  it('i passi non raggiunti hanno un numero leggibile', () => {
+    const app = useAppStore()
+    app.setStep(0)
+
+    const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
+    const badge = wrapper.findAll('li')[3]!.find('span')
+
+    expect(badge.classes()).not.toContain('text-stone-500')
+    expect(badge.classes()).toContain('text-stone-300')
+  })
+
+  it('sotto sm resta visibile almeno l\'etichetta del passo corrente', () => {
+    const app = useAppStore()
+    app.setStep(3)
+
+    const wrapper = mount(StepNavigation, { global: { plugins: [i18n] } })
+    const labels = wrapper.findAll('button > span:nth-child(2)')
+
+    expect(labels[3]!.classes()).toContain('inline')
+    expect(labels[3]!.classes()).not.toContain('hidden')
+    expect(labels[4]!.classes()).toContain('hidden')
   })
 
   it('il passo Variante riporta alla home e azzera il personaggio', async () => {

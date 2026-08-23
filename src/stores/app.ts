@@ -21,6 +21,31 @@ export const STEP_KEYS = [
   'equipment', 'spells', 'details', 'review',
 ] as const
 
+/**
+ * I soli campi da cui dipende il diritto di stare su un passo. Tipo strutturale
+ * e non `CharacterData` per non far dipendere questo store da quello del
+ * personaggio, che invece dipende da questo.
+ */
+export interface StepProgress {
+  variant?: string
+  race?: string
+  className?: string
+  background?: string
+}
+
+/**
+ * Ultimo passo che il personaggio ha il diritto di occupare. Ricalca i
+ * requisiti di `isCurrentStepValid` in BuilderView: quelli governano
+ * l'avanzamento, questo governa il rientro dopo un ricaricamento.
+ */
+export function furthestAllowedStep(c: StepProgress): number {
+  if (!c.variant) return 0
+  if (!c.race) return 2
+  if (!c.className) return 3
+  if (!c.background) return 4
+  return STEP_KEYS.length - 1
+}
+
 export const useAppStore = defineStore('app', () => {
   const locale = ref<string>(navigator.language.startsWith('it') ? 'it' : 'en')
   const currentStep = ref(0)
@@ -55,9 +80,25 @@ export const useAppStore = defineStore('app', () => {
     currentStep.value = 0
   }
 
-  return { locale, currentStep, totalSteps, theme, setLocale, setTheme, setStep, nextStep, prevStep, resetSteps }
+  /**
+   * Riporta il passo entro quello che il personaggio consente. Serve al
+   * rientro: `currentStep` viene ripescato dall'archivio, e senza questo
+   * controllo un archivio con "passo 8" e un personaggio svuotato a mano
+   * riapriva il riepilogo di una scheda inesistente.
+   */
+  function clampStepToProgress(c: StepProgress) {
+    const limit = furthestAllowedStep(c)
+    if (currentStep.value > limit) currentStep.value = limit
+  }
+
+  return {
+    locale, currentStep, totalSteps, theme,
+    setLocale, setTheme, setStep, nextStep, prevStep, resetSteps, clampStepToProgress,
+  }
 }, {
   persist: {
-    pick: ['locale', 'theme'],
+    // `currentStep` è persistito perché ricaricando la pagina si tornava al
+    // primo passo pur avendo ancora il personaggio in corso.
+    pick: ['locale', 'theme', 'currentStep'],
   },
 })

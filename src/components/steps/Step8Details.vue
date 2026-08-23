@@ -69,91 +69,114 @@ function updateLevel() {
 
 <template>
   <section aria-labelledby="details-heading">
-    <h2 id="details-heading" class="text-2xl font-bold text-amber-500 mb-6">{{ t('details.title') }}</h2>
+    <h2 id="details-heading" class="font-gothic text-2xl font-bold text-amber-500 mb-6">{{ t('details.title') }}</h2>
 
+    <!-- Ventuno controlli ripetevano la stessa riga di utility: etichetta
+         (`block text-sm font-semibold text-stone-300 mb-1`) e campo
+         (`w-full … px-3 py-2 …`). Sono .bsc-field / .bsc-input / .bsc-select del
+         design system, riscritti a mano. Adesso il componente porta struttura,
+         larghezza, padding e colore del segnaposto; le utility che restano
+         servono a NON cambiare l'aspetto di oggi:
+         - `gap-1` tiene i 4px del vecchio `mb-1` (il DS ne vuole 8);
+         - `font-semibold` tiene il grassetto dell'etichetta (il DS la vuole di
+           peso normale);
+         - `bg-stone-800` / `border-stone-700` / `rounded-lg` / `text-stone-200`
+           tengono fondo, bordo, raggio e inchiostro di oggi, e sono anche gli
+           agganci del foglio di stampa e del tema carta in style.css, che sono
+           scritti sulle classi Tailwind e non sui token del DS;
+         - `focus:border-amber-500 focus:outline-none` resta il fuoco di oggi:
+           le utility vincono sul layer components, quindi il fuoco del DS
+           (anello rosso da 3px) non subentra senza una decisione esplicita.
+         Sui campi cambia solo il carattere dell'etichetta, che passa a Courier
+         Prime: è la voce del marchio, che nei nove passi non compariva. -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div>
-        <label for="char-name" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.name') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-name" class="font-semibold">{{ t('details.name') }}</label>
         <input id="char-name" v-model="characterStore.character.name" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="player-name" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.playerName') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="player-name" class="font-semibold">{{ t('details.playerName') }}</label>
         <input id="player-name" v-model="characterStore.character.playerName" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="char-level" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('common.level') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-level" class="font-semibold">{{ t('common.level') }}</label>
         <input id="char-level" v-model.number="characterStore.character.level" type="number" min="1" :max="maxLevel"
           @change="updateLevel"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="char-alignment" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.alignment') }}</label>
+      <!-- .bsc-select è l'unico punto in cui l'aspetto cambia davvero: la
+           freccia nativa del sistema lascia il posto al chevron del DS
+           (`appearance: none` + immagine di sfondo), uguale su ogni browser.
+           Per questo i menu non prendono `px-3`: il padding destro del
+           componente è più largo apposta, per fare posto alla freccia. -->
+      <div class="bsc-field gap-1">
+        <label for="char-alignment" class="font-semibold">{{ t('details.alignment') }}</label>
         <select id="char-alignment" v-model="characterStore.character.alignment"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none">
+          class="bsc-select bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none">
           <option value="">--</option>
           <option v-for="a in alignments" :key="a" :value="a">{{ t(`alignments.${a}`) }}</option>
         </select>
       </div>
 
-      <div>
-        <label for="char-age" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.age') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-age" class="font-semibold">{{ t('details.age') }}</label>
         <input id="char-age" v-model="characterStore.character.age" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="char-height" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.height') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-height" class="font-semibold">{{ t('details.height') }}</label>
         <input id="char-height" v-model="characterStore.character.height" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="char-weight" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.weight') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-weight" class="font-semibold">{{ t('details.weight') }}</label>
         <input id="char-weight" v-model="characterStore.character.weight" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="char-eyes" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.eyes') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-eyes" class="font-semibold">{{ t('details.eyes') }}</label>
         <input id="char-eyes" v-model="characterStore.character.eyes" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="char-hair" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.hair') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-hair" class="font-semibold">{{ t('details.hair') }}</label>
         <input id="char-hair" v-model="characterStore.character.hair" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
 
-      <div>
-        <label for="char-skin" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.skin') }}</label>
+      <div class="bsc-field gap-1">
+        <label for="char-skin" class="font-semibold">{{ t('details.skin') }}</label>
         <input id="char-skin" v-model="characterStore.character.skin" type="text"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
       </div>
     </div>
 
-    <div class="mt-6">
-      <label for="char-backstory" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.backstory') }}</label>
+    <div class="bsc-field gap-1 mt-6">
+      <label for="char-backstory" class="font-semibold">{{ t('details.backstory') }}</label>
       <textarea id="char-backstory" v-model="characterStore.character.backstory" rows="5"
-        class="w-full bg-stone-800 border border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
+        class="bsc-input bg-stone-800 border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
     </div>
 
     <!-- Session Notes -->
-    <div class="mt-6">
-      <label for="session-notes" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.sessionNotes') }}</label>
+    <div class="bsc-field gap-1 mt-6">
+      <label for="session-notes" class="font-semibold">{{ t('details.sessionNotes') }}</label>
       <textarea id="session-notes" v-model="characterStore.character.sessionNotes" rows="4"
         :placeholder="t('details.sessionNotesPlaceholder')"
-        class="w-full bg-stone-800 border border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
+        class="bsc-input bg-stone-800 border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
     </div>
 
     <!-- HP Summary -->
     <div class="mt-6 bg-stone-800 border border-stone-700 rounded-lg p-4">
-      <h3 class="font-semibold text-stone-300 mb-2">{{ t('review.hp') }}</h3>
+      <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('review.hp') }}</h3>
       <div class="flex gap-6 text-sm">
         <div>
           <span class="text-stone-400">{{ t('review.maxHp') }}:</span>
@@ -168,58 +191,58 @@ function updateLevel() {
 
     <!-- ═══ BRANCALONIA: Brawling & Size ═══ -->
     <div v-if="isBrancalonia" class="mt-6 bg-stone-800 border border-amber-700/30 rounded-lg p-4" role="region" :aria-label="t('details.brawling')">
-      <h3 class="font-semibold text-amber-400 mb-4">{{ t('details.brawling') }}</h3>
+      <h3 class="font-gothic font-semibold text-amber-400 mb-4">{{ t('details.brawling') }}</h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Size (auto from race) -->
-        <div>
-          <label for="branc-size" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.size') }}</label>
+        <div class="bsc-field gap-1">
+          <label for="branc-size" class="font-semibold">{{ t('details.size') }}</label>
           <input id="branc-size" :value="gt.size(raceSize)" readonly aria-readonly="true"
-            class="w-full bg-stone-900 border border-stone-700 rounded-lg px-3 py-2 text-stone-400 cursor-not-allowed" />
+            class="bsc-input bg-stone-900 border-stone-700 rounded-lg text-stone-400 cursor-not-allowed" />
         </div>
 
         <!-- Whacks Level -->
-        <div>
-          <label for="branc-whacks" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.whacksLevel') }}</label>
+        <div class="bsc-field gap-1">
+          <label for="branc-whacks" class="font-semibold">{{ t('details.whacksLevel') }}</label>
           <select id="branc-whacks" v-model.number="characterStore.character.whacksLevel"
-            class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none">
+            class="bsc-select bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none">
             <option v-for="wl in getWhacksLevels()" :key="wl.level" :value="wl.level">
               {{ whacksDisplay(wl.level) }}
             </option>
           </select>
-          <p v-if="characterStore.character.whacksLevel > 0" class="text-xs text-stone-500 mt-1">
+          <p v-if="characterStore.character.whacksLevel > 0" class="bsc-field-hint text-xs">
             {{ getWhacksLevels().find(w => w.level === characterStore.character.whacksLevel)?.mechanicalEffect }}
           </p>
         </div>
       </div>
 
       <!-- Brawling Moves -->
-      <div class="mt-4">
-        <label for="branc-brawling-moves" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.brawlingMoves') }}</label>
+      <div class="bsc-field gap-1 mt-4">
+        <label for="branc-brawling-moves" class="font-semibold">{{ t('details.brawlingMoves') }}</label>
         <textarea id="branc-brawling-moves" v-model="brawlingMovesText" rows="3"
           :placeholder="t('details.brawlingMovesPlaceholder')"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
       </div>
 
       <!-- Misdeeds -->
-      <div class="mt-4">
-        <label for="branc-misdeeds" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.misdeeds') }}</label>
+      <div class="bsc-field gap-1 mt-4">
+        <label for="branc-misdeeds" class="font-semibold">{{ t('details.misdeeds') }}</label>
         <textarea id="branc-misdeeds" v-model="characterStore.character.misdeeds" rows="3"
           :placeholder="t('details.misdeedsPlaceholder')"
-          class="w-full bg-stone-800 border border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
+          class="bsc-input bg-stone-800 border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
       </div>
     </div>
 
     <!-- ═══ APOCALISSE: Mark, Virtue, Sin, Humanity ═══ -->
     <div v-if="isApocalisse" class="mt-6 bg-stone-800 border border-red-700/30 rounded-lg p-4" role="region" :aria-label="t('details.markSection')">
-      <h3 class="font-semibold text-red-400 mb-4">{{ t('details.markSection') }}</h3>
+      <h3 class="font-gothic font-semibold text-red-400 mb-4">{{ t('details.markSection') }}</h3>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <!-- Mark -->
-        <div>
-          <label for="apo-mark" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.mark') }}</label>
+        <div class="bsc-field gap-1">
+          <label for="apo-mark" class="font-semibold">{{ t('details.mark') }}</label>
           <select id="apo-mark" v-model="characterStore.character.mark"
-            class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none">
+            class="bsc-select bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none">
             <option value="">{{ t('details.selectMark') }}</option>
             <option v-for="mark in apoMarks" :key="mark.id" :value="mark.id">
               {{ displayName(mark) }}
@@ -228,11 +251,11 @@ function updateLevel() {
         </div>
 
         <!-- Mark Spirit -->
-        <div>
-          <label for="apo-spirit" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.markSpirit') }}</label>
+        <div class="bsc-field gap-1">
+          <label for="apo-spirit" class="font-semibold">{{ t('details.markSpirit') }}</label>
           <select id="apo-spirit" v-model="characterStore.character.markSpirit"
             :disabled="!characterStore.character.mark"
-            class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none disabled:opacity-50">
+            class="bsc-select bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none disabled:opacity-50">
             <option value="">{{ t('details.selectSpirit') }}</option>
             <option v-for="spirit in markSpirits" :key="spirit.id" :value="spirit.id">
               {{ displayName(spirit) }}
@@ -241,40 +264,40 @@ function updateLevel() {
         </div>
 
         <!-- Virtue -->
-        <div>
-          <label for="apo-virtue" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.virtue') }}</label>
+        <div class="bsc-field gap-1">
+          <label for="apo-virtue" class="font-semibold">{{ t('details.virtue') }}</label>
           <select id="apo-virtue" v-model="characterStore.character.virtue"
-            class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none">
+            class="bsc-select bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none">
             <option value="">{{ t('details.selectVirtue') }}</option>
             <option v-for="v in apoVirtues" :key="v.id" :value="v.id">
               {{ displayName(v) }}
             </option>
           </select>
-          <p v-if="characterStore.character.virtue" class="text-xs text-stone-500 mt-1">
+          <p v-if="characterStore.character.virtue" class="bsc-field-hint text-xs">
             {{ apoVirtues.find(v => v.id === characterStore.character.virtue)?.description }}
           </p>
         </div>
 
         <!-- Sin -->
-        <div>
-          <label for="apo-sin" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.sin') }}</label>
+        <div class="bsc-field gap-1">
+          <label for="apo-sin" class="font-semibold">{{ t('details.sin') }}</label>
           <select id="apo-sin" v-model="characterStore.character.sin"
-            class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none">
+            class="bsc-select bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none">
             <option value="">{{ t('details.selectSin') }}</option>
             <option v-for="s in apoSins" :key="s.id" :value="s.id">
               {{ displayName(s) }}
             </option>
           </select>
-          <p v-if="characterStore.character.sin" class="text-xs text-stone-500 mt-1">
+          <p v-if="characterStore.character.sin" class="bsc-field-hint text-xs">
             {{ apoSins.find(s => s.id === characterStore.character.sin)?.benefit }}
           </p>
         </div>
 
         <!-- Humanity -->
-        <div>
-          <label for="apo-humanity" class="block text-sm font-semibold text-stone-300 mb-1">{{ t('details.humanity') }}</label>
+        <div class="bsc-field gap-1">
+          <label for="apo-humanity" class="font-semibold">{{ t('details.humanity') }}</label>
           <input id="apo-humanity" v-model.number="characterStore.character.humanity" type="number" min="0" max="10"
-            class="w-full bg-stone-800 border border-stone-700 rounded-lg px-3 py-2 text-stone-200 focus:border-amber-500 focus:outline-none" />
+            class="bsc-input bg-stone-800 border-stone-700 rounded-lg text-stone-200 focus:border-amber-500 focus:outline-none" />
         </div>
       </div>
     </div>

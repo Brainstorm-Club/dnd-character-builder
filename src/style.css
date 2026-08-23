@@ -57,19 +57,78 @@
   src: url('./assets/fonts/courier-prime-700.woff2') format('woff2');
 }
 
+/* ─── Ritocchi ai token del DS, prima che @theme li consumi ───────────────── */
+:root {
+  /* La faint del DS è tarata sul fondo pagina (carbone #181617), dove fa 5,1:1.
+     L'app però mette il testo tenue anche sulle superfici rialzate — la scheda
+     bg-stone-800 e la pastiglia bg-stone-700 di StepNavigation — e lì #8F8785
+     scende a 4,25:1. Qui si rialza fino a reggere il fondo peggiore che l'app
+     dipinge davvero (4,77:1 su bg-stone-700), senza toccare il submodule.
+     Il valore del tema carta resta quello del DS: `:root[data-theme="light"]`
+     ha specificità maggiore di questo blocco e vince da solo. */
+  --bsc-text-faint: #97908E;
+
+  /* Verde e azzurro: il DS ha un solo verde (--bsc-successo) e un solo azzurro
+     (--bsc-info), nati come pastiglie di stato, non come testo — su carta fanno
+     3,3:1. L'app ne ha bisogno come colori di variante (emerald = Brancalonia,
+     sky = D&D 2024), quindi qui si deriva dai due token la scala minima che
+     servono, con il token del DS ancorato alla rung 700 (quella dei bordi).
+     Le rung 300/400/900 sono le uniche che cambiano fra i due temi: 500 e 600
+     fanno da fondo a etichette quasi nere in entrambi. */
+  --app-verde-300: #7CC195;
+  --app-verde-400: #6FB58A;
+  --app-verde-500: #5FA378;
+  --app-verde-600: #4F9268;
+  --app-verde-700: var(--bsc-successo);
+  --app-verde-900: #163324;
+
+  --app-azzurro-300: #9BC8D8;
+  --app-azzurro-400: #84B8CB;
+  --app-azzurro-500: #6EA0B4;
+  --app-azzurro-600: #5C8FA3;
+  --app-azzurro-700: var(--bsc-info);
+  --app-azzurro-900: #122C36;
+}
+
+:root[data-theme="light"] {
+  /* Su carta il verde e l'azzurro chiari sparirebbero: testo e pastiglia si
+     invertono (inchiostro scuro, fondo tenue). */
+  --app-verde-300: #235137;
+  --app-verde-400: #2F6B45;
+  --app-verde-900: #BFDCC9;
+
+  --app-azzurro-300: #224A57;
+  --app-azzurro-400: #2E5F6E;
+  --app-azzurro-900: #BFD5DE;
+}
+
 /* ─── Brand palette → Tailwind theme (dark "carbone" is the default) ──────── */
 @theme {
   /* Body font stack (Atkinson Hyperlegible, then system fallback) */
   --font-sans: "Atkinson Hyperlegible", ui-sans-serif, system-ui, -apple-system,
     "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 
-  /* Neutrals → scala carbone del brand (token DS, submodule) */
-  --color-stone-50:  var(--bsc-neutro-50);
-  --color-stone-100: var(--bsc-neutro-100);
-  --color-stone-200: var(--bsc-neutro-200);
-  --color-stone-300: var(--bsc-neutro-300);
-  --color-stone-400: var(--bsc-neutro-400);
-  --color-stone-500: var(--bsc-neutro-500);
+  /* Neutrals → scala carbone del brand (token DS, submodule).
+     ---------------------------------------------------------------------
+     La rampa si decide qui una volta sola, non una rung per volta. Vincolo:
+     le rung 100→500 sono *inchiostri*, e il fondo più chiaro su cui l'app le
+     posa è bg-stone-700 (#2A2626); ognuna deve fare almeno 4,5:1 lì sopra e
+     restare più scura della precedente. Tre correzioni "da una riga" della
+     sola 500 sono state provate e nessuna regge: --bsc-text-faint (#8F8785)
+     la rende più chiara della 400 e ribalta la rampa; --bsc-neutro-400 la
+     fa collassare sulla 400 con 4,50:1 esatti su bg-stone-800 e 3,94:1 su
+     bg-stone-700; --bsc-neutro-300 la fa collassare sulla 300. Fra i neutri
+     del DS non esiste un gradino nel mezzo, quindi la metà chiara scala di
+     un token: 100 sale sul bianco caldo (che è anche --bsc-text del DS) e la
+     500 prende la faint ritarata sopra. La 600 resta dov'era: da lì in giù
+     sono superfici e bordi, non testo, e il salto è il confine fra i due
+     ruoli. */
+  --color-stone-50:  #FBF8F2; /* sopra il bianco caldo il DS non ha token */
+  --color-stone-100: var(--bsc-neutro-50);
+  --color-stone-200: var(--bsc-neutro-100);
+  --color-stone-300: var(--bsc-neutro-200);
+  --color-stone-400: var(--bsc-neutro-300);
+  --color-stone-500: var(--bsc-text-faint); /* si riadatta da solo su carta */
   --color-stone-600: var(--bsc-neutro-700);
   --color-stone-700: var(--bsc-neutro-800);
   --color-stone-800: var(--bsc-neutro-900);
@@ -91,6 +150,23 @@
   --color-amber-500: #d19a2e;
   --color-amber-600: #b4801f;
   --color-amber-700: #8c6115;
+
+  /* Variante Brancalonia (emerald) e D&D 2024 (sky): non erano nella palette
+     del brand e arrivavano dai default Tailwind, che su carta fanno 1,6:1.
+     Ora scendono dai token semantici del DS (vedi --app-verde-* sopra). */
+  --color-emerald-300: var(--app-verde-300);
+  --color-emerald-400: var(--app-verde-400);
+  --color-emerald-500: var(--app-verde-500);
+  --color-emerald-600: var(--app-verde-600);
+  --color-emerald-700: var(--app-verde-700);
+  --color-emerald-900: var(--app-verde-900);
+
+  --color-sky-300: var(--app-azzurro-300);
+  --color-sky-400: var(--app-azzurro-400);
+  --color-sky-500: var(--app-azzurro-500);
+  --color-sky-600: var(--app-azzurro-600);
+  --color-sky-700: var(--app-azzurro-700);
+  --color-sky-900: var(--app-azzurro-900);
 }
 
 /* WSG 3.12: Use sustainability beneficial user preference media queries */
@@ -156,11 +232,22 @@ body {
   letter-spacing: -0.01em;
 }
 
-/* Accessibility: visible focus indicators (WSG 2.2) — rosso mattone */
+/* Accessibility: visible focus indicators (WSG 2.2) — rosso mattone.
+   Il rosso base #c2332b scritto a mano faceva 2,71:1 su bg-stone-700 e 2,15:1
+   su bg-stone-600: sotto il 3:1 che WCAG 1.4.11 chiede a un indicatore non
+   testuale, cioè un anello che sui pannelli rialzati sparisce. --bsc-focus è
+   il token che il DS ha già tarato per questo (rosso-400 su carbone, rosso-700
+   su carta) e cambia da solo col tema: niente override per il tema chiaro. */
 :focus-visible {
-  outline: 2px solid #c2332b;
+  outline: 2px solid var(--bsc-focus);
   outline-offset: 2px;
 }
+
+/* `hover:bg-stone-500` è l'unico punto in cui la rung 500 fa da superficie e
+   non da inchiostro (la pastiglia della sottoclasse in Step3Class). Dopo il
+   riallineamento della rampa sarebbe un grigio chiaro sotto testo chiaro:
+   qui torna a essere un rialzo del fondo, come le rung vicine. */
+.hover\:bg-stone-500:hover { background-color: var(--bsc-neutro-600); }
 
 /* ─── Light Theme "carta" Override ─────────────────────────────────────────── */
 /* Specificity: html[data-theme="light"] .class = (0,2,1) > Tailwind (0,1,0) */
@@ -183,7 +270,10 @@ html[data-theme="light"] .text-stone-100 { color: #131112; }
 html[data-theme="light"] .text-stone-200 { color: #1e1b1c; }
 html[data-theme="light"] .text-stone-300 { color: #3b3636; }
 html[data-theme="light"] .text-stone-400 { color: #55504f; }
-html[data-theme="light"] .text-stone-500 { color: #726b6a; }
+/* Niente riga per .text-stone-500: fissarla a mano vinceva per specificità su
+   @theme e la inchiodava a #726b6a, che su carta fa 4,35:1. Senza la riga la
+   utility segue --bsc-text-faint, che il DS ridefinisce già per il tema chiaro
+   (#615B5A, 5,56:1). */
 html[data-theme="light"] .text-stone-600 { color: #55504f; }
 html[data-theme="light"] .text-stone-900 { color: #131112; }
 
@@ -205,6 +295,12 @@ html[data-theme="light"] .border-amber-700\/20 { border-color: rgba(140, 97, 21,
 html[data-theme="light"] .border-amber-600\/50 { border-color: rgba(180, 128, 31, 0.4); }
 
 /* Rosso accent — deeper for light bg */
+/* I bottoni rossi portano un'etichetta chiara: senza questa riga il
+   .text-stone-100 generico qui sopra la rifà quasi nera e su #c2332b resta a
+   3,41:1 (2,26:1 sul rosso-700 di "Elimina"). Il selettore composto vince
+   perché più specifico, e tocca solo gli elementi che hanno entrambe le classi. */
+html[data-theme="light"] .bg-red-600.text-stone-100,
+html[data-theme="light"] .bg-red-700.text-stone-100 { color: var(--bsc-bianco); }
 html[data-theme="light"] .text-red-400 { color: #9e2820; }
 html[data-theme="light"] .text-red-300 { color: #9e2820; }
 html[data-theme="light"] .border-red-700 { border-color: #9e2820; }
@@ -223,7 +319,9 @@ html[data-theme="light"] .border-blue-700 { border-color: #3a5f6d; }
 /* Purple accent */
 html[data-theme="light"] .text-purple-400 { color: #7e22ce; }
 html[data-theme="light"] .text-purple-300 { color: #7e22ce; }
-html[data-theme="light"] .text-purple-100 { color: #581c87; }
+/* Niente riga per .text-purple-100: quella classe esiste solo come etichetta
+   sopra bg-purple-700, e ridipingerla di viola scuro faceva 1,56:1 — testo
+   viola su fondo viola. Lasciata al default chiaro fa 5,92:1. */
 html[data-theme="light"] .border-purple-700 { border-color: #9333ea; }
 html[data-theme="light"] .border-purple-700\/30 { border-color: rgba(147, 51, 234, 0.25); }
 
@@ -256,12 +354,11 @@ html[data-theme="light"] .shadow-lg {
 html[data-theme="light"] .shadow-amber-500\/20 { --tw-shadow-color: rgba(180, 128, 31, 0.12); }
 html[data-theme="light"] .shadow-amber-600\/30 { --tw-shadow-color: rgba(180, 128, 31, 0.16); }
 
-/* Focus outline — rosso holds on light too */
-html[data-theme="light"] :focus-visible {
-  outline-color: #9e2820;
-}
+/* Nessun override del focus: `outline: 2px solid var(--bsc-focus)` prende già
+   il rosso-700 del DS quando il tema è carta. */
 
 /* Hover states */
+html[data-theme="light"] .hover\:bg-stone-500:hover { background-color: #d9d2cc; }
 html[data-theme="light"] .hover\:bg-stone-600:hover { background-color: #e6e0da; }
 html[data-theme="light"] .hover\:bg-stone-700:hover { background-color: #f3eee4; }
 html[data-theme="light"] .hover\:text-amber-400:hover { color: #8c6115; }
@@ -273,7 +370,9 @@ html[data-theme="light"] .hover\:border-stone-600:hover { border-color: #aba3a1;
 html[data-theme="light"] .hover\:border-amber-600\/50:hover { border-color: rgba(180, 128, 31, 0.4); }
 html[data-theme="light"] .hover\:border-amber-700\/50:hover { border-color: rgba(140, 97, 21, 0.4); }
 html[data-theme="light"] .hover\:bg-amber-500:hover { background-color: #d19a2e; }
-html[data-theme="light"] .hover\:bg-red-500:hover { background-color: #d9584e; }
+/* Su carta l'hover va più scuro, non più chiaro: il rosso-400 schiariva il
+   fondo sotto un'etichetta chiara e la portava a 3,42:1. */
+html[data-theme="light"] .hover\:bg-red-500:hover { background-color: #9e2820; }
 html[data-theme="light"] .hover\:bg-red-800:hover { background-color: rgba(194, 51, 43, 0.2); }
 html[data-theme="light"] .hover\:bg-green-600:hover { background-color: #4c8c63; }
 html[data-theme="light"] .hover\:bg-blue-600:hover { background-color: #4e7a8c; }

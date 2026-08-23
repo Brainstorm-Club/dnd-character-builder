@@ -14,10 +14,11 @@ const i18n = createI18n({
 describe('passo Background', () => {
   beforeAll(async () => {
     await preloadVariantData('apocalisse')
+    await preloadVariantData('dnd5e')
   })
   beforeEach(() => setActivePinia(createPinia()))
 
-  function mountFor(variant: 'apocalisse') {
+  function mountFor(variant: 'apocalisse' | 'dnd5e') {
     const store = useCharacterStore()
     store.character.variant = variant
     return { store, wrapper: mount(Step5Background, { global: { plugins: [i18n] } }) }
@@ -58,5 +59,66 @@ describe('passo Background', () => {
     await wrapper.vm.$nextTick()
     await wrapper.findAll('[role="radiogroup"] button')[0]!.trigger('click')
     expect(store.character.skillProficiencies).toEqual([])
+  })
+})
+
+describe('passo Background — competenze e riallineamento', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+  })
+  beforeEach(() => setActivePinia(createPinia()))
+
+  function mountFor(variant: 'dnd5e') {
+    const store = useCharacterStore()
+    store.character.variant = variant
+    return { store, wrapper: mount(Step5Background, { global: { plugins: [i18n] } }) }
+  }
+
+  function cards(wrapper: ReturnType<typeof mountFor>['wrapper']) {
+    return wrapper.find('[role="radiogroup"]').findAll('button')
+  }
+
+  const sorted = (xs: readonly string[]) => [...xs].sort()
+
+  it('non accumula le competenze di ogni background provato', async () => {
+    const bgs = getBackgrounds('dnd5e')
+    const { store, wrapper } = mountFor('dnd5e')
+    // Una competenza arrivata dalla classe: non è del background e deve restare
+    store.character.skillProficiencies = ['acrobatics']
+    await wrapper.vm.$nextTick()
+
+    await cards(wrapper)[0]!.trigger('click')
+    await cards(wrapper)[1]!.trigger('click')
+    await cards(wrapper)[2]!.trigger('click')
+
+    expect(sorted(store.character.skillProficiencies))
+      .toEqual(sorted(['acrobatics', ...bgs[2]!.skillProficiencies]))
+  })
+
+  // `<KeepAlive>` in BuilderView non rimonta il passo: il difetto si vede
+  // caricando una scheda salvata sotto un componente già vivo.
+  it('si riallinea alla scheda caricata senza essere rimontato', async () => {
+    const bgs = getBackgrounds('dnd5e')
+    const { store, wrapper } = mountFor('dnd5e')
+    await wrapper.vm.$nextTick()
+
+    await cards(wrapper)[3]!.trigger('click')
+    store.saveCharacter()
+    const savedId = store.character.id
+
+    // Un secondo personaggio con un background diverso, poi si torna al primo
+    store.resetCharacter()
+    await wrapper.vm.$nextTick()
+    await cards(wrapper)[0]!.trigger('click')
+    store.loadCharacter(savedId)
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.text()).toContain(bgs[3]!.feature.name)
+    expect(wrapper.text()).not.toContain(bgs[0]!.feature.name)
+
+    // E il background ripristinato è davvero "suo": cambiandolo se ne va
+    await cards(wrapper)[4]!.trigger('click')
+    expect(sorted(store.character.skillProficiencies))
+      .toEqual(sorted(bgs[4]!.skillProficiencies))
   })
 })

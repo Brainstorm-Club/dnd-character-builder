@@ -26,8 +26,18 @@ async function selectVariant(variant: GameVariant) {
 
 <template>
   <section aria-labelledby="variant-heading">
-    <h2 id="variant-heading" class="text-2xl font-bold text-amber-500 mb-6">{{ t('variant.title') }}</h2>
+    <!-- font-gothic: il titolo del passo prende la stessa faccia da macchina
+         da scrivere del marchio nell'intestazione. La misura non cambia — la
+         scala tipografica dell'app resta quella. -->
+    <h2 id="variant-heading" class="text-2xl font-bold text-amber-500 mb-6 font-gothic">{{ t('variant.title') }}</h2>
 
+    <!--
+      Le quattro schede sono controlli a due stati (role="radio" +
+      aria-checked): NON diventano .bsc-opt. Il .bsc-opt del DS presuppone
+      l'attributo `disabled` nativo, che toglie il controllo dalla tabulazione,
+      mentre qui il contratto è aria-*. Cambiare la pelle senza aver deciso il
+      contratto darebbe una scheda che sembra spenta ed è ancora cliccabile.
+    -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" role="radiogroup" :aria-label="t('variant.title')">
       <button
         @click="selectVariant('dnd5e')"

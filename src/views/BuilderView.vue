@@ -108,7 +108,11 @@ async function goPrevStep() {
       <component :is="steps[appStore.currentStep]" />
     </KeepAlive>
 
-    <!-- Validation warning -->
+    <!-- Validation warning.
+         Anche qui .bsc-alert non calza: è un filetto rosso a sinistra su fondo
+         neutro, mentre questo è un pannello ambrato con bordo pieno, e l'ambra
+         è ciò che dice "avviso". Il DS non ha un .bsc-alert--warn: finché non
+         c'è, adottarlo significherebbe perdere il colore semantico. -->
     <div
       v-if="validationMessage"
       class="mt-4 p-3 bg-amber-900/30 border border-amber-700 text-amber-300 rounded-lg text-sm flex items-center gap-2"
@@ -119,35 +123,61 @@ async function goPrevStep() {
     </div>
 
     <nav class="flex justify-between mt-8" :aria-label="t('common.stepProgress', { current: appStore.currentStep + 1, total: appStore.totalSteps })">
+      <!--
+        .bsc-btn del design system: px-6/py-2, rounded, cursor e transizione
+        erano già identici ai suoi, quindi spariscono. Non uso --outline
+        perché è trasparente con bordo e al passaggio si riempie di rosso
+        mattone: qui il pulsante è pieno e grigio, e restare com'è è il punto.
+      -->
       <button
         v-if="appStore.currentStep > 0"
         @click="goPrevStep"
         :disabled="isLoadingStep"
-        class="px-6 py-2 bg-stone-700 hover:bg-stone-600 text-stone-200 rounded-lg transition-colors cursor-pointer disabled:opacity-50 disabled:cursor-wait"
+        class="bsc-btn bg-stone-700 hover:bg-stone-600 border-stone-700 hover:border-stone-600 text-stone-200 disabled:opacity-50 disabled:cursor-wait"
         :aria-label="`${t('common.back')}: ${t(`steps.${stepKeys[appStore.currentStep - 1]}`)}`"
       >
         {{ t('common.back') }}
       </button>
       <div v-else></div>
 
+      <!--
+        Il colore resta l'oro dell'app (il DS userebbe il rosso mattone): la
+        scelta del marchio non si decide qui. Il bordo va tinto insieme al
+        fondo, perché .bsc-btn ne ha uno da 2px dello stesso colore.
+      -->
       <button
         v-if="appStore.currentStep < appStore.totalSteps - 1"
         @click="tryNextStep"
         :disabled="isLoadingStep"
-        class="px-6 py-2 bg-amber-600 text-stone-900 font-semibold rounded-lg transition-colors cursor-pointer disabled:cursor-wait"
-        :class="isCurrentStepValid && !isLoadingStep ? 'hover:bg-amber-500' : 'opacity-60'"
+        class="bsc-btn bg-amber-600 border-amber-600 text-stone-900 disabled:cursor-wait"
+        :class="isCurrentStepValid && !isLoadingStep
+          ? 'hover:bg-amber-500 hover:border-amber-500'
+          : 'opacity-60 hover:bg-amber-600 hover:border-amber-600'"
         :aria-label="`${t('common.next')}: ${t(`steps.${stepKeys[appStore.currentStep + 1]}`)}`"
         :aria-disabled="!isCurrentStepValid || isLoadingStep"
       >
-        <span v-if="isLoadingStep" class="inline-flex items-center gap-2">
-          <svg class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-          </svg>
-          {{ t('common.next') }}
-        </span>
-        <span v-else>{{ t('common.next') }}</span>
+        <!-- Niente <span> di servizio attorno a rotella e testo: .bsc-btn è
+             già inline-flex con lo stesso gap, quindi li allinea da sé. -->
+        <svg v-if="isLoadingStep" class="animate-spin h-4 w-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+        </svg>
+        {{ t('common.next') }}
       </button>
     </nav>
   </div>
 </template>
+
+<style scoped>
+/* Vedi App.vue: .bsc-btn si solleva di 1px al passaggio del mouse senza
+   guardia prefers-reduced-motion (WSG 2.16). Toppa locale in attesa che il
+   submodule del design system la incorpori. */
+@media (prefers-reduced-motion: reduce) {
+  .bsc-btn,
+  .bsc-btn:hover,
+  .bsc-btn:active {
+    transition: none;
+    transform: none;
+  }
+}
+</style>

@@ -74,6 +74,7 @@
     "apocalisseFeatures": "12 archetipi • 6 origini • Livello 1-20",
     "dnd2024": "D&D 2024",
     "dnd2024Desc": "L'edizione aggiornata di Dungeons & Dragons: le specie non danno più bonus alle caratteristiche, li dà il background insieme a un talento d'origine.",
+    "dnd2024Promo": "Se ti piace D&D 2024, compra i manuali su",
     "dnd2024Features": "9 specie • 12 classi • livello massimo 20 • SRD 5.2.1"
   },
   "race": {
@@ -178,7 +179,10 @@
     "resetDefault": "usa il default della classe",
     "noneForClass": "Nessun trucchetto per questa classe.",
     "noneAtLevel": "Nessun incantesimo disponibile al tuo livello.",
-    "ritual": "Rituale"
+    "ritual": "Rituale",
+    "levelShort": "Liv.",
+    "slots": "slot",
+    "showDetail": "Dettagli di {name}"
   },
   "details": {
     "title": "Dettagli del Personaggio",
@@ -285,7 +289,10 @@
     "unnamed": "Senza Nome",
     "stepProgress": "Passo {current} di {total}",
     "discardWarning": "Tornando alla scelta della variante il personaggio in corso viene scartato. Non lo hai ancora salvato.",
-    "discardConfirm": "Scarta e ricomincia"
+    "discardConfirm": "Scarta e ricomincia",
+    "close": "Chiudi",
+    "changeLanguage": "Cambia lingua",
+    "availableLanguages": "Lingue disponibili"
   },
   "validation": {
     "selectRace": "Seleziona una razza prima di continuare",

@@ -28,14 +28,34 @@ const selectedClass = ref<CharacterClass | null>(null)
 const selectedSkills = ref<string[]>([])
 const selectedSubclass = ref<string>('')
 
+// Competenze che questo passo ha già scritto nel personaggio. Servono per
+// poterle togliere una per una: `skillProficiencies` è un elenco piatto in cui
+// finiscono anche quelle di razza e background, e cancellarlo per intero
+// buttava via il lavoro degli altri passi.
+let appliedSkills: string[] = []
+
 // Restore the pickers when the user comes back to this step
-const storedClass = classes.value.find(c => c.id === characterStore.character.className)
-if (storedClass) {
-  selectedClass.value = storedClass
-  selectedSkills.value = characterStore.character.skillProficiencies
-    .filter(s => storedClass.skillChoices.includes(s))
-  selectedSubclass.value = characterStore.character.subclass
+function restoreFromCharacter() {
+  const storedClass = classes.value.find(c => c.id === characterStore.character.className)
+  if (storedClass) {
+    selectedClass.value = storedClass
+    selectedSkills.value = characterStore.character.skillProficiencies
+      .filter(s => storedClass.skillChoices.includes(s))
+    selectedSubclass.value = characterStore.character.subclass
+  } else {
+    selectedClass.value = null
+    selectedSkills.value = []
+    selectedSubclass.value = ''
+  }
+  appliedSkills = [...selectedSkills.value]
 }
+restoreFromCharacter()
+
+// `<KeepAlive>` in BuilderView tiene vivo il componente: andare avanti e
+// indietro fra i passi non lo rimonta. Caricare una scheda salvata, rientrare
+// nel builder o importare un JSON invece sostituisce l'intero personaggio, e
+// senza questo i selettori restavano fermi su quello di prima.
+watch(() => characterStore.character.id, () => restoreFromCharacter())
 
 // Switching variant resets the character, so drop the local selection too —
 // otherwise the panel keeps offering a class the new variant does not have,
@@ -47,6 +67,7 @@ watch(
       selectedClass.value = null
       selectedSubclass.value = ''
       selectedSkills.value = []
+      appliedSkills = []
     }
   },
 )
@@ -59,7 +80,10 @@ function selectClass(cls: CharacterClass) {
   characterStore.character.className = cls.id
   characterStore.character.hitDie = cls.hitDie
   characterStore.character.savingThrowProficiencies = [...cls.savingThrows]
+  // Le competenze scelte per la classe precedente vanno via qui, non lasciate
+  // in eredità alla nuova classe che non le concede.
   selectedSkills.value = []
+  applyClassSkills()
 
   // Set spellcasting info. Fighter and Rogue carry a third-caster progression
   // only for their spellcasting subclasses, so a plain one gets no spell sheet.
@@ -85,7 +109,23 @@ function toggleSkill(skill: string) {
   } else if (selectedSkills.value.length < selectedClass.value.numSkillChoices) {
     selectedSkills.value.push(skill)
   }
-  characterStore.character.skillProficiencies = [...selectedSkills.value]
+  applyClassSkills()
+}
+
+/**
+ * Riversa la selezione della classe dentro il personaggio togliendo solo le
+ * competenze che questo passo aveva concesso: la sostituzione secca di prima
+ * (`skillProficiencies = [...selectedSkills]`) cancellava quelle del
+ * background, che nel modello vivono nello stesso elenco.
+ */
+function applyClassSkills() {
+  const next = characterStore.character.skillProficiencies
+    .filter(s => !appliedSkills.includes(s) || selectedSkills.value.includes(s))
+  for (const skill of selectedSkills.value) {
+    if (!next.includes(skill)) next.push(skill)
+  }
+  characterStore.character.skillProficiencies = next
+  appliedSkills = [...selectedSkills.value]
 }
 
 // ── Subclass ────────────────────────────────────────────────────────────────

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, beforeAll } from 'vitest'
-import { nextTick } from 'vue'
+import { createApp, nextTick } from 'vue'
 import { setActivePinia, createPinia } from 'pinia'
+import { createPersistedState } from 'pinia-plugin-persistedstate'
 import { useCharacterStore } from './character'
 import type { CharacterData } from './character'
 import { preloadVariantData, getClasses, getMaxLevel, getRaces } from '@/data'
@@ -691,4 +692,154 @@ describe('multiclasse dal passo 3', () => {
       expect(store.character.featuresTraits, `${primary}/${secondary}`).toEqual(before)
     })
   }
+})
+
+/**
+ * Il lavoro in corso non sopravviveva a un ricaricamento: la persistenza
+ * copriva solo `savedCharacters`, così bastava un refresh a metà procedura
+ * per ritrovarsi un personaggio vuoto.
+ */
+describe('persistenza del personaggio in corso', () => {
+  beforeAll(async () => {
+    await Promise.all(GAME_VARIANTS.map(v => preloadVariantData(v)))
+  })
+
+  function memoryStorage(seed: Record<string, string> = {}) {
+    const data = new Map<string, string>(Object.entries(seed))
+    return {
+      getItem: (k: string) => data.get(k) ?? null,
+      setItem: (k: string, v: string) => { data.set(k, v) },
+      removeItem: (k: string) => { data.delete(k) },
+    } as unknown as Storage
+  }
+
+  /**
+   * Simula un caricamento della pagina. L'app Vue finta serve perché Pinia
+   * tiene i plugin in coda finché non viene installata su un'app.
+   */
+  function reload(storage: Storage) {
+    const pinia = createPinia()
+    pinia.use(createPersistedState({ storage }))
+    createApp({}).use(pinia)
+    setActivePinia(pinia)
+  }
+
+  it('il personaggio in corso torna dopo un ricaricamento', async () => {
+    const storage = memoryStorage()
+    reload(storage)
+    const before = useCharacterStore()
+    before.character.variant = 'brancalonia'
+    before.character.name = 'Baldo'
+    before.character.race = 'morgante'
+    before.character.className = 'barbarian'
+    before.character.level = 3
+    await nextTick()
+
+    reload(storage)
+    const after = useCharacterStore()
+    expect(after.character.name).toBe('Baldo')
+    expect(after.character.className).toBe('barbarian')
+    expect(after.character.level).toBe(3)
+  })
+
+  /**
+   * Persistendo `character` rientra dall'archivio un oggetto che la vecchia
+   * `migrateCharacters` non guardava nemmeno: iterava solo `savedCharacters`.
+   */
+  it('anche il personaggio in corso passa dalla migrazione', () => {
+    const stored = JSON.stringify({
+      character: {
+        id: 'in-corso', variant: 'brancalonia', name: 'Fuorilegge',
+        className: 'barbarian', level: 9,
+      },
+    })
+    reload(memoryStorage({ character: stored }))
+
+    const store = useCharacterStore()
+    // Livello oltre il tetto della variante: va riportato al massimo
+    expect(store.character.level).toBe(getMaxLevel('brancalonia'))
+    // Campi aggiunti dopo: senza migrazione restavano undefined e facevano
+    // esplodere ogni `.length` / `.find` sul multiclasse
+    expect(Array.isArray(store.character.classes)).toBe(true)
+    expect(store.character.sessionNotes).toBe('')
+    expect(store.character.spellsKnownLimit).toBe(0)
+  })
+})
+
+describe('levelUpSaved', () => {
+  beforeAll(async () => {
+    await Promise.all(GAME_VARIANTS.map(v => preloadVariantData(v)))
+  })
+
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  /**
+   * L'elenco personaggi faceva `loadCharacter(id)` prima di `levelUp()`:
+   * salire di livello una scheda dell'archivio buttava via, senza chiedere,
+   * il personaggio che si stava costruendo.
+   */
+  it('non tocca il personaggio in costruzione', () => {
+    const store = useCharacterStore()
+    store.character.name = 'In Costruzione'
+    store.character.race = 'elf'
+    store.character.className = 'wizard'
+    store.character.level = 1
+
+    store.savedCharacters.push({
+      ...store.character,
+      id: 'archiviato', name: 'Archiviato', className: 'fighter',
+      hitDie: 10, level: 2, maxHp: 20, classes: [],
+    } as CharacterData)
+
+    const result = store.levelUpSaved('archiviato')
+
+    expect(result).not.toBeNull()
+    expect(store.savedCharacters[0]!.level).toBe(3)
+    expect(store.character.name).toBe('In Costruzione')
+    expect(store.character.className).toBe('wizard')
+    expect(store.character.level).toBe(1)
+  })
+
+  it('restituisce null oltre il tetto della variante e non cambia niente', () => {
+    const store = useCharacterStore()
+    const maxLv = getMaxLevel('brancalonia')
+    store.savedCharacters.push({
+      ...store.character,
+      id: 'al-massimo', variant: 'brancalonia', className: 'barbarian',
+      hitDie: 12, level: maxLv, maxHp: 60, classes: [],
+    } as CharacterData)
+
+    expect(store.levelUpSaved('al-massimo')).toBeNull()
+    expect(store.savedCharacters[0]!.level).toBe(maxLv)
+  })
+
+  it('su un id sconosciuto non inventa niente', () => {
+    const store = useCharacterStore()
+    expect(store.levelUpSaved('mai-visto')).toBeNull()
+  })
+})
+
+describe('hasUnsavedWork', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  it('è falso su un personaggio appena aperto', () => {
+    expect(useCharacterStore().hasUnsavedWork).toBe(false)
+  })
+
+  it('è vero appena si sceglie una razza', () => {
+    const store = useCharacterStore()
+    store.character.race = 'human'
+    expect(store.hasUnsavedWork).toBe(true)
+  })
+
+  it('è falso se quel personaggio è già nell\'archivio', () => {
+    const store = useCharacterStore()
+    store.character.race = 'human'
+    store.savedCharacters.push({ ...store.character })
+    expect(store.hasUnsavedWork).toBe(false)
+  })
 })

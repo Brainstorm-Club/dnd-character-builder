@@ -37,11 +37,19 @@ function acceptGdpr() {
     </main>
     <footer class="border-t border-stone-800 py-6 text-center" role="contentinfo">
       <div class="container mx-auto px-4 flex flex-col items-center gap-3">
+        <!--
+          .bsc-btn del design system al posto della solita stringa di utility.
+          Restano solo le classi che il DS non può indovinare: il colore (l'app
+          usa l'oro come azione principale, il DS il rosso mattone — la scelta
+          del marchio non si cambia qui) e no-underline, perché è un <a>.
+          --sm porta la misura del piede di pagina, px-4 tiene la larghezza di
+          prima invece dei 12px del modificatore.
+        -->
         <a
           href="https://paypal.me/fullo/2"
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 px-4 py-2 bg-amber-600 hover:bg-amber-500 text-stone-900 font-semibold rounded-lg transition-colors no-underline text-sm"
+          class="bsc-btn bsc-btn--sm px-4 py-2 bg-amber-600 hover:bg-amber-500 border-amber-600 hover:border-amber-500 text-stone-900 no-underline"
           aria-label="Buy me a coffee (opens PayPal)"
         >
           <span aria-hidden="true">☕</span> Buy me a coffee
@@ -68,7 +76,15 @@ function acceptGdpr() {
       </div>
     </footer>
 
-    <!-- GDPR Cookie Banner -->
+    <!--
+      GDPR Cookie Banner.
+      Valutato .bsc-alert e scartato: il componente del DS è un richiamo in
+      linea con filetto rosso a sinistra su fondo neutro, mentre questa è una
+      barra fissa a tutta larghezza con filetto in alto. Adottarlo sposterebbe
+      il filetto e imporrebbe `display: flex` sull'involucro, che qui contiene
+      un `container mx-auto` da centrare: cambierebbe la forma, non solo la
+      pelle. Serve prima un .bsc-alert--bar a monte nel submodule.
+    -->
     <div
       v-if="showCookieBanner"
       class="fixed bottom-0 left-0 right-0 bg-stone-800 border-t border-amber-700/30 p-4 z-50 shadow-lg"
@@ -80,9 +96,11 @@ function acceptGdpr() {
         <p id="gdpr-desc" class="text-sm text-stone-300 flex-1">
           {{ t('gdpr.banner') }}
         </p>
+        <!-- Stesso .bsc-btn del pulsante del caffè: px-6/py-2 erano già i
+             valori del DS, quindi spariscono; resta il colore dell'app. -->
         <button
           @click="acceptGdpr"
-          class="px-6 py-2 bg-amber-600 hover:bg-amber-500 text-stone-900 font-semibold rounded-lg transition-colors whitespace-nowrap cursor-pointer text-sm"
+          class="bsc-btn bg-amber-600 hover:bg-amber-500 border-amber-600 hover:border-amber-500 text-stone-900 whitespace-nowrap text-sm"
         >
           {{ t('gdpr.accept') }}
         </button>
@@ -90,3 +108,18 @@ function acceptGdpr() {
     </div>
   </div>
 </template>
+
+<style scoped>
+/* .bsc-btn solleva il pulsante di 1px al passaggio del mouse e il design
+   system non protegge quella transform dietro prefers-reduced-motion. Il
+   progetto lo fa ovunque (WSG 2.16), quindi qui è una toppa locale: va
+   portata a monte nel submodule, non risolta file per file. */
+@media (prefers-reduced-motion: reduce) {
+  .bsc-btn,
+  .bsc-btn:hover,
+  .bsc-btn:active {
+    transition: none;
+    transform: none;
+  }
+}
+</style>

@@ -60,6 +60,48 @@ describe('apertura di un link di condivisione', () => {
     })
   }
 
+  /**
+   * ShareView chiamava `resetCharacter()` prima ancora di disegnare qualcosa:
+   * aprire un link condiviso cancellava il personaggio in costruzione senza
+   * che nessuno avesse chiesto niente.
+   */
+  it('con lavoro non salvato chiede prima di sovrascrivere', async () => {
+    setActivePinia(createPinia())
+    const store = useCharacterStore()
+    store.character.name = 'Mio'
+    store.character.race = 'human'
+    store.character.className = 'fighter'
+
+    const shared = generateRandomCharacter('dnd5e')
+    shared.name = 'Condiviso'
+    const wrapper = await openShareLink(encodeCharacterToUrl(shared))
+
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(true)
+    expect(store.character.name).toBe('Mio')
+    expect(store.character.race).toBe('human')
+
+    await wrapper.findAll('[role="alertdialog"] button')[0]!.trigger('click')
+    await flushPromises()
+    expect(store.character.name).toBe('Condiviso')
+  })
+
+  it('annullando, il personaggio in corso resta intatto', async () => {
+    setActivePinia(createPinia())
+    const store = useCharacterStore()
+    store.character.name = 'Mio'
+    store.character.race = 'human'
+
+    const shared = generateRandomCharacter('dnd5e')
+    shared.name = 'Condiviso'
+    const wrapper = await openShareLink(encodeCharacterToUrl(shared))
+    await wrapper.findAll('[role="alertdialog"] button')[1]!.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('[role="alertdialog"]').exists()).toBe(false)
+    expect(store.character.name).toBe('Mio')
+    expect(store.character.race).toBe('human')
+  })
+
   it('un link con una variante sconosciuta resta un errore', async () => {
     const char = generateRandomCharacter('dnd5e')
     const encoded = encodeCharacterToUrl({ ...char, variant: 'pathfinder' as never })

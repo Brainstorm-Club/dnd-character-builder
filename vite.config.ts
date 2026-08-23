@@ -45,6 +45,27 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,woff2}'],
+        // WSG 3.3: il precache si scarica tutto al primo avvio, anche cio' che
+        // nessuno chiedera' mai. Qui restano fuori i file che il browser non
+        // richiede in nessun percorso dell'app:
+        // - le due facce corsive (Atkinson e Courier Prime): style.css le
+        //   dichiara, ma nessun componente usa italic/<em>, quindi il browser
+        //   non le scarica mai da solo (~24 KB risparmiati);
+        // - vite.svg: residuo dello scaffold, non referenziato da nulla;
+        // - og-image.svg: serve solo ai crawler social, che leggono l'URL
+        //   assoluto e non passano mai dal service worker;
+        // - assets/favicon-*.svg: il marchio del design system, emesso solo
+        //   perche' tokens.css dichiara --bsc-favicon-svg, variabile che
+        //   nessuna regola CSS consuma (~6 KB).
+        // Non e' una rimozione: se un giorno servissero, la rete li serve
+        // comunque; qui evitiamo solo di pagarli in anticipo a ogni visitatore.
+        globIgnores: [
+          '**/node_modules/**/*',
+          '**/*-italic-*.woff2',
+          'vite.svg',
+          'og-image.svg',
+          'assets/favicon-*.svg',
+        ],
         runtimeCaching: [
           {
             urlPattern: /\.(?:pdf)$/,

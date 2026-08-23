@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAppStore, STEP_KEYS } from '@/stores/app'
@@ -15,14 +15,13 @@ const stepKeys = STEP_KEYS
 const isLoading = ref(false)
 const confirmingReset = ref(false)
 
-/** Il personaggio in corso ha qualcosa che andrebbe perso tornando indietro? */
-function hasUnsavedWork(): boolean {
-  const c = characterStore.character
-  const started = Boolean(c.race || c.className || c.name)
-  if (!started) return false
-  const saved = characterStore.savedCharacters.some(s => s.id === c.id)
-  return !saved
-}
+// Il passo è persistito insieme al personaggio, ma l'archivio può contenere
+// una coppia incoerente (passo 8 con un personaggio senza classe): il wizard
+// controlla i requisiti solo per avanzare, non all'ingresso. Questo è il
+// primo componente montato dal builder, quindi è qui che si rimette in riga.
+onMounted(() => {
+  appStore.clampStepToProgress(characterStore.character)
+})
 
 function discardAndGoHome() {
   confirmingReset.value = false
@@ -40,9 +39,10 @@ async function goToStep(idx: number) {
   // personaggio: restando nel wizard, riscegliere la stessa variante lasciava
   // in piedi razza, classe, incantesimi ed equipaggiamento già scelti.
   if (idx === 0) {
-    // Chiedi conferma solo se c'è davvero qualcosa da perdere: un personaggio
-    // appena iniziato, o già salvato, si scarta senza disturbare.
-    if (hasUnsavedWork() && !confirmingReset.value) {
+    // Conferma sempre: la vecchia scorciatoia "chiedi solo se hasUnsavedWork"
+    // taceva proprio nella prima metà del percorso, dove basta aver scelto
+    // variante, caratteristiche e livello per perdere lavoro con un clic.
+    if (!confirmingReset.value) {
       confirmingReset.value = true
       return
     }
@@ -79,21 +79,27 @@ async function goToStep(idx: number) {
           :class="{
             'bg-amber-600 text-stone-900': idx === appStore.currentStep,
             'bg-stone-700 text-stone-300 hover:bg-stone-600': idx < appStore.currentStep,
-            'bg-stone-800 text-stone-500': idx > appStore.currentStep,
+            'bg-stone-800 text-stone-300': idx > appStore.currentStep,
           }"
           :aria-current="idx === appStore.currentStep ? 'step' : undefined"
           :aria-label="`${t(`steps.${key}`)} (${idx + 1}/${stepKeys.length})`"
         >
+          <!-- I passi non ancora raggiunti avevano stone-500 su stone-700:
+               2,87:1, sotto il 4,5:1 richiesto. Su mobile quel numero è
+               l'unico contenuto del pulsante, quindi era illeggibile e basta. -->
           <span
             class="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold"
             :class="{
               'bg-stone-900 text-amber-500': idx === appStore.currentStep,
               'bg-stone-600 text-stone-200': idx < appStore.currentStep,
-              'bg-stone-700 text-stone-500': idx > appStore.currentStep,
+              'bg-stone-700 text-stone-300': idx > appStore.currentStep,
             }"
             aria-hidden="true"
           >{{ idx + 1 }}</span>
-          <span class="hidden sm:inline">{{ t(`steps.${key}`) }}</span>
+          <!-- Sotto sm l'etichetta resta nascosta per non far esplodere la
+               barra, tranne quella del passo corrente: senza, il solo modo di
+               sapere dove si è era contare i pallini. -->
+          <span :class="[idx === appStore.currentStep ? 'inline' : 'hidden', 'sm:inline']">{{ t(`steps.${key}`) }}</span>
         </button>
         <span v-if="idx < stepKeys.length - 1" class="text-stone-600 mx-1" aria-hidden="true">&rsaquo;</span>
       </li>

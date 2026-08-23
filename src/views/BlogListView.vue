@@ -3,7 +3,8 @@ import { ref, computed, watchEffect, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { blogCharacters } from '@/data/blog/characters'
 import { useGameTerms } from '@/composables/useGameTerms'
-import type { GameVariant } from '@/stores/app'
+import { GAME_VARIANTS, type GameVariant } from '@/stores/app'
+import { variantInfo } from '@/data/variants'
 
 const { t } = useI18n()
 const gt = useGameTerms()
@@ -15,31 +16,12 @@ const filteredCharacters = computed(() => {
   return blogCharacters.filter(c => c.variant === activeFilter.value)
 })
 
+// I filtri seguono GAME_VARIANTS: una variante nuova compare qui da sola,
+// invece di restare senza scheda come era successo a 'dnd2024' altrove.
 const filters: { id: 'all' | GameVariant; key: string }[] = [
   { id: 'all', key: 'blog.filters.all' },
-  { id: 'dnd5e', key: 'blog.filters.dnd5e' },
-  { id: 'dnd2024', key: 'blog.filters.dnd2024' },
-  { id: 'brancalonia', key: 'blog.filters.brancalonia' },
-  { id: 'apocalisse', key: 'blog.filters.apocalisse' },
+  ...GAME_VARIANTS.map(v => ({ id: v, key: `blog.filters.${v}` })),
 ]
-
-function variantColor(variant: GameVariant): string {
-  switch (variant) {
-    case 'dnd5e': return 'bg-amber-900/40 text-amber-400'
-    case 'dnd2024': return 'bg-sky-900/40 text-sky-400'
-    case 'brancalonia': return 'bg-emerald-900/40 text-emerald-400'
-    case 'apocalisse': return 'bg-red-900/40 text-red-400'
-  }
-}
-
-function variantBorder(variant: GameVariant): string {
-  switch (variant) {
-    case 'dnd5e': return 'border-amber-600/40 hover:border-amber-500/60'
-    case 'dnd2024': return 'border-sky-600/40 hover:border-sky-500/60'
-    case 'brancalonia': return 'border-emerald-600/40 hover:border-emerald-500/60'
-    case 'apocalisse': return 'border-red-600/40 hover:border-red-500/60'
-  }
-}
 
 // SEO: update document title and meta description
 const originalTitle = document.title
@@ -90,14 +72,14 @@ onUnmounted(() => {
         :to="`/blog/${char.slug}`"
         :class="[
           'bg-stone-800 rounded-xl border p-5 flex flex-col gap-3 transition-colors no-underline group',
-          variantBorder(char.variant),
+          variantInfo(char.variant).borderHover,
         ]"
       >
         <div class="flex items-start justify-between gap-2">
           <h3 class="text-lg font-bold text-amber-400 font-gothic group-hover:text-amber-300 transition-colors">
             {{ char.characterData.name }}
           </h3>
-          <span :class="['text-xs uppercase px-2 py-0.5 rounded whitespace-nowrap', variantColor(char.variant)]">
+          <span :class="['text-xs uppercase px-2 py-0.5 rounded whitespace-nowrap', variantInfo(char.variant).badge]">
             {{ char.variant }}
           </span>
         </div>

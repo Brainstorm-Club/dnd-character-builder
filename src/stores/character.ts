@@ -278,6 +278,67 @@ function featureDiff(from: string[], to: string[]): string[] {
   return out
 }
 
+/**
+ * Porta una singola scheda allo schema corrente. Estratta perché non è più solo
+ * l'archivio a tornare dal localStorage: anche il personaggio in corso viene
+ * persistito, e senza questa funzione applicata a entrambi rientrava dallo
+ * storage un oggetto che nessuna migrazione toccava.
+ */
+function migrateOne(c: CharacterData) {
+  if ((c as any).sessionNotes === undefined) (c as any).sessionNotes = ''
+  if (!Array.isArray((c as any).classes)) (c as any).classes = []
+  if (typeof (c as any).spellsKnownLimit !== 'number') (c as any).spellsKnownLimit = 0
+  clampToMaxLevel(c)
+}
+
+/**
+ * Meccanica della salita di livello, staccata dallo store perché deve poter
+ * agire tanto sul personaggio in corso quanto su una scheda dell'archivio:
+ * far salire di livello una scheda salvata passando da `loadCharacter`
+ * sovrascriveva il personaggio che l'utente stava costruendo.
+ */
+function applyLevelUp(char: CharacterData, classId?: string): { hpGained: number; newFeatures: string[] } | null {
+  const maxLv = getMaxLevel(char.variant)
+  if (char.level >= maxLv) return null
+
+  const conMod = modifier(char.abilityScores.con + (char.racialBonuses.con || 0))
+  let hitDieForLevel: number
+
+  if (char.classes.length >= 2 && classId) {
+    // Multiclass: level up specific class
+    const entry = char.classes.find(c => c.classId === classId)
+    if (!entry) return null
+    entry.level += 1
+    char.level = char.classes.reduce((sum, c) => sum + c.level, 0)
+    hitDieForLevel = entry.hitDie
+  } else {
+    // Single class or multiclass without specific target
+    char.level += 1
+    hitDieForLevel = char.hitDie
+
+    // Also update classes array entry if populated
+    if (char.classes.length >= 1) {
+      const entry = char.classes.find(c => c.classId === char.className)
+      if (entry) entry.level += 1
+    }
+  }
+
+  // HP gain: hitDie/2 + 1 + CON modifier
+  const hpGained = hpPerLevel(hitDieForLevel, conMod)
+  char.maxHp += hpGained
+  char.currentHp = char.maxHp
+
+  // Ricostruisce l'elenco dei privilegi invece di aggiungere quelli nuovi:
+  // così le voci che si ripetono a livelli diversi (Aumento dei Punteggi di
+  // Caratteristica, Attacco Extra, i privilegi d'archetipo) vengono contate
+  // tutte, e la lista resta identica a quella di syncClassAndLevel.
+  const before = [...char.featuresTraits]
+  char.featuresTraits = computeFeatures(char)
+  const newFeatures = featureDiff(char.featuresTraits, before)
+
+  return { hpGained, newFeatures }
+}
+
 export const useCharacterStore = defineStore('character', () => {
   const character = ref<CharacterData>(createEmptyCharacter())
   const savedCharacters = ref<CharacterData[]>([])
@@ -285,12 +346,7 @@ export const useCharacterStore = defineStore('character', () => {
   // Migration: add new fields to existing saved characters
   // Runs as a watcher so it fires AFTER pinia-plugin-persistedstate hydrates from localStorage
   function migrateCharacters() {
-    for (const c of savedCharacters.value) {
-      if ((c as any).sessionNotes === undefined) (c as any).sessionNotes = ''
-      if (!Array.isArray((c as any).classes)) (c as any).classes = []
-      if (typeof (c as any).spellsKnownLimit !== 'number') (c as any).spellsKnownLimit = 0
-      clampToMaxLevel(c)
-    }
+    for (const c of savedCharacters.value) migrateOne(c)
   }
   migrateCharacters()
   // Not `{ once: true }`: another tab or a manual restore can replace the
@@ -362,6 +418,16 @@ export const useCharacterStore = defineStore('character', () => {
   function deleteCharacter(id: string) {
     savedCharacters.value = savedCharacters.value.filter(c => c.id !== id)
   }
+
+  /**
+   * Il personaggio in corso ha qualcosa che andrebbe perso a sostituirlo?
+   * Unica fonte di verità per chi deve chiedere conferma prima di azzerarlo.
+   */
+  const hasUnsavedWork = computed(() => {
+    const c = character.value
+    if (!(c.race || c.className || c.name)) return false
+    return !savedCharacters.value.some(s => s.id === c.id)
+  })
 
   /** Whether current character is multiclass */
   const isMulticlass = computed(() => (character.value.classes ?? []).length >= 2)
@@ -531,45 +597,8 @@ export const useCharacterStore = defineStore('character', () => {
 
   function levelUp(classId?: string): { hpGained: number; newFeatures: string[] } | null {
     const char = character.value
-    const maxLv = getMaxLevel(char.variant)
-    if (char.level >= maxLv) return null
-
-    const conMod = modifier(
-      char.abilityScores.con + (char.racialBonuses.con || 0),
-    )
-    let hitDieForLevel: number
-
-    if (char.classes.length >= 2 && classId) {
-      // Multiclass: level up specific class
-      const entry = char.classes.find(c => c.classId === classId)
-      if (!entry) return null
-      entry.level += 1
-      char.level = char.classes.reduce((sum, c) => sum + c.level, 0)
-      hitDieForLevel = entry.hitDie
-    } else {
-      // Single class or multiclass without specific target
-      char.level += 1
-      hitDieForLevel = char.hitDie
-
-      // Also update classes array entry if populated
-      if (char.classes.length >= 1) {
-        const entry = char.classes.find(c => c.classId === char.className)
-        if (entry) entry.level += 1
-      }
-    }
-
-    // HP gain: hitDie/2 + 1 + CON modifier
-    const hpGained = hpPerLevel(hitDieForLevel, conMod)
-    char.maxHp += hpGained
-    char.currentHp = char.maxHp
-
-    // Ricostruisce l'elenco dei privilegi invece di aggiungere quelli nuovi:
-    // così le voci che si ripetono a livelli diversi (Aumento dei Punteggi di
-    // Caratteristica, Attacco Extra, i privilegi d'archetipo) vengono contate
-    // tutte, e la lista resta identica a quella di syncClassAndLevel.
-    const before = [...char.featuresTraits]
-    char.featuresTraits = computeFeatures(char)
-    const newFeatures = featureDiff(char.featuresTraits, before)
+    const result = applyLevelUp(char, classId)
+    if (!result) return null
 
     // Auto-save if the character exists in saved list
     const idx = savedCharacters.value.findIndex(c => c.id === char.id)
@@ -577,7 +606,31 @@ export const useCharacterStore = defineStore('character', () => {
       savedCharacters.value[idx] = JSON.parse(JSON.stringify(char))
     }
 
-    return { hpGained, newFeatures }
+    return result
+  }
+
+  /**
+   * Sale di livello una scheda dell'archivio senza renderla il personaggio in
+   * corso. L'elenco personaggi chiamava `loadCharacter` prima di `levelUp`, e
+   * così un clic su "Sali di Livello" buttava via il personaggio in
+   * costruzione senza chiedere niente.
+   */
+  function levelUpSaved(id: string, classId?: string): { hpGained: number; newFeatures: string[] } | null {
+    const idx = savedCharacters.value.findIndex(c => c.id === id)
+    if (idx < 0) return null
+
+    const updated: CharacterData = JSON.parse(JSON.stringify(savedCharacters.value[idx]))
+    const result = applyLevelUp(updated, classId)
+    if (!result) return null
+
+    savedCharacters.value[idx] = updated
+    // Se per caso è proprio la scheda aperta nel wizard, va tenuta allineata:
+    // altrimenti il prossimo salvataggio riscriverebbe il livello vecchio.
+    if (character.value.id === id) {
+      character.value = JSON.parse(JSON.stringify(updated))
+    }
+
+    return result
   }
 
   function levelDown(classId?: string): { hpLost: number; removedFeatures: string[] } | null {
@@ -780,6 +833,7 @@ export const useCharacterStore = defineStore('character', () => {
     armorClass,
     initiative,
     passivePerception,
+    hasUnsavedWork,
     totalAbilityScore,
     resetCharacter,
     saveCharacter,
@@ -791,12 +845,21 @@ export const useCharacterStore = defineStore('character', () => {
     setSubclass,
     syncClassAndLevel,
     levelUp,
+    levelUpSaved,
     levelDown,
     exportJson,
     importJson,
   }
 }, {
   persist: {
-    pick: ['savedCharacters'],
+    // `character` è persistito perché un ricaricamento a metà procedura
+    // buttava via tutto il lavoro fatto fin lì.
+    pick: ['savedCharacters', 'character'],
+    // `$patch` fonde il personaggio campo per campo invece di sostituire il
+    // ref, quindi un `watch` su `character` non scatterebbe mai: la migrazione
+    // di ciò che rientra dallo storage va agganciata qui.
+    afterHydrate: ({ store }) => {
+      migrateOne((store as unknown as { character: CharacterData }).character)
+    },
   },
 })

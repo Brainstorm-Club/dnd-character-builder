@@ -7,6 +7,7 @@ import { useCharacterStore } from '@/stores/character'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { usePdfExport } from '@/composables/usePdfExport'
 import { generateShareUrl } from '@/utils/shareCharacter'
+import { variantInfo } from '@/data/variants'
 import { modifier, proficiencyBonus, feetToMeters, computeArmorClass } from '@/utils/calculations'
 import type { CharacterData } from '@/stores/character'
 
@@ -160,12 +161,7 @@ onUnmounted(() => {
           </p>
         </div>
         <span
-          :class="[
-            'text-xs uppercase px-3 py-1 rounded font-medium',
-            char.variant === 'dnd5e' ? 'bg-amber-900/40 text-amber-400' :
-            char.variant === 'brancalonia' ? 'bg-emerald-900/40 text-emerald-400' :
-            'bg-red-900/40 text-red-400'
-          ]"
+          :class="['text-xs uppercase px-3 py-1 rounded font-medium', variantInfo(char.variant).badge]"
         >
           {{ t(`variant.${char.variant}`) }}
         </span>

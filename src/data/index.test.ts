@@ -1,5 +1,7 @@
-import { describe, it, expect, beforeAll } from 'vitest'
+import { describe, it, expect, beforeAll, afterAll } from 'vitest'
 import {
+  isVariantLoaded,
+  _resetCaches,
   getRaces,
   getClasses,
   getBackgrounds,
@@ -15,7 +17,8 @@ import {
   getApocalisseRules,
   preloadVariantData,
 } from './index'
-import type { GameVariant } from '@/stores/app'
+import { VARIANT_INFO, HOME_VARIANT_ORDER, variantInfo } from './variants'
+import { GAME_VARIANTS, type GameVariant } from '@/stores/app'
 
 // Tutte e quattro: 'dnd2024' restava fuori dalle suite, ed è così che i suoi
 // difetti (lista incantesimi, import, condivisione) sono passati inosservati.
@@ -205,6 +208,76 @@ describe('data loader', () => {
     it('getApocalisseRules returns rules for apocalisse', () => {
       expect(getApocalisseRules('apocalisse')).not.toBeNull()
       expect(getApocalisseRules('dnd5e')).toBeNull()
+    })
+  })
+
+  // Il descrittore è nato perché colori e link erano ricopiati a mano in cinque
+  // viste e 'dnd2024' era stato dimenticato in quattro: qui si controlla che
+  // ogni variante dichiarata nello store sia descritta per intero.
+  describe('descrittore delle varianti', () => {
+    const campiObbligatori = [
+      'emoji', 'badge', 'text', 'border', 'borderHover', 'promoBorder', 'link', 'button', 'publisherLabel',
+    ] as const
+
+    it('copre ogni variante di GAME_VARIANTS, senza campi vuoti', () => {
+      for (const v of GAME_VARIANTS) {
+        const info = VARIANT_INFO[v]
+        expect(info, `manca il descrittore di ${v}`).toBeDefined()
+        expect(info.id).toBe(v)
+        for (const campo of campiObbligatori) {
+          expect(info[campo], `${v}.${campo} è vuoto`).toBeTruthy()
+        }
+      }
+    })
+
+    it('dà a ogni variante colori suoi: il distintivo è l\'unico segno che le distingue', () => {
+      const distintivi = GAME_VARIANTS.map(v => VARIANT_INFO[v].badge)
+      expect(new Set(distintivi).size).toBe(GAME_VARIANTS.length)
+    })
+
+    it('non tiene link a metà: o è https, o il campo è vuoto e il link non si mostra', () => {
+      for (const v of GAME_VARIANTS) {
+        const { publisherUrl, amazonUrl } = VARIANT_INFO[v]
+        for (const url of [publisherUrl, amazonUrl]) {
+          if (url !== '') expect(url, `${v}: ${url}`).toMatch(/^https:\/\//)
+        }
+        // Almeno un negozio, altrimenti il riquadro promozionale non ha motivo di esistere
+        expect(publisherUrl || amazonUrl, `${v} non ha nessun negozio`).toBeTruthy()
+      }
+    })
+
+    it('ricade su dnd5e per i personaggi salvati prima delle varianti', () => {
+      expect(variantInfo(undefined).id).toBe('dnd5e')
+    })
+
+    it('HOME_VARIANT_ORDER mostra tutte le varianti, ognuna una volta sola', () => {
+      expect([...HOME_VARIANT_ORDER].sort()).toEqual([...GAME_VARIANTS].sort())
+    })
+  })
+
+  // Ultimo blocco del file: azzera le cache, quindi deve girare dopo tutto il resto.
+  describe('cache per variante', () => {
+    afterAll(async () => {
+      await Promise.all(variants.map(v => preloadVariantData(v)))
+    })
+
+    it('isVariantLoaded non scambia il 2024 per il 2014', async () => {
+      _resetCaches()
+      expect(isVariantLoaded('dnd2024')).toBe(false)
+      await preloadVariantData('dnd5e')
+      expect(isVariantLoaded('dnd5e')).toBe(true)
+      // Specie, classi e background del 2024 non sono ancora arrivati
+      expect(isVariantLoaded('dnd2024')).toBe(false)
+      await preloadVariantData('dnd2024')
+      expect(isVariantLoaded('dnd2024')).toBe(true)
+    })
+
+    it('_resetCaches svuota anche i dati del 2024', async () => {
+      await preloadVariantData('dnd2024')
+      expect(getRaces('dnd2024').length).toBeGreaterThan(0)
+      _resetCaches()
+      expect(getRaces('dnd2024')).toHaveLength(0)
+      expect(isVariantLoaded('dnd2024')).toBe(false)
     })
   })
 })

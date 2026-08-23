@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { GameVariant } from '@/stores/app'
+import { variantInfo } from '@/data/variants'
 
 const props = defineProps<{
   variant: GameVariant
@@ -8,51 +10,39 @@ const props = defineProps<{
 
 const { t } = useI18n()
 
-const links: Record<string, string> = {
-  dnd5e: 'https://www.drivethrurpg.com/en/publisher/44/wizards-of-the-coast?affiliate_id=2960765',
-  brancalonia: 'https://www.drivethrurpg.com/en/browse?affiliate_id=2960765&keyword=brancalonia',
-  apocalisse: 'https://www.drivethrurpg.com/en/publisher/9086/acheron-games/category/44511/apocalisse?affiliate_id=2960765',
-}
+// Unica fonte di verità per colori e link: prima i tre dizionari locali erano
+// `Record<string, ...>` senza la voce 'dnd2024', e il riquadro finiva senza
+// bordo e con due <a> privi di href.
+const info = computed(() => variantInfo(props.variant))
 
-const amazonLinks: Record<string, string> = {
-  dnd5e: 'https://amzn.to/4uwKY7w',
-  brancalonia: 'https://amzn.to/4b8f8F3',
-  apocalisse: 'https://amzn.to/4cwNjc1',
-}
-
-const variantColors: Record<string, { border: string; link: string }> = {
-  dnd5e: { border: 'border-amber-700/20', link: 'text-amber-400 hover:text-amber-300' },
-  brancalonia: { border: 'border-emerald-700/20', link: 'text-emerald-400 hover:text-emerald-300' },
-  apocalisse: { border: 'border-red-700/20', link: 'text-red-400 hover:text-red-300' },
-}
+/** Solo i link con un URL reale: un <a> senza href non è né cliccabile né focusabile. */
+const shops = computed(() => {
+  const { publisherUrl, publisherLabel, amazonUrl } = info.value
+  return [
+    { url: publisherUrl, label: publisherLabel },
+    { url: amazonUrl, label: 'Amazon' },
+  ].filter(s => s.url !== '')
+})
 </script>
 
 <template>
   <div
+    v-if="shops.length > 0"
     class="mt-6 bg-stone-800/50 border rounded-lg p-4 text-center"
-    :class="variantColors[variant]?.border"
+    :class="info.promoBorder"
   >
     <p class="text-stone-400 text-sm">
       {{ t(`variant.${variant}Promo`) }}
-      <a
-        :href="links[variant]"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="hover:underline ml-1"
-        :class="variantColors[variant]?.link"
-      >
-        DriveThruRPG
-      </a>
-      <span class="text-stone-600 mx-1">|</span>
-      <a
-        :href="amazonLinks[variant]"
-        target="_blank"
-        rel="noopener noreferrer"
-        class="hover:underline"
-        :class="variantColors[variant]?.link"
-      >
-        Amazon
-      </a>
+      <template v-for="(shop, i) in shops" :key="shop.url">
+        <span v-if="i > 0" class="text-stone-600 mx-1">|</span>
+        <a
+          :href="shop.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="hover:underline"
+          :class="[info.link, i === 0 ? 'ml-1' : '']"
+        >{{ shop.label }}</a>
+      </template>
     </p>
   </div>
 </template>

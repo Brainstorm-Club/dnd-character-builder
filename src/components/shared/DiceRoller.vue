@@ -59,6 +59,13 @@ watch(() => props.rolling, (isRolling) => {
 </script>
 
 <template>
+  <!--
+    Niente da adottare dal design system, qui: il dado è una tessera quadrata
+    piena con un numero grosso, e il DS non ha un componente del genere. Il più
+    vicino è .bsc-stat, che però è un riquadro bordato a colonna con etichetta
+    sotto — cambierebbe la forma, non la pelle. Se i dadi vanno unificati fra
+    le app del club serve prima un .bsc-die a monte nel submodule.
+  -->
   <div class="flex gap-2 flex-wrap" role="status" aria-live="polite">
     <div
       v-for="(score, i) in displayScores"

@@ -521,6 +521,14 @@ export function isVariantLoaded(variant: GameVariant): boolean {
       return dnd5eLoaded && !!_brancaRaces && !!_brancaSubclasses && !!_brancaBackgrounds && !!_brancaRules
     case 'apocalisse':
       return dnd5eLoaded && !!_apoRaces && !!_apoSubclasses && !!_apoBackgrounds && !!_apoRules
+    // Il 2024 ha specie, classi e background propri: senza questo ramo cadeva
+    // nel default e si dichiarava caricato appena c'erano i dati 2014, mentre
+    // le sue liste erano ancora vuote. `_toDnd24Spells` compare qui per lo
+    // stesso motivo per cui compare in ensureDnd2024: senza di lui la lista
+    // incantesimi ricade su quella del 2014.
+    case 'dnd2024':
+      return dnd5eLoaded && !!_dnd24Species && !!_dnd24Classes && !!_dnd24Backgrounds
+        && !!_dnd24FeatureIt && !!_toDnd24Spells
     default:
       return dnd5eLoaded
   }
@@ -819,6 +827,12 @@ export function _resetCaches(): void {
   _apoRaces = _apoBackgrounds = _apoRules = null
   _apoTraitDescriptions = null
   _apoSubclasses = null
+  // Anche il 2024: restava fuori dalla pulizia, e un test che azzerava le cache
+  // continuava a vedere le specie e le classi caricate dal test precedente.
+  _dnd24Species = _dnd24Classes = _dnd24Backgrounds = _dnd24Spells = null
+  _dnd24FeatureIt = null
+  _toDnd24Spells = null
+  _pDnd24 = null
   _pDnd5eRaces = _pDnd5eClasses = _pDnd5eBackgrounds = _pDnd5eSpells = _pDnd5eEquipment = _pDnd5eRules = null
   _pBrancaRaces = _pBrancaClasses = _pBrancaBackgrounds = _pBrancaRules = _pBrancaSpells = null
   _pApoRaces = _pApoClasses = _pApoBackgrounds = _pApoRules = null

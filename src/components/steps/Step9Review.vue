@@ -292,7 +292,7 @@ function handleImport(event: Event) {
 
 <template>
   <section aria-labelledby="review-heading">
-    <h2 id="review-heading" class="text-2xl font-bold text-amber-500 mb-6">{{ t('review.title') }}</h2>
+    <h2 id="review-heading" class="text-2xl font-bold text-amber-500 mb-6 font-gothic">{{ t('review.title') }}</h2>
 
     <!-- Header -->
     <div class="bg-stone-800 border border-stone-700 rounded-lg p-6 mb-4">
@@ -322,47 +322,65 @@ function handleImport(event: Event) {
     </div>
 
     <!-- Combat Stats -->
+    <!-- I sei riquadri erano sei copie della stessa ricetta a mano
+         (fondo + bordo + raggio + p-3 + text-center, etichetta piccola sopra e
+         numero grande sotto): è .bsc-stat del design system, riscritto in
+         Tailwind. Adesso la forma la porta il componente; restano utility solo
+         dove servono a NON cambiare l'aspetto di oggi:
+         - `bg-stone-800` e le classi `border-*` sono anche gli agganci del
+           foglio di stampa in style.css (`.bg-stone-800 { background: white }`),
+           che senza di loro stamperebbe riquadri neri;
+         - `rounded-lg` tiene gli 8px di oggi al posto dei 6px del DS;
+         - `text-2xl/text-lg/font-bold` e i colori tengono corpo e tinta;
+         - `normal-case` perché queste etichette oggi non sono maiuscole
+           (quelle delle caratteristiche sì, e infatti là non c'è).
+         Cambia solo il carattere: etichetta e numero passano a Courier Prime,
+         la voce del marchio che nei nove passi non c'era. -->
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
-      <div class="bg-stone-800 border border-amber-700/30 rounded-lg p-3 text-center">
-        <p class="text-xs text-stone-500">{{ t('review.ac') }}</p>
-        <p class="text-2xl font-bold text-amber-400">{{ characterStore.armorClass }}</p>
+      <div class="bsc-stat bg-stone-800 border-amber-700/30 rounded-lg">
+        <p class="bsc-stat__label normal-case">{{ t('review.ac') }}</p>
+        <p class="bsc-stat__value text-2xl font-bold text-amber-400">{{ characterStore.armorClass }}</p>
       </div>
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-3 text-center">
-        <p class="text-xs text-stone-500">{{ t('review.initiative') }}</p>
-        <p class="text-2xl font-bold text-stone-200">{{ formatModifier(characterStore.initiative) }}</p>
+      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
+        <p class="bsc-stat__label normal-case">{{ t('review.initiative') }}</p>
+        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ formatModifier(characterStore.initiative) }}</p>
       </div>
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-3 text-center">
-        <p class="text-xs text-stone-500">{{ t('review.speed') }}</p>
-        <p class="text-2xl font-bold text-stone-200">{{ feetToMeters(char.speed) }}m</p>
+      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
+        <p class="bsc-stat__label normal-case">{{ t('review.speed') }}</p>
+        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ feetToMeters(char.speed) }}m</p>
       </div>
-      <div class="bg-stone-800 border border-red-700/30 rounded-lg p-3 text-center">
-        <p class="text-xs text-stone-500">{{ t('review.hp') }}</p>
-        <p class="text-2xl font-bold text-red-400">{{ char.maxHp }}</p>
+      <div class="bsc-stat bg-stone-800 border-red-700/30 rounded-lg">
+        <p class="bsc-stat__label normal-case">{{ t('review.hp') }}</p>
+        <p class="bsc-stat__value text-2xl font-bold text-red-400">{{ char.maxHp }}</p>
       </div>
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-3 text-center">
-        <p class="text-xs text-stone-500">{{ t('review.hitDie') }}</p>
-        <p class="text-lg font-bold text-stone-200">{{ hitDiceDisplay }}</p>
+      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
+        <p class="bsc-stat__label normal-case">{{ t('review.hitDie') }}</p>
+        <p class="bsc-stat__value text-lg font-bold text-stone-200">{{ hitDiceDisplay }}</p>
       </div>
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-3 text-center">
-        <p class="text-xs text-stone-500">{{ t('review.proficiencyBonus') }}</p>
-        <p class="text-2xl font-bold text-stone-200">{{ formatModifier(prof) }}</p>
+      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
+        <p class="bsc-stat__label normal-case">{{ t('review.proficiencyBonus') }}</p>
+        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ formatModifier(prof) }}</p>
       </div>
     </div>
 
     <!-- Ability Scores -->
+    <!-- Stesso riquadro dei dati di combattimento, con in più la terza riga del
+         modificatore: .bsc-stat__mod. Il DS lo vuole rosso, ma qui il
+         modificatore è oro da sempre e l'oro resta (`text-amber-400`): il rosso
+         del DS è il colore dei danni, non del bonus. -->
     <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
       <div v-for="a in (['str','dex','con','int','wis','cha'] as const)" :key="a"
-        class="bg-stone-800 border border-stone-700 rounded-lg p-3 text-center">
-        <p class="text-xs text-stone-500 uppercase">{{ t(`abilities.${a}`) }}</p>
-        <p class="text-xl font-bold text-stone-200">{{ characterStore.totalAbilityScore(a) }}</p>
-        <p class="text-sm text-amber-400">{{ formatModifier(mods[a]) }}</p>
+        class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
+        <p class="bsc-stat__label">{{ t(`abilities.${a}`) }}</p>
+        <p class="bsc-stat__value text-xl font-bold text-stone-200">{{ characterStore.totalAbilityScore(a) }}</p>
+        <p class="bsc-stat__mod text-sm text-amber-400">{{ formatModifier(mods[a]) }}</p>
       </div>
     </div>
 
     <!-- Saving Throws & Skills -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
       <div class="bg-stone-800 border border-stone-700 rounded-lg p-4">
-        <h3 class="font-semibold text-stone-300 mb-2">{{ t('review.savingThrows') }}</h3>
+        <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('review.savingThrows') }}</h3>
         <div class="space-y-1 text-sm">
           <div v-for="st in savingThrows" :key="st.ability" class="flex items-center gap-2">
             <span class="w-3 h-3 rounded-full" :class="st.proficient ? 'bg-amber-500' : 'bg-stone-600'" :aria-label="st.proficient ? 'Proficient' : 'Not proficient'" role="img"></span>
@@ -373,7 +391,7 @@ function handleImport(event: Event) {
       </div>
 
       <div class="bg-stone-800 border border-stone-700 rounded-lg p-4">
-        <h3 class="font-semibold text-stone-300 mb-2">{{ t('review.skills') }}</h3>
+        <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('review.skills') }}</h3>
         <div class="space-y-1 text-xs max-h-60 overflow-y-auto">
           <div v-for="skill in skills" :key="skill.id" class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full" :class="skill.proficient ? 'bg-amber-500' : 'bg-stone-600'" :aria-label="skill.proficient ? 'Proficient' : 'Not proficient'" role="img"></span>
@@ -386,7 +404,7 @@ function handleImport(event: Event) {
 
     <!-- Spells -->
     <div v-if="char.spellcastingAbility" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold text-stone-300 mb-2">{{ t('spells.title') }}</h3>
+      <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('spells.title') }}</h3>
       <div class="flex gap-4 text-sm mb-3">
         <span class="text-stone-400">{{ t('spells.spellSaveDC') }}: <strong class="text-amber-400">{{ spellDC }}</strong></span>
         <span class="text-stone-400">{{ t('spells.spellAttackBonus') }}: <strong class="text-amber-400">{{ formatModifier(spellAtk) }}</strong></span>
@@ -404,7 +422,7 @@ function handleImport(event: Event) {
     <!-- Weapons & Armor -->
     <div v-if="char.weapons.length || char.armor || char.equipment.length" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
       <div v-if="char.armor || char.shield" class="mb-3">
-        <h4 class="font-semibold text-stone-300 mb-1">{{ t('review.armorLabel') }}</h4>
+        <h4 class="font-gothic font-semibold text-stone-300 mb-1">{{ t('review.armorLabel') }}</h4>
         <div class="flex gap-3 text-sm">
           <span v-if="char.armor" class="text-stone-300">{{ gt.armorName(char.armor) }}</span>
           <span v-if="char.shield" class="text-amber-400">{{ t('review.shieldBonus') }}</span>
@@ -413,7 +431,7 @@ function handleImport(event: Event) {
       </div>
 
       <div v-if="char.weapons.length" class="mb-3">
-        <h4 class="font-semibold text-stone-300 mb-1">{{ t('review.attacks') }}</h4>
+        <h4 class="font-gothic font-semibold text-stone-300 mb-1">{{ t('review.attacks') }}</h4>
         <div class="space-y-1">
           <div v-for="(wpn, i) in char.weapons" :key="i" class="flex gap-4 text-sm">
             <span class="text-amber-400 font-medium w-36">{{ gt.weapon(wpn.name) }}</span>
@@ -424,14 +442,14 @@ function handleImport(event: Event) {
       </div>
 
       <div v-if="char.equipment.length">
-        <h4 class="font-semibold text-stone-300 mb-1">{{ t('equipment.title') }}</h4>
+        <h4 class="font-gothic font-semibold text-stone-300 mb-1">{{ t('equipment.title') }}</h4>
         <p class="text-stone-400 text-sm">{{ char.equipment.join(', ') }}</p>
       </div>
     </div>
 
     <!-- Features & Traits -->
     <div v-if="char.featuresTraits.length" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold text-stone-300 mb-2">{{ t('class.features') }}</h3>
+      <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('class.features') }}</h3>
       <div class="space-y-1">
         <div v-for="(feat, i) in char.featuresTraits" :key="i" class="text-sm text-stone-400">
           {{ gt.feature(feat) }}
@@ -441,7 +459,7 @@ function handleImport(event: Event) {
 
     <!-- Brancalonia: Brawling Info -->
     <div v-if="isBrancalonia" class="bg-stone-800 border border-amber-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold text-amber-400 mb-2">{{ t('details.brawling') }}</h3>
+      <h3 class="font-gothic font-semibold text-amber-400 mb-2">{{ t('details.brawling') }}</h3>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
         <div>
           <span class="text-stone-500">{{ t('details.size') }}:</span>
@@ -464,7 +482,7 @@ function handleImport(event: Event) {
 
     <!-- Brancalonia: corredo da rissa -->
     <div v-if="brawlKit" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold text-red-400 mb-2">{{ t('review.brawl') }}</h3>
+      <h3 class="font-gothic font-semibold text-red-400 mb-2">{{ t('review.brawl') }}</h3>
       <div class="grid grid-cols-2 gap-3 text-sm mb-2">
         <div>
           <span class="text-stone-500">{{ t('review.moveSlots') }}:</span>
@@ -487,7 +505,7 @@ function handleImport(event: Event) {
 
     <!-- Brancalonia: talento razziale scelto -->
     <div v-if="displayFeat" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold text-red-400 mb-2">{{ t('race.chooseFeat') }}</h3>
+      <h3 class="font-gothic font-semibold text-red-400 mb-2">{{ t('race.chooseFeat') }}</h3>
       <p class="text-stone-200 text-sm">{{ displayFeat.name }}</p>
       <ul class="mt-1 ml-4 list-disc text-stone-400 text-sm space-y-0.5">
         <li v-for="(b, i) in displayFeat.benefits" :key="i">{{ b }}</li>
@@ -496,7 +514,7 @@ function handleImport(event: Event) {
 
     <!-- Apocalisse: Mark, Virtue, Sin, Humanity -->
     <div v-if="isApocalisse" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold text-red-400 mb-2">{{ t('details.markSection') }}</h3>
+      <h3 class="font-gothic font-semibold text-red-400 mb-2">{{ t('details.markSection') }}</h3>
       <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
         <div>
           <span class="text-stone-500">{{ t('details.mark') }}:</span>
@@ -523,7 +541,7 @@ function handleImport(event: Event) {
 
     <!-- Session Notes -->
     <div v-if="char.sessionNotes" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
-      <h3 class="font-semibold text-stone-300 mb-2">{{ t('details.sessionNotes') }}</h3>
+      <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('details.sessionNotes') }}</h3>
       <p class="text-stone-400 text-sm whitespace-pre-wrap">{{ char.sessionNotes }}</p>
     </div>
 

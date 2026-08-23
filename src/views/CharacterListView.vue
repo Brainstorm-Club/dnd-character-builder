@@ -45,15 +45,26 @@ function editCharacter(id: string) {
   router.push('/builder')
 }
 
-function removeCharacter(id: string) {
-  characterStore.deleteCharacter(id)
+// La cancellazione era immediata: un clic sbagliato bruciava una scheda che
+// esiste solo nel localStorage di questo browser, senza cestino né annulla.
+const pendingDelete = ref<string | null>(null)
+
+function askRemoveCharacter(id: string) {
+  pendingDelete.value = id
+}
+
+function confirmRemoveCharacter() {
+  if (!pendingDelete.value) return
+  characterStore.deleteCharacter(pendingDelete.value)
+  pendingDelete.value = null
 }
 
 const levelUpMessage = ref<{ charId: string; text: string } | null>(null)
 
 function levelUpCharacter(id: string) {
-  characterStore.loadCharacter(id)
-  const result = characterStore.levelUp()
+  // `levelUpSaved` invece di `loadCharacter` + `levelUp`: far salire di livello
+  // una scheda dell'archivio non deve rimpiazzare il personaggio in corso.
+  const result = characterStore.levelUpSaved(id)
   if (!result) {
     levelUpMessage.value = { charId: id, text: t('characters.maxLevel') }
   } else {
@@ -162,11 +173,36 @@ function downloadJson(id: string) {
                       :aria-label="t('characters.exportLabel', { name: char.name || t('common.unnamed') })"
                     >JSON</button>
                     <button
-                      @click="removeCharacter(char.id)"
+                      @click="askRemoveCharacter(char.id)"
                       class="px-3 py-1.5 bg-red-900/60 hover:bg-red-800 text-red-300 rounded text-sm transition-colors cursor-pointer"
                       :aria-label="t('characters.deleteLabel', { name: char.name || t('common.unnamed') })"
+                      :aria-expanded="pendingDelete === char.id"
                     >{{ t('common.remove') }}</button>
                   </div>
+                </div>
+
+                <!-- Conferma di cancellazione -->
+                <div
+                  v-if="pendingDelete === char.id"
+                  class="mt-3 flex flex-wrap items-center gap-3 rounded-lg border border-red-700/50 bg-red-950/30 px-3 py-2"
+                  role="alertdialog"
+                  :aria-labelledby="`delete-confirm-${char.id}`"
+                >
+                  <p :id="`delete-confirm-${char.id}`" class="text-sm text-stone-300 grow">
+                    {{ t('characters.deleteLabel', { name: char.name || t('common.unnamed') }) }}?
+                  </p>
+                  <button
+                    class="px-3 py-1.5 rounded text-sm font-semibold bg-red-700 hover:bg-red-600 text-stone-100 cursor-pointer"
+                    @click="confirmRemoveCharacter"
+                  >
+                    {{ t('common.remove') }}
+                  </button>
+                  <button
+                    class="px-3 py-1.5 rounded text-sm bg-stone-700 hover:bg-stone-600 text-stone-200 cursor-pointer"
+                    @click="pendingDelete = null"
+                  >
+                    {{ t('common.cancel') }}
+                  </button>
                 </div>
                 <!-- Level Up feedback -->
                 <div

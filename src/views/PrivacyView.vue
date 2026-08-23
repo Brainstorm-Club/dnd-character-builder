@@ -9,7 +9,14 @@ const { t } = useI18n()
     <h2 id="privacy-heading" class="text-3xl font-bold text-amber-500 mb-8">{{ t('privacy.title') }}</h2>
 
     <div class="space-y-6 text-stone-300">
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-6">
+      <!--
+        .bsc-card del design system: porta fondo (--bsc-surface, cioè lo stesso
+        stone-800) e imbottitura. Restano bordo e raggio in utility perché la
+        card del DS ha 2px di stone-600 e 12px di raggio: qui il bordo è da 1px
+        e rounded-lg è il raggio di tutta l'app (121 occorrenze), e un solo
+        riquadro fuori scala si noterebbe.
+      -->
+      <div class="bsc-card border border-stone-700 rounded-lg">
         <p class="mb-4">{{ t('privacy.noData') }}</p>
         <p class="mb-4">{{ t('privacy.localStorage') }}</p>
         <p class="mb-4">{{ t('privacy.noCookies') }}</p>

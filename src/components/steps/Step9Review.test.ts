@@ -67,4 +67,47 @@ describe('Step9Review', () => {
       }
     }
   })
+
+  /**
+   * I dodici riquadri del riepilogo (sei dati di combattimento, sei
+   * caratteristiche) erano altrettante copie a mano di .bsc-stat. Se qualcuno
+   * ne aggiunge uno ricopiando la vecchia ricetta di utility, qui si vede.
+   */
+  it('usa .bsc-stat per i riquadri di combattimento e caratteristiche', () => {
+    const wrapper = mountReview('dnd5e', 'fighter', 'champion', 3)
+    const stats = wrapper.findAll('.bsc-stat')
+    expect(stats).toHaveLength(12)
+    for (const box of stats) {
+      expect(box.find('.bsc-stat__label').exists()).toBe(true)
+      expect(box.find('.bsc-stat__value').exists()).toBe(true)
+      // Il fondo resta agganciato alla utility Tailwind: il foglio di stampa in
+      // style.css sbianca `.bg-stone-800`, e senza la classe stamperebbe nero.
+      expect(box.classes()).toContain('bg-stone-800')
+    }
+  })
+
+  /**
+   * Il DS vuole il modificatore in rosso (.bsc-stat__mod), ma qui il rosso è il
+   * colore dei danni: il modificatore è oro da sempre e l'oro resta.
+   */
+  it('tiene il modificatore in oro, non nel rosso del design system', () => {
+    const wrapper = mountReview('dnd5e', 'fighter', 'champion', 3)
+    const mods = wrapper.findAll('.bsc-stat__mod')
+    expect(mods).toHaveLength(6)
+    for (const mod of mods) {
+      expect(mod.classes()).toContain('text-amber-400')
+    }
+  })
+
+  /**
+   * .font-gothic (Courier Prime) non compariva in nessuno dei nove passi:
+   * il prodotto vero era l'unica parte senza la voce del marchio.
+   */
+  it('dà ai titoli la voce tipografica del marchio', () => {
+    const wrapper = mountReview('brancalonia', 'ranger', 'mattatore', 6)
+    expect(wrapper.get('#review-heading').classes()).toContain('font-gothic')
+    for (const h of wrapper.findAll('h3, h4')) {
+      expect(h.classes()).toContain('font-gothic')
+    }
+  })
 })

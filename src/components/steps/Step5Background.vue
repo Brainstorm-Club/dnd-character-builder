@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getBackgrounds } from '@/data'
@@ -31,9 +31,48 @@ const selectedBg = ref<Background | null>(null)
 // d'ufficio toglieva al giocatore una scelta che il manuale gli dà.
 const chosenSkills = ref<string[][]>([])
 
+// Competenze che questo passo ha già concesso. `skillProficiencies` è un elenco
+// piatto condiviso con classe e razza: senza memoria di ciò che è nostro non
+// si può togliere il background precedente senza portarsi via il resto.
+let appliedSkills: string[] = []
+
 function resetSkillChoices(bg: Background | null) {
   chosenSkills.value = (bg?.skillChoices ?? []).map(c => Array(c.count).fill(''))
 }
+
+/**
+ * Riallinea il pannello al personaggio corrente. `<KeepAlive>` in BuilderView
+ * evita il rimontaggio fra un passo e l'altro, ma caricare una scheda salvata,
+ * rientrare nel builder o importare un JSON sostituisce l'intero personaggio:
+ * senza questo il pannello restava vuoto e il primo clic riscriveva tutto.
+ */
+function restoreFromCharacter() {
+  const bg = backgrounds.value.find(b => b.id === characterStore.character.background) ?? null
+  selectedBg.value = bg
+  resetSkillChoices(bg)
+  if (!bg) {
+    appliedSkills = []
+    return
+  }
+  // Ricostruisco le scelte solo per gli slot con un elenco esplicito: uno slot
+  // "una qualsiasi" combacerebbe con le competenze di classe e razza, e
+  // rivendicarle qui significherebbe cancellarle al prossimo background.
+  const claimed = new Set(bg.skillProficiencies)
+  ;(bg.skillChoices ?? []).forEach((tier, ti) => {
+    if (!tier.from.length) return
+    let slot = 0
+    for (const skill of characterStore.character.skillProficiencies) {
+      if (slot >= tier.count) break
+      if (claimed.has(skill) || !tier.from.includes(skill)) continue
+      chosenSkills.value[ti]![slot] = skill
+      claimed.add(skill)
+      slot++
+    }
+  })
+  appliedSkills = [...bg.skillProficiencies, ...chosenSkills.value.flat().filter(Boolean)]
+}
+restoreFromCharacter()
+watch(() => characterStore.character.id, () => restoreFromCharacter())
 
 /** Abilità ancora offerte da uno slot: né già concesse né già scelte altrove. */
 function skillOptions(tierIdx: number, slotIdx: number): string[] {
@@ -57,16 +96,23 @@ function chooseSkill(tierIdx: number, slotIdx: number, skill: string) {
   applySkills()
 }
 
-/** Riscrive le competenze del background: le fisse più quelle scelte. */
+/**
+ * Riscrive le competenze del background: le fisse più quelle scelte. Toglie
+ * prima quelle concesse dal background precedente — limitarsi ad aggiungere
+ * faceva accumulare le competenze di ogni background provato, una addosso
+ * all'altra — ma non tocca ciò che hanno concesso classe e razza.
+ */
 function applySkills() {
   const bg = selectedBg.value
   if (!bg) return
   const granted = [...bg.skillProficiencies, ...chosenSkills.value.flat().filter(Boolean)]
+  const next = characterStore.character.skillProficiencies
+    .filter(s => !appliedSkills.includes(s) || granted.includes(s))
   for (const skill of granted) {
-    if (!characterStore.character.skillProficiencies.includes(skill)) {
-      characterStore.character.skillProficiencies.push(skill)
-    }
+    if (!next.includes(skill)) next.push(skill)
   }
+  characterStore.character.skillProficiencies = next
+  appliedSkills = granted
 }
 
 function selectBackground(bg: Background) {

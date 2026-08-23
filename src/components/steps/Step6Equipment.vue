@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { modifier, proficiencyBonus } from '@/utils/calculations'
@@ -13,10 +13,25 @@ const characterStore = useCharacterStore()
 const gt = useGameTerms()
 
 const equipment = computed(() => getEquipment(characterStore.character.variant))
-const selectedWeapons = ref<string[]>([])
-const selectedArmor = ref('')
-const hasShield = ref(false)
 const customEquipment = ref('')
+
+// Armatura e scudo non hanno una copia locale: si leggono e si scrivono
+// direttamente sul personaggio. Una copia in più sarebbe stato un secondo
+// percorso da tenere allineato, ed era proprio il disallineamento il difetto.
+// Le armi la copia ce l'hanno perché qui servono come soli nomi, mentre
+// `character.weapons` porta anche bonus e danno, ricalcolati a ogni tocco.
+const selectedWeapons = ref<string[]>([])
+
+function restoreWeapons() {
+  selectedWeapons.value = characterStore.character.weapons.map(w => w.name)
+}
+restoreWeapons()
+
+// `<KeepAlive>` in BuilderView non rimonta il passo fra un avanti e un indietro,
+// ma caricare una scheda salvata, rientrare nel builder o importare un JSON
+// sostituisce l'intero personaggio: partendo da un elenco vuoto il primo clic
+// riscriveva `character.weapons` da zero, cancellando le armi già scelte.
+watch(() => characterStore.character.id, () => restoreWeapons())
 
 // D&D 2024: barbaro, guerriero, ladro, paladino e ranger sbloccano la
 // proprietà di padronanza delle armi che impugnano. Mostrarla accanto
@@ -65,13 +80,11 @@ function updateCharacterWeapons() {
 }
 
 function selectArmor(armorName: string) {
-  selectedArmor.value = armorName
   characterStore.character.armor = armorName
 }
 
 function toggleShield() {
-  hasShield.value = !hasShield.value
-  characterStore.character.shield = hasShield.value
+  characterStore.character.shield = !characterStore.character.shield
 }
 
 function addCustomItem() {
@@ -140,19 +153,19 @@ function removeItem(idx: number) {
           :key="arm.name"
           @click="selectArmor(arm.name)"
           class="px-3 py-1 rounded text-xs transition-colors cursor-pointer"
-          :class="selectedArmor === arm.name
+          :class="characterStore.character.armor === arm.name
             ? 'bg-amber-600 text-stone-900 font-medium'
             : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
           role="radio"
-          :aria-checked="selectedArmor === arm.name"
+          :aria-checked="characterStore.character.armor === arm.name"
         >
           {{ gt.armorName(arm.name) }} ({{ t('review.ac') }} {{ arm.baseAC }})
         </button>
         <button
           @click="toggleShield()"
           class="px-3 py-1 rounded text-xs transition-colors cursor-pointer"
-          :class="hasShield ? 'bg-amber-600 text-stone-900 font-medium' : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
-          :aria-pressed="hasShield"
+          :class="characterStore.character.shield ? 'bg-amber-600 text-stone-900 font-medium' : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
+          :aria-pressed="characterStore.character.shield"
         >
           {{ t('review.shieldBonus') }}
         </button>

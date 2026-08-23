@@ -74,6 +74,7 @@
     "apocalisseFeatures": "12 archetypes • 6 origins • Level 1-20",
     "dnd2024": "D&D 2024",
     "dnd2024Desc": "The updated edition of Dungeons & Dragons: species no longer grant ability score bonuses — the background does, along with an origin feat.",
+    "dnd2024Promo": "If you like D&D 2024, buy the manuals on",
     "dnd2024Features": "9 species • 12 classes • max level 20 • SRD 5.2.1"
   },
   "race": {
@@ -178,7 +179,10 @@
     "resetDefault": "use class default",
     "noneForClass": "No cantrips for this class.",
     "noneAtLevel": "No spells available at your level.",
-    "ritual": "Ritual"
+    "ritual": "Ritual",
+    "levelShort": "Lv.",
+    "slots": "slots",
+    "showDetail": "{name} details"
   },
   "details": {
     "title": "Character Details",
@@ -285,7 +289,10 @@
     "unnamed": "Unnamed",
     "stepProgress": "Step {current} of {total}",
     "discardWarning": "Going back to variant selection discards the character in progress. You have not saved it yet.",
-    "discardConfirm": "Discard and start over"
+    "discardConfirm": "Discard and start over",
+    "close": "Close",
+    "changeLanguage": "Change language",
+    "availableLanguages": "Available languages"
   },
   "validation": {
     "selectRace": "Select a race before continuing",
@@ -919,6 +926,7 @@
         "ideals": "Dominion. The strong rule, the weak serve. That is the only law that survived the end.",
         "bonds": "My steed is the only companion that followed me out of Hell. I will not abandon it, even if the world burns again.",
         "flaws": "The rage of the pit still controls me. When I see fire, something ancient and terrible stirs inside.",
+        "age": "Unknown",
         "eyes": "Ember red",
         "hair": "Black, singed at the tips",
         "skin": "Ashen grey with burn scars"
@@ -1015,6 +1023,7 @@
         "ideals": "Purification. Suffering is not punishment but transformation. Through discipline, even the damned can be redeemed.",
         "bonds": "Each of the seven seals branded onto my body represents a sin I must atone for. I will break them all or die in the attempt.",
         "flaws": "My obsession with penance makes me rigid and unforgiving, both toward myself and others who I deem unworthy of mercy.",
+        "age": "Unknown",
         "eyes": "Smoke grey",
         "hair": "Shaved, with burn scars on scalp",
         "skin": "Grey-brown, covered in seal brands"
@@ -1147,6 +1156,7 @@
         "ideals": "Knowledge. In Limbo, everything was formless and meaningless. Here, at least, things have names. I will record every name before they are forgotten.",
         "bonds": "My spellbook is not merely a tool; it is a chronicle of everything I have witnessed since emerging from the void. To lose it would be to lose myself.",
         "flaws": "I am so focused on documenting the world that I often fail to act within it. I have watched people die while I was writing about their struggle.",
+        "age": "Unknown, appears 35",
         "eyes": "Flat grey, like unwritten pages",
         "hair": "Colorless, thin and wispy",
         "skin": "Grey-white, as if drained of all pigment"

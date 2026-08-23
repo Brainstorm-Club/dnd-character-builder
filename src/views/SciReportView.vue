@@ -86,15 +86,23 @@ const equivalence = computed(() => {
       {{ t('sci.loading') }}
     </div>
 
-    <!-- Error -->
+    <!-- Error — .bsc-alert sarebbe semanticamente giusto, ma cambia la forma
+         del riquadro (filetto rosso a sinistra su fondo neutro invece del
+         bordo pieno su fondo rosso cupo) e il DS non ha un modificatore di
+         errore: da decidere insieme agli altri due avvisi dell'app. -->
     <div v-else-if="error" class="bg-red-900/30 border border-red-700 rounded-lg p-6 text-red-300">
       {{ t('sci.error') }}
     </div>
 
     <!-- Report -->
     <template v-else-if="report">
-      <!-- Summary card -->
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-6 mb-6">
+      <!-- Summary card — .bsc-card per fondo e imbottitura; bordo e raggio
+           restano quelli dell'app (vedi PrivacyView per il perché). -->
+      <div class="bsc-card border border-stone-700 rounded-lg mb-6">
+        <!-- I tre dati non usano .bsc-stat / .bsc-stat__value: il componente
+             del DS è un riquadro bordato a sé, e qui i numeri stanno nudi
+             dentro la card. Sarebbe un riquadro dentro un riquadro, e il
+             valore passerebbe da text-3xl a text-2xl. Da decidere a parte. -->
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-6 text-center">
           <div>
             <div class="text-3xl font-bold text-emerald-400">{{ report.totalSciMg.toFixed(1) }}</div>
@@ -125,38 +133,46 @@ const equivalence = computed(() => {
         </div>
       </div>
 
-      <!-- Results table -->
-      <div class="overflow-x-auto mb-6">
-        <table class="w-full text-sm" aria-label="SCI benchmark results">
+      <!--
+        Results table — .bsc-table del design system. Sparisce tutta
+        l'impalcatura rifatta a mano: larghezza, corpo, imbottiture di ogni
+        cella, filetti di riga, intestazioni maiuscole spaziate, evidenziazione
+        al passaggio. Le intestazioni del DS sono già text-stone-400 (è lo
+        stesso token, --bsc-text-muted). Resta in utility solo il colore che
+        porta significato: verde smeraldo per il dato di carbonio, grigi
+        digradanti per i byte. .bsc-num allinea a destra e usa le cifre a
+        larghezza fissa, che qui prima mancavano.
+      -->
+      <div class="bsc-table-scroll mb-6">
+        <table class="bsc-table" aria-label="SCI benchmark results">
           <thead>
-            <tr class="border-b border-stone-700 text-stone-400 text-xs uppercase tracking-wider">
-              <th class="text-left py-3 px-2">{{ t('sci.operation') }}</th>
-              <th class="text-right py-3 px-2">{{ t('sci.time') }}</th>
-              <th class="text-right py-3 px-2">{{ t('sci.input') }}</th>
-              <th class="text-right py-3 px-2">{{ t('sci.output') }}</th>
-              <th class="text-right py-3 px-2">SCI (mgCO₂eq)</th>
+            <tr>
+              <th>{{ t('sci.operation') }}</th>
+              <th class="bsc-num">{{ t('sci.time') }}</th>
+              <th class="bsc-num">{{ t('sci.input') }}</th>
+              <th class="bsc-num">{{ t('sci.output') }}</th>
+              <th class="bsc-num">SCI (mgCO₂eq)</th>
             </tr>
           </thead>
           <tbody>
-            <tr
-              v-for="r in report.results"
-              :key="r.service"
-              class="border-b border-stone-800 hover:bg-stone-800/50 transition-colors"
-            >
-              <td class="py-2.5 px-2 font-mono text-stone-300 text-xs">{{ r.service }}</td>
-              <td class="py-2.5 px-2 text-right text-stone-400">{{ r.wallTimeMs }}ms</td>
-              <td class="py-2.5 px-2 text-right text-stone-500">{{ formatBytes(r.inputBytes) }}</td>
-              <td class="py-2.5 px-2 text-right text-stone-500">{{ formatBytes(r.outputBytes) }}</td>
-              <td class="py-2.5 px-2 text-right font-semibold text-emerald-400">{{ r.sciMgCO2eq.toFixed(3) }}</td>
+            <tr v-for="r in report.results" :key="r.service">
+              <td class="font-mono text-stone-300 text-xs">{{ r.service }}</td>
+              <td class="bsc-num text-stone-400">{{ r.wallTimeMs }}ms</td>
+              <td class="bsc-num text-stone-500">{{ formatBytes(r.inputBytes) }}</td>
+              <td class="bsc-num text-stone-500">{{ formatBytes(r.outputBytes) }}</td>
+              <td class="bsc-num font-semibold text-emerald-400">{{ r.sciMgCO2eq.toFixed(3) }}</td>
             </tr>
           </tbody>
           <tfoot>
+            <!-- Il filetto più chiaro sopra il totale resta: col .bsc-table
+                 tutti i filetti sono dello stesso grigio e la riga del totale
+                 si distinguerebbe solo per il neretto. -->
             <tr class="border-t border-stone-600 font-semibold">
-              <td class="py-3 px-2 text-stone-300">{{ t('sci.total') }}</td>
-              <td class="py-3 px-2 text-right text-stone-300">{{ totalTime }}ms</td>
-              <td class="py-3 px-2"></td>
-              <td class="py-3 px-2"></td>
-              <td class="py-3 px-2 text-right text-emerald-400">{{ report.totalSciMg.toFixed(3) }}</td>
+              <td class="text-stone-300">{{ t('sci.total') }}</td>
+              <td class="bsc-num text-stone-300">{{ totalTime }}ms</td>
+              <td></td>
+              <td></td>
+              <td class="bsc-num text-emerald-400">{{ report.totalSciMg.toFixed(3) }}</td>
             </tr>
           </tfoot>
         </table>

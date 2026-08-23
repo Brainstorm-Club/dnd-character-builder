@@ -19,6 +19,23 @@ function closeMobile() {
         <span class="text-3xl" aria-hidden="true">&#x2694;&#xFE0F;</span>
         <div>
           <h1 class="text-xl font-bold text-amber-500 leading-tight font-gothic">{{ t('app.title') }}</h1>
+          <!--
+            Firma del club, come sull'intestazione di harp-forge: il marchio è
+            la classe .bsc-brandmark del design system, cioè uno span vuoto che
+            usa il cervello come maschera e si colora con `currentColor`. Così
+            non serve una immagine per tema — segue il testo, chiaro sul
+            carbone (il tema predefinito) e scuro sulla carta.
+          -->
+          <!--
+            stone-300 e non stone-400: sul carbone il 400 dà 4,50:1 esatti, cioè
+            il minimo senza un filo di margine, e questo testo è da 11px. Il 300
+            sta a 6,91:1 ed è per giunta lo stesso grigio che harp-forge usa per
+            la firma del club.
+          -->
+          <span class="flex items-center gap-1.5 text-[11px] text-stone-300 font-gothic leading-tight">
+            <span class="bsc-brandmark text-sm text-stone-200" aria-hidden="true"></span>
+            Brainstorm Club
+          </span>
         </div>
       </router-link>
 

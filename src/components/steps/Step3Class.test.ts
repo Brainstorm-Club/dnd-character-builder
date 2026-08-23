@@ -6,6 +6,7 @@ import { useCharacterStore } from '@/stores/character'
 import type { GameVariant } from '@/stores/app'
 import { getClasses, preloadVariantData } from '@/data'
 import type { CharacterClass, Subclass } from '@/data/dnd5e/classes'
+import { SKILLS } from '@/data/dnd5e/skills'
 import Step3Class from './Step3Class.vue'
 
 // Minimal i18n — with locale 'en', game terms fall back to the raw English
@@ -70,6 +71,15 @@ async function selectClass(wrapper: Wrapper, cls: CharacterClass) {
   const btn = group.findAll('[role="radio"]').find(b => b.text().includes(cls.name))
   expect(btn, `class button "${cls.name}" should exist`).toBeTruthy()
   await btn!.trigger('click')
+}
+
+/**
+ * Skill-picker buttons in the class details panel, in the same order as
+ * `cls.skillChoices` (missing i18n keys render as "class.skillChoices").
+ */
+function skillButtons(wrapper: Wrapper) {
+  const group = wrapper.find('[aria-label="class.skillChoices"]')
+  return group.exists() ? group.findAll('button') : []
 }
 
 /** Buttons of the subclass picker in the class details panel (empty if hidden) */
@@ -239,5 +249,102 @@ describe('Step3Class — subclass selection', () => {
     expect(store.character.featuresTraits).toEqual(
       expect.arrayContaining(featureNamesAtOrBelow(secondarySub, secondary.subclassLevel)),
     )
+  })
+})
+
+describe('Step3Class — competenze e riallineamento', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+    await preloadVariantData('brancalonia')
+  })
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  /** Prima classe della variante che offre almeno `count` competenze a scelta */
+  function classWithSkillChoices(variant: GameVariant, count = 1): CharacterClass {
+    const cls = getClasses(variant).find(c => c.skillChoices.length >= count && c.numSkillChoices >= 1)
+    if (!cls) throw new Error(`no ${variant} class offering ${count}+ skill choices`)
+    return cls
+  }
+
+  /** Una competenza qualsiasi che la classe indicata NON può concedere */
+  function skillOutside(cls: CharacterClass): string {
+    const skill = SKILLS.map(s => s.id).find(id => !cls.skillChoices.includes(id))
+    if (!skill) throw new Error(`class ${cls.id} can grant every skill`)
+    return skill
+  }
+
+  it('non cancella le competenze degli altri passi quando se ne sceglie una di classe', async () => {
+    const cls = classWithSkillChoices('brancalonia')
+    const fromBackground = skillOutside(cls)
+
+    const { store, wrapper } = mountStep('brancalonia', 1)
+    store.character.skillProficiencies = [fromBackground]
+    await selectClass(wrapper, cls)
+    await skillButtons(wrapper)[0]!.trigger('click')
+
+    expect(store.character.skillProficiencies).toContain(fromBackground)
+    expect(store.character.skillProficiencies).toContain(cls.skillChoices[0])
+  })
+
+  it('togliendo una competenza di classe non porta via quelle degli altri passi', async () => {
+    const cls = classWithSkillChoices('brancalonia')
+    const fromBackground = skillOutside(cls)
+
+    const { store, wrapper } = mountStep('brancalonia', 1)
+    store.character.skillProficiencies = [fromBackground]
+    await selectClass(wrapper, cls)
+    await skillButtons(wrapper)[0]!.trigger('click')
+    await skillButtons(wrapper)[0]!.trigger('click')
+
+    expect(store.character.skillProficiencies).toEqual([fromBackground])
+  })
+
+  it('toglie le competenze scelte per la classe precedente quando la classe cambia', async () => {
+    const first = classWithSkillChoices('brancalonia')
+    const chosen = first.skillChoices[0]!
+    const other = getClasses('brancalonia')
+      .find(c => c.id !== first.id && !c.skillChoices.includes(chosen))
+    expect(other, 'serve una seconda classe che non offra la stessa competenza').toBeTruthy()
+
+    const { store, wrapper } = mountStep('brancalonia', 1)
+    await selectClass(wrapper, first)
+    await skillButtons(wrapper)[0]!.trigger('click')
+    expect(store.character.skillProficiencies).toContain(chosen)
+
+    await selectClass(wrapper, other!)
+    expect(store.character.skillProficiencies).not.toContain(chosen)
+  })
+
+  // `<KeepAlive>` in BuilderView non rimonta il passo: il riallineamento va
+  // provato sul percorso che sostituisce il personaggio sotto un componente
+  // già vivo, cioè il caricamento di una scheda salvata.
+  it('si riallinea alla scheda caricata senza essere rimontato', async () => {
+    const cls = classWithSubclasses('brancalonia', 1)
+    const sub = cls.subclasses[0]!
+    const chosen = cls.skillChoices[0]!
+
+    const { store, wrapper } = mountStep('brancalonia', cls.subclassLevel)
+    await selectClass(wrapper, cls)
+    await clickSubclass(wrapper, sub)
+    await skillButtons(wrapper)[0]!.trigger('click')
+    store.saveCharacter()
+    const savedId = store.character.id
+
+    // L'utente ricomincia da capo e poi ripesca la scheda salvata
+    store.resetCharacter()
+    await wrapper.vm.$nextTick()
+    store.loadCharacter(savedId)
+    await wrapper.vm.$nextTick()
+
+    const checked = subclassButtons(wrapper).filter(b => b.attributes('aria-checked') === 'true')
+    expect(checked.map(b => b.text())).toEqual([sub.name])
+    expect(skillButtons(wrapper)[0]!.attributes('aria-pressed')).toBe('true')
+
+    // E la selezione ripristinata è davvero quella del personaggio: toglierla
+    // lo lascia senza, invece di lasciarla appiccicata all'elenco.
+    await skillButtons(wrapper)[0]!.trigger('click')
+    expect(store.character.skillProficiencies).not.toContain(chosen)
   })
 })

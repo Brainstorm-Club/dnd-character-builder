@@ -8,6 +8,7 @@ import type { GameVariant } from '@/stores/app'
 import { generateRandomCharacter } from '@/utils/randomCharacter'
 import { preloadVariantData, ensureStepData } from '@/data'
 import { useGameTerms } from '@/composables/useGameTerms'
+import { VARIANT_INFO, HOME_VARIANT_ORDER, variantInfo } from '@/data/variants'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -109,14 +110,9 @@ function dismissMessage() {
   importMessage.value = null
 }
 
-// Ordine delle schede in home, due per riga: prima le due ambientazioni
-// italiane, poi le due edizioni di D&D su cui sono costruite.
-const variants: { id: GameVariant; emoji: string; color: string; border: string }[] = [
-  { id: 'brancalonia', emoji: '🥘', color: 'emerald', border: 'border-emerald-600/40' },
-  { id: 'apocalisse', emoji: '🔥', color: 'red', border: 'border-red-600/40' },
-  { id: 'dnd5e', emoji: '🐉', color: 'amber', border: 'border-amber-600/40' },
-  { id: 'dnd2024', emoji: '⚔️', color: 'sky', border: 'border-sky-600/40' },
-]
+// Emoji, bordi e colori dei pulsanti vengono dal descrittore unico: due per
+// riga, nell'ordine deciso in HOME_VARIANT_ORDER.
+const variants = HOME_VARIANT_ORDER.map(v => VARIANT_INFO[v])
 </script>
 
 <template>
@@ -164,13 +160,7 @@ const variants: { id: GameVariant; emoji: string; color: string; border: string 
         <div class="flex flex-col gap-2 w-full mt-auto">
           <button
             @click="startNew(v.id)"
-            :class="[
-              'w-full px-4 py-2.5 font-semibold rounded-lg transition-colors cursor-pointer text-sm',
-              v.id === 'dnd5e' ? 'bg-amber-600 hover:bg-amber-500 text-stone-900' :
-              v.id === 'dnd2024' ? 'bg-sky-600 hover:bg-sky-500 text-stone-900' :
-              v.id === 'brancalonia' ? 'bg-emerald-600 hover:bg-emerald-500 text-stone-900' :
-              'bg-red-600 hover:bg-red-500 text-stone-100'
-            ]"
+            :class="['w-full px-4 py-2.5 font-semibold rounded-lg transition-colors cursor-pointer text-sm', v.button]"
           >
             <span aria-hidden="true">✨</span> {{ t('home.newFrom') }}
           </button>
@@ -216,13 +206,7 @@ const variants: { id: GameVariant; emoji: string; color: string; border: string 
               </span>
             </div>
             <span
-              :class="[
-                'text-xs uppercase px-2 py-0.5 rounded',
-                char.variant === 'dnd5e' ? 'bg-amber-900/40 text-amber-400' :
-                char.variant === 'dnd2024' ? 'bg-sky-900/40 text-sky-400' :
-                char.variant === 'brancalonia' ? 'bg-emerald-900/40 text-emerald-400' :
-                'bg-red-900/40 text-red-400'
-              ]"
+              :class="['text-xs uppercase px-2 py-0.5 rounded', variantInfo(char.variant).badge]"
             >{{ char.variant }}</span>
           </button>
         </li>
