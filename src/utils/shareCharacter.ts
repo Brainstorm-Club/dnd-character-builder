@@ -59,6 +59,10 @@ export const COMPACT_KEYS: Record<string, string> = {
   classes: 'cl',
 
   featuresTraits: 'ft',
+  // Chiavi nuove e distinte, accanto a quelle di sempre: 'ft' e 'ar' restano
+  // dove sono, quindi un link generato prima continua a decodificarsi intero.
+  featureEntries: 'fx',
+  armorId: 'ai',
   languages: 'lg',
   proficienciesOther: 'po',
   coins: 'co',

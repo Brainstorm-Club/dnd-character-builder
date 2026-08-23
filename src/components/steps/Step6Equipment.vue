@@ -2,7 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { modifier, proficiencyBonus } from '@/utils/calculations'
+import { modifier, proficiencyBonus, armorIdFromName } from '@/utils/calculations'
 import { getEquipment } from '@/data'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { getWeaponMastery } from '@/data/dnd2024/mastery'
@@ -84,6 +84,9 @@ function updateCharacterWeapons() {
 
 function selectArmor(armorName: string) {
   characterStore.character.armor = armorName
+  // Lo slug va scritto insieme al nome: è quello che leggerà chi riceve un
+  // export, e un armorId rimasto indietro varrebbe meno di non averlo.
+  characterStore.character.armorId = armorIdFromName(armorName)
 }
 
 function toggleShield() {
