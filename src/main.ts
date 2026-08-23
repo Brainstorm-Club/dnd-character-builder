@@ -5,6 +5,7 @@ import App from './App.vue'
 import router from './router'
 import i18n, { initI18n } from './i18n'
 import { sweepStaleCache } from './data'
+import { sorvegliaAggiornamenti } from './utils/aggiornamento'
 import './style.css'
 
 // GitHub Pages SPA redirect: restore path from 404.html redirect query param
@@ -23,6 +24,15 @@ if (redirectRoute) {
 async function bootstrap() {
   // WSG 3.8: Clean up stale game data cache from previous builds
   sweepStaleCache()
+
+  // Quando il sito viene ripubblicato, il service worker nuovo prende il
+  // posto del vecchio: qui la pagina se ne accorge e riparte, invece di
+  // restare viva con addosso i file di una versione che non esiste piu'.
+  sorvegliaAggiornamenti({
+    sw: 'serviceWorker' in navigator ? navigator.serviceWorker : undefined,
+    ricarica: () => window.location.reload(),
+    programma: (azione, ms) => window.setInterval(azione, ms),
+  })
 
   // WSG 3.8: Load only the active locale before mounting (non-active loaded on demand)
   await initI18n()

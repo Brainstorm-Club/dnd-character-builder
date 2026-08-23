@@ -17,7 +17,13 @@ export default defineConfig({
     vue(),
     tailwindcss(),
     VitePWA({
-      registerType: 'prompt',
+      // 'autoUpdate' e non 'prompt': con 'prompt' il service worker nuovo si
+      // installa, va in attesa e ci resta, perche' nessuno chiamava mai la
+      // funzione che lo attiva — non c'era nessuna interfaccia che lo
+      // proponesse. Il risultato era che dopo una pubblicazione il visitatore
+      // continuava a ricevere i file vecchi dal precache finche' non chiudeva
+      // tutte le schede dell'app: su una PWA installata, in pratica mai.
+      registerType: 'autoUpdate',
       includeAssets: ['favicon.svg', 'pwa-192x192.svg', 'pwa-512x512.svg'],
       manifest: {
         name: 'D&D Character Builder',
@@ -44,6 +50,22 @@ export default defineConfig({
         ],
       },
       workbox: {
+        // Le tre righe che fanno arrivare davvero la versione nuova.
+        // skipWaiting: il service worker appena installato non aspetta che le
+        // schede aperte si chiudano; clientsClaim: prende subito in carico le
+        // pagine gia' aperte; cleanupOutdatedCaches: cancella i precache dei
+        // build precedenti, che altrimenti restano li' a occupare spazio per
+        // sempre, uno per versione pubblicata.
+        //
+        // Nessuna delle tre tocca le schede dei personaggi: quelle stanno in
+        // localStorage (chiavi `character` e `app`), che e' un deposito
+        // separato dalla Cache API su cui lavora il service worker. Cancellare
+        // una cache non puo' raggiungerle. Il dato di gioco tenuto in
+        // localStorage ha gia' una sua pulizia per build, `sweepStaleCache()`,
+        // che rimuove solo le chiavi `gamedata:` e lascia stare il resto.
+        skipWaiting: true,
+        clientsClaim: true,
+        cleanupOutdatedCaches: true,
         globPatterns: ['**/*.{js,css,html,svg,woff2}'],
         // WSG 3.3: il precache si scarica tutto al primo avvio, anche cio' che
         // nessuno chiedera' mai. Qui restano fuori i file che il browser non

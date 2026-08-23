@@ -44,6 +44,31 @@ describe('precache del service worker', () => {
     expect(patterns).toContain('assets/game-dnd24-spells-it-*.js')
   })
 
+  // Una versione nuova deve arrivare a chi ha gia' aperto l'app. Con
+  // `registerType: 'prompt'` il worker nuovo si installava e restava in
+  // attesa che tutte le schede si chiudessero, cosa che su una PWA installata
+  // non succede: si continuava a servire il precache vecchio a tempo
+  // indeterminato. Queste quattro righe sono la differenza fra pubblicare e
+  // essere visti.
+  it('la versione nuova prende il posto della vecchia senza aspettare', () => {
+    expect(viteConfig).toMatch(/registerType:\s*'autoUpdate'/)
+    expect(viteConfig).toMatch(/skipWaiting:\s*true/)
+    expect(viteConfig).toMatch(/clientsClaim:\s*true/)
+    expect(viteConfig).toMatch(/cleanupOutdatedCaches:\s*true/)
+  })
+
+  // Le tre righe qui sopra da sole lascerebbero viva una pagina che gira col
+  // codice vecchio mentre il suo precache e' appena stato cancellato: il primo
+  // pezzo caricato pigramente non esisterebbe piu' da nessuna parte. Chi
+  // ricarica e' `sorvegliaAggiornamenti`, e senza il suo aggancio in main.ts
+  // la configurazione qui sopra e' una mezza misura pericolosa.
+  it('qualcuno ricarica la pagina quando il worker cambia', () => {
+    const main = fs.readFileSync(path.join(root, 'src', 'main.ts'), 'utf8')
+    expect(main).toMatch(/sorvegliaAggiornamenti/)
+    const modulo = fs.readFileSync(path.join(root, 'src', 'utils', 'aggiornamento.ts'), 'utf8')
+    expect(modulo).toMatch(/controllerchange/)
+  })
+
   // Il testo italiano degli incantesimi è l'unico caso di esclusione «serve,
   // ma non a tutti»: 625 KB non compressi che riguardano solo chi gioca in
   // italiano. Fuori dal precache, ma dentro runtimeCaching — senza la seconda
@@ -75,6 +100,13 @@ describe('precache del service worker', () => {
 
     it('il build è presente (senza, gli assert sotto non direbbero nulla)', () => {
       expect(precache.length).toBeGreaterThan(0)
+    })
+
+    it('il worker costruito non si mette in coda e ripulisce il vecchio', () => {
+      // Sull'esito reale: che le opzioni siano finite davvero dentro sw.js.
+      expect(sw).toMatch(/skipWaiting\(\)/)
+      expect(sw).toMatch(/clientsClaim\(\)/)
+      expect(sw).toMatch(/cleanupOutdatedCaches\(\)/)
     })
 
     it('non precarica le facce corsive', () => {
