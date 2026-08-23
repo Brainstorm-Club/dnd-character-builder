@@ -89,8 +89,20 @@ function pdfEquipmentName(item: string, locale: string): string {
  * Nome di un incantesimo a partire dal suo id ('1-jump', 'blade-ward').
  * Senza questa risoluzione la scheda stampava l'id grezzo.
  */
+/**
+ * Un incantesimo può essere memorizzato per id ('3-fireball', 'shillelagh')
+ * oppure per nome ('Fireball'): il generatore casuale usa gli id, i
+ * personaggi scritti a mano usano i nomi. Cercare solo per id lasciava i
+ * secondi irrisolti, e da lì uscivano in inglese e al livello sbagliato.
+ */
+function findSpell(ref: string, char: CharacterData) {
+  const all = getSpells(char.variant)
+  return all.find(sp => sp.id === ref)
+    ?? all.find(sp => sp.name.toLowerCase() === ref.toLowerCase())
+}
+
 function pdfSpellName(spellId: string, char: CharacterData, locale: string): string {
-  const found = getSpells(char.variant).find(sp => sp.id === spellId)
+  const found = findSpell(spellId, char)
   const english = found?.name ?? titleCase(spellId.replace(/^\d+-/, ''))
   return translateGameTerm(english, locale, 'spell')
 }
@@ -101,7 +113,7 @@ function pdfSpellName(spellId: string, char: CharacterData, locale: string): str
  * prefisso resta solo come ripiego per un id che i dati non conoscono.
  */
 function pdfSpellLevel(spellId: string, char: CharacterData): number {
-  const found = getSpells(char.variant).find(sp => sp.id === spellId)
+  const found = findSpell(spellId, char)
   if (found) return found.level
   const prefixed = /^(\d+)-/.exec(spellId)
   return prefixed ? Number(prefixed[1]) : 0
@@ -113,7 +125,11 @@ function pdfSpellLevel(spellId: string, char: CharacterData): number {
  */
 function spellsByLevel(char: CharacterData): Map<number, string[]> {
   const byLevel = new Map<number, string[]>()
-  for (const id of char.spellsKnown) {
+  // Chi prepara gli incantesimi (chierico, druido, mago, paladino) li tiene in
+  // `spellsPrepared`: leggendo solo `spellsKnown` la sua scheda usciva senza
+  // un solo incantesimo.
+  const noti = [...new Set([...char.spellsKnown, ...char.spellsPrepared])]
+  for (const id of noti) {
     const lv = pdfSpellLevel(id, char)
     const bucket = byLevel.get(lv)
     if (bucket) bucket.push(id)
@@ -542,4 +558,139 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   fields['Mosse'] = char.brawlingMoves.map(m => translateGameTerm(m, 'it', 'trait')).join(', ')
 
   return fields
+}
+
+/**
+ * Scheda di Apocalisse. Fino a ieri i personaggi di questa variante uscivano
+ * sulla scheda di D&D, perché il PDF dell'ambientazione non era un modulo
+ * compilabile: Marchio, Spirito, Virtù, Peccato e Umanità finivano schiacciati
+ * dentro la casella dei privilegi. Ora il modello ha i suoi campi e ognuna di
+ * quelle voci ha il proprio posto, come sul manuale.
+ *
+ * I nomi dei campi sono quelli che abbiamo dato noi al modulo, in italiano,
+ * perché la scheda esiste solo in italiano.
+ */
+export function getApocalisseFieldMapping(char: CharacterData): Record<string, string | boolean> {
+  const prof = proficiencyBonus(char.level)
+  const f: Record<string, string | boolean> = {}
+  const it = (id: string, kind: Parameters<typeof translateGameTerm>[2]) =>
+    translateGameTerm(id, 'it', kind)
+
+  // ── Anagrafica ──
+  f['nome-personaggio'] = char.name
+  f['nome-giocatore'] = char.playerName
+  f['origine'] = it(char.race, 'race') + (char.subrace ? ` (${it(char.subrace, 'subrace')})` : '')
+  f['classe-livello'] = `${pdfClassName(char.className, 'apocalisse')} ${char.level}`
+  // In Apocalisse l'origine è anche il background: ripeterla sotto Fazione
+  // non aggiunge nulla. La Fazione è un'altra cosa e l'app non la tratta.
+  f['fazione'] = ''
+  f['punti-esperienza'] = String(char.experiencePoints || '')
+
+  // ── Caratteristiche ──
+  const CAR: (keyof AbilityScores)[] = ['str', 'dex', 'con', 'int', 'wis', 'cha']
+  for (const a of CAR) {
+    f[`car-${a}`] = String(totalAbility(char, a))
+    f[`mod-${a}`] = formatModifier(abilityMod(char, a))
+    f[`ts-${a}`] = formatModifier(savingThrow(char, a))
+  }
+  f['bonus-competenza'] = formatModifier(prof)
+  f['ispirazione'] = ''
+
+  // ── Abilità, nell'ordine in cui la scheda le stampa ──
+  const ABILITA: [string, keyof AbilityScores][] = [
+    ['acrobatics', 'dex'], ['animal-handling', 'wis'], ['arcana', 'int'], ['athletics', 'str'],
+    ['stealth', 'dex'], ['investigation', 'int'], ['deception', 'cha'], ['intimidation', 'cha'],
+    ['performance', 'cha'], ['insight', 'wis'], ['medicine', 'wis'], ['nature', 'int'],
+    ['perception', 'wis'], ['persuasion', 'cha'], ['sleight-of-hand', 'dex'], ['religion', 'int'],
+    ['survival', 'wis'], ['history', 'int'],
+  ]
+  for (const [id, ab] of ABILITA) f[`ab-${id}`] = formatModifier(skillBonus(char, id, ab))
+  f['percezione-passiva'] = String(10 + skillBonus(char, 'perception', 'wis'))
+
+  // ── Combattimento ──
+  f['classe-armatura'] = String(computeArmorClass(char))
+  f['iniziativa'] = formatModifier(abilityMod(char, 'dex'))
+  f['velocita'] = `${feetToMeters(char.speed)}m`
+  f['pf-attuali'] = String(char.currentHp || char.maxHp)
+  f['pf-temporanei'] = String(char.tempHp || '')
+  f['dadi-vita'] = `${char.level}d${char.hitDie}`
+  f['dadi-vita-totale'] = String(char.level)
+
+  // ── Marchio, Virtù e Peccato: il cuore dell'ambientazione ──
+  const marchio = char.mark ? apocalisseRules.marks.find(m => m.id === char.mark) : undefined
+  const spirito = marchio && char.markSpirit
+    ? marchio.spirits.find(s => s.id === char.markSpirit)
+    : undefined
+  f['marchio'] = [marchio?.nameOriginal, spirito?.nameOriginal].filter(Boolean).join(' — ')
+  f['virtu'] = apocalisseRules.virtues.find(v => v.id === char.virtue)?.nameOriginal ?? ''
+  f['peccato'] = apocalisseRules.sins.find(s => s.id === char.sin)?.nameOriginal ?? ''
+  const dado = apocalisseRules.markDiceProgression
+    .find(d => char.level >= d.levelRange[0] && char.level <= d.levelRange[1])
+  f['dadi-marchio'] = dado?.die ?? ''
+
+  // ── Armi: la scheda ne stampa tre ──
+  for (let i = 0; i < 3; i++) {
+    const w = char.weapons[i]
+    f[`arma${i + 1}-nome`] = w ? it(w.name, 'weapon') : ''
+    f[`arma${i + 1}-bonus`] = w ? formatModifier(w.attackBonus) : ''
+    f[`arma${i + 1}-danni`] = w ? w.damage : ''
+  }
+
+  const armatura = char.armor ? [it(char.armor, 'armor')] : []
+  f['equipaggiamento'] = [...armatura, ...char.equipment.map(e => pdfEquipmentName(e, 'it'))].join(', ')
+
+  // ── Monete: cinque caselle, rame argento electro oro platino ──
+  f['moneta-mr'] = String(char.coins.cp || '')
+  f['moneta-ma'] = String(char.coins.sp || '')
+  f['moneta-me'] = String(char.coins.ep || '')
+  f['moneta-mo'] = String(char.coins.gp || '')
+  f['moneta-mp'] = String(char.coins.pp || '')
+
+  // ── Pagina 2 ──
+  f['privilegi'] = char.featuresTraits.map(x => it(x, 'feature')).join('\n')
+  f['occhi'] = char.eyes
+  f['carnagione'] = char.skin
+  f['capelli'] = char.hair
+  f['eta'] = char.age
+  f['altezza'] = char.height
+  f['peso'] = char.weight
+  f['segni-particolari'] = [char.personalityTraits, char.ideals, char.bonds, char.flaws]
+    .filter(Boolean).join('\n')
+  f['storia'] = char.backstory
+  const lingue = char.languages.map(l => it(l, 'language'))
+  const competenze = char.proficienciesOther.map(p => it(p, 'proficiency'))
+  f['competenze-linguaggi'] = [
+    competenze.length ? `Competenze: ${competenze.join(', ')}` : '',
+    lingue.length ? `Lingue: ${lingue.join(', ')}` : '',
+    `Umanità: ${char.humanity}`,
+  ].filter(Boolean).join('\n')
+  f['tesoro'] = [char.treasure, char.allies && `Alleati: ${char.allies}`].filter(Boolean).join('\n')
+
+  // ── Pagina 3: incantesimi ──
+  if (char.spellcastingAbility) {
+    f['classe-incantatore'] = pdfClassName(char.spellcastingClass, 'apocalisse')
+    f['caratteristica-incantatore'] = char.spellcastingAbility.toUpperCase()
+    const mod = abilityMod(char, char.spellcastingAbility as keyof AbilityScores)
+    f['cd-incantesimi'] = String(spellSaveDC(prof, mod))
+    f['bonus-attacco-incantesimi'] = formatModifier(spellAttackBonus(prof, mod))
+
+    const perLivello = spellsByLevel(char)
+    const elenco = (lv: number) => (perLivello.get(lv) ?? [])
+      .map(sp => pdfSpellName(sp, char, 'it')).join('\n')
+    f['trucchetti'] = [
+      ...char.cantrips,
+      ...(perLivello.get(0) ?? []).filter(id => !char.cantrips.includes(id)),
+    ].map(sp => pdfSpellName(sp, char, 'it')).join('\n')
+    for (let lv = 1; lv <= 9; lv++) f[`incantesimi${lv}`] = elenco(lv)
+
+    const slot = pdfSpellSlots(char)
+    for (let lv = 1; lv <= 9; lv++) {
+      const n = slot[lv] ?? 0
+      f[`slot${lv}-totali`] = n ? String(n) : ''
+      // La scheda si esporta a riposo compiuto: nessuno slot è ancora speso.
+      f[`slot${lv}-spesi`] = ''
+    }
+  }
+
+  return f
 }

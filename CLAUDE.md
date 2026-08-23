@@ -107,4 +107,6 @@ This project follows the [W3C Web Sustainability Guidelines 1.0](https://www.w3.
 - `unsafe-eval` in CSP required for vue-i18n runtime compilation
 - GitHub Pages: SPA routing via 404.html redirect hack
 - Pinia "getActivePinia()" warnings in dev mode are HMR artifacts (safe to ignore)
-- Apocalisse variant uses D&D 5e PDF template (Apocalisse PDFs are not fillable AcroForms)
+- All four variants export to their own PDF sheet. The Apocalisse template shipped
+  without any AcroForm fields, so its 114 fields were authored for this project and
+  the publisher's order watermark was stripped from the content stream.

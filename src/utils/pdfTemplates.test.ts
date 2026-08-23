@@ -5,7 +5,9 @@ import { describe, it, expect, beforeAll } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { PDFDocument } from 'pdf-lib'
 import fs from 'node:fs'
-import { getDnd5eFieldMapping, getBrancaloniaFieldMapping } from './pdfFieldMapping'
+import {
+  getDnd5eFieldMapping, getBrancaloniaFieldMapping, getApocalisseFieldMapping,
+} from './pdfFieldMapping'
 import { generateRandomCharacter } from './randomCharacter'
 import { preloadVariantData } from '@/data'
 import type { GameVariant } from '@/stores/app'
@@ -20,12 +22,17 @@ import type { GameVariant } from '@/stores/app'
  * Qui si carica il modello vero e si controlla che ogni casella su cui il
  * codice scrive esista davvero.
  */
-const MODELLI: [GameVariant, string, 'dnd' | 'branca'][] = [
+const MODELLI: [GameVariant, string, 'dnd' | 'branca' | 'apo'][] = [
   ['dnd5e', 'dnd-5e-sheet', 'dnd'],
   ['dnd2024', 'dnd-5e-sheet', 'dnd'],
-  ['apocalisse', 'dnd-5e-sheet', 'dnd'],
+  ['apocalisse', 'apocalisse-sheet', 'apo'],
   ['brancalonia', 'brancalonia-sheet', 'branca'],
 ]
+
+const mappa = (quale: string, c: Parameters<typeof getDnd5eFieldMapping>[0]) =>
+  quale === 'dnd' ? getDnd5eFieldMapping(c, 'it')
+    : quale === 'branca' ? getBrancaloniaFieldMapping(c)
+      : getApocalisseFieldMapping(c)
 
 async function caselleDelModello(file: string): Promise<Set<string>> {
   // Il Buffer di Node non supera la validazione di pdf-lib sotto jsdom.
@@ -51,7 +58,7 @@ describe.each(MODELLI)('scheda PDF — %s', (variante, file, quale) => {
         { name: 'Shortbow', attackBonus: 4, damage: '1d6' },
         { name: 'Club', attackBonus: 3, damage: '1d4' },
       ]
-      const m = quale === 'dnd' ? getDnd5eFieldMapping(c, 'it') : getBrancaloniaFieldMapping(c)
+      const m = mappa(quale, c)
       for (const k of Object.keys(m)) scritte.add(k)
     }
     const fantasma = [...scritte].filter(k => !reali.has(k))
@@ -61,15 +68,18 @@ describe.each(MODELLI)('scheda PDF — %s', (variante, file, quale) => {
   it('riempie sempre le caselle anagrafiche: nome, classe, livello, razza', async () => {
     for (let i = 0; i < 20; i++) {
       const c = generateRandomCharacter(variante, 1 + (i % 12))
-      const m = quale === 'dnd' ? getDnd5eFieldMapping(c, 'it') : getBrancaloniaFieldMapping(c)
+      const m = mappa(quale, c)
       const chi = `${variante} ${c.race}/${c.className} lv${c.level}`
       const [nome, classe, razza] = quale === 'dnd'
         ? [m['CharacterName'], m['ClassLevel'], m['Race ']]
-        : [m['Nome'], m['Classe'], m['Nome 1']]
+        : quale === 'apo'
+          ? [m['nome-personaggio'], m['classe-livello'], m['origine']]
+          : [m['Nome'], m['Classe'], m['Nome 1']]
       expect(nome, `${chi}: nome`).toBeTruthy()
       expect(classe, `${chi}: classe`).toBeTruthy()
       expect(razza, `${chi}: razza`).toBeTruthy()
       if (quale === 'branca') expect(m['Liv'], `${chi}: livello`).toBeTruthy()
+      if (quale === 'apo') expect(m['dadi-vita'], `${chi}: dadi vita`).toBeTruthy()
     }
   })
 })

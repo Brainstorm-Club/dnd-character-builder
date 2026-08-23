@@ -3,7 +3,9 @@ import { PDFDocument } from 'pdf-lib'
 import { useCharacterStore } from '@/stores/character'
 import { useAppStore } from '@/stores/app'
 import type { CharacterData } from '@/stores/character'
-import { getDnd5eFieldMapping, getBrancaloniaFieldMapping } from '@/utils/pdfFieldMapping'
+import {
+  getDnd5eFieldMapping, getBrancaloniaFieldMapping, getApocalisseFieldMapping,
+} from '@/utils/pdfFieldMapping'
 
 /**
  * I moduli PDF portano il proprio font: se non ha il glifo di una lettera
@@ -42,11 +44,16 @@ export function usePdfExport() {
     exporting.value = true
 
     try {
-      // Apocalisse uses D&D 5e sheet (Apocalisse PDF sheets are not fillable AcroForms)
+      // Ogni ambientazione esporta sulla propria scheda. Apocalisse ci è
+      // arrivata per ultima: il suo PDF non era un modulo compilabile e i
+      // personaggi uscivano su quella di D&D, con Marchio, Virtù e Peccato
+      // schiacciati fra i privilegi.
       const base = import.meta.env.BASE_URL
-      const pdfUrl = char.variant === 'brancalonia'
-        ? `${base}pdf/brancalonia-sheet.pdf`
-        : `${base}pdf/dnd-5e-sheet.pdf`
+      const MODELLI: Partial<Record<CharacterData['variant'], string>> = {
+        brancalonia: 'brancalonia-sheet.pdf',
+        apocalisse: 'apocalisse-sheet.pdf',
+      }
+      const pdfUrl = `${base}pdf/${MODELLI[char.variant] ?? 'dnd-5e-sheet.pdf'}`
 
       const pdfBytes = await fetch(pdfUrl).then(r => r.arrayBuffer())
       const pdfDoc = await PDFDocument.load(pdfBytes)
@@ -57,7 +64,9 @@ export function usePdfExport() {
       const uiLocale = useAppStore().locale
       const fieldMapping = char.variant === 'brancalonia'
         ? getBrancaloniaFieldMapping(char)
-        : getDnd5eFieldMapping(char, uiLocale)
+        : char.variant === 'apocalisse'
+          ? getApocalisseFieldMapping(char)
+          : getDnd5eFieldMapping(char, uiLocale)
 
       const MAX_FIELD_LENGTH = 1000
       const skippedFields: string[] = []
