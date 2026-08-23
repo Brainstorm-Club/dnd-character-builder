@@ -1,5 +1,15 @@
 import type { Background } from '../dnd5e/backgrounds'
 
+// I tre volumi del Regno nominano quasi sempre il linguaggio che il background
+// insegna («Linguaggi: Baccaglio»), non lo lasciano a scelta: `languageNames`
+// riporta quei nomi così il generatore non sorteggi una lingua qualsiasi.
+// I nomi sono quelli con cui l'app conosce le lingue in `rules.ts` — Racket,
+// Macaronic, Draconian, Petroglyphic, Lingua Ignota — perché è quell'elenco che
+// `getAvailableLanguages` restituisce e su cui il resto dell'app fa i confronti;
+// l'edizione inglese ufficiale scrive invece «Petroglyph» e «Unknown Language».
+// Dove la riga «Linguaggi:» sul manuale non c'è affatto — attaccabrighe,
+// staffetta, adepto e rinnegato della Forca, erborista, polverista, lavativo —
+// il campo resta assente: nessun linguaggio, non uno a scelta.
 export const brancaloniaBackgrounds: readonly Background[] = [
   // ─── Ambulant (Ambulante) ─────────────────────────────────────────
   {
@@ -11,6 +21,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['performance', 'history'],
     toolProficiencies: ["A set of artisan's tools (one of your choice)"],
     languages: 1,
+    // Manuale di Ambientazione 2.6, «Linguaggi: Baccaglio».
+    languageNames: ['Racket'],
     equipment: [
       'A jewel dedicated to Saint Pathrick',
       'A set of traveler\'s clothes',
@@ -56,6 +68,9 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['investigation', 'persuasion'],
     toolProficiencies: ['Forgery kit'],
     languages: 1,
+    // Manuale di Ambientazione 2.6, «Linguaggi: Maccheronico»: la
+    // lingua della burocrazia, il ferro del mestiere dell'azzeccagarbugli.
+    languageNames: ['Macaronic'],
     equipment: [
       'A copy of your home region\'s book of laws',
       // Il manuale italiano conta calamaio e pennino come due voci separate
@@ -85,6 +100,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['stealth', 'survival'],
     toolProficiencies: [],
     languages: 1,
+    // Manuale di Ambientazione 2.6, «Linguaggi: Baccaglio».
+    languageNames: ['Racket'],
     equipment: [
       'A dagger',
       'A memento from your past life',
@@ -108,6 +125,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['animal-handling', 'athletics'],
     toolProficiencies: ['Herbalism kit'],
     languages: 1,
+    // Manuale di Ambientazione 2.6, «Linguaggi: Petroglifico».
+    languageNames: ['Petroglyphic'],
     equipment: [
       'A staff',
       'An animal bone pendant',
@@ -132,6 +151,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['athletics', 'intimidation'],
     toolProficiencies: ['One type of gaming set'],
     languages: 1,
+    // Manuale di Ambientazione 2.6, «Linguaggi: Baccaglio».
+    languageNames: ['Racket'],
     equipment: [
       'A pendant of Saint Marauda',
       'A poppycock card deck or another game',
@@ -157,6 +178,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['stealth', 'survival'],
     toolProficiencies: ['Vehicles (land and water)'],
     languages: 1,
+    // Macaronicon 2.2, «Linguaggi: Baccaglio».
+    languageNames: ['Racket'],
     equipment: ["A set of traveler's clothes", 'A pouch containing 15 sp'],
     feature: {
       name: 'Boundless',
@@ -203,6 +226,9 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['history', 'persuasion'],
     toolProficiencies: ['One type of musical instrument', "Calligrapher's supplies"],
     languages: 1,
+    // Macaronicon 2.2, «Linguaggi: Draconiano»: l'innamorato ha avuto
+    // l'istruzione che il Draconiano richiede.
+    languageNames: ['Draconian'],
     equipment: [
       'A musical instrument (one of your choice)',
       'A collection of love letters',
@@ -230,6 +256,10 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['insight', 'persuasion'],
     toolProficiencies: ['Two types of gaming set'],
     languages: 2,
+    // Macaronicon 2.2, «Linguaggi: Baccaglio, Maccheronico»: sono due,
+    // e il conteggio che avevamo era giusto. L'impresario tratta tanto
+    // coi teatranti quanto coi notabili che pagano.
+    languageNames: ['Racket', 'Macaronic'],
     // Mancava l'abito e la borsa era di 15 ma: il Macaronicon dà «un libro con
     // segnati i nomi di aspiranti teatranti, un abito di buona fattura, una
     // borsa con 20 ma». L'abito resta distinto da 'A set of fine clothes'
@@ -257,6 +287,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['deception', 'persuasion'],
     toolProficiencies: ['Two types of game set'],
     languages: 1,
+    // Macaronicon 2.2, «Linguaggi: Baccaglio».
+    languageNames: ['Racket'],
     // Mancava il Cimelio aggiuntivo. Il Macaronicon dà «un abito comune, una
     // borsa con 15 ma, un Cimelio aggiuntivo»: il trofeo da rissa e la mappa
     // delle locande sono dell'attaccabrighe, non del lucignolo.
@@ -278,6 +310,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['persuasion', 'religion'],
     toolProficiencies: [],
     languages: 2,
+    // Macaronicon 2.2, «Linguaggi: Draconiano, Lingua Ignota».
+    languageNames: ['Draconian', 'Lingua Ignota'],
     // Mancavano le vesti e la borsa era di 15 ma: il Macaronicon dà «un simbolo
     // sacro d'oro, un libro di preghiere, vesti da sacerdote, una borsa con
     // 25 ma». La voce non è 'Vestments' perché quella chiave è già dei
@@ -305,6 +339,9 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['investigation', 'history'],
     toolProficiencies: ["Thieves' tools", "Calligrapher's supplies"],
     languages: 1,
+    // Macaronicon 2.2, «Linguaggi: Maccheronico»: serve per leggere gli
+    // archivi del Credo a cui la licenza dà accesso.
+    languageNames: ['Macaronic'],
     // Mancavano piede di porco e abito, la custodia era senza le mappe e la
     // borsa era di 15 ma invece di 10: il Macaronicon dà «una custodia per
     // pergamene piena di appunti di studio e mappe, un piede di porco, un
@@ -378,6 +415,10 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['deception', 'intimidation'],
     toolProficiencies: [],
     languages: 2,
+    // L'Impero Randella Ancora 1.0, «Linguaggi: Draconiano,
+    // Maccheronico»: la nobiltà che il blasonato millanta si sente
+    // soprattutto da come parla.
+    languageNames: ['Draconian', 'Macaronic'],
     // Mancavano due voci e la borsa era di 15 ma: L'Impero Randella Ancora dà
     // «un attestato di nobiltà discutibile, una bolla nobiliare arrugginita,
     // un salvacondotto scaduto, delle vesti nobiliari rattoppate e una borsa
@@ -473,6 +514,9 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     skillProficiencies: ['arcana', 'insight'],
     toolProficiencies: [],
     languages: 1,
+    // L'Impero Randella Ancora 1.0, «Linguaggi: Lingua Ignota»: è la
+    // cosa che definisce il suscitato, il codice segreto del creato.
+    languageNames: ['Lingua Ignota'],
     // 'A strange trinket' era un ninnolo qualsiasi, ma L'Impero Randella
     // Ancora dà «una strana ricevuta che attesta una compravendita
     // misconosciuta» («a strange receipt detailing an unknown purchase»):
