@@ -17,6 +17,28 @@ const privilegi = dnd2024Classes.flatMap(c => [
   ...c.subclasses.flatMap(s => s.features.map(f => ({ cls: c.id, sub: s.id, f }))),
 ])
 
+describe('descrizioni delle sottoclassi 2024', () => {
+  const sottoclassi = dnd2024Classes.flatMap(c => c.subclasses)
+
+  it('sono dodici, una per classe', () => {
+    expect(sottoclassi).toHaveLength(12)
+  })
+
+  it('nessuna è rimasta al segnaposto con cui erano nate', () => {
+    for (const s of sottoclassi) {
+      expect(s.description).not.toMatch(/subclass from the SRD/)
+      expect(s.description.length).toBeGreaterThan(80)
+    }
+  })
+
+  it('aprono con il sottotitolo del manuale e proseguono con la prosa', () => {
+    for (const s of sottoclassi) {
+      expect(s.description.trim()).toMatch(/^[A-Z]/)
+      expect(s.description.trim()).toMatch(/[.!?”"']$/)
+    }
+  })
+})
+
 describe('descrizioni dei privilegi 2024', () => {
   it('ce n’è una per ogni privilegio', () => {
     expect(privilegi.length).toBeGreaterThan(300)
