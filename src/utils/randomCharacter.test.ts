@@ -5,6 +5,9 @@ import { getDnd5eFieldMapping } from './pdfFieldMapping'
 import { preloadVariantData } from '@/data'
 import { THIRD_CASTER_SUBCLASSES } from '@/data/spellcasting'
 import { GAME_VARIANTS } from '@/stores/app'
+import { calcolaAttacco } from '@/domain/armi'
+import { simpleWeapons, martialWeapons } from '@/data/dnd5e/equipment'
+import { modifier, proficiencyBonus } from './calculations'
 
 describe('generatore casuale', () => {
   beforeAll(async () => {
@@ -37,6 +40,34 @@ describe('generatore casuale', () => {
         expect(fields['SpellcastingAbility 2'], who).toBeUndefined()
         expect(fields['SpellSaveDC  2'], who).toBeUndefined()
         expect(fields['SpellAtkBonus 2'], who).toBeUndefined()
+      }
+    })
+  }
+
+  /**
+   * Bonus di attacco e danno devono uscire dalla regola condivisa di
+   * `src/domain/armi.ts`, non da un conto scritto qui dentro: erano due
+   * implementazioni diverse — qui le classi da Destrezza mettevano la Destrezza
+   * secca su ogni arma accurata, e il danno usciva nudo mentre il passo
+   * Equipaggiamento ci scriveva il modificatore — e ogni correzione andava
+   * scritta due volte.
+   */
+  for (const variant of GAME_VARIANTS) {
+    it(`${variant}: le armi generate rispettano la regola condivisa del bonus di attacco`, () => {
+      const catalogo = [...simpleWeapons, ...martialWeapons]
+      for (let i = 0; i < 120; i++) {
+        const c = generateRandomCharacter(variant)
+        const mods = {
+          strMod: modifier(c.abilityScores.str + (c.racialBonuses.str || 0)),
+          dexMod: modifier(c.abilityScores.dex + (c.racialBonuses.dex || 0)),
+          proficiencyBonus: proficiencyBonus(c.level),
+        }
+        for (const w of c.weapons) {
+          const arma = catalogo.find(a => a.name === w.name)
+          expect(arma, `${w.name} non è nel catalogo`).toBeDefined()
+          expect(w, `${variant}/${c.className} liv.${c.level} — ${w.name}`)
+            .toEqual(calcolaAttacco(arma!, mods))
+        }
       }
     })
   }

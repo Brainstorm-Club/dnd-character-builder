@@ -8,11 +8,12 @@ import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { getClassBlurb } from '@/data/classBlurbs'
 import { THIRD_CASTER_SUBCLASSES } from '@/data/spellcasting'
+import { getExpertiseCount, getExpertiseOptions, reconcileExpertise } from '@/domain/competenze'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 // Multiclass support (D&D 5e only)
 
-const { t, locale } = useI18n()
+const { t, te, locale } = useI18n()
 const characterStore = useCharacterStore()
 const gt = useGameTerms()
 
@@ -34,6 +35,83 @@ const selectedSubclass = ref<string>('')
 // buttava via il lavoro degli altri passi.
 let appliedSkills: string[] = []
 
+// ── Competenze raddoppiate (Expertise) ──────────────────────────────────────
+// La regola sta in `@/domain/competenze`, non qui: il generatore casuale e
+// questo passo devono contarle allo stesso modo. Il blocco va dichiarato prima
+// di `restoreFromCharacter()`, che lo legge già alla prima esecuzione.
+
+const selectedExpertise = ref<string[]>([])
+
+// Le competenze raddoppiate che questo passo ha scritto nel personaggio: come
+// per `appliedSkills`, servono a togliere solo le proprie e non quelle che un
+// domani potrebbe concedere un altro passo o una scheda importata.
+let appliedExpertise: string[] = []
+
+/** Quante ne concede la classe scelta al livello raggiunto (0 = niente selettore) */
+const expertiseMax = computed(() =>
+  selectedClass.value
+    ? getExpertiseCount(selectedClass.value, variant.value, classLevel(selectedClass.value.id))
+    : 0,
+)
+
+/** Fra quali abilità si può scegliere: solo quelle in cui è già competente */
+const expertiseOptions = computed(() =>
+  selectedClass.value
+    ? getExpertiseOptions(
+        selectedClass.value,
+        variant.value,
+        classLevel(selectedClass.value.id),
+        characterStore.character.skillProficiencies,
+      )
+    : [],
+)
+
+/**
+ * Le chiavi i18n di questa sezione non sono ancora nei dizionari
+ * (`src/i18n/locales/*.json`, fuori da questo intervento): senza il controllo
+ * con `te` l'intestazione mostrerebbe all'utente la chiave grezza
+ * "class.expertiseChoices" al posto di una frase.
+ */
+const expertiseHeading = computed(() => {
+  const count = expertiseMax.value
+  if (te('class.expertiseChoices')) return t('class.expertiseChoices', { count })
+  return locale.value.startsWith('it')
+    ? `Competenza raddoppiata: scegli ${count} abilità`
+    : `Expertise: choose ${count} skills`
+})
+
+function toggleExpertise(skill: string) {
+  const idx = selectedExpertise.value.indexOf(skill)
+  if (idx >= 0) {
+    selectedExpertise.value.splice(idx, 1)
+  } else if (selectedExpertise.value.length < expertiseMax.value) {
+    selectedExpertise.value.push(skill)
+  }
+  applyExpertise()
+}
+
+/** Riversa la selezione nel personaggio, togliendo solo quanto aveva scritto. */
+function applyExpertise() {
+  const next = characterStore.character.skillExpertise
+    .filter(s => !appliedExpertise.includes(s) || selectedExpertise.value.includes(s))
+  for (const skill of selectedExpertise.value) {
+    if (!next.includes(skill)) next.push(skill)
+  }
+  characterStore.character.skillExpertise = next
+  appliedExpertise = [...selectedExpertise.value]
+}
+
+// Rinunciare a una competenza di base (o scendere di livello) deve portarsi via
+// il raddoppio: la scheda sommava il bonus di competenza due volte su un'abilità
+// in cui il personaggio non era più nemmeno competente.
+watch([expertiseOptions, expertiseMax], () => {
+  const next = reconcileExpertise(selectedExpertise.value, expertiseOptions.value, expertiseMax.value)
+  if (next.length !== selectedExpertise.value.length) {
+    selectedExpertise.value = next
+    applyExpertise()
+  }
+})
+
 // Restore the pickers when the user comes back to this step
 function restoreFromCharacter() {
   const storedClass = classes.value.find(c => c.id === characterStore.character.className)
@@ -48,6 +126,12 @@ function restoreFromCharacter() {
     selectedSubclass.value = ''
   }
   appliedSkills = [...selectedSkills.value]
+  // Solo le raddoppiate che questo passo può davvero offrire: una scheda
+  // importata può portarsene di scritte a mano o con id storti, e prenderle in
+  // carico qui significherebbe cancellargliele al primo tocco sui chip.
+  selectedExpertise.value = characterStore.character.skillExpertise
+    .filter(s => expertiseOptions.value.includes(s))
+  appliedExpertise = [...selectedExpertise.value]
 }
 restoreFromCharacter()
 
@@ -68,6 +152,8 @@ watch(
       selectedSubclass.value = ''
       selectedSkills.value = []
       appliedSkills = []
+      selectedExpertise.value = []
+      appliedExpertise = []
     }
   },
 )
@@ -84,6 +170,10 @@ function selectClass(cls: CharacterClass) {
   // in eredità alla nuova classe che non le concede.
   selectedSkills.value = []
   applyClassSkills()
+  // Idem per le raddoppiate: la classe nuova può non concederne affatto, e
+  // restavano appiccicate alla scheda senza più un selettore per toglierle.
+  selectedExpertise.value = []
+  applyExpertise()
 
   // Set spellcasting info. Fighter and Rogue carry a third-caster progression
   // only for their spellcasting subclasses, so a plain one gets no spell sheet.
@@ -308,6 +398,31 @@ function featureLabel(feature: { id?: string; name: string }): string {
                 : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
             :aria-pressed="selectedSkills.includes(skill)"
             :aria-disabled="!selectedSkills.includes(skill) && selectedSkills.length >= selectedClass.numSkillChoices"
+          >
+            {{ skillDisplayName(skill) }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Competenze raddoppiate (Expertise) -->
+      <div v-if="expertiseMax > 0 && expertiseOptions.length" class="mt-4">
+        <h4 id="class-expertise-heading" class="font-semibold text-stone-300 mb-2">
+          {{ expertiseHeading }}
+          <span class="text-stone-500">({{ selectedExpertise.length }}/{{ expertiseMax }})</span>
+        </h4>
+        <div class="flex flex-wrap gap-2" role="group" aria-labelledby="class-expertise-heading">
+          <button
+            v-for="skill in expertiseOptions"
+            :key="skill"
+            @click="toggleExpertise(skill)"
+            class="px-3 py-1 rounded text-xs transition-colors cursor-pointer"
+            :class="selectedExpertise.includes(skill)
+              ? 'bg-amber-600 text-stone-900 font-medium'
+              : selectedExpertise.length >= expertiseMax
+                ? 'bg-stone-800 text-stone-600 cursor-not-allowed'
+                : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
+            :aria-pressed="selectedExpertise.includes(skill)"
+            :aria-disabled="!selectedExpertise.includes(skill) && selectedExpertise.length >= expertiseMax"
           >
             {{ skillDisplayName(skill) }}
           </button>

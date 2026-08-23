@@ -5,6 +5,20 @@ import { useCharacterStore } from '@/stores/character'
 import { getBackgrounds } from '@/data'
 import type { Background } from '@/data/dnd5e/backgrounds'
 import { SKILLS } from '@/data/dnd5e/skills'
+import { getFeatsByCategory } from '@/data/dnd2024/feats'
+import type { AbilityKey } from '@/data/dnd5e/classes'
+import {
+  originAbilityOptions,
+  grantsOriginBonuses,
+  originFeatName,
+  originFeatId,
+  originBonusMap,
+  replaceOriginBonuses,
+  readOriginChoice,
+  NO_ORIGIN_CHOICE,
+  type OriginChoice,
+  type OriginBonuses,
+} from '@/domain/origine2024'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
@@ -40,6 +54,109 @@ function resetSkillChoices(bg: Background | null) {
   chosenSkills.value = (bg?.skillChoices ?? []).map(c => Array(c.count).fill(''))
 }
 
+// --- D&D 2024: bonus di caratteristica e talento d'origine dal background ---
+// La regola vive in `@/domain/origine2024`, la stessa che deve chiamare il
+// generatore casuale: finché stava scritta solo là dentro, il personaggio
+// costruito a mano usciva con sei punteggi nudi e senza talento.
+
+/** Le tre caratteristiche offerte: vuoto in tutte le varianti fuorché il 2024. */
+const abilityOptions = computed<AbilityKey[]>(() => originAbilityOptions(selectedBg.value))
+const showOriginBonuses = computed(() => grantsOriginBonuses(selectedBg.value))
+const originFeatLabel = computed(() => originFeatName(selectedBg.value))
+const originChoice = ref<OriginChoice>({ ...NO_ORIGIN_CHOICE })
+
+// Ciò che questo passo ha già concesso, per poterlo togliere. `racialBonuses` è
+// condiviso con la specie: azzerarlo di netto porterebbe via anche i suoi bonus.
+let appliedBonuses: OriginBonuses = {}
+// Idem per il talento: lo cancelliamo solo se è quello che avevamo messo noi.
+let appliedFeat = ''
+
+/** Il +1 non può cadere sulla stessa caratteristica che ha preso il +2. */
+const minorOptions = computed(() =>
+  abilityOptions.value.filter(a => a !== originChoice.value.major),
+)
+
+function chooseMajor(value: string) {
+  originChoice.value = { ...originChoice.value, major: value as AbilityKey | '' }
+  // Se il +2 si sposta sulla caratteristica che aveva il +1, quest'ultimo resta
+  // orfano: meglio svuotarlo che lasciare un selettore che mostra una scelta
+  // ormai priva di effetto.
+  if (originChoice.value.minor === originChoice.value.major) originChoice.value.minor = ''
+  applyOrigin()
+}
+
+function chooseMinor(value: string) {
+  originChoice.value = { ...originChoice.value, minor: value as AbilityKey | '' }
+  applyOrigin()
+}
+
+// Fotografia dei bonus come li abbiamo lasciati noi: se li ritroviamo diversi
+// significa che li ha riscritti il passo Specie, che rifà la mappa da zero
+// (`racialBonuses = { ...race.abilityBonuses }`) ogni volta che si tocca la
+// razza. `<KeepAlive>` tiene vivo questo passo, quindi possiamo accorgercene.
+let lastWritten: OriginBonuses = {}
+
+function sameBonuses(a: OriginBonuses, b: OriginBonuses): boolean {
+  const keys = new Set([...Object.keys(a), ...Object.keys(b)])
+  for (const key of keys) {
+    const k = key as AbilityKey
+    if ((a[k] ?? 0) !== (b[k] ?? 0)) return false
+  }
+  return true
+}
+
+/** Riscrive bonus e talento d'origine sul personaggio, senza toccare il resto. */
+function applyOrigin() {
+  const char = characterStore.character
+  const next = originBonusMap(originChoice.value, abilityOptions.value)
+  char.racialBonuses = replaceOriginBonuses(char.racialBonuses, appliedBonuses, next)
+  appliedBonuses = next
+  lastWritten = { ...char.racialBonuses }
+
+  const featId = originFeatId(selectedBg.value, getFeatsByCategory('origin'))
+  // Il talento del background precedente se ne va con lui.
+  if (appliedFeat && char.feat === appliedFeat && appliedFeat !== featId) char.feat = ''
+  // Ma non calpestiamo il talento scelto al passo Specie: l'umano del 2024 ne
+  // prende uno con Versatile, e la scheda ha una casella sola per entrambi.
+  if (featId && !char.feat) char.feat = featId
+  appliedFeat = char.feat === featId ? featId : ''
+}
+
+/**
+ * Rilegge dalla scheda la scelta già fatta. Senza questo, riaprendo un
+ * personaggio salvato i due selettori tornavano vuoti mentre i bonus restavano
+ * in scheda: la prima modifica ne avrebbe tolti di meno di quanti ne aveva messi.
+ */
+function restoreOrigin(bg: Background | null) {
+  const options = originAbilityOptions(bg)
+  const char = characterStore.character
+  originChoice.value = readOriginChoice(char.racialBonuses, options)
+  appliedBonuses = originBonusMap(originChoice.value, options)
+  const featId = originFeatId(bg, getFeatsByCategory('origin'))
+  appliedFeat = featId && char.feat === featId ? featId : ''
+  lastWritten = { ...char.racialBonuses }
+}
+
+/**
+ * Tornare al passo Specie e cambiare razza riscrive `racialBonuses` da capo e
+ * si porta via il +2/+1 del background: il giocatore l'aveva scelto e se lo
+ * ritrovava sparito dalla scheda. Qui ce ne accorgiamo e lo rimettiamo, senza
+ * contarlo due volte — per la mappa nuova non abbiamo ancora concesso nulla.
+ */
+watch(
+  () => characterStore.character.racialBonuses,
+  bonuses => {
+    if (sameBonuses(bonuses, lastWritten)) return
+    if (!showOriginBonuses.value) {
+      lastWritten = { ...bonuses }
+      return
+    }
+    appliedBonuses = {}
+    applyOrigin()
+  },
+  { deep: true },
+)
+
 /**
  * Riallinea il pannello al personaggio corrente. `<KeepAlive>` in BuilderView
  * evita il rimontaggio fra un passo e l'altro, ma caricare una scheda salvata,
@@ -50,6 +167,7 @@ function restoreFromCharacter() {
   const bg = backgrounds.value.find(b => b.id === characterStore.character.background) ?? null
   selectedBg.value = bg
   resetSkillChoices(bg)
+  restoreOrigin(bg)
   if (!bg) {
     appliedSkills = []
     return
@@ -120,6 +238,10 @@ function selectBackground(bg: Background) {
   characterStore.character.background = bg.id
   resetSkillChoices(bg)
   applySkills()
+  // Il background nuovo riparte senza scelta: i bonus del precedente vanno via
+  // qui dentro, invece di restare sommati a quelli che il giocatore sceglierà.
+  originChoice.value = { ...NO_ORIGIN_CHOICE }
+  applyOrigin()
 }
 </script>
 
@@ -170,6 +292,39 @@ function selectBackground(bg: Background) {
               </select>
             </div>
           </div>
+        </div>
+        <!-- D&D 2024: il +2 e il +1 li dà il background, non la specie -->
+        <div v-if="showOriginBonuses">
+          <h4 class="font-semibold text-stone-300">{{ t('background.abilityScores') }}</h4>
+          <p class="text-xs text-stone-500 mb-1">{{ t('background.abilityScoresHint') }}</p>
+          <div class="flex gap-2 flex-wrap">
+            <select
+              class="bg-stone-900 border border-stone-700 rounded px-2 py-1 text-sm text-stone-200"
+              :aria-label="t('background.chooseMajorAbility')"
+              :value="originChoice.major"
+              @change="chooseMajor(($event.target as HTMLSelectElement).value)"
+            >
+              <option value="">{{ t('background.chooseMajorAbility') }}</option>
+              <option v-for="a in abilityOptions" :key="a" :value="a">
+                {{ t(`abilities.${a}`) }} +2
+              </option>
+            </select>
+            <select
+              class="bg-stone-900 border border-stone-700 rounded px-2 py-1 text-sm text-stone-200"
+              :aria-label="t('background.chooseMinorAbility')"
+              :value="originChoice.minor"
+              @change="chooseMinor(($event.target as HTMLSelectElement).value)"
+            >
+              <option value="">{{ t('background.chooseMinorAbility') }}</option>
+              <option v-for="a in minorOptions" :key="a" :value="a">
+                {{ t(`abilities.${a}`) }} +1
+              </option>
+            </select>
+          </div>
+        </div>
+        <div v-if="originFeatLabel">
+          <h4 class="font-semibold text-stone-300">{{ t('background.originFeat') }}</h4>
+          <p class="text-stone-400">{{ originFeatLabel }}</p>
         </div>
         <div v-if="selectedBg.toolProficiencies.length">
           <h4 class="font-semibold text-stone-300">Strumenti</h4>

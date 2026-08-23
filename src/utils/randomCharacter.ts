@@ -8,6 +8,7 @@ import { modifier, totalHp, proficiencyBonus } from './calculations'
 import { pickRandomArchetype } from '@/data/personalityArchetypes'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
 import { castsSpells } from '@/data/spellcasting'
+import { calcolaAttacco, isADistanza, isAccurata } from '@/domain/armi'
 
 function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!
@@ -88,47 +89,34 @@ function selectClassGear(
   const useShield = hasShieldProf && !isDexPrimary && Math.random() > 0.4
 
   // --- Weapons ---
+  // Il conto di bonus e danno non si fa qui: lo fa `calcolaAttacco`, la stessa
+  // funzione che usa il passo Equipaggiamento. Qui si sceglie solo QUALE arma
+  // il personaggio impugna; la regola di come si tira sta in un posto solo.
+  const mods = { strMod, dexMod, proficiencyBonus: prof, artiMarziali: cls.id === 'monk' }
   const available = getAvailableWeapons(cls)
-  const melee = available.filter(w => !w.properties.some(p => p.includes('ammunition')))
-  const ranged = available.filter(w => w.properties.some(p => p.includes('ammunition')))
+  const melee = available.filter(w => !isADistanza(w.properties))
+  const ranged = available.filter(w => isADistanza(w.properties))
   const weapons: Weapon[] = []
 
   if (isDexPrimary) {
     // DEX class: finesse melee + ranged
-    const finesse = melee.filter(w => w.properties.includes('finesse'))
-    if (finesse.length > 0) {
-      const w = pick(finesse)
-      weapons.push({ name: w.name, attackBonus: prof + dexMod, damage: w.damage })
-    }
-    if (ranged.length > 0) {
-      const w = pick(ranged)
-      weapons.push({ name: w.name, attackBonus: prof + dexMod, damage: w.damage })
-    }
+    const finesse = melee.filter(w => isAccurata(w.properties))
+    if (finesse.length > 0) weapons.push(calcolaAttacco(pick(finesse), mods))
+    if (ranged.length > 0) weapons.push(calcolaAttacco(pick(ranged), mods))
   } else if (isCaster) {
     // Caster: simple melee weapon
     const casterMelee = melee.filter(w => simpleWeapons.some(sw => sw.name === w.name))
-    if (casterMelee.length > 0) {
-      const w = pick(casterMelee)
-      const atkMod = w.properties.includes('finesse') ? Math.max(strMod, dexMod) : strMod
-      weapons.push({ name: w.name, attackBonus: prof + atkMod, damage: w.damage })
-    }
+    if (casterMelee.length > 0) weapons.push(calcolaAttacco(pick(casterMelee), mods))
   } else {
     // STR-based martial
     const pool = useShield
       ? melee.filter(w => !w.properties.includes('two-handed'))
       : melee
 
-    if (pool.length > 0) {
-      const w = pick(pool)
-      const atkMod = w.properties.includes('finesse') ? Math.max(strMod, dexMod) : strMod
-      weapons.push({ name: w.name, attackBonus: prof + atkMod, damage: w.damage })
-    }
+    if (pool.length > 0) weapons.push(calcolaAttacco(pick(pool), mods))
 
     // Add a ranged option
-    if (ranged.length > 0 && Math.random() > 0.3) {
-      const w = pick(ranged)
-      weapons.push({ name: w.name, attackBonus: prof + dexMod, damage: w.damage })
-    }
+    if (ranged.length > 0 && Math.random() > 0.3) weapons.push(calcolaAttacco(pick(ranged), mods))
   }
 
   return { weapons, armorName, useShield }

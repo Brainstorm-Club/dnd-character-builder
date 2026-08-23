@@ -2,7 +2,8 @@
 import { ref, computed, onMounted, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { getSpells, getSpellSlots, getCantripsKnown, getSpellsKnownCount, getClasses, getMulticlassSpellSlots, ensureSpellData } from '@/data'
+import { getSpells, getSpellSlots, getSpellcastingProfile, getClasses, getMulticlassSpellSlots, ensureSpellData } from '@/data'
+import type { SpellcastingMode } from '@/data'
 import type { CasterType } from '@/data/dnd5e/classes'
 import { useGameTerms } from '@/composables/useGameTerms'
 import type { Spell } from '@/data/dnd5e/spells'
@@ -62,7 +63,10 @@ const spellSlots = computed(() => {
   // character genuinely casts, which for Fighter and Rogue means a caster
   // subclass was chosen.
   if (!characterStore.character.spellcastingClass) return {}
-  return getSpellSlots(characterStore.character.spellcastingClass, characterStore.character.level)
+  // La variante decide chi lancia: nei dati del 2024 guerriero e ladro non
+  // hanno incantesimi, e senza passarla ricevevano gli slot del terzo
+  // incantatore del 2014.
+  return getSpellSlots(characterStore.character.spellcastingClass, characterStore.character.level, characterStore.character.variant)
 })
 
 // Pact magic slots (Warlock in multiclass) — shown separately
@@ -88,33 +92,66 @@ const maxSpellLevel = computed(() => {
   return Math.max(0, ...fromSlots, ...fromPact)
 })
 
-// Cantrips: sum from all caster classes for multiclass
-const maxCantrips = computed(() => {
+// Profilo di lancio (trucchetti, conosciuti/preparati) di ogni classe che
+// lancia, secondo le regole della variante scelta — non del 2014.
+// Un solo `void dataReady.value` qui dentro basta per tutte le derivate qui
+// sotto: dipendendo da questa computed si ricalcolano da sole quando l'import
+// asincrono dei dati arriva. Prima ognuna doveva toccarlo per conto suo.
+const casterProfiles = computed(() => {
   void dataReady.value
-  if (isMulticlass.value) {
-    let total = 0
-    for (const entry of characterStore.character.classes) total += getCantripsKnown(entry.classId, entry.level)
-    return total
-  }
-  return getCantripsKnown(characterStore.character.className, characterStore.character.level)
+  const variant = characterStore.character.variant
+  const mods = characterStore.abilityModifiers
+  const entries = isMulticlass.value
+    ? characterStore.character.classes.map(e => ({ classId: e.classId, level: e.level }))
+    : [{ classId: characterStore.character.className, level: characterStore.character.level }]
+  return entries.map(e => ({ ...e, profile: getSpellcastingProfile(e.classId, e.level, mods, variant) }))
 })
 
-// Default (RAW, by class rules) number of spells known.
-const rawSpellsKnown = computed(() => {
-  void dataReady.value
-  if (isMulticlass.value) {
-    let total = 0
-    for (const entry of characterStore.character.classes) total += getSpellsKnownCount(entry.classId, entry.level, characterStore.abilityModifiers)
-    return total
+// Cantrips: sum from all caster classes for multiclass
+const maxCantrips = computed(() => casterProfiles.value.reduce((sum, e) => sum + e.profile.cantrips, 0))
+
+/**
+ * Titolo giusto per l'elenco: nel 2024 bardo, stregone, warlock e ranger
+ * preparano gli incantesimi invece di conoscerli, e chiamarli «conosciuti»
+ * insegnerebbe la regola sbagliata. In multiclasse basta un known-caster
+ * perché il totale sia un elenco di conosciuti.
+ */
+const spellsMode = computed<SpellcastingMode>(() => {
+  const casting = casterProfiles.value.filter(e => e.profile.mode !== 'none')
+  if (!casting.length) return 'none'
+  return casting.every(e => e.profile.mode === 'prepared') ? 'prepared' : 'known'
+})
+
+const spellsListLabel = computed(() =>
+  spellsMode.value === 'prepared' ? t('spells.preparedSpells') : t('spells.knownSpells'))
+
+// Numero da manuale di incantesimi che la scheda può portare.
+// `null` = il dato non c'è (nel 2024 viene dalla colonna «Prepared Spells»
+// della tabella di classe, che non è ancora nei dati): meglio non mostrare
+// nessun numero che mostrare quello del 2014.
+const rawSpellsCount = computed<number | null>(() => {
+  let total = 0
+  for (const e of casterProfiles.value) {
+    // Un solo addendo ignoto rende ignoto il totale: contarlo come zero
+    // stamperebbe un tetto più basso del vero.
+    if (e.profile.spellsCount === null) return null
+    total += e.profile.spellsCount
   }
-  return getSpellsKnownCount(characterStore.character.className, characterStore.character.level, characterStore.abilityModifiers)
+  return total
 })
 
 // Effective limit of spells known. An explicit override (roll / manual / auto)
 // wins over the class default. Deliberately NOT tied to spell slots.
-const maxSpellsKnown = computed(() => {
+const maxSpellsKnown = computed<number | null>(() => {
   const lim = characterStore.character.spellsKnownLimit ?? 0
-  return lim > 0 ? lim : rawSpellsKnown.value
+  return lim > 0 ? lim : rawSpellsCount.value
+})
+
+// Senza un tetto noto non si può dire «hai finito»: la selezione resta libera
+// finché non arriva un numero (dal manuale o dal tiro qui accanto).
+const spellsFull = computed(() => {
+  const max = maxSpellsKnown.value
+  return max !== null && characterStore.character.spellsKnown.length >= max
 })
 
 const searchQuery = ref('')
@@ -149,8 +186,10 @@ const lastRoll = ref<number[] | null>(null)
 
 function trimKnownToLimit() {
   const c = characterStore.character
-  if (c.spellsKnown.length > maxSpellsKnown.value) {
-    c.spellsKnown = c.spellsKnown.slice(0, maxSpellsKnown.value)
+  const max = maxSpellsKnown.value
+  // Tetto ignoto: non si taglia nulla, o si cancellerebbero scelte valide.
+  if (max !== null && c.spellsKnown.length > max) {
+    c.spellsKnown = c.spellsKnown.slice(0, max)
   }
 }
 
@@ -174,7 +213,9 @@ function autoSelect() {
   rollSpellsKnown()
   const c = characterStore.character
   const pool = [...leveledSpells.value].sort((a, b) => a.level - b.level || a.name.localeCompare(b.name))
-  c.spellsKnown = pool.slice(0, maxSpellsKnown.value).map(s => s.id)
+  // Dopo il tiro il tetto è per forza un numero (l'override vince sul valore
+  // di classe), ma il ?? 0 tiene onesta la firma.
+  c.spellsKnown = pool.slice(0, maxSpellsKnown.value ?? 0).map(s => s.id)
   c.cantrips = cantrips.value.slice(0, maxCantrips.value).map(s => s.id)
 }
 
@@ -192,7 +233,7 @@ function toggleCantrip(spellId: string) {
 function toggleSpell(spellId: string) {
   const idx = characterStore.character.spellsKnown.indexOf(spellId)
   if (idx >= 0) characterStore.character.spellsKnown.splice(idx, 1)
-  else if (characterStore.character.spellsKnown.length < maxSpellsKnown.value) characterStore.character.spellsKnown.push(spellId)
+  else if (!spellsFull.value) characterStore.character.spellsKnown.push(spellId)
 }
 
 // ─── Dettaglio incantesimo: apertura, fuoco, chiusura ──────────────────────
@@ -367,10 +408,14 @@ function onDetailKeydown(e: KeyboardEvent) {
       <!-- Leveled Spells -->
       <div>
         <h3 id="spells-known-heading" class="text-lg font-semibold text-stone-300 mb-2">
-          {{ t('spells.knownSpells') }}
-          <span class="text-sm text-stone-500" aria-live="polite">({{ characterStore.character.spellsKnown.length }}/{{ maxSpellsKnown }})</span>
+          {{ spellsListLabel }}
+          <!-- Con il tetto ignoto si stampa un trattino: un numero preso da
+               un'altra edizione sarebbe peggio del non sapere. -->
+          <span class="text-sm text-stone-500" aria-live="polite">({{ characterStore.character.spellsKnown.length }}/{{ maxSpellsKnown ?? '—' }})</span>
         </h3>
-        <div class="space-y-1" role="group" :aria-label="t('spells.knownSpells')">
+        <!-- Etichettato dal titolo qui sopra, non da una stringa a parte: così
+             il nome del gruppo segue known/prepared senza doppioni. -->
+        <div class="space-y-1" role="group" aria-labelledby="spells-known-heading">
           <div v-for="spell in leveledSpells" :key="spell.id" class="flex items-stretch gap-1">
             <button
               type="button"
@@ -379,11 +424,11 @@ function onDetailKeydown(e: KeyboardEvent) {
               class="flex-1 text-left px-3 py-2 rounded text-sm transition-colors cursor-pointer flex items-center justify-between"
               :class="characterStore.character.spellsKnown.includes(spell.id)
                 ? 'bg-amber-600/20 border border-amber-600 text-stone-200'
-                : characterStore.character.spellsKnown.length >= maxSpellsKnown
+                : spellsFull
                   ? 'bg-stone-800 text-stone-600'
                   : 'bg-stone-800 text-stone-300 hover:bg-stone-700 border border-stone-700'"
               :aria-pressed="characterStore.character.spellsKnown.includes(spell.id)"
-              :aria-disabled="!characterStore.character.spellsKnown.includes(spell.id) && characterStore.character.spellsKnown.length >= maxSpellsKnown"
+              :aria-disabled="!characterStore.character.spellsKnown.includes(spell.id) && spellsFull"
             >
               <span>
                 <span class="font-medium">{{ gt.spell(spell.name) }}</span>

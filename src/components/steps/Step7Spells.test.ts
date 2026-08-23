@@ -4,6 +4,7 @@ import { createI18n } from 'vue-i18n'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCharacterStore } from '@/stores/character'
 import { preloadVariantData, ensureSpellData } from '@/data'
+import type { GameVariant } from '@/stores/app'
 import Step7Spells from './Step7Spells.vue'
 
 const i18n = createI18n({
@@ -23,28 +24,41 @@ const i18n = createI18n({
   fallbackWarn: false,
 })
 
-async function mountStep() {
+interface MountOpts {
+  variant?: GameVariant
+  className?: string
+  ability?: string
+  level?: number
+}
+
+async function mountStep(opts: MountOpts = {}) {
+  const variant = opts.variant ?? 'dnd5e'
+  const className = opts.className ?? 'wizard'
   const store = useCharacterStore()
-  store.character.variant = 'dnd5e'
-  store.character.className = 'wizard'
-  store.character.spellcastingClass = 'wizard'
-  store.character.spellcastingAbility = 'int'
-  store.character.level = 3
+  store.character.variant = variant
+  store.character.className = className
+  store.character.spellcastingClass = className
+  store.character.spellcastingAbility = (opts.ability ?? 'int') as typeof store.character.spellcastingAbility
+  store.character.level = opts.level ?? 3
   const wrapper = mount(Step7Spells, {
     global: { plugins: [i18n] },
     attachTo: document.body, // il fuoco reale serve: i test lo verificano
   })
-  await ensureSpellData('dnd5e')
+  await ensureSpellData(variant)
   await wrapper.vm.$nextTick()
   await wrapper.vm.$nextTick()
   return { store, wrapper }
 }
+
+/** Il gruppo degli incantesimi di livello, etichettato dal suo titolo. */
+const SPELL_GROUP = '[role="group"][aria-labelledby="spells-known-heading"]'
 
 let wrapper: VueWrapper | null = null
 
 describe('passo incantesimi', () => {
   beforeAll(async () => {
     await preloadVariantData('dnd5e')
+    await preloadVariantData('dnd2024')
     await ensureSpellData('dnd5e')
   })
   beforeEach(() => setActivePinia(createPinia()))
@@ -167,9 +181,76 @@ describe('passo incantesimi', () => {
     const { store, wrapper: w } = await mountStep()
     wrapper = w
     const before = store.character.spellsKnown.length
-    const rows = w.findAll('[aria-label="spells.knownSpells"] > div > button[aria-pressed]')
+    const rows = w.findAll(`${SPELL_GROUP} > div > button[aria-pressed]`)
     expect(rows.length).toBeGreaterThan(0)
     await rows[0]!.trigger('click')
     expect(store.character.spellsKnown.length).toBe(before + 1)
+  })
+
+  // Il passo leggeva sempre le classi del 2014: un bardo del 2024 (che nel suo
+  // manuale prepara gli incantesimi) usciva con la tabella «conosciuti» del
+  // 2014, e la lista arrivava dagli incantesimi del 2014.
+  describe('il passo segue la variante scelta', () => {
+    it('il bardo del 2014 conosce gli incantesimi e mostra il suo numero', async () => {
+      const mounted = await mountStep({ className: 'bard', ability: 'cha', level: 5 })
+      wrapper = mounted.wrapper
+      const heading = mounted.wrapper.get('#spells-known-heading').text()
+      expect(heading).toContain('spells.knownSpells')
+      // Tabella del bardo 2014: 8 incantesimi conosciuti al 5° livello.
+      expect(heading).toContain('/8')
+    })
+
+    it('il bardo del 2024 prepara gli incantesimi, non li conosce', async () => {
+      const mounted = await mountStep({ variant: 'dnd2024', className: 'bard', ability: 'cha', level: 5 })
+      wrapper = mounted.wrapper
+      const heading = mounted.wrapper.get('#spells-known-heading').text()
+      expect(heading).toContain('spells.preparedSpells')
+      expect(heading).not.toContain('spells.knownSpells')
+    })
+
+    it('non stampa il numero del 2014 al posto della colonna «Prepared Spells» che manca', async () => {
+      const mounted = await mountStep({ variant: 'dnd2024', className: 'bard', ability: 'cha', level: 5 })
+      wrapper = mounted.wrapper
+      const heading = mounted.wrapper.get('#spells-known-heading').text()
+      expect(heading).toContain('/—')
+      expect(heading).not.toContain('/8') // conteggio del bardo 2014
+    })
+
+    it('senza un tetto noto la scelta resta libera invece di bloccarsi', async () => {
+      const { store, wrapper: w } = await mountStep({ variant: 'dnd2024', className: 'bard', ability: 'cha', level: 5 })
+      wrapper = w
+      const rows = w.findAll(`${SPELL_GROUP} > div > button[aria-pressed]`)
+      expect(rows.length).toBeGreaterThan(9)
+      // Più del conteggio 2014 (8): con il tetto ignoto nessun comando è inerte.
+      for (let i = 0; i < 9; i++) await rows[i]!.trigger('click')
+      expect(store.character.spellsKnown.length).toBe(9)
+      expect(rows[9]!.attributes('aria-disabled')).toBe('false')
+    })
+
+    it('un tiro esplicito rimette un tetto anche nel 2024', async () => {
+      const { store, wrapper: w } = await mountStep({ variant: 'dnd2024', className: 'bard', ability: 'cha', level: 5 })
+      wrapper = w
+      store.character.spellsKnownLimit = 2
+      await w.vm.$nextTick()
+      expect(w.get('#spells-known-heading').text()).toContain('/2')
+      const rows = w.findAll(`${SPELL_GROUP} > div > button[aria-pressed]`)
+      for (let i = 0; i < 3; i++) await rows[i]!.trigger('click')
+      expect(store.character.spellsKnown.length).toBe(2)
+    })
+
+    it('nel 2024 il guerriero non riceve gli slot del terzo incantatore del 2014', async () => {
+      // Nei dati del 2024 non ci sono Cavaliere Mistico né Furfante Arcano.
+      const mounted = await mountStep({ variant: 'dnd2024', className: 'fighter', ability: 'int', level: 5 })
+      wrapper = mounted.wrapper
+      const summary = mounted.wrapper.get('[role="region"]').text()
+      expect(summary).not.toContain('«liv»1:')
+    })
+
+    it('carica i dati del 2024 da sé: la lista non resta vuota né ricade sul 2014', async () => {
+      const mounted = await mountStep({ variant: 'dnd2024', className: 'wizard', ability: 'int', level: 3 })
+      wrapper = mounted.wrapper
+      const rows = mounted.wrapper.findAll(`${SPELL_GROUP} > div > button[aria-pressed]`)
+      expect(rows.length).toBeGreaterThan(0)
+    })
   })
 })

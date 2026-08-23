@@ -1,9 +1,12 @@
 import { describe, it, expect, beforeAll } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { blogCharacters } from './characters'
-import { preloadVariantData, getClasses, getRaces, getBackgrounds, getSpells } from '@/data'
+import {
+  preloadVariantData, getClasses, getRaces, getBackgrounds, getSpells, getEquipment,
+} from '@/data'
 import { modifier, proficiencyBonus, hpPerLevel } from '@/utils/calculations'
 import { castsSpells } from '@/data/spellcasting'
+import { calcolaAttacco, isADistanza } from '@/domain/armi'
 import { GAME_VARIANTS } from '@/stores/app'
 
 /**
@@ -122,13 +125,39 @@ describe.each(blogCharacters.map(b => [`${b.slug} [${b.variant}]`, b] as const))
     if (noti != null) expect(c.spellsKnown.length).toBe(noti)
   })
 
-  it('ha bonus di attacco spiegabili con una caratteristica e la competenza', () => {
+  /**
+   * Prima questo controllo ammetteva "una caratteristica qualsiasi più la
+   * competenza, eventualmente più due". Era troppo largo: Elara aveva l'arco a
+   * +7 invece di +8 e la spada a +7 invece di +6, e passava lo stesso perché
+   * Costituzione + competenza + 2 fa 7 per pura coincidenza. Ora il numero
+   * atteso lo calcola la stessa funzione che usano il passo Equipaggiamento e
+   * il generatore, e l'unico margine ammesso è il +2 dello stile Tiro, solo
+   * sulle armi a distanza e solo a chi quello stile ce l'ha davvero.
+   */
+  it('ha i bonus di attacco che la regola condivisa calcola', () => {
     const pb = proficiencyBonus(c.level)
-    const mods = (['str', 'dex', 'con', 'int', 'wis', 'cha'] as const).map(mod)
+    const catalogo = [
+      ...getEquipment(c.variant).simpleWeapons,
+      ...getEquipment(c.variant).martialWeapons,
+    ]
+    const tiro = c.featuresTraits.some(f => /Archery|Tiro/i.test(f))
     for (const w of c.weapons) {
-      // Il +2 in più è lo stile di combattimento Tiro (Archery).
-      const ok = mods.some(m => w.attackBonus === m + pb || w.attackBonus === m + pb + 2)
-      expect(ok, `${w.name}: ${w.attackBonus} con competenza ${pb} e modificatori ${mods.join('/')}`).toBe(true)
+      const arma = catalogo.find(x => x.name === w.name)
+      // Un'arma fuori catalogo (Colpo senza armi, arma scritta a mano) non è
+      // verificabile: del suo dado e delle sue proprietà non sappiamo nulla.
+      if (!arma) continue
+      const atteso = calcolaAttacco(arma, {
+        strMod: mod('str'), dexMod: mod('dex'), proficiencyBonus: pb,
+        // Arti Marziali: il monaco usa la Destrezza con le armi da monaco.
+        artiMarziali: c.className === 'monk',
+      })
+      const ammessi = isADistanza(arma.properties) && tiro
+        ? [atteso.attackBonus, atteso.attackBonus + 2]
+        : [atteso.attackBonus]
+      expect(ammessi, `${w.name}: ${w.attackBonus} ma la regola dà ${atteso.attackBonus}`)
+        .toContain(w.attackBonus)
+      expect(w.damage, `${w.name}: danno ${w.damage} ma la regola dà ${atteso.damage}`)
+        .toBe(atteso.damage)
     }
   })
 })

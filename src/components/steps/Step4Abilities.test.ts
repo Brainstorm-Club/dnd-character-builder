@@ -89,3 +89,33 @@ describe('passo Caratteristiche — il point buy non azzera la scheda', () => {
     })
   })
 })
+
+// Nel 2024 la specie non dà punteggi: il bonus arriva dal background. Chiamarlo
+// "Bonus Razziale" diceva al giocatore una cosa falsa sulla sua stessa scheda.
+describe('passo Caratteristiche — da dove viene il bonus', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+    await preloadVariantData('dnd2024')
+  })
+  beforeEach(() => setActivePinia(createPinia()))
+
+  it('nel 2024 il bonus è attribuito al background', async () => {
+    const { store, wrapper } = mountStep()
+    store.character.variant = 'dnd2024'
+    store.character.racialBonuses = { int: 2, con: 1 }
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.text()).toContain('abilities.backgroundBonus')
+    expect(wrapper.text()).not.toContain('abilities.racialBonus')
+  })
+
+  it('nel 2014 resta il bonus di specie', async () => {
+    const { store, wrapper } = mountStep()
+    store.character.variant = 'dnd5e'
+    store.character.racialBonuses = { str: 2 }
+    await wrapper.vm.$nextTick()
+
+    expect(wrapper.text()).toContain('abilities.racialBonus')
+    expect(wrapper.text()).not.toContain('abilities.backgroundBonus')
+  })
+})

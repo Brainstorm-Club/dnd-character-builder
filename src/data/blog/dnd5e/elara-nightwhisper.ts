@@ -28,9 +28,13 @@ export const elaraNightwhisper: CharacterData = {
   languages: ['Common', 'Elvish', 'Sylvan'],
   proficienciesOther: ['light armor', 'medium armor', 'shields', 'simple weapons', 'martial weapons'],
   weapons: [
-    { name: 'Longbow', attackBonus: 7, damage: '1d8+3' },
-    { name: 'Shortsword', attackBonus: 7, damage: '1d6+3' },
-    { name: 'Shortsword', attackBonus: 7, damage: '1d6+3' },
+    // Destrezza 17 (15 + 2 elfico) = +3, competenza +3. L'arco lungo prende
+    // anche il +2 dello stile Tiro; la spada corta no, perché lo stile vale
+    // solo a distanza. Erano entrambe +7, calcolate su una Destrezza 18 che
+    // il personaggio non ha.
+    { name: 'Longbow', attackBonus: 8, damage: '1d8+3' },
+    { name: 'Shortsword', attackBonus: 6, damage: '1d6+3' },
+    { name: 'Shortsword', attackBonus: 6, damage: '1d6+3' },
   ],
   armor: 'Studded Leather',
   shield: false,

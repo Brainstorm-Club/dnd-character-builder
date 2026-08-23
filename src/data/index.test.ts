@@ -12,6 +12,8 @@ import {
   getSpellSlots,
   getCantripsKnown,
   getSpellsKnownCount,
+  getSpellcastingProfile,
+  ensureSpellData,
   getAvailableLanguages,
   getBrancaloniaRules,
   getApocalisseRules,
@@ -187,6 +189,89 @@ describe('data loader', () => {
     })
   })
 
+  // Le funzioni sugli incantesimi leggevano sempre le classi del 2014, senza
+  // guardare la variante: un bardo del 2024 (che prepara) veniva contato con la
+  // tabella «incantesimi conosciuti» del 2014, e un guerriero del 2024 (che nei
+  // nostri dati non lancia) riceveva gli slot del terzo incantatore 2014.
+  describe('incantesimi: le funzioni guardano la variante', () => {
+    const mods = { str: 0, dex: 0, con: 0, int: 3, wis: 2, cha: 3 }
+
+    it('il bardo è known-caster nel 2014 e prepared-caster nel 2024', () => {
+      expect(getSpellcastingProfile('bard', 5, mods, 'dnd5e').mode).toBe('known')
+      expect(getSpellcastingProfile('bard', 5, mods, 'dnd2024').mode).toBe('prepared')
+    })
+
+    it('stregone, warlock e ranger cambiano tipo di incantatore nel 2024', () => {
+      for (const id of ['sorcerer', 'warlock', 'ranger']) {
+        expect(getSpellcastingProfile(id, 5, mods, 'dnd5e').mode, id).toBe('known')
+        expect(getSpellcastingProfile(id, 5, mods, 'dnd2024').mode, id).toBe('prepared')
+      }
+    })
+
+    it('nel 2024 il numero di incantesimi preparati è ignoto, non quello del 2014', () => {
+      // La colonna «Prepared Spells» della tabella di classe non è ancora nei
+      // dati (src/data/dnd2024/classes.ts porta solo cantripsKnown). Meglio
+      // dichiarare «non lo so» che spacciare per buono il conto del 2014.
+      expect(getSpellcastingProfile('bard', 5, mods, 'dnd2024').spellsCount).toBeNull()
+      expect(getSpellcastingProfile('bard', 5, mods, 'dnd5e').spellsCount).toBe(8)
+    })
+
+    it('nel 2014 il prepared-caster resta modificatore + livello (minimo 1)', () => {
+      expect(getSpellcastingProfile('wizard', 3, mods, 'dnd5e').spellsCount).toBe(6)
+      expect(getSpellcastingProfile('wizard', 1, { ...mods, int: -3 }, 'dnd5e').spellsCount).toBe(1)
+    })
+
+    it('il guerriero lancia nel 2014 e non lancia nel 2024', () => {
+      // Nei dati del 2024 non ci sono Cavaliere Mistico né Furfante Arcano:
+      // guerriero e ladro hanno spellcasting null e non devono ricevere slot.
+      expect(Object.keys(getSpellSlots('fighter', 5, 'dnd5e')).length).toBeGreaterThan(0)
+      expect(getSpellSlots('fighter', 5, 'dnd2024')).toEqual({})
+      expect(getSpellSlots('rogue', 5, 'dnd2024')).toEqual({})
+      expect(getSpellcastingProfile('fighter', 5, mods, 'dnd2024').mode).toBe('none')
+    })
+
+    it('gli slot del mago non cambiano fra 2014 e 2024 (stessa tabella a incantatore pieno)', () => {
+      expect(getSpellSlots('wizard', 5, 'dnd2024')).toEqual(getSpellSlots('wizard', 5, 'dnd5e'))
+      expect(getCantripsKnown('wizard', 1, 'dnd2024')).toBe(getCantripsKnown('wizard', 1, 'dnd5e'))
+    })
+
+    it('senza variante il comportamento resta quello del 2014 (chiamanti già scritti)', () => {
+      expect(getSpellSlots('wizard', 1)).toEqual(getSpellSlots('wizard', 1, 'dnd5e'))
+      expect(getCantripsKnown('bard', 4)).toBe(getCantripsKnown('bard', 4, 'dnd5e'))
+      expect(getSpellsKnownCount('bard', 5, mods)).toBe(8)
+    })
+
+    it('getSpellsKnownCount non inventa un numero quando il dato manca', () => {
+      // Il vecchio conteggio (numero secco) non sa dire «ignoto»: torna 0, e
+      // chi vuole la verità usa getSpellcastingProfile.
+      expect(getSpellsKnownCount('bard', 5, mods, 'dnd2024')).toBe(0)
+    })
+
+    it('il burattinaio di Brancalonia è una classe conosciuta e non lancia', () => {
+      // Vive fuori dall'elenco 2014: cercandolo solo lì non lo si trovava.
+      const branca = getClasses('brancalonia').find(c => c.id === 'burattinaio')
+      expect(branca).toBeDefined()
+      expect(getSpellcastingProfile('burattinaio', 6, mods, 'brancalonia').mode).toBe('none')
+    })
+
+    it('Brancalonia e Apocalisse restano sul telaio 2014', () => {
+      for (const v of ['brancalonia', 'apocalisse'] as GameVariant[]) {
+        expect(getSpellcastingProfile('bard', 5, mods, v).mode, v).toBe('known')
+        expect(getSpellSlots('wizard', 5, v), v).toEqual(getSpellSlots('wizard', 5, 'dnd5e'))
+      }
+    })
+
+    it('ogni variante risponde per ogni sua classe senza esplodere', () => {
+      for (const v of variants) {
+        for (const cls of getClasses(v)) {
+          const p = getSpellcastingProfile(cls.id, 5, mods, v)
+          expect(['none', 'known', 'prepared'], `${v}/${cls.id}`).toContain(p.mode)
+          expect(p.cantrips, `${v}/${cls.id}`).toBeGreaterThanOrEqual(0)
+        }
+      }
+    })
+  })
+
   describe('getAvailableLanguages', () => {
     it('dnd5e includes Common', () => {
       expect(getAvailableLanguages('dnd5e')).toContain('Common')
@@ -270,6 +355,15 @@ describe('data loader', () => {
       expect(isVariantLoaded('dnd2024')).toBe(false)
       await preloadVariantData('dnd2024')
       expect(isVariantLoaded('dnd2024')).toBe(true)
+    })
+
+    it('ensureSpellData porta anche i dati del 2024, non solo quelli del 2014', async () => {
+      _resetCaches()
+      await ensureSpellData('dnd2024')
+      // Senza le classi del 2024 il passo incantesimi vedeva una lista vuota e
+      // ricadeva sui trucchetti e sugli slot del 2014.
+      expect(getClasses('dnd2024').length).toBeGreaterThan(0)
+      expect(getSpellcastingProfile('bard', 5, { str: 0, dex: 0, con: 0, int: 3, wis: 2, cha: 3 }, 'dnd2024').mode).toBe('prepared')
     })
 
     it('_resetCaches svuota anche i dati del 2024', async () => {

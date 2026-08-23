@@ -348,3 +348,169 @@ describe('Step3Class — competenze e riallineamento', () => {
     expect(store.character.skillProficiencies).not.toContain(chosen)
   })
 })
+
+describe('Step3Class — competenze raddoppiate (Expertise)', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+    await preloadVariantData('dnd2024')
+  })
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  /** Il gruppo dei chip delle competenze raddoppiate (vuoto se il passo non lo mostra) */
+  function expertiseGroup(wrapper: Wrapper) {
+    return wrapper.find('[aria-labelledby="class-expertise-heading"]')
+  }
+
+  function expertiseButtons(wrapper: Wrapper) {
+    const group = expertiseGroup(wrapper)
+    return group.exists() ? group.findAll('button') : []
+  }
+
+  async function clickExpertise(wrapper: Wrapper, skillId: string) {
+    const btn = expertiseButtons(wrapper).find(b => b.text() === skillDisplay(skillId))
+    expect(btn, `chip expertise "${skillId}" should exist`).toBeTruthy()
+    await btn!.trigger('click')
+  }
+
+  /** Con locale 'en' e dizionario vuoto i chip mostrano il nome inglese dell'abilità */
+  function skillDisplay(skillId: string): string {
+    return SKILLS.find(s => s.id === skillId)?.name ?? skillId
+  }
+
+  /** Sceglie le prime `n` competenze di classe, che diventano le opzioni raddoppiabili */
+  async function pickClassSkills(wrapper: Wrapper, n: number) {
+    const buttons = skillButtons(wrapper)
+    for (let i = 0; i < n; i++) await buttons[i]!.trigger('click')
+  }
+
+  it('non mostra il selettore alle classi che non raddoppiano nulla', async () => {
+    const fighter = getClasses('dnd5e').find(c => c.id === 'fighter')!
+    const { wrapper } = mountStep('dnd5e', 20)
+    await selectClass(wrapper, fighter)
+    await pickClassSkills(wrapper, fighter.numSkillChoices)
+
+    expect(expertiseGroup(wrapper).exists()).toBe(false)
+  })
+
+  it('non lo mostra al bardo prima del livello del privilegio', async () => {
+    const bard = getClasses('dnd5e').find(c => c.id === 'bard')!
+    const { wrapper } = mountStep('dnd5e', 2)
+    await selectClass(wrapper, bard)
+    await pickClassSkills(wrapper, bard.numSkillChoices)
+
+    expect(expertiseGroup(wrapper).exists()).toBe(false)
+  })
+
+  it('lo mostra al bardo dal 3° livello, con le sole competenze che possiede', async () => {
+    const bard = getClasses('dnd5e').find(c => c.id === 'bard')!
+    const { store, wrapper } = mountStep('dnd5e', 3)
+    await selectClass(wrapper, bard)
+    await pickClassSkills(wrapper, 2)
+
+    const scelte = store.character.skillProficiencies
+    expect(scelte).toHaveLength(2)
+    expect(expertiseButtons(wrapper).map(b => b.text()).sort())
+      .toEqual(scelte.map(skillDisplay).sort())
+  })
+
+  it('scrive la scelta in skillExpertise — il difetto: nessun componente lo faceva', async () => {
+    const rogue = getClasses('dnd5e').find(c => c.id === 'rogue')!
+    const { store, wrapper } = mountStep('dnd5e', 1)
+    await selectClass(wrapper, rogue)
+    await pickClassSkills(wrapper, rogue.numSkillChoices)
+
+    const primo = store.character.skillProficiencies[0]!
+    await clickExpertise(wrapper, primo)
+
+    expect(store.character.skillExpertise).toEqual([primo])
+  })
+
+  it('non supera il numero concesso, e al 6° livello il ladro ne raddoppia 4', async () => {
+    const rogue = getClasses('dnd5e').find(c => c.id === 'rogue')!
+
+    const primoLivello = mountStep('dnd5e', 1)
+    await selectClass(primoLivello.wrapper, rogue)
+    await pickClassSkills(primoLivello.wrapper, rogue.numSkillChoices)
+    const scelte = [...primoLivello.store.character.skillProficiencies]
+    expect(scelte.length).toBeGreaterThan(2)
+
+    for (const skill of scelte) await clickExpertise(primoLivello.wrapper, skill)
+    expect(primoLivello.store.character.skillExpertise).toHaveLength(2)
+
+    // Il chip in eccesso resta tabulabile: si segnala con aria-disabled, non
+    // con l'attributo nativo, come gli altri chip di questo passo.
+    const escluso = expertiseButtons(primoLivello.wrapper)
+      .find(b => b.attributes('aria-pressed') === 'false')!
+    expect(escluso.attributes('aria-disabled')).toBe('true')
+    expect(escluso.attributes('disabled')).toBeUndefined()
+
+    setActivePinia(createPinia())
+    const sesto = mountStep('dnd5e', 6)
+    await selectClass(sesto.wrapper, rogue)
+    await pickClassSkills(sesto.wrapper, rogue.numSkillChoices)
+    for (const skill of [...sesto.store.character.skillProficiencies]) {
+      await clickExpertise(sesto.wrapper, skill)
+    }
+    expect(sesto.store.character.skillExpertise).toHaveLength(4)
+  })
+
+  it('nel 2024 il bardo raddoppia già dal 2° livello', async () => {
+    const bard = getClasses('dnd2024').find(c => c.id === 'bard')!
+    const { store, wrapper } = mountStep('dnd2024', 2)
+    await selectClass(wrapper, bard)
+    await pickClassSkills(wrapper, 2)
+
+    const primo = store.character.skillProficiencies[0]!
+    await clickExpertise(wrapper, primo)
+    expect(store.character.skillExpertise).toEqual([primo])
+  })
+
+  it('toglie la competenza raddoppiata se si rinuncia a quella di base', async () => {
+    const rogue = getClasses('dnd5e').find(c => c.id === 'rogue')!
+    const { store, wrapper } = mountStep('dnd5e', 1)
+    await selectClass(wrapper, rogue)
+    await pickClassSkills(wrapper, rogue.numSkillChoices)
+
+    const primo = store.character.skillProficiencies[0]!
+    await clickExpertise(wrapper, primo)
+    expect(store.character.skillExpertise).toContain(primo)
+
+    // Deseleziona la competenza di base: raddoppiare un bonus che non c'è più
+    // gonfiava la scheda di un bonus inventato.
+    await skillButtons(wrapper)[0]!.trigger('click')
+    expect(store.character.skillProficiencies).not.toContain(primo)
+    expect(store.character.skillExpertise).not.toContain(primo)
+  })
+
+  it('cambiando classe non lascia la competenza raddoppiata alla classe nuova', async () => {
+    const rogue = getClasses('dnd5e').find(c => c.id === 'rogue')!
+    const fighter = getClasses('dnd5e').find(c => c.id === 'fighter')!
+
+    const { store, wrapper } = mountStep('dnd5e', 1)
+    await selectClass(wrapper, rogue)
+    await pickClassSkills(wrapper, rogue.numSkillChoices)
+    await clickExpertise(wrapper, store.character.skillProficiencies[0]!)
+    expect(store.character.skillExpertise).toHaveLength(1)
+
+    await selectClass(wrapper, fighter)
+    expect(store.character.skillExpertise).toEqual([])
+  })
+
+  it('ripristina la scelta quando il passo viene rimontato', async () => {
+    const rogue = getClasses('dnd5e').find(c => c.id === 'rogue')!
+    const { store, wrapper } = mountStep('dnd5e', 1)
+    await selectClass(wrapper, rogue)
+    await pickClassSkills(wrapper, rogue.numSkillChoices)
+    const scelto = store.character.skillProficiencies[0]!
+    await clickExpertise(wrapper, scelto)
+    wrapper.unmount()
+
+    const again = mount(Step3Class, { global: { plugins: [i18n] } })
+    const premuti = expertiseButtons(again)
+      .filter(b => b.attributes('aria-pressed') === 'true')
+      .map(b => b.text())
+    expect(premuti).toEqual([skillDisplay(scelto)])
+  })
+})

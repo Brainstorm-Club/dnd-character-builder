@@ -448,6 +448,10 @@ function loadsForStep(variant: GameVariant, step: number): Promise<void>[] {
     case 6: // Spells
       loads.push(ensureDnd5eSpells(), ensureDnd5eRules(), ensureDnd5eClasses())
       if (variant === 'brancalonia') loads.push(ensureBrancaSpells())
+      // Il 2024 ha classi e liste di incantesimi proprie: senza questo
+      // caricamento il passo trovava getClasses('dnd2024') vuoto e ricadeva
+      // sulle liste del 2014.
+      if (variant === 'dnd2024') loads.push(ensureDnd2024())
       break
     case 7: // Details
       // Races needed for size derivation
@@ -503,12 +507,16 @@ export async function preloadVariantData(variant: GameVariant): Promise<void> {
  * Ensure the data needed by the Spells step is loaded (spells, rules, classes).
  * Call this from the step so the list appears even if the step is reached
  * without going through the sequential per-step loader (direct nav, reload,
- * editing a saved character). Spells are dnd5e-only, so `variant` is accepted
- * for API symmetry but not used to branch.
+ * editing a saved character).
+ *
+ * La variante conta davvero: Brancalonia aggiunge incantesimi suoi e il 2024
+ * porta classi e liste di classe proprie. Finché il 2024 non veniva caricato
+ * qui, il passo mostrava un bardo del 2024 con le regole del 2014.
  */
 export async function ensureSpellData(variant: GameVariant): Promise<void> {
   const loads = [ensureDnd5eSpells(), ensureDnd5eRules(), ensureDnd5eClasses()]
   if (variant === 'brancalonia') loads.push(ensureBrancaSpells())
+  if (variant === 'dnd2024') loads.push(ensureDnd2024())
   await Promise.all(loads)
 }
 
@@ -737,39 +745,118 @@ export function getSpells(variant: GameVariant): readonly Spell[] {
   return base
 }
 
-export function getSpellSlots(className: string, level: number): Record<number, number> {
-  if (!_dnd5eClasses || !_dnd5eGetSpellSlotsForLevel) return {}
-  const cls = _dnd5eClasses.find(c => c.id === className)
+/**
+ * La classe di riferimento per le regole di lancio, nella variante scelta.
+ *
+ * Le funzioni qui sotto cercavano sempre e solo dentro `_dnd5eClasses`: un
+ * bardo del 2024 (che nel suo manuale prepara gli incantesimi) veniva letto
+ * dalla scheda del bardo 2014 (che li conosce), e il flag scritto nei dati del
+ * 2024 non aveva alcun effetto.
+ *
+ * Non passa da `getClasses` di proposito: quella funzione, per Brancalonia e
+ * Apocalisse, pretende che siano già caricate anche le sottoclassi e altrimenti
+ * torna una lista vuota — cioè zero slot per tutti nel passo incantesimi, dove
+ * le sottoclassi non servono. Qui basta il telaio della classe.
+ */
+function findSpellcastingClass(variant: GameVariant, className: string): CharacterClass | undefined {
+  if (variant === 'dnd2024') return _dnd24Classes?.find(c => c.id === className)
+  const hit = _dnd5eClasses?.find(c => c.id === className)
+  if (hit) return hit
+  // Il burattinaio è una classe in più di Brancalonia, fuori dall'elenco 2014.
+  if (variant === 'brancalonia' && _brancaBurattinaio?.id === className) return _brancaBurattinaio
+  return undefined
+}
+
+/** Come una classe accede agli incantesimi: non lancia, li conosce, li prepara. */
+export type SpellcastingMode = 'none' | 'known' | 'prepared'
+
+export interface SpellcastingProfile {
+  mode: SpellcastingMode
+  /** Trucchetti concessi al livello dato. */
+  cantrips: number
+  /**
+   * Quanti incantesimi di livello 1+ la scheda può portare.
+   * `null` significa «la regola esiste ma il numero non è nei dati»: chi lo
+   * mostra deve dirlo, non ripiegare sul conto di un'altra edizione.
+   */
+  spellsCount: number | null
+}
+
+const NO_MODS: Record<keyof AbilityScores, number> = { str: 0, dex: 0, con: 0, int: 0, wis: 0, cha: 0 }
+
+/**
+ * Profilo di lancio di una classe a un dato livello, secondo le regole della
+ * variante. È l'unico punto che decide known/prepared: le funzioni storiche
+ * qui sotto ne sono involucri, così procedura guidata e generatore casuale non
+ * possono più divergere.
+ */
+export function getSpellcastingProfile(
+  className: string,
+  level: number,
+  abilityModifiers: Record<keyof AbilityScores, number>,
+  variant: GameVariant = 'dnd5e',
+): SpellcastingProfile {
+  const sc = findSpellcastingClass(variant, className)?.spellcasting
+  if (!sc) return { mode: 'none', cantrips: 0, spellsCount: 0 }
+
+  const idx = Math.min(level - 1, sc.cantripsKnown.length - 1)
+  const cantrips = sc.cantripsKnown[idx] ?? 0
+
+  if (sc.preparedCaster) {
+    return { mode: 'prepared', cantrips, spellsCount: preparedSpellsCount(variant, sc, level, abilityModifiers) }
+  }
+  if (sc.spellsKnown) {
+    const kIdx = Math.min(level - 1, sc.spellsKnown.length - 1)
+    return { mode: 'known', cantrips, spellsCount: sc.spellsKnown[kIdx] ?? 0 }
+  }
+  // Ha una tabella di slot ma nessun conteggio: non sa dire quanti ne porta.
+  return { mode: 'none', cantrips, spellsCount: 0 }
+}
+
+function preparedSpellsCount(
+  variant: GameVariant,
+  sc: NonNullable<CharacterClass['spellcasting']>,
+  level: number,
+  abilityModifiers: Record<keyof AbilityScores, number>,
+): number | null {
+  // Nel 2024 il numero di incantesimi preparati viene da una colonna della
+  // tabella di classe ("Prepared Spells"), non dalla formula 2014
+  // «modificatore + livello». Quella colonna non è ancora nei dati (in
+  // src/data/dnd2024/classes.ts c'è solo cantripsKnown), quindi qui si
+  // dichiara «non lo so»: stampare il numero del 2014 sarebbe una regola
+  // sbagliata spacciata per buona.
+  if (variant === 'dnd2024') return null
+  const abilityMod = abilityModifiers[sc.ability] ?? 0
+  return Math.max(1, abilityMod + level)
+}
+
+export function getSpellSlots(
+  className: string,
+  level: number,
+  variant: GameVariant = 'dnd5e',
+): Record<number, number> {
+  if (!_dnd5eGetSpellSlotsForLevel) return {}
+  const cls = findSpellcastingClass(variant, className)
   if (!cls?.spellcasting) return {}
   return _dnd5eGetSpellSlotsForLevel(cls.spellcasting.casterType, level)
 }
 
-export function getCantripsKnown(className: string, level: number): number {
-  if (!_dnd5eClasses) return 0
-  const cls = _dnd5eClasses.find(c => c.id === className)
-  if (!cls?.spellcasting) return 0
-  const idx = Math.min(level - 1, cls.spellcasting.cantripsKnown.length - 1)
-  return cls.spellcasting.cantripsKnown[idx] ?? 0
+export function getCantripsKnown(className: string, level: number, variant: GameVariant = 'dnd5e'): number {
+  return getSpellcastingProfile(className, level, NO_MODS, variant).cantrips
 }
 
+/**
+ * Conteggio secco, per i chiamanti che vogliono un numero e basta.
+ * Un dato mancante diventa 0: chi deve distinguere «zero» da «non lo so» usa
+ * `getSpellcastingProfile`.
+ */
 export function getSpellsKnownCount(
   className: string,
   level: number,
   abilityModifiers: Record<keyof AbilityScores, number>,
+  variant: GameVariant = 'dnd5e',
 ): number {
-  if (!_dnd5eClasses) return 0
-  const cls = _dnd5eClasses.find(c => c.id === className)
-  if (!cls?.spellcasting) return 0
-
-  if (cls.spellcasting.preparedCaster) {
-    const abilityMod = abilityModifiers[cls.spellcasting.ability] ?? 0
-    return Math.max(1, abilityMod + level)
-  }
-  if (cls.spellcasting.spellsKnown) {
-    const idx = Math.min(level - 1, cls.spellcasting.spellsKnown.length - 1)
-    return cls.spellcasting.spellsKnown[idx] ?? 0
-  }
-  return 0
+  return getSpellcastingProfile(className, level, abilityModifiers, variant).spellsCount ?? 0
 }
 
 // ─── Multiclass Spell Slots (redirected from dnd5e/rules) ──────────────────

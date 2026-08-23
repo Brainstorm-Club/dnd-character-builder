@@ -122,6 +122,16 @@ function totalScore(ability: keyof AbilityScores): number {
   return characterStore.totalAbilityScore(ability)
 }
 
+// Da dove viene il bonus scritto in `racialBonuses`. Nel 2024 la specie non dà
+// punteggi di caratteristica: li dà il background (+2 a una, +1 a un'altra fra
+// le tre che elenca). Chiamarlo "Bonus Razziale" anche lì raccontava al
+// giocatore una regola che il manuale del 2024 ha smesso di avere.
+const bonusLabelKey = computed(() =>
+  characterStore.character.variant === 'dnd2024'
+    ? 'abilities.backgroundBonus'
+    : 'abilities.racialBonus',
+)
+
 function setMethod(m: Method) {
   method.value = m
   if (m === 'pointbuy') {
@@ -248,7 +258,7 @@ function setMethod(m: Method) {
         <div class="mt-3 flex items-center justify-between text-xs text-stone-400">
           <div>
             <span v-if="(characterStore.character.racialBonuses[ability] || 0) !== 0" class="text-green-400">
-              {{ t('abilities.racialBonus') }}: {{ formatModifier(characterStore.character.racialBonuses[ability] || 0) }}
+              {{ t(bonusLabelKey) }}: {{ formatModifier(characterStore.character.racialBonuses[ability] || 0) }}
             </span>
           </div>
           <div class="text-right">

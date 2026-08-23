@@ -6,6 +6,7 @@ import { modifier, proficiencyBonus } from '@/utils/calculations'
 import { getEquipment } from '@/data'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { getWeaponMastery } from '@/data/dnd2024/mastery'
+import { attaccoPerNome } from '@/domain/armi'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 const { t, locale } = useI18n()
@@ -14,6 +15,13 @@ const gt = useGameTerms()
 
 const equipment = computed(() => getEquipment(characterStore.character.variant))
 const customEquipment = ref('')
+
+// Semplici e marziali in un elenco solo: al calcolo del bonus serve trovare
+// l'arma per nome, e la categoria non cambia il conto.
+const catalogoArmi = computed(() => [
+  ...(equipment.value?.simpleWeapons || []),
+  ...(equipment.value?.martialWeapons || []),
+])
 
 // Armatura e scudo non hanno una copia locale: si leggono e si scrivono
 // direttamente sul personaggio. Una copia in più sarebbe stato un secondo
@@ -57,25 +65,20 @@ function toggleWeapon(weaponName: string) {
 
 function updateCharacterWeapons() {
   characterStore.character.weapons = selectedWeapons.value.map(name => {
-    const wpn = [...(equipment.value?.simpleWeapons || []), ...(equipment.value?.martialWeapons || [])]
-      .find(w => w.name === name)
-    // Ranged and finesse weapons key off Dexterity; everything else off
-    // Strength. A weapon stored with a bonus of 0 would print +0 on the sheet.
-    const props = wpn?.properties ?? []
-    const ranged = props.some(p => p.startsWith('ammunition'))
+    // La regola del bonus di attacco sta in `src/domain/armi.ts` e non qui:
+    // quando era scritta anche qui, il generatore casuale ne teneva una
+    // versione diversa, e lo stesso personaggio otteneva numeri diversi a
+    // seconda che fosse stato creato a mano o tirato a sorte.
     const bonuses = characterStore.character.racialBonuses
     const scores = characterStore.character.abilityScores
-    const strMod = modifier(scores.str + (bonuses.str || 0))
-    const dexMod = modifier(scores.dex + (bonuses.dex || 0))
-    const abilityMod = ranged || (props.includes('finesse') && dexMod > strMod) ? dexMod : strMod
-    const damage = wpn?.damage || ''
-    return {
-      name,
-      attackBonus: proficiencyBonus(characterStore.character.level) + abilityMod,
-      damage: damage && abilityMod !== 0
-        ? `${damage}${abilityMod > 0 ? '+' : ''}${abilityMod}`
-        : damage,
-    }
+    return attaccoPerNome(name, catalogoArmi.value, {
+      strMod: modifier(scores.str + (bonuses.str || 0)),
+      dexMod: modifier(scores.dex + (bonuses.dex || 0)),
+      proficiencyBonus: proficiencyBonus(characterStore.character.level),
+      // Arti Marziali: col bastone ferrato o la spada corta il monaco tira di
+      // Destrezza, pur non essendo armi accurate.
+      artiMarziali: characterStore.character.className === 'monk',
+    })
   })
 }
 
