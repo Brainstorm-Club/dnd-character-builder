@@ -30,8 +30,14 @@ describe('scheda di Apocalisse', () => {
       const m = getApocalisseFieldMapping(c)
       if (c.mark) {
         conMarchio++
+        // La barra sotto l'etichetta MARCHIO è larga 67 pt: il nome per
+        // esteso ("Marchio della Bestia — Spirito della Desolazione") sborda
+        // da entrambi i lati, e l'etichetta stampata dice già MARCHIO. Sulla
+        // scheda finisce quindi il solo nome, senza il prefisso.
         const atteso = apocalisseRules.marks.find(x => x.id === c.mark)!.nameOriginal
+          .replace(/^Marchio (?:della|del) /, '')
         expect(String(m['marchio']), 'il marchio va nella sua casella').toContain(atteso)
+        expect(String(m['marchio']), 'senza il prefisso, che non ci sta').not.toContain('Marchio ')
       }
       if (c.virtue) {
         expect(m['virtu']).toBe(apocalisseRules.virtues.find(v => v.id === c.virtue)!.nameOriginal)
@@ -53,6 +59,32 @@ describe('scheda di Apocalisse', () => {
       const atteso = apocalisseRules.markDiceProgression
         .find(d => lv >= d.levelRange[0] && lv <= d.levelRange[1])!.die
       expect(getApocalisseFieldMapping(c)['dadi-marchio'], `livello ${lv}`).toBe(atteso)
+    }
+  })
+
+  /**
+   * La pagina degli incantesimi ha una casella per ogni riga stampata — nove
+   * per i livelli 0-3, otto per i livelli 4-7, sei per l'8° e il 9° — perché
+   * con un riquadro multiriga per livello pdf-lib non permette di far cadere
+   * i nomi sulle righe se non portando il corpo a 11.4. Quando gli
+   * incantesimi sono più delle righe l'ultima li raccoglie tutti: nessuno
+   * deve sparire dalla scheda.
+   */
+  it('mette ogni incantesimo sulla sua riga senza perderne nessuno', () => {
+    const c = generateRandomCharacter('apocalisse', 1)
+    c.spellcastingAbility = 'int'
+    c.spellcastingClass = 'wizard'
+    c.cantrips = []
+    c.spellsPrepared = []
+    c.spellsKnown = getSpells('apocalisse').filter(s => s.level === 1).slice(0, 14).map(s => s.id)
+    expect(c.spellsKnown.length, 'servono più incantesimi che righe').toBeGreaterThan(9)
+    const m = getApocalisseFieldMapping(c)
+    for (let i = 1; i <= 9; i++) expect(m, `manca la riga ${i}`).toHaveProperty(`incantesimi1-${i}`)
+    expect(m).not.toHaveProperty('incantesimi1-10')
+    const testo = Object.values(m).filter(v => typeof v === 'string').join(' ')
+    for (const id of c.spellsKnown) {
+      const sp = getSpells('apocalisse').find(x => x.id === id)!
+      expect(testo, `${sp.name} perso`).toContain(translateGameTerm(sp.name, 'it', 'spell'))
     }
   })
 

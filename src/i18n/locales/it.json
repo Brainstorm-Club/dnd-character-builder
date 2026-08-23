@@ -134,7 +134,9 @@
     "flaws": "Difetti",
     "skillProficiencies": "Competenze nelle Abilità",
     "languageChoices": "linguaggi a scelta",
-    "chooseSkills": "Scegli {count} abilità"
+    "chooseSkills": "Scegli {count} abilità",
+    "chooseMajorAbility": "Scegli la caratteristica che sale di 2",
+    "chooseMinorAbility": "Scegli la caratteristica che sale di 1"
   },
   "equipment": {
     "title": "Equipaggiamento",
@@ -214,7 +216,8 @@
     "selectVirtue": "Scegli la Virtù",
     "selectSin": "Scegli il Peccato",
     "sessionNotes": "Note di Sessione",
-    "sessionNotesPlaceholder": "Appunta note dalle sessioni, promemoria, obiettivi..."
+    "sessionNotesPlaceholder": "Appunta note dalle sessioni, promemoria, obiettivi...",
+    "appearance": "Aspetto"
   },
   "review": {
     "title": "Riepilogo del Personaggio",
@@ -253,7 +256,10 @@
     "brawl": "Rissa",
     "moveSlots": "Slot mossa",
     "knownMoves": "Mosse conosciute",
-    "ace": "Asso nella Manica"
+    "ace": "Asso nella Manica",
+    "proficient": "Competente",
+    "notProficient": "Non competente",
+    "expertise": "Competenza raddoppiata"
   },
   "share": {
     "error": "Link di Condivisione Non Valido",

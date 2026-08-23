@@ -2,198 +2,33 @@
 import { computed, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { formatModifier, spellSaveDC, spellAttackBonus, feetToMeters } from '@/utils/calculations'
 import { usePdfExport } from '@/composables/usePdfExport'
 import { copyShareUrl } from '@/utils/shareCharacter'
-import { SKILLS } from '@/data/dnd5e/skills'
-import { getSpells, getClasses, getRaces, getBackgrounds, getApocalisseRules, getMaxLevel, getWhacksLevels } from '@/data'
-import { useGameTerms } from '@/composables/useGameTerms'
+import { getMaxLevel } from '@/data'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
-import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
-import { getDnd2024Feat } from '@/data/dnd2024/feats'
-import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce, brawlFeatureId } from '@/data/brancalonia/brawl'
-import { brawlDescriptionsIt } from '@/data/brancalonia/brawl-it'
+import CharacterSheet from '@/components/shared/CharacterSheet.vue'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const characterStore = useCharacterStore()
 const { exportPdf, exporting } = usePdfExport()
-const gt = useGameTerms()
 
 const char = computed(() => characterStore.character)
-const mods = computed(() => characterStore.abilityModifiers)
-const prof = computed(() => characterStore.profBonus)
 
 const saveMessage = ref<{ type: 'success' | 'info'; text: string } | null>(null)
 
-const savingThrows = computed(() => {
-  const abilities = ['str', 'dex', 'con', 'int', 'wis', 'cha'] as const
-  return abilities.map(a => ({
-    ability: a,
-    value: mods.value[a] + (char.value.savingThrowProficiencies.includes(a) ? prof.value : 0),
-    proficient: char.value.savingThrowProficiencies.includes(a),
-  }))
-})
 
-const skills = computed(() => {
-  return SKILLS.map(skill => {
-    const abilityMod = mods.value[skill.ability as keyof typeof mods.value]
-    const proficient = char.value.skillProficiencies.includes(skill.id)
-    const expert = char.value.skillExpertise.includes(skill.id)
-    let bonus = abilityMod
-    if (proficient) bonus += prof.value
-    if (expert) bonus += prof.value
-    return { ...skill, bonus, proficient, expert }
-  })
-})
 
-const spellDC = computed(() => {
-  if (!char.value.spellcastingAbility) return 0
-  const abilityMod = mods.value[char.value.spellcastingAbility as keyof typeof mods.value]
-  return spellSaveDC(prof.value, abilityMod)
-})
 
-const spellAtk = computed(() => {
-  if (!char.value.spellcastingAbility) return 0
-  const abilityMod = mods.value[char.value.spellcastingAbility as keyof typeof mods.value]
-  return spellAttackBonus(prof.value, abilityMod)
-})
 
-const allSpells = computed(() => getSpells(char.value.variant))
 
-function spellName(id: string): string {
-  const spell = allSpells.value.find(s => s.id === id)
-  return spell ? gt.spell(spell.name) : id
-}
 
-const variantClasses = computed(() => getClasses(char.value.variant))
-const variantRaces = computed(() => getRaces(char.value.variant))
-const variantBackgrounds = computed(() => getBackgrounds(char.value.variant))
-const className = computed(() => {
-  const cls = variantClasses.value.find(c => c.id === char.value.className)
-  return gt.className(cls?.name ?? char.value.className, char.value.variant)
-})
 // Stessa risoluzione del passo 3: la traduzione è indicizzata per id, e senza
 // passarci il riepilogo mostrava il dato grezzo — 'Way of the Open Hand' in
 // D&D, la forma composta 'Matador (Mattatore)' in Brancalonia e Apocalisse.
-const subclassName = computed(() => {
-  if (!char.value.subclass) return ''
-  const cls = variantClasses.value.find(c => c.id === char.value.className)
-  const raw = cls?.subclasses.find(s => s.id === char.value.subclass)?.name ?? char.value.subclass
-  const translated = gt.subclassName(char.value.subclass)
-  return translated === char.value.subclass ? raw : translated
-})
-const displayRace = computed(() => {
-  const race = variantRaces.value.find(r => r.id === char.value.race)
-  if (!race) return char.value.race
-  const raceTr = gt.raceName(race.name)
-  if (char.value.subrace && race.subraces) {
-    const sub = race.subraces.find(s => s.id === char.value.subrace)
-    if (sub) return `${raceTr} (${gt.subraceName(sub.name)})`
-  }
-  return raceTr
-})
-const displayBackground = computed(() => {
-  const bg = variantBackgrounds.value.find(b => b.id === char.value.background)
-  if (!bg) return char.value.background
-  if ((bg as any).nameOriginal) return (bg as any).nameOriginal
-  return gt.background(bg.name)
-})
 
 // Multiclass display (defensive: classes may be undefined for old saved characters)
-const multiclassDisplay = computed(() => {
-  const classes = char.value.classes ?? []
-  if (classes.length < 2) return ''
-  return classes
-    .map(c => {
-      const cls = variantClasses.value.find(cl => cl.id === c.classId)
-      const name = cls ? gt.className(cls.name, char.value.variant) : c.classId
-      return `${name} ${c.level}`
-    })
-    .join(' / ')
-})
 
-const hitDiceDisplay = computed(() => {
-  const classes = char.value.classes ?? []
-  if (classes.length < 2) {
-    return `${char.value.level}d${char.value.hitDie}`
-  }
-  return classes
-    .map(c => `${c.level}d${c.hitDie}`)
-    .join(' + ')
-})
 
-const isBrancalonia = computed(() => char.value.variant === 'brancalonia')
-const isApocalisse = computed(() => char.value.variant === 'apocalisse')
-
-// Apocalisse display helpers
-const apoRules = computed(() => getApocalisseRules(char.value.variant))
-function displayNameLocale(item: { name: string; nameOriginal?: string } | undefined): string {
-  if (!item) return '--'
-  if (locale.value === 'it' && item.nameOriginal) return item.nameOriginal
-  return item.name
-}
-// Corredo da rissa: quanti slot mossa e quante mosse spettano al personaggio,
-// più la mossa di classe e (dal 6°) l'asso nella manica.
-const brawlKit = computed(() => {
-  if (char.value.variant !== 'brancalonia' || !char.value.className) return null
-  const cls = char.value.className
-  const lv = char.value.level
-  const it = locale.value === 'it'
-  const feature = getBrawlClassFeature(cls)
-  const ace = lv >= 6 ? getBrawlAce(cls) : undefined
-  return {
-    slots: getMoveSlots(lv),
-    moves: getKnownMoveCount(lv),
-    feature: feature && {
-      name: it ? feature.nameOriginal : feature.name,
-      description: (it && brawlDescriptionsIt[brawlFeatureId(feature.name)]) || feature.description,
-    },
-    ace: ace && {
-      name: it ? ace.nameOriginal : ace.name,
-      description: (it && brawlDescriptionsIt[brawlFeatureId(ace.name)]) || ace.description,
-    },
-  }
-})
-
-const displayFeat = computed(() => {
-  if (!char.value.feat) return null
-  if (char.value.variant === 'dnd2024') {
-    const f = getDnd2024Feat(char.value.feat)
-    return f ? { name: f.name, benefits: [f.description] } : null
-  }
-  if (char.value.variant !== 'brancalonia') return null
-  const f = getBrancaloniaFeatById(char.value.feat)
-  if (!f) return null
-  return { name: locale.value === 'it' ? f.nameOriginal : f.name, benefits: f.benefits }
-})
-
-const displayMark = computed(() => {
-  if (!char.value.mark) return '--'
-  const mark = apoRules.value?.marks.find(m => m.id === char.value.mark)
-  return displayNameLocale(mark)
-})
-const displaySpirit = computed(() => {
-  if (!char.value.markSpirit || !char.value.mark) return ''
-  const mark = apoRules.value?.marks.find(m => m.id === char.value.mark)
-  const spirit = mark?.spirits.find(s => s.id === char.value.markSpirit)
-  return displayNameLocale(spirit)
-})
-const displayVirtue = computed(() => {
-  if (!char.value.virtue) return '--'
-  const v = apoRules.value?.virtues.find(x => x.id === char.value.virtue)
-  return displayNameLocale(v)
-})
-const displaySin = computed(() => {
-  if (!char.value.sin) return '--'
-  const s = apoRules.value?.sins.find(x => x.id === char.value.sin)
-  return displayNameLocale(s)
-})
-
-// Brancalonia display helpers
-const whacksDisplay = computed(() => {
-  const wl = getWhacksLevels().find(w => w.level === char.value.whacksLevel)
-  return wl ? `${wl.level} - ${wl.name}` : String(char.value.whacksLevel)
-})
 
 function saveChar() {
   characterStore.saveCharacter()
@@ -294,250 +129,12 @@ function handleImport(event: Event) {
   <section aria-labelledby="review-heading">
     <h2 id="review-heading" class="text-2xl font-bold text-amber-500 mb-6 font-gothic">{{ t('review.title') }}</h2>
 
-    <!-- Header -->
-    <div class="bg-stone-800 border border-stone-700 rounded-lg p-6 mb-4">
-      <div class="flex flex-wrap gap-6">
-        <div>
-          <p class="text-xs text-stone-500 uppercase">{{ t('review.charName') }}</p>
-          <p class="text-xl font-bold text-amber-400">{{ char.name || '--' }}</p>
-        </div>
-        <div>
-          <p class="text-xs text-stone-500 uppercase">{{ t('review.classLevel') }}</p>
-          <p class="text-stone-200">{{ multiclassDisplay || `${className} ${char.level}` }}</p>
-          <p v-if="!multiclassDisplay && subclassName" class="text-xs text-stone-500">{{ subclassName }}</p>
-        </div>
-        <div>
-          <p class="text-xs text-stone-500 uppercase">{{ t('review.charRace') }}</p>
-          <p class="text-stone-200">{{ displayRace }}</p>
-        </div>
-        <div>
-          <p class="text-xs text-stone-500 uppercase">{{ t('review.charBackground') }}</p>
-          <p class="text-stone-200">{{ displayBackground }}</p>
-        </div>
-        <div>
-          <p class="text-xs text-stone-500 uppercase">{{ t('details.alignment') }}</p>
-          <p class="text-stone-200">{{ char.alignment ? t(`alignments.${char.alignment}`) : '--' }}</p>
-        </div>
-      </div>
-    </div>
-
-    <!-- Combat Stats -->
-    <!-- I sei riquadri erano sei copie della stessa ricetta a mano
-         (fondo + bordo + raggio + p-3 + text-center, etichetta piccola sopra e
-         numero grande sotto): è .bsc-stat del design system, riscritto in
-         Tailwind. Adesso la forma la porta il componente; restano utility solo
-         dove servono a NON cambiare l'aspetto di oggi:
-         - `bg-stone-800` e le classi `border-*` sono anche gli agganci del
-           foglio di stampa in style.css (`.bg-stone-800 { background: white }`),
-           che senza di loro stamperebbe riquadri neri;
-         - `rounded-lg` tiene gli 8px di oggi al posto dei 6px del DS;
-         - `text-2xl/text-lg/font-bold` e i colori tengono corpo e tinta;
-         - `normal-case` perché queste etichette oggi non sono maiuscole
-           (quelle delle caratteristiche sì, e infatti là non c'è).
-         Cambia solo il carattere: etichetta e numero passano a Courier Prime,
-         la voce del marchio che nei nove passi non c'era. -->
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
-      <div class="bsc-stat bg-stone-800 border-amber-700/30 rounded-lg">
-        <p class="bsc-stat__label normal-case">{{ t('review.ac') }}</p>
-        <p class="bsc-stat__value text-2xl font-bold text-amber-400">{{ characterStore.armorClass }}</p>
-      </div>
-      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
-        <p class="bsc-stat__label normal-case">{{ t('review.initiative') }}</p>
-        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ formatModifier(characterStore.initiative) }}</p>
-      </div>
-      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
-        <p class="bsc-stat__label normal-case">{{ t('review.speed') }}</p>
-        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ feetToMeters(char.speed) }}m</p>
-      </div>
-      <div class="bsc-stat bg-stone-800 border-red-700/30 rounded-lg">
-        <p class="bsc-stat__label normal-case">{{ t('review.hp') }}</p>
-        <p class="bsc-stat__value text-2xl font-bold text-red-400">{{ char.maxHp }}</p>
-      </div>
-      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
-        <p class="bsc-stat__label normal-case">{{ t('review.hitDie') }}</p>
-        <p class="bsc-stat__value text-lg font-bold text-stone-200">{{ hitDiceDisplay }}</p>
-      </div>
-      <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
-        <p class="bsc-stat__label normal-case">{{ t('review.proficiencyBonus') }}</p>
-        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ formatModifier(prof) }}</p>
-      </div>
-    </div>
-
-    <!-- Ability Scores -->
-    <!-- Stesso riquadro dei dati di combattimento, con in più la terza riga del
-         modificatore: .bsc-stat__mod. Il DS lo vuole rosso, ma qui il
-         modificatore è oro da sempre e l'oro resta (`text-amber-400`): il rosso
-         del DS è il colore dei danni, non del bonus. -->
-    <div class="grid grid-cols-3 sm:grid-cols-6 gap-2 mb-4">
-      <div v-for="a in (['str','dex','con','int','wis','cha'] as const)" :key="a"
-        class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
-        <p class="bsc-stat__label">{{ t(`abilities.${a}`) }}</p>
-        <p class="bsc-stat__value text-xl font-bold text-stone-200">{{ characterStore.totalAbilityScore(a) }}</p>
-        <p class="bsc-stat__mod text-sm text-amber-400">{{ formatModifier(mods[a]) }}</p>
-      </div>
-    </div>
-
-    <!-- Saving Throws & Skills -->
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-4">
-        <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('review.savingThrows') }}</h3>
-        <div class="space-y-1 text-sm">
-          <div v-for="st in savingThrows" :key="st.ability" class="flex items-center gap-2">
-            <span class="w-3 h-3 rounded-full" :class="st.proficient ? 'bg-amber-500' : 'bg-stone-600'" :aria-label="st.proficient ? 'Proficient' : 'Not proficient'" role="img"></span>
-            <span class="text-stone-400 uppercase w-8">{{ st.ability }}</span>
-            <span class="text-stone-200 font-medium">{{ formatModifier(st.value) }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-stone-800 border border-stone-700 rounded-lg p-4">
-        <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('review.skills') }}</h3>
-        <div class="space-y-1 text-xs max-h-60 overflow-y-auto">
-          <div v-for="skill in skills" :key="skill.id" class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full" :class="skill.proficient ? 'bg-amber-500' : 'bg-stone-600'" :aria-label="skill.proficient ? 'Proficient' : 'Not proficient'" role="img"></span>
-            <span class="text-stone-400 flex-1">{{ gt.skill(skill.name) }}</span>
-            <span class="text-stone-200 font-medium">{{ formatModifier(skill.bonus) }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Spells -->
-    <div v-if="char.spellcastingAbility" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
-      <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('spells.title') }}</h3>
-      <div class="flex gap-4 text-sm mb-3">
-        <span class="text-stone-400">{{ t('spells.spellSaveDC') }}: <strong class="text-amber-400">{{ spellDC }}</strong></span>
-        <span class="text-stone-400">{{ t('spells.spellAttackBonus') }}: <strong class="text-amber-400">{{ formatModifier(spellAtk) }}</strong></span>
-      </div>
-      <div v-if="char.cantrips.length" class="mb-2">
-        <span class="text-xs text-stone-500">{{ t('spells.cantrips') }}:</span>
-        <span class="text-stone-300 text-sm ml-1">{{ char.cantrips.map(spellName).join(', ') }}</span>
-      </div>
-      <div v-if="char.spellsKnown.length">
-        <span class="text-xs text-stone-500">{{ t('spells.knownSpells') }}:</span>
-        <span class="text-stone-300 text-sm ml-1">{{ char.spellsKnown.map(spellName).join(', ') }}</span>
-      </div>
-    </div>
-
-    <!-- Weapons & Armor -->
-    <div v-if="char.weapons.length || char.armor || char.equipment.length" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
-      <div v-if="char.armor || char.shield" class="mb-3">
-        <h4 class="font-gothic font-semibold text-stone-300 mb-1">{{ t('review.armorLabel') }}</h4>
-        <div class="flex gap-3 text-sm">
-          <span v-if="char.armor" class="text-stone-300">{{ gt.armorName(char.armor) }}</span>
-          <span v-if="char.shield" class="text-amber-400">{{ t('review.shieldBonus') }}</span>
-          <span v-if="!char.armor && !char.shield" class="text-stone-500">{{ t('review.noArmor') }}</span>
-        </div>
-      </div>
-
-      <div v-if="char.weapons.length" class="mb-3">
-        <h4 class="font-gothic font-semibold text-stone-300 mb-1">{{ t('review.attacks') }}</h4>
-        <div class="space-y-1">
-          <div v-for="(wpn, i) in char.weapons" :key="i" class="flex gap-4 text-sm">
-            <span class="text-amber-400 font-medium w-36">{{ gt.weapon(wpn.name) }}</span>
-            <span class="text-stone-400 w-12">{{ formatModifier(wpn.attackBonus) }}</span>
-            <span class="text-stone-300">{{ wpn.damage }}</span>
-          </div>
-        </div>
-      </div>
-
-      <div v-if="char.equipment.length">
-        <h4 class="font-gothic font-semibold text-stone-300 mb-1">{{ t('equipment.title') }}</h4>
-        <p class="text-stone-400 text-sm">{{ char.equipment.join(', ') }}</p>
-      </div>
-    </div>
-
-    <!-- Features & Traits -->
-    <div v-if="char.featuresTraits.length" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
-      <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('class.features') }}</h3>
-      <div class="space-y-1">
-        <div v-for="(feat, i) in char.featuresTraits" :key="i" class="text-sm text-stone-400">
-          {{ gt.feature(feat) }}
-        </div>
-      </div>
-    </div>
-
-    <!-- Brancalonia: Brawling Info -->
-    <div v-if="isBrancalonia" class="bg-stone-800 border border-amber-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-gothic font-semibold text-amber-400 mb-2">{{ t('details.brawling') }}</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-        <div>
-          <span class="text-stone-500">{{ t('details.size') }}:</span>
-          <span class="text-stone-200 ml-1">{{ gt.size(char.size || 'Medium') }}</span>
-        </div>
-        <div>
-          <span class="text-stone-500">{{ t('details.whacksLevel') }}:</span>
-          <span class="text-stone-200 ml-1">{{ whacksDisplay }}</span>
-        </div>
-      </div>
-      <div v-if="char.brawlingMoves.length" class="mt-2">
-        <span class="text-stone-500 text-sm">{{ t('details.brawlingMoves') }}:</span>
-        <span class="text-stone-300 text-sm ml-1">{{ char.brawlingMoves.join(', ') }}</span>
-      </div>
-      <div v-if="char.misdeeds" class="mt-2">
-        <span class="text-stone-500 text-sm">{{ t('details.misdeeds') }}:</span>
-        <span class="text-stone-300 text-sm ml-1">{{ char.misdeeds }}</span>
-      </div>
-    </div>
-
-    <!-- Brancalonia: corredo da rissa -->
-    <div v-if="brawlKit" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-gothic font-semibold text-red-400 mb-2">{{ t('review.brawl') }}</h3>
-      <div class="grid grid-cols-2 gap-3 text-sm mb-2">
-        <div>
-          <span class="text-stone-500">{{ t('review.moveSlots') }}:</span>
-          <span class="text-amber-400 font-bold ml-1">{{ brawlKit.slots }}</span>
-        </div>
-        <div>
-          <span class="text-stone-500">{{ t('review.knownMoves') }}:</span>
-          <span class="text-amber-400 font-bold ml-1">{{ brawlKit.moves }}</span>
-        </div>
-      </div>
-      <p v-if="brawlKit.feature" class="text-sm">
-        <span class="text-stone-200">{{ brawlKit.feature.name }}</span>
-        <span class="block text-stone-400">{{ brawlKit.feature.description }}</span>
-      </p>
-      <p v-if="brawlKit.ace" class="text-sm mt-2">
-        <span class="text-stone-200">{{ t('review.ace') }}: {{ brawlKit.ace.name }}</span>
-        <span class="block text-stone-400">{{ brawlKit.ace.description }}</span>
-      </p>
-    </div>
-
-    <!-- Brancalonia: talento razziale scelto -->
-    <div v-if="displayFeat" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-gothic font-semibold text-red-400 mb-2">{{ t('race.chooseFeat') }}</h3>
-      <p class="text-stone-200 text-sm">{{ displayFeat.name }}</p>
-      <ul class="mt-1 ml-4 list-disc text-stone-400 text-sm space-y-0.5">
-        <li v-for="(b, i) in displayFeat.benefits" :key="i">{{ b }}</li>
-      </ul>
-    </div>
-
-    <!-- Apocalisse: Mark, Virtue, Sin, Humanity -->
-    <div v-if="isApocalisse" class="bg-stone-800 border border-red-700/30 rounded-lg p-4 mb-4">
-      <h3 class="font-gothic font-semibold text-red-400 mb-2">{{ t('details.markSection') }}</h3>
-      <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 text-sm">
-        <div>
-          <span class="text-stone-500">{{ t('details.mark') }}:</span>
-          <span class="text-stone-200 ml-1">{{ displayMark }}</span>
-        </div>
-        <div v-if="displaySpirit">
-          <span class="text-stone-500">{{ t('details.markSpirit') }}:</span>
-          <span class="text-stone-200 ml-1">{{ displaySpirit }}</span>
-        </div>
-        <div>
-          <span class="text-stone-500">{{ t('details.virtue') }}:</span>
-          <span class="text-stone-200 ml-1">{{ displayVirtue }}</span>
-        </div>
-        <div>
-          <span class="text-stone-500">{{ t('details.sin') }}:</span>
-          <span class="text-stone-200 ml-1">{{ displaySin }}</span>
-        </div>
-        <div>
-          <span class="text-stone-500">{{ t('details.humanity') }}:</span>
-          <span class="text-amber-400 font-bold ml-1">{{ char.humanity }}</span>
-        </div>
-      </div>
-    </div>
+    <!-- La scheda: lo stesso componente della pagina dei personaggi pronti.
+         Le sezioni d'ambientazione — rissa, Batoste, Marchio, Virtù, Peccato —
+         e le note di sessione entrano dallo slot, perché appartengono a chi
+         sta costruendo il personaggio, non a chi lo sfoglia. -->
+    <CharacterSheet :char="char">
+    </CharacterSheet>
 
     <!-- Session Notes -->
     <div v-if="char.sessionNotes" class="bg-stone-800 border border-stone-700 rounded-lg p-4 mb-4">
@@ -578,6 +175,7 @@ function handleImport(event: Event) {
         </div>
       </div>
     </Transition>
+
 
     <!-- Export Buttons -->
     <div class="flex flex-wrap gap-3 mt-6 no-print" role="group" :aria-label="t('review.export')">

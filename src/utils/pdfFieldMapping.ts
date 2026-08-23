@@ -31,6 +31,16 @@ function titleCase(id: string): string {
 }
 
 /**
+ * Sigla della caratteristica sulle schede italiane: `.toUpperCase()` sulla
+ * chiave inglese stampava 'CHA' e 'WIS' su Brancalonia e Apocalisse.
+ */
+const SIGLE_CARATTERISTICHE_IT: Record<string, string> = {
+  str: 'FOR', dex: 'DES', con: 'COS', int: 'INT', wis: 'SAG', cha: 'CAR',
+}
+const siglaCaratteristica = (a: string) =>
+  SIGLE_CARATTERISTICHE_IT[a.toLowerCase()] ?? a.toUpperCase()
+
+/**
  * Nome della classe nella lingua della scheda. Il locale arriva già calcolato
  * da sheetLocale(): senza, D&D 5e e 2024 stampavano 'Druid 6' accanto a un
  * background e a un allineamento già tradotti.
@@ -536,7 +546,7 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   // Spellcasting
   if (char.spellcastingAbility) {
     fields['Classe Incantatore '] = pdfClassName(char.spellcastingClass, 'brancalonia')
-    fields['Caratteristica da incantatore'] = char.spellcastingAbility.toUpperCase()
+    fields['Caratteristica da incantatore'] = siglaCaratteristica(char.spellcastingAbility)
     const sMod = abilityMod(char, char.spellcastingAbility as keyof AbilityScores)
     fields['CD TS incantesimi'] = String(spellSaveDC(prof, sMod))
     fields['Bonus al copire incanteismi'] = formatModifier(spellAttackBonus(prof, sMod))
@@ -580,10 +590,13 @@ export function getApocalisseFieldMapping(char: CharacterData): Record<string, s
   f['nome-personaggio'] = char.name
   f['nome-giocatore'] = char.playerName
   f['origine'] = it(char.race, 'race') + (char.subrace ? ` (${it(char.subrace, 'subrace')})` : '')
-  f['classe-livello'] = `${pdfClassName(char.className, 'apocalisse')} ${char.level}`
-  // In Apocalisse l'origine è anche il background: ripeterla sotto Fazione
-  // non aggiunge nulla. La Fazione è un'altra cosa e l'app non la tratta.
-  f['fazione'] = ''
+  // La riga CLASSE E LIVELLO è lunga 100 pt: l'archetipo di Apocalisse
+  // ("Stregone di Discendenza Ultraterrena") non ci entra a nessun corpo
+  // leggibile. Sulla riga va la classe base col livello, e l'archetipo — che
+  // altrimenti sparirebbe dalla scheda — prende la riga FAZIONE, larga 156 pt,
+  // che l'app lasciava vuota.
+  f['classe-livello'] = `${pdfClassName(char.className, 'dnd5e')} ${char.level}`
+  f['fazione'] = pdfClassName(char.className, 'apocalisse')
   f['punti-esperienza'] = String(char.experiencePoints || '')
 
   // ── Caratteristiche ──
@@ -621,7 +634,15 @@ export function getApocalisseFieldMapping(char: CharacterData): Record<string, s
   const spirito = marchio && char.markSpirit
     ? marchio.spirits.find(s => s.id === char.markSpirit)
     : undefined
-  f['marchio'] = [marchio?.nameOriginal, spirito?.nameOriginal].filter(Boolean).join(' — ')
+  // La barra sotto l'etichetta MARCHIO è larga 68 pt: "Marchio della Bestia —
+  // Spirito della Desolazione" ci sborda da entrambi i lati. L'etichetta
+  // stampata dice già MARCHIO e SPIRITO, quindi qui restano i soli nomi.
+  const senzaPrefisso = (s: string | undefined) =>
+    (s ?? '').replace(/^(?:Marchio|Spirito)\s+(?:della|degli|dei|dell[’']|del|di)\s*/i, '')
+  // Separatore stretto: col trattino lungo la coppia più lunga ("Signore —
+  // Desolazione") supera comunque la barra.
+  f['marchio'] = [senzaPrefisso(marchio?.nameOriginal), senzaPrefisso(spirito?.nameOriginal)]
+    .filter(Boolean).join(' · ')
   f['virtu'] = apocalisseRules.virtues.find(v => v.id === char.virtue)?.nameOriginal ?? ''
   f['peccato'] = apocalisseRules.sins.find(s => s.id === char.sin)?.nameOriginal ?? ''
   const dado = apocalisseRules.markDiceProgression
@@ -654,9 +675,17 @@ export function getApocalisseFieldMapping(char: CharacterData): Record<string, s
   f['eta'] = char.age
   f['altezza'] = char.height
   f['peso'] = char.weight
-  f['segni-particolari'] = [char.personalityTraits, char.ideals, char.bonds, char.flaws]
-    .filter(Boolean).join('\n')
-  f['storia'] = char.backstory
+  // SEGNI PARTICOLARI è un riquadro da cinque righe: tratti, ideali, legami e
+  // difetti insieme ne occupavano otto o dieci e sbordavano dal bordo. Qui
+  // restano i soli tratti; il resto scende nel riquadro STORIA, che l'app
+  // riempie di rado e che ha tredici righe.
+  f['segni-particolari'] = char.personalityTraits
+  f['storia'] = [
+    char.backstory,
+    char.ideals && `Ideali: ${char.ideals}`,
+    char.bonds && `Legami: ${char.bonds}`,
+    char.flaws && `Difetti: ${char.flaws}`,
+  ].filter(Boolean).join('\n')
   const lingue = char.languages.map(l => it(l, 'language'))
   const competenze = char.proficienciesOther.map(p => it(p, 'proficiency'))
   f['competenze-linguaggi'] = [
@@ -668,20 +697,35 @@ export function getApocalisseFieldMapping(char: CharacterData): Record<string, s
 
   // ── Pagina 3: incantesimi ──
   if (char.spellcastingAbility) {
-    f['classe-incantatore'] = pdfClassName(char.spellcastingClass, 'apocalisse')
-    f['caratteristica-incantatore'] = char.spellcastingAbility.toUpperCase()
+    // Come sopra: sulla riga ci sta la classe, non l'archetipo.
+    f['classe-incantatore'] = pdfClassName(char.spellcastingClass, 'dnd5e')
+    f['caratteristica-incantatore'] = siglaCaratteristica(char.spellcastingAbility)
     const mod = abilityMod(char, char.spellcastingAbility as keyof AbilityScores)
     f['cd-incantesimi'] = String(spellSaveDC(prof, mod))
     f['bonus-attacco-incantesimi'] = formatModifier(spellAttackBonus(prof, mod))
 
     const perLivello = spellsByLevel(char)
     const elenco = (lv: number) => (perLivello.get(lv) ?? [])
-      .map(sp => pdfSpellName(sp, char, 'it')).join('\n')
-    f['trucchetti'] = [
+      .map(sp => pdfSpellName(sp, char, 'it'))
+    // La pagina degli incantesimi ha una casella per ogni riga stampata, così
+    // ogni nome cade sulla sua riga. Le righe disegnate sono nove per i livelli
+    // 0-3, otto per i livelli 4-7, sei per l'8° e il 9°. Quando gli incantesimi
+    // sono più delle righe l'ultima li raccoglie tutti separati da virgola:
+    // stanno stretti, ma nessuno sparisce dalla scheda.
+    const perRiga = (base: string, nomi: string[], righe: number) => {
+      for (let i = 0; i < righe; i++) {
+        f[`${base}-${i + 1}`] = i === righe - 1
+          ? nomi.slice(i).join(', ')
+          : (nomi[i] ?? '')
+      }
+    }
+    perRiga('trucchetti', [
       ...char.cantrips,
       ...(perLivello.get(0) ?? []).filter(id => !char.cantrips.includes(id)),
-    ].map(sp => pdfSpellName(sp, char, 'it')).join('\n')
-    for (let lv = 1; lv <= 9; lv++) f[`incantesimi${lv}`] = elenco(lv)
+    ].map(sp => pdfSpellName(sp, char, 'it')), 9)
+    for (let lv = 1; lv <= 9; lv++) {
+      perRiga(`incantesimi${lv}`, elenco(lv), lv <= 3 ? 9 : lv <= 7 ? 8 : 6)
+    }
 
     const slot = pdfSpellSlots(char)
     for (let lv = 1; lv <= 9; lv++) {

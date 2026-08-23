@@ -134,7 +134,9 @@
     "flaws": "Flaws",
     "skillProficiencies": "Skill Proficiencies",
     "languageChoices": "language(s) of your choice",
-    "chooseSkills": "Choose {count} skill(s)"
+    "chooseSkills": "Choose {count} skill(s)",
+    "chooseMajorAbility": "Choose the ability that gains +2",
+    "chooseMinorAbility": "Choose the ability that gains +1"
   },
   "equipment": {
     "title": "Equipment",
@@ -214,7 +216,8 @@
     "selectVirtue": "Choose Virtue",
     "selectSin": "Choose Sin",
     "sessionNotes": "Session Notes",
-    "sessionNotesPlaceholder": "Jot down notes from your sessions, reminders, goals..."
+    "sessionNotesPlaceholder": "Jot down notes from your sessions, reminders, goals...",
+    "appearance": "Appearance"
   },
   "review": {
     "title": "Character Summary",
@@ -253,7 +256,10 @@
     "brawl": "Brawl",
     "moveSlots": "Move slots",
     "knownMoves": "Known moves",
-    "ace": "Ace in the Hole"
+    "ace": "Ace in the Hole",
+    "proficient": "Proficient",
+    "notProficient": "Not proficient",
+    "expertise": "Expertise"
   },
   "share": {
     "error": "Invalid Share Link",

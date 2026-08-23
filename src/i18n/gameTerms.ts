@@ -1747,6 +1747,43 @@ export const subclassNamesIt: Record<string, string> = {
 
 /** Equipment name translations keyed by the exact English string from character data */
 export const equipmentNamesIt: Record<string, string> = {
+  // ── Apocalisse: dotazione dei background, scritta per esteso nei dati e
+  // senza una voce propria nelle tabelle: sulla scheda italiana usciva in
+  // inglese in mezzo al resto tradotto.
+  'A book of ancient knowledge': 'Un libro di conoscenze antiche',
+  'A censer of brimstone incense': 'Un turibolo con incenso di zolfo',
+  'A holy symbol': 'Un simbolo sacro',
+  'A hunting trap': 'Una tagliola',
+  'A relic of the Old World': 'Una reliquia del Vecchio Mondo',
+  'A scholar\'s pack': 'Dotazione da Studioso',
+  'A shard of obsidian': 'Una scheggia di ossidiana',
+  'A trophy from a plagued beast': 'Un trofeo di una bestia appestata',
+  'A vial of holy water': 'Una fiala di acqua santa',
+  'A walking staff': 'Un bastone da passeggio',
+  'A waterskin': 'Un otre d\'acqua',
+  'Artisan\'s tools': 'Attrezzi da artigiano',
+  'Dark robes': 'Vesti scure',
+  'Ink and quill': 'Inchiostro e penna d\'oca',
+  'Mountaineer\'s gear': 'Equipaggiamento da scalatore',
+  'Tattered clothes': 'Abiti sbrindellati',
+  'White robes': 'Vesti bianche',
+  '5 gp': '5 mo',
+  '10 gp': '10 mo',
+  '15 gp': '15 mo',
+  // ── Dotazione iniziale delle classi: descrizioni in minuscolo che nessuna
+  // tabella copriva.
+  'druidic focus': 'focus druidico',
+  'holy symbol': 'simbolo sacro',
+  'simple weapon': 'un\'arma semplice',
+  'martial weapon and shield': 'un\'arma da guerra e uno scudo',
+  'two daggers': 'due pugnali',
+  'two handaxes': 'due asce',
+  'two shortswords': 'due spade corte',
+  'four javelins': 'quattro giavellotti',
+  'five javelins': 'cinque giavellotti',
+  'light crossbow and 20 bolts': 'una balestra leggera e 20 quadrelli',
+  'longbow and quiver of 20 arrows': 'un arco lungo e una faretra con 20 frecce',
+  'shortbow and quiver of 20 arrows': 'un arco corto e una faretra con 20 frecce',
   // Standard weapons & armor
   'Battleaxe': 'Ascia da Battaglia',
   'Chain Mail': 'Cotta di Maglia',
