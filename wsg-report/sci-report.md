@@ -1,21 +1,21 @@
 # SCI Benchmark Report
 
-**Date**: 2026-08-23T11:49:38.083Z
-**Commit**: 9611148
+**Date**: 2026-08-23T18:05:12.958Z
+**Commit**: 8b6925e
 **Machine**: 14-inch MacBook Pro M1 Pro, 16GB, macOS 15
 **Constants**: E power=18W, I=332 gCO₂eq/kWh, M embodied=211000g, lifetime=11680h
 **LCA Source**: Apple 14-inch MacBook Pro PER Oct 2021
 
 | Tool | Time (ms) | Input | Output | E (mgCO₂) | M (mgCO₂) | SCI (mgCO₂eq) |
 |------|-----------|-------|--------|------------|------------|----------------|
-| data-load-dnd5e | 12 | 0 B | 0 B | 20.333 | 0.061 | 20.394 |
-| data-load-brancalonia | 81 | 0 B | 0 B | 134.615 | 0.407 | 135.022 |
-| data-load-dnd2024 | 9 | 0 B | 0 B | 14.644 | 0.044 | 14.688 |
-| data-load-apocalisse | 6 | 0 B | 0 B | 9.394 | 0.028 | 9.422 |
-| calculations-1000x | 2 | 0 B | 0 B | 4.033 | 0.012 | 4.045 |
-| json-serialize-character | 0 | 0 B | 776 B | 0.778 | 0.002 | 0.781 |
-| build-output-analysis | 1 | 5.48 MB | 0 B | 1.210 | 0.004 | 1.214 |
-| pdf-template-read | 2 | 0 B | 3.14 MB | 2.821 | 0.009 | 2.829 |
-| i18n-load-single-locale | 4 | 0 B | 0 B | 7.223 | 0.022 | 7.245 |
+| data-load-dnd5e | 240 | 0 B | 0 B | 399.079 | 1.206 | 400.286 |
+| data-load-brancalonia | 9 | 0 B | 0 B | 14.513 | 0.044 | 14.556 |
+| data-load-dnd2024 | 9 | 0 B | 0 B | 14.554 | 0.044 | 14.598 |
+| data-load-apocalisse | 5 | 0 B | 0 B | 7.692 | 0.023 | 7.715 |
+| calculations-1000x | 4 | 0 B | 0 B | 6.563 | 0.020 | 6.582 |
+| json-serialize-character | 1 | 0 B | 776 B | 0.927 | 0.003 | 0.930 |
+| build-output-analysis | 1 | 6.11 MB | 0 B | 1.653 | 0.005 | 1.658 |
+| pdf-template-read | 2 | 0 B | 3.14 MB | 3.389 | 0.010 | 3.400 |
+| i18n-load-single-locale | 13 | 0 B | 0 B | 21.786 | 0.066 | 21.852 |
 
-**Total**: 195.641 mgCO₂eq across 9 tools in 117ms
+**Total**: 471.578 mgCO₂eq across 9 tools in 284ms
