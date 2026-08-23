@@ -1171,5 +1171,13 @@
     "characterNotFound": "Personaggio Non Trovato",
     "bioTitle": "Biografia",
     "goldPieces": "mo"
+  },
+  "conditions": {
+    "explain": "Cosa significa «{name}»?",
+    "noText": "L'SRD 5.1 in italiano non pubblica il testo di questa condizione: l'appendice si ferma prima. Il nome resta, il testo no — e quello del 2024 è di regole diverse.",
+    "editorialNote": "Nota redazionale:",
+    "source2014": "System Reference Document 5.1 (CC-BY-4.0).",
+    "source2024": "System Reference Document 5.2.1 (CC-BY-4.0).",
+    "italianOnly": "Testo dall'edizione italiana."
   }
 }

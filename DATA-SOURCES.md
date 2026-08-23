@@ -73,6 +73,44 @@ Apocalisse.
 > della licenza Creative Commons Attribuzione 4.0 Internazionale, disponibile
 > all'indirizzo https://creativecommons.org/licenses/by/4.0/legalcode.
 
+## Condizioni
+
+Le quindici condizioni di ciascuna edizione — nome e testo in italiano — arrivano
+dai pacchetti regole di [dnd-companion](https://github.com/Brainstorm-Club/dnd-companion),
+`data/rules/2014.json` e `data/rules/2024.json`, estratti dalle edizioni italiane
+degli SRD sotto licenza **CC-BY-4.0**. Le trascrive `scripts/import-conditions.mjs`
+in `src/data/dnd5e/conditions.ts` (SRD 5.1) e `src/data/dnd2024/conditions.ts`
+(SRD 5.2.1): sono file generati, si rigenerano invece di modificarli a mano.
+Brancalonia e Apocalisse poggiano sulle regole 2014 e usano le condizioni del 2014.
+
+Il resto dei dati 2014 di questo repository sta sotto OGL 1.0a (vedi sopra); il
+testo delle condizioni no: viene dall'edizione italiana dell'SRD 5.1, che Wizards
+of the Coast pubblica sotto CC-BY-4.0, e per questo porta l'attribuzione qui sotto.
+
+**Quattro condizioni del 2014 non hanno testo.** L'Appendice A dell'SRD 5.1 italiano
+è mutila: si ferma a «Privo di sensi», e **Prono, Spaventato, Stordito e Trattenuto
+non ci sono**. Nei dati la loro descrizione è `null` e l'app mostra il nome
+dichiarando che il testo manca. Non sono state riscritte né prese in prestito dal
+2024, che le definisce con regole diverse: sarebbe un'altra edizione spacciata per
+questa.
+
+**«Incapacitato» nel 2024 ha un errore di traduzione.** La voce dell'SRD 5.2.1
+italiano si apre dicendo «ha la condizione "paralizzato"»; nell'originale la
+condizione è «incapacitated», e il resto della voce è corretto. Il testo resta
+**verbatim** — una fonte si cita, non si corregge — con accanto una nota redazionale
+dell'app (campo `note`, non della fonte), che l'interfaccia mostra staccata dal testo
+dell'SRD.
+
+Attribuzione dell'SRD 5.1, come richiesta dalla licenza:
+
+> Questo lavoro include materiale del System Reference Document 5.1 (“SRD 5.1”) di
+> Wizards of the Coast LLC disponibile al sito
+> https://dnd.wizards.com/it/resources/systems-reference-document. L'SRD 5.1 è
+> concesso in licenza sotto l'Attribuzione 4.0 Internazionale di Creative Commons
+> disponibile al sito https://creativecommons.org/licenses/by/4.0/legalcode.it.
+
+Per le condizioni del 2024 vale l'attribuzione dell'SRD 5.2.1 riportata più sopra.
+
 ## Le fonti in breve
 
 | Variante | Regole | Fonte |

@@ -1171,5 +1171,13 @@
     "characterNotFound": "Character Not Found",
     "bioTitle": "Bio",
     "goldPieces": "gp"
+  },
+  "conditions": {
+    "explain": "What does “{name}” mean?",
+    "noText": "The Italian SRD 5.1 does not publish this condition's text: the appendix stops short of it. The name stands, the text does not — and the 2024 one belongs to different rules.",
+    "editorialNote": "Editorial note:",
+    "source2014": "System Reference Document 5.1 (CC-BY-4.0).",
+    "source2024": "System Reference Document 5.2.1 (CC-BY-4.0).",
+    "italianOnly": "Text from the Italian edition."
   }
 }

@@ -12,6 +12,7 @@ import type { AbilityScores } from '@/stores/character'
 import { formatModifier, feetToMeters } from '@/utils/calculations'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
+import ConditionText from '@/components/shared/ConditionText.vue'
 
 const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
@@ -236,7 +237,9 @@ function bonusString(bonuses: Record<string, number>): string {
         <ul class="text-stone-400 text-sm space-y-2">
           <li v-for="trait in selectedRace.traits" :key="trait">
             <span class="text-stone-300">&bull; {{ gt.trait(trait) }}</span>
-            <span v-if="traitDescription(trait)" class="block ml-3 text-stone-400/80">{{ traitDescription(trait) }}</span>
+            <span v-if="traitDescription(trait)" class="block ml-3">
+              <ConditionText :text="traitDescription(trait)" :variant="characterStore.character.variant" text-class="text-stone-400/80" />
+            </span>
           </li>
         </ul>
       </div>
@@ -294,7 +297,9 @@ function bonusString(bonuses: Record<string, number>): string {
             <ul class="text-stone-400 space-y-2">
               <li v-for="trait in selectedSubraceObj.traits" :key="trait">
                 <span class="text-stone-300">&bull; {{ gt.trait(trait) }}</span>
-                <span v-if="traitDescription(trait)" class="block ml-3 text-stone-400/80">{{ traitDescription(trait) }}</span>
+                <span v-if="traitDescription(trait)" class="block ml-3">
+                  <ConditionText :text="traitDescription(trait)" :variant="characterStore.character.variant" text-class="text-stone-400/80" />
+                </span>
               </li>
             </ul>
           </div>

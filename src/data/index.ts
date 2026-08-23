@@ -6,6 +6,7 @@ import type { CharacterClass, Subclass } from './dnd5e/classes'
 import type { Background } from './dnd5e/backgrounds'
 import type { Spell } from './dnd5e/spells'
 import type { EquipmentSet } from './dnd5e/equipment'
+import type { Condition } from './dnd5e/conditions'
 import type { BrancaloniaSubclass } from './brancalonia/classes'
 import type { BrancaloniaRules, WhacksLevel } from './brancalonia/rules'
 import type { ApocalisseSubclass } from './apocalisse/classes'
@@ -56,6 +57,8 @@ let _dnd5eClasses: readonly CharacterClass[] | null = null
 let _dnd5eBackgrounds: readonly Background[] | null = null
 let _dnd5eSpells: readonly Spell[] | null = null
 let _dnd5eEquipment: EquipmentSet | null = null
+// Le condizioni delle regole 2014: le usano dnd5e, Brancalonia e Apocalisse.
+let _dnd5eConditions: readonly Condition[] | null = null
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let _dnd5eGetSpellSlotsForLevel: ((casterType: any, level: number) => Record<number, number>) | null = null
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -85,6 +88,9 @@ let _dnd24Spells: readonly Spell[] | null = null
 // Descrizioni italiane dei privilegi 2024: viaggiano nel chunk della variante,
 // come per le altre, così chi non apre il 2024 non le scarica (WSG 3.8).
 let _dnd24FeatureIt: Record<string, string> | null = null
+// Le condizioni del 2024 sono un testo diverso, non una revisione di quello
+// del 2014: viaggiano in un modulo loro e non ricadono mai sull'altra edizione.
+let _dnd24Conditions: readonly Condition[] | null = null
 let _toDnd24Spells: ((base: readonly Spell[]) => Spell[]) | null = null
 // Semi-incantatori 2024: paladino e ranger hanno una tabella di slot propria
 // (primo slot al 1º livello, non al 2º), che non sta nel modulo 2014.
@@ -162,6 +168,8 @@ let _pDnd5eBackgrounds: Promise<void> | null = null
 let _pDnd5eSpells: Promise<void> | null = null
 let _pDnd5eEquipment: Promise<void> | null = null
 let _pDnd5eRules: Promise<void> | null = null
+let _pDnd5eConditions: Promise<void> | null = null
+let _pDnd24Conditions: Promise<void> | null = null
 
 let _pBrancaRaces: Promise<void> | null = null
 let _pBrancaClasses: Promise<void> | null = null
@@ -246,6 +254,37 @@ function ensureDnd5eEquipment(): Promise<void> {
     lsSet('dnd5e-equipment', m.equipmentData)
   })
   return _pDnd5eEquipment
+}
+
+/**
+ * Condizioni: due moduli, uno per edizione.
+ *
+ * Brancalonia e Apocalisse poggiano sulle regole 2014 e prendono quelle,
+ * comprese le quattro che l'SRD 5.1 italiano non traduce. Il 2024 ha le sue.
+ * Come per gli altri dati di variante, il modulo arriva su richiesta e non
+ * entra nel chunk iniziale (WSG 3.8).
+ */
+function ensureConditions(variant: GameVariant): Promise<void> {
+  if (variant === 'dnd2024') {
+    if (_dnd24Conditions) return Promise.resolve()
+    if (_pDnd24Conditions) return _pDnd24Conditions
+    const cached = lsGet<Condition[]>('dnd24-conditions')
+    if (cached) { _dnd24Conditions = cached; return Promise.resolve() }
+    _pDnd24Conditions = import('./dnd2024/conditions').then(m => {
+      _dnd24Conditions = m.dnd2024Conditions
+      lsSet('dnd24-conditions', m.dnd2024Conditions)
+    })
+    return _pDnd24Conditions
+  }
+  if (_dnd5eConditions) return Promise.resolve()
+  if (_pDnd5eConditions) return _pDnd5eConditions
+  const cached = lsGet<Condition[]>('dnd5e-conditions')
+  if (cached) { _dnd5eConditions = cached; return Promise.resolve() }
+  _pDnd5eConditions = import('./dnd5e/conditions').then(m => {
+    _dnd5eConditions = m.dnd5eConditions
+    lsSet('dnd5e-conditions', m.dnd5eConditions)
+  })
+  return _pDnd5eConditions
 }
 
 /** Rules module: functions are NOT cached in localStorage (not serializable) */
@@ -448,12 +487,16 @@ function loadsForStep(variant: GameVariant, step: number): Promise<void>[] {
     case 1: // Abilities and starting level — no data needed
       break
     case 2: // Race
+      // I tratti razziali citano le condizioni ("vantaggio contro l'essere
+      // affascinato"): servono già qui per poterle consultare.
+      loads.push(ensureConditions(variant))
       if (variant === 'dnd2024') loads.push(ensureDnd2024())
       else if (variant === 'brancalonia') loads.push(ensureBrancaRaces())
       else if (variant === 'apocalisse') loads.push(ensureApoRaces())
       else loads.push(ensureDnd5eRaces())
       break
     case 3: // Class
+      loads.push(ensureConditions(variant))
       if (variant === 'dnd2024') { loads.push(ensureDnd2024()); break }
       loads.push(ensureDnd5eClasses())
       if (variant === 'brancalonia') loads.push(ensureBrancaClasses())
@@ -505,6 +548,7 @@ async function ensureAllForVariant(variant: GameVariant): Promise<void> {
   const loads: Promise<void>[] = [
     ensureDnd5eRaces(), ensureDnd5eClasses(), ensureDnd5eBackgrounds(),
     ensureDnd5eSpells(), ensureDnd5eEquipment(), ensureDnd5eRules(),
+    ensureConditions(variant),
   ]
   if (variant === 'dnd2024') loads.push(ensureDnd2024())
   if (variant === 'brancalonia') {
@@ -545,8 +589,11 @@ export async function ensureSpellData(variant: GameVariant): Promise<void> {
 
 /** Check if variant data is already cached (all modules) */
 export function isVariantLoaded(variant: GameVariant): boolean {
+  // Le condizioni sono quelle dell'edizione su cui la variante poggia: il 2024
+  // le sue, tutte le altre quelle del 2014.
+  const condizioni = variant === 'dnd2024' ? !!_dnd24Conditions : !!_dnd5eConditions
   const dnd5eLoaded = !!_dnd5eRaces && !!_dnd5eClasses && !!_dnd5eBackgrounds
-    && !!_dnd5eSpells && !!_dnd5eEquipment && !!_dnd5eGetSpellSlotsForLevel
+    && !!_dnd5eSpells && !!_dnd5eEquipment && !!_dnd5eGetSpellSlotsForLevel && condizioni
   switch (variant) {
     case 'brancalonia':
       return dnd5eLoaded && !!_brancaRaces && !!_brancaSubclasses && !!_brancaBackgrounds && !!_brancaRules
@@ -723,6 +770,36 @@ export function getRules(variant: GameVariant): VariantRules {
     case 'apocalisse': return apocalisseRulesData
     default: return dnd5eRulesData
   }
+}
+
+// ─── Condizioni ─────────────────────────────────────────────────────────────
+
+/**
+ * Le quindici condizioni della variante.
+ *
+ * Il 2024 ha le sue; tutte le altre varianti — dnd5e, Brancalonia, Apocalisse —
+ * usano quelle del 2014, perché è sulle regole 2014 che poggiano. Lista vuota
+ * finché il modulo non è caricato, come per gli altri dati di variante.
+ */
+export function getConditions(variant: GameVariant): readonly Condition[] {
+  if (variant === 'dnd2024') return _dnd24Conditions ?? []
+  return _dnd5eConditions ?? []
+}
+
+/** Una condizione per id (`prone`) o per nome, italiano o inglese. */
+export function getCondition(variant: GameVariant, idOrName: string): Condition | undefined {
+  const cercato = idOrName.trim().toLowerCase()
+  return getConditions(variant).find(c =>
+    c.id === cercato || c.name.toLowerCase() === cercato || c.nameIt.toLowerCase() === cercato)
+}
+
+/**
+ * Carica le condizioni della variante.
+ * Serve ai componenti raggiunti senza passare dal caricatore per passi
+ * (link diretto, ricarica, scheda condivisa).
+ */
+export async function ensureConditionData(variant: GameVariant): Promise<void> {
+  await ensureConditions(variant)
 }
 
 export function getBrancaloniaRules(variant: GameVariant): BrancaloniaRules | null {
@@ -946,6 +1023,8 @@ export function getAvailableLanguages(variant: GameVariant): string[] {
 export function _resetCaches(): void {
   _dnd5eRaces = _dnd5eClasses = _dnd5eBackgrounds = _dnd5eSpells = null
   _dnd5eEquipment = null
+  _dnd5eConditions = _dnd24Conditions = null
+  _pDnd5eConditions = _pDnd24Conditions = null
   _dnd5eGetSpellSlotsForLevel = _dnd5eGetMulticlassSpellSlots = null
   _brancaRaces = _brancaBackgrounds = _brancaRules = null
   _brancaSpells = null

@@ -15,6 +15,7 @@ import {
 } from '@/data/brancalonia/brawl'
 import { brawlDescriptionsIt } from '@/data/brancalonia/brawl-it'
 import { useGameTerms } from '@/composables/useGameTerms'
+import ConditionText from '@/components/shared/ConditionText.vue'
 
 /**
  * La scheda del personaggio, una sola per tutta l'applicazione.
@@ -439,7 +440,9 @@ const haPersonalita = computed(() => Boolean(
       <h3 class="font-gothic font-semibold text-red-400 mb-2">{{ t('race.chooseFeat') }}</h3>
       <p class="text-stone-200 text-sm">{{ displayFeat.name }}</p>
       <ul class="mt-1 ml-4 list-disc text-stone-400 text-sm space-y-0.5">
-        <li v-for="(b, i) in displayFeat.benefits" :key="i">{{ b }}</li>
+        <li v-for="(b, i) in displayFeat.benefits" :key="i">
+          <ConditionText :text="b" :variant="char.variant" />
+        </li>
       </ul>
     </div>
 

@@ -10,6 +10,7 @@ import { getClassBlurb } from '@/data/classBlurbs'
 import { THIRD_CASTER_SUBCLASSES } from '@/data/spellcasting'
 import { getExpertiseCount, getExpertiseOptions, reconcileExpertise } from '@/domain/competenze'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
+import ConditionText from '@/components/shared/ConditionText.vue'
 
 // Multiclass support (D&D 5e only)
 
@@ -436,7 +437,9 @@ function featureLabel(feature: { id?: string; name: string }): string {
           <div v-for="feature in selectedClass.features.filter(f => f.level <= characterStore.character.level)" :key="feature.name" class="text-sm">
             <span class="text-amber-400 font-medium">Lv.{{ feature.level }}:</span>
             <span class="text-stone-400 ml-1">{{ featureLabel(feature) }}</span>
-            <p v-if="feature.description" class="text-stone-500 text-xs ml-4">{{ featureText(feature) }}</p>
+            <p v-if="feature.description" class="ml-4">
+              <ConditionText :text="featureText(feature)" :variant="variant" text-class="text-stone-500 text-xs" />
+            </p>
           </div>
         </div>
       </div>
@@ -466,7 +469,9 @@ function featureLabel(feature: { id?: string; name: string }): string {
 
           <!-- Selected subclass details -->
           <div v-if="selectedSubclassObj" class="mt-3 text-sm">
-            <p class="text-stone-400">{{ featureText(selectedSubclassObj) }}</p>
+            <p>
+              <ConditionText :text="featureText(selectedSubclassObj)" :variant="variant" text-class="text-stone-400" />
+            </p>
             <div v-if="selectedSubclassObj.features.length" class="mt-2 space-y-2">
               <div
                 v-for="feature in selectedSubclassObj.features.filter(f => f.level <= selectedClassLevel)"
@@ -474,7 +479,9 @@ function featureLabel(feature: { id?: string; name: string }): string {
               >
                 <span class="text-amber-400 font-medium">Lv.{{ feature.level }}:</span>
                 <span class="text-stone-400 ml-1">{{ featureLabel(feature) }}</span>
-                <p v-if="feature.description" class="text-stone-500 text-xs ml-4">{{ featureText(feature) }}</p>
+                <p v-if="feature.description" class="ml-4">
+                  <ConditionText :text="featureText(feature)" :variant="variant" text-class="text-stone-500 text-xs" />
+                </p>
               </div>
             </div>
           </div>
