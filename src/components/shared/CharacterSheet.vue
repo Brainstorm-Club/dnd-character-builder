@@ -8,6 +8,8 @@ import { SKILLS } from '@/data/dnd5e/skills'
 import { getSpells, getApocalisseRules, getWhacksLevels } from '@/data'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
 import { getDnd2024Feat } from '@/data/dnd2024/feats'
+import { getDnd2024FeatDescription } from '@/data/dnd2024/feats-it'
+import { translateGameTerm } from '@/i18n/gameTerms'
 import {
   getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce, brawlFeatureId,
 } from '@/data/brancalonia/brawl'
@@ -161,7 +163,12 @@ const displayFeat = computed(() => {
   if (!props.char.feat) return null
   if (props.char.variant === 'dnd2024') {
     const f = getDnd2024Feat(props.char.feat)
-    return f ? { name: f.name, benefits: [f.description] } : null
+    // Il talento del 2024 usciva in inglese anche in italiano: nome e
+    // descrizione hanno la loro traduzione, va solo chiesta.
+    return f ? {
+      name: translateGameTerm(f.name, locale.value, 'feature'),
+      benefits: [getDnd2024FeatDescription(f.id, locale.value, f.description)],
+    } : null
   }
   if (props.char.variant !== 'brancalonia') return null
   const f = getBrancaloniaFeatById(props.char.feat)

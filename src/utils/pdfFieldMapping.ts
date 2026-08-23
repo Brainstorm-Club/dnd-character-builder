@@ -323,7 +323,9 @@ export function getDnd5eFieldMapping(char: CharacterData, uiLocale = 'en'): Reco
   if (char.variant === 'dnd2024') {
     const bg = char.background
     const feat = char.feat ? getDnd2024Feat(char.feat) : undefined
-    if (feat) featureLines.push(`Talento: ${feat.name}`)
+    // Il nome del talento va tradotto come tutto il resto della scheda:
+    // qui usciva in inglese in mezzo a una riga italiana.
+    if (feat) featureLines.push(`Talento: ${translateGameTerm(feat.name, loc, 'feature')}`)
     // Il background va tradotto come nel campo dedicato: qui finiva l'id
     // grezzo, e la scheda leggeva 'Background: acolyte'.
     if (bg) featureLines.push(`Background: ${translateGameTerm(bg, loc, 'background')}`)

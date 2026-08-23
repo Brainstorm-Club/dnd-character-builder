@@ -4,6 +4,8 @@ import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getRaces, getTraitDescription } from '@/data'
 import { getAvailableFeats } from '@/data/brancalonia/feats'
+import { getDnd2024FeatDescription } from '@/data/dnd2024/feats-it'
+import { translateGameTerm } from '@/i18n/gameTerms'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
 import type { Race } from '@/data/dnd5e/races'
 import type { AbilityScores } from '@/stores/character'
@@ -33,11 +35,14 @@ const hasFeatChoice = computed(() => {
 
 const availableFeats = computed(() => {
   if (characterStore.character.variant === 'dnd2024') {
+    // `nameOriginal` è il campo che il template stampa quando la lingua è
+    // l'italiano: mettendoci il nome inglese, i talenti d'origine del 2024
+    // restavano in inglese proprio nel caso in cui la traduzione serve.
     return getFeatsByCategory('origin').map(f => ({
       id: f.id,
       name: f.name,
-      nameOriginal: f.name,
-      description: f.description,
+      nameOriginal: translateGameTerm(f.name, 'it', 'feature'),
+      description: getDnd2024FeatDescription(f.id, locale.value, f.description),
       benefits: [] as string[],
     }))
   }

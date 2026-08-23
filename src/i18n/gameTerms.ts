@@ -1438,6 +1438,31 @@ export const featureNamesIt: Record<string, string> = {
   'Potent Cantrip': 'Trucchetto potente',
   'Empowered Evocation': 'Invocazione potenziata',
   'Overchannel': 'Sovraccarico',
+
+  // ─── Talenti di D&D 2024 (SRD 5.2.1 italiano, pagg. 98-100) ──────────────
+  // Nel 2024 il talento sta sulla scheda accanto ai privilegi, e finiva lì in
+  // inglese: di sedici nomi solo "Ability Score Improvement" era tradotto,
+  // perché serviva già come privilegio di classe. I nomi sono quelli stampati
+  // sul manuale italiano, non traduzioni a orecchio: "Archery" è "Tiro" e non
+  // "Tiro con l'arco", "Grappler" è "Lottatore", i Doni epici cominciano tutti
+  // per "Dono". Le descrizioni stanno in `src/data/dnd2024/feats-it.ts`.
+  // 'Ability Score Improvement' è già più su, fra i privilegi di classe.
+  'Alert': 'Allerta',
+  'Magic Initiate': 'Iniziato alla magia',
+  'Savage Attacker': 'Aggressore selvaggio',
+  'Skilled': 'Abile',
+  'Grappler': 'Lottatore',
+  'Archery': 'Tiro',
+  'Defense': 'Difesa',
+  'Great Weapon Fighting': 'Combattere con armi possenti',
+  'Two-Weapon Fighting': 'Combattere con due armi',
+  'Boon of Combat Prowess': 'Dono delle abilità di combattimento',
+  'Boon of Dimensional Travel': 'Dono del viaggio dimensionale',
+  'Boon of Fate': 'Dono del fato',
+  'Boon of Irresistible Offense': 'Dono dell’offensiva irresistibile',
+  'Boon of Spell Recall': 'Dono del richiamo degli incantesimi',
+  'Boon of the Night Spirit': 'Dono dello spirito notturno',
+  'Boon of Truesight': 'Dono della vista pura',
 }
 
 // ─── Racial Trait Names (keyed by exact IDs from race data) ────────────────
@@ -2007,6 +2032,76 @@ export const equipmentNamesIt: Record<string, string> = {
   'A worn prayer book': 'Un libro di preghiere consumato',
   'Ink and quill made from angel feathers': 'Inchiostro e penna fatta con piume d\'angelo',
   'Ink that writes in colors only the Cronista can see': 'Inchiostro che scrive in colori che solo il Cronista può vedere',
+
+  // ── Brancalonia: dotazione dei background ────────────────────────────────
+  // Quarantaquattro voci scritte per esteso in `src/data/brancalonia/
+  // backgrounds.ts` e mai passate da una tabella: su una scheda italiana
+  // uscivano in inglese in mezzo al resto tradotto.
+  //
+  // Il testo è quello stampato sui manuali italiani — Manuale di Ambientazione
+  // 2.6, Macaronicon 2.2, L'Impero Randella Ancora 1.0 — non una traduzione a
+  // orecchio: Brancalonia ha un lessico suo e i termini di gioco hanno un nome
+  // preciso. "Memorabilia" è il Cimelio, "sp" è il denaro d'argento ("ma"),
+  // "poppycock" sono le minchiate, Saint Pathrick è Santa Percorrenza e Saint
+  // Marauda è Santa Predatoria.
+  'A jewel dedicated to Saint Pathrick': 'Un monile dedicato a Santa Percorrenza',
+  'A set of traveler\'s clothes': 'Un abito da viaggiatore',
+  'A set of common clothes': 'Un abito comune',
+  'A set of fine clothes': 'Un abito pregiato',
+  'A pouch containing 10 sp': 'Una borsa con 10 ma',
+  'A pouch containing 15 sp': 'Una borsa con 15 ma',
+  'A pouch containing 20 sp': 'Una borsa con 20 ma',
+  'A brawl trophy (roll an additional Memorabilia)': 'Un trofeo da rissa (tira per un Cimelio aggiuntivo)',
+  // Il manuale italiano scrive "locande" in questa riga, mentre il glossario
+  // chiama Bettole le stesse osterie che l'inglese chiama Dives. Qui vale la
+  // riga del background, che è ciò che il giocatore ha davanti sulla scheda.
+  'A map listing all the Dives in your hometown': 'Una mappa con la lista di tutte le locande della sua città d\'origine',
+  'A copy of your home region\'s book of laws': 'Un libro sulle leggi della regione di provenienza',
+  'A bottle of black ink and a pen': 'Un calamaio di inchiostro nero e un pennino',
+  'A parchment': 'Una pergamena',
+  'A dagger': 'Un pugnale',
+  'A memento from your past life': 'Un ricordo della vita passata',
+  'A staff': 'Un bastone',
+  'An animal bone pendant': 'Un ciondolo d\'ossa d\'animale',
+  'Colored pigments': 'Pigmenti colorati',
+  'A pendant of Saint Marauda': 'Un ciondolo di Santa Predatoria',
+  'A poppycock card deck or another game': 'Un mazzo di minchiate o un altro gioco',
+  // ── Macaronicon
+  'A parchment case filled with study notes': 'Una custodia per pergamene piena di appunti di studio',
+  'A book containing the names of aspiring stage performers': 'Un libro con segnati i nomi di aspiranti teatranti',
+  'A musical instrument (one of your choice)': 'Uno strumento musicale (a scelta)',
+  'A collection of love letters': 'Una raccolta di lettere d\'amore',
+  'A book of poetry': 'Un libro di poesie',
+  'Ink and an ink pen': 'Un calamaio di inchiostro nero e un pennino',
+  'A golden holy symbol': 'Un simbolo sacro d\'oro',
+  'A book of prayers': 'Un libro di preghiere',
+  'A rank insignia': 'Una mostrina con i gradi',
+  // I nostri dati troncano la voce della staffetta a "a secret communication":
+  // sul manuale è una borsa con una tasca segreta per i dispacci, ed è così
+  // che va letta in italiano.
+  'A pouch containing a secret communication': 'Una borsa con una tasca segreta per i dispacci',
+  // ── L'Impero Randella Ancora
+  'A cape of the Order': 'Una cappa dell\'Ordine',
+  'An Imperial symbol': 'Un simbolo imperiale',
+  'An outfit useful to conceal yourself': 'Un vestito utile per nascondersi',
+  'Forged documents': 'Documenti contraffatti',
+  'A questionable certificate of nobility': 'Un attestato di nobiltà discutibile',
+  // "A rusty blade" nei nostri dati è una lama arrugginita, ma sul manuale il
+  // blasonato non porta una lama: porta "una bolla nobiliare arrugginita"
+  // ("a rusty noble seal" nell'edizione inglese). L'italiano segue il manuale.
+  'A rusty blade': 'Una bolla nobiliare arrugginita',
+  'Worn gloves': 'Guanti consunti',
+  'A healer\'s kit': 'Borsa del guaritore',
+  'An inherited heirloom': 'Un monile ereditato',
+  'A stolen jacket': 'Una giacca sgraffignata',
+  'A mismatched certification': 'Un attestato ottenuto per caso',
+  'A pouch with 30 sp that fell into your hands in a sheer stroke of luck': 'Una borsa con 30 ma caduta nelle sue mani per pura fortuna',
+  '3 flawed pomegrenades': '3 melagranate scadenti',
+  'A leftover from your native place': 'Un rimasuglio del luogo di origine',
+  // Anche qui i dati accorciano: sul manuale l'inspiritato non ha un ninnolo
+  // qualsiasi ma "una strana ricevuta che attesta una compravendita
+  // misconosciuta" ("a strange receipt detailing an unknown purchase").
+  'A strange trinket': 'Una strana ricevuta che attesta una compravendita misconosciuta',
 }
 
 // ─── Sizes ──────────────────────────────────────────────────────────────────

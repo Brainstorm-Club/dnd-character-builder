@@ -6,6 +6,7 @@ import { getBackgrounds } from '@/data'
 import type { Background } from '@/data/dnd5e/backgrounds'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
+import { translateGameTerm } from '@/i18n/gameTerms'
 import type { AbilityKey } from '@/data/dnd5e/classes'
 import {
   originAbilityOptions,
@@ -22,7 +23,7 @@ import {
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
 const gt = useGameTerms()
 
@@ -62,7 +63,20 @@ function resetSkillChoices(bg: Background | null) {
 /** Le tre caratteristiche offerte: vuoto in tutte le varianti fuorché il 2024. */
 const abilityOptions = computed<AbilityKey[]>(() => originAbilityOptions(selectedBg.value))
 const showOriginBonuses = computed(() => grantsOriginBonuses(selectedBg.value))
-const originFeatLabel = computed(() => originFeatName(selectedBg.value))
+/**
+ * Il background scrive il talento come "Magic Initiate (Cleric)": il nome base
+ * ha la sua traduzione, la parentesi no. Si traduce il nome e si riattacca la
+ * parentesi, invece di mostrare tutto in inglese come faceva prima.
+ */
+const originFeatLabel = computed(() => {
+  const grezzo = originFeatName(selectedBg.value)
+  if (!grezzo) return ''
+  const m = /^(.*?)\s*(\(.*\))?$/.exec(grezzo)
+  const base = (m?.[1] ?? grezzo).trim()
+  const parentesi = m?.[2] ?? ''
+  const tradotto = translateGameTerm(base, locale.value, 'feature')
+  return parentesi ? `${tradotto} ${parentesi}` : tradotto
+})
 const originChoice = ref<OriginChoice>({ ...NO_ORIGIN_CHOICE })
 
 // Ciò che questo passo ha già concesso, per poterlo togliere. `racialBonuses` è

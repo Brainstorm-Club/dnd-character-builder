@@ -316,11 +316,14 @@ describe('incantesimi 2024', () => {
 })
 
 describe('talenti 2024', () => {
-  it('ha i 16 dell\'SRD 5.2.1, divisi per categoria', async () => {
+  // Erano 16 finché "Skilled" restava sepolto dentro la descrizione di "Savage
+  // Attacker": l'estrazione a pagina intera aveva incollato insieme due voci
+  // che sul manuale stanno una sotto l'altra nella stessa colonna.
+  it('ha i 17 dell\'SRD 5.2.1, divisi per categoria', async () => {
     const { dnd2024Feats, getFeatsByCategory } = await import('./feats')
-    expect(dnd2024Feats).toHaveLength(16)
+    expect(dnd2024Feats).toHaveLength(17)
     expect(getFeatsByCategory('origin').map(f => f.id).sort())
-      .toEqual(['alert', 'magic-initiate', 'savage-attacker'])
+      .toEqual(['alert', 'magic-initiate', 'savage-attacker', 'skilled'])
     expect(getFeatsByCategory('general')).toHaveLength(2)
     expect(getFeatsByCategory('fighting-style')).toHaveLength(4)
     expect(getFeatsByCategory('epic-boon')).toHaveLength(7)

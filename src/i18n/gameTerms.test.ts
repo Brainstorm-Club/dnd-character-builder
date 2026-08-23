@@ -170,3 +170,78 @@ describe('nomi di gioco', () => {
     expect(orphans).toEqual([])
   })
 })
+
+/**
+ * L'equipaggiamento dei background di Brancalonia è scritto per esteso nei dati
+ * (`src/data/brancalonia/backgrounds.ts`) e non passa da nessuna tabella: 44
+ * voci distinte finivano sulla scheda italiana in inglese, in mezzo al resto
+ * tradotto — «A pouch containing 15 sp» accanto a «Un abito comune».
+ *
+ * Le traduzioni vengono dai manuali italiani (Manuale di Ambientazione 2.6,
+ * Macaronicon 2.2, L'Impero Randella Ancora 1.0), non tradotte a orecchio.
+ */
+describe('equipaggiamento dei background di Brancalonia', () => {
+  beforeAll(async () => {
+    await preloadVariantData('brancalonia')
+  })
+
+  const voci = () => {
+    const tutte = getBackgrounds('brancalonia').flatMap(b => b.equipment ?? [])
+    return [...new Set(tutte)].sort()
+  }
+
+  it('ne conta 44 distinte, come i manuali', () => {
+    expect(voci()).toHaveLength(44)
+  })
+
+  it('nessuna resta in inglese su una scheda italiana', () => {
+    const senzaTraduzione = voci().filter(v => translateGameTerm(v, 'it', 'equipment', 'brancalonia') === v)
+    expect(senzaTraduzione).toEqual([])
+  })
+
+  it('le traduzioni non sono l\'inglese ricopiato', () => {
+    for (const v of voci()) {
+      const it = translateGameTerm(v, 'it', 'equipment', 'brancalonia')
+      // "sp" è il denaro d'argento e in italiano si scrive "ma": trovarlo
+      // ancora significa che la voce è passata di là senza essere tradotta.
+      expect(it, v).not.toMatch(/\b(sp|pouch|clothes|A set of)\b/)
+    }
+  })
+
+  it('usa i termini di gioco del manuale, non calchi dall\'inglese', () => {
+    const t = (v: string) => translateGameTerm(v, 'it', 'equipment', 'brancalonia')
+    // Memorabilia è il Cimelio, non "memorabilia".
+    expect(t('A brawl trophy (roll an additional Memorabilia)')).toMatch(/Cimelio/)
+    // Le Dives non sono tuffi: sul manuale sono le locande (Bettole a glossario).
+    expect(t('A map listing all the Dives in your hometown')).toMatch(/locande/)
+    // Poppycock sono le minchiate, il mazzo di carte.
+    expect(t('A poppycock card deck or another game')).toMatch(/minchiate/)
+    // I santi hanno un nome italiano loro.
+    expect(t('A jewel dedicated to Saint Pathrick')).toMatch(/Santa Percorrenza/)
+    expect(t('A pendant of Saint Marauda')).toMatch(/Santa Predatoria/)
+  })
+})
+
+/**
+ * Nel 2024 il talento sta sulla scheda accanto ai privilegi. Di sedici nomi
+ * solo "Ability Score Improvement" era tradotto — perché serviva già come
+ * privilegio di classe — e gli altri quindici uscivano in inglese.
+ */
+describe('nomi dei talenti di D&D 2024', () => {
+  it('ogni talento del catalogo si traduce', async () => {
+    const { dnd2024Feats } = await import('@/data/dnd2024/feats')
+    const senza = dnd2024Feats
+      .map(f => f.name)
+      .filter(n => translateGameTerm(n, 'it', 'feature', 'dnd2024') === n)
+    expect(senza).toEqual([])
+  })
+
+  it('usa i nomi stampati sul manuale italiano', async () => {
+    const t = (n: string) => translateGameTerm(n, 'it', 'feature', 'dnd2024')
+    // "Archery" sull'SRD italiano è "Tiro", non "Tiro con l'arco".
+    expect(t('Archery')).toBe('Tiro')
+    expect(t('Grappler')).toBe('Lottatore')
+    expect(t('Skilled')).toBe('Abile')
+    expect(t('Boon of Truesight')).toBe('Dono della vista pura')
+  })
+})
