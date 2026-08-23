@@ -187,3 +187,97 @@ export async function copyShareUrl(char: CharacterData): Promise<{ copied: boole
     }
   }
 }
+
+/* ------------------------------------------------------------------ *
+ * Formato compresso
+ *
+ * Il formato qui sopra — chiavi accorciate e base64 — produce da 4.300 a
+ * 6.400 caratteri per un personaggio vero. Un QR code ne regge al massimo
+ * 2.953: per starci dentro non basta accorciare le chiavi, serve comprimere.
+ * Sgonfiato e ribase64ato lo stesso personaggio sta in 1.550-2.150 byte.
+ *
+ * Il formato vecchio resta e continua a decodificarsi: i link gia' condivisi
+ * non devono smettere di funzionare. A distinguerli e' il marcatore iniziale,
+ * che non appartiene all'alfabeto base64url e quindi non puo' comparire per
+ * caso in testa a un link vecchio.
+ * ------------------------------------------------------------------ */
+
+/** Marca un payload compresso. Fuori dall'alfabeto base64url, e URL-safe. */
+export const MARCATORE_COMPRESSO = '~'
+
+function bytesToBase64Url(bytes: Uint8Array<ArrayBuffer>): string {
+  let binario = ''
+  for (const b of bytes) binario += String.fromCharCode(b)
+  return btoa(binario).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
+}
+
+function base64UrlToBytes(b64: string): Uint8Array<ArrayBuffer> {
+  const raw = b64.replace(/-/g, '+').replace(/_/g, '/')
+  const conPad = raw + '='.repeat((4 - raw.length % 4) % 4)
+  return Uint8Array.from(atob(conPad), ch => ch.charCodeAt(0))
+}
+
+/** Vero se il browser sa comprimere. Safari sotto la 16.4 non sa. */
+export function sappiamoComprimere(): boolean {
+  return typeof CompressionStream !== 'undefined' && typeof DecompressionStream !== 'undefined'
+}
+
+async function sgonfia(testo: string): Promise<Uint8Array<ArrayBuffer>> {
+  const cs = new CompressionStream('deflate-raw')
+  const w = cs.writable.getWriter()
+  void w.write(new TextEncoder().encode(testo))
+  void w.close()
+  return new Uint8Array(await new Response(cs.readable).arrayBuffer())
+}
+
+async function rigonfia(bytes: Uint8Array<ArrayBuffer>): Promise<string> {
+  const ds = new DecompressionStream('deflate-raw')
+  const w = ds.writable.getWriter()
+  void w.write(bytes)
+  void w.close()
+  return new TextDecoder().decode(await new Response(ds.readable).arrayBuffer())
+}
+
+/**
+ * Codifica compressa dello stesso insieme di campi del formato lungo.
+ *
+ * `omettiTesti` lascia fuori i campi di testo libero — trascorsi, note di
+ * sessione, tratti — che sono i piu' lunghi e i soli davvero comprimibili
+ * fino a un certo punto. Serve a chi deve stare in un QR code e ha finito
+ * lo spazio: meglio una scheda senza il racconto che nessun codice.
+ */
+export async function encodeCharacterCompressed(
+  char: CharacterData,
+  omettiTesti = false,
+): Promise<string> {
+  const compatto = compactCharacter(char)
+  if (omettiTesti) {
+    for (const campo of ['bs', 'nt', 'pt', 'id', 'bo', 'fl']) delete compatto[campo]
+  }
+  const bytes = await sgonfia(JSON.stringify(compatto))
+  return MARCATORE_COMPRESSO + bytesToBase64Url(bytes)
+}
+
+/**
+ * Decodifica un payload di entrambi i formati.
+ *
+ * Il marcatore decide: con, e' compresso; senza, e' un link di prima e passa
+ * per la strada di sempre.
+ */
+export async function decodeCharacterAny(encoded: string): Promise<Partial<CharacterData>> {
+  if (encoded.length > MAX_SHARE_DATA_LENGTH) {
+    throw new Error('Share data exceeds maximum allowed size')
+  }
+  if (!encoded.startsWith(MARCATORE_COMPRESSO)) return decodeCharacterFromUrl(encoded)
+  const json = await rigonfia(base64UrlToBytes(encoded.slice(MARCATORE_COMPRESSO.length)))
+  const compatto = JSON.parse(json)
+  if (typeof compatto !== 'object' || compatto === null || Array.isArray(compatto)) {
+    throw new Error('Invalid share data format')
+  }
+  return expandCharacter(compatto)
+}
+
+/** La base di ogni link condiviso, senza il payload. */
+export function baseCondivisione(): string {
+  return `${window.location.origin}/dnd-character-builder/share/`
+}

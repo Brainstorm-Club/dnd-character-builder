@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { usePdfExport } from '@/composables/usePdfExport'
 import { copyShareUrl } from '@/utils/shareCharacter'
+import QrScheda from '@/components/shared/QrScheda.vue'
 import { getMaxLevel } from '@/data'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import CharacterSheet from '@/components/shared/CharacterSheet.vue'
@@ -208,6 +209,7 @@ function handleImport(event: Event) {
         class="bsc-btn bsc-btn--info bsc-btn--testo-fedele cursor-pointer">
         <span aria-hidden="true">🔗</span> {{ t('review.shareUrl') }}
       </button>
+      <QrScheda :char="char" />
       <!-- Level progression -->
       <button v-if="canLevelUp" @click="doLevelUp"
         class="px-6 py-2 bg-purple-700 hover:bg-purple-600 text-white rounded-lg font-semibold transition-colors cursor-pointer">
