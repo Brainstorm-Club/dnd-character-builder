@@ -332,6 +332,10 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     description:
       'You were trained in the Scaffold Sanctuary of Aquisgrama, in the mystical arts the Order of the Fork draws from its death sentences. You wear its cape and answer to its hierarchy.',
     skillProficiencies: ['acrobatics', 'deception'],
+    // L'Impero Randella Ancora dà agli adepti della Forca «Randello lucente e
+    // randello lucente doppio»: erano sparite perché il tipo Background non
+    // prevedeva affatto le competenze nelle armi.
+    weaponProficiencies: ['Bright cudgel', 'Double bright cudgel'],
     toolProficiencies: [],
     languages: 0,
     // La borsa era di 15 ma: L'Impero Randella Ancora dà «una cappa
@@ -352,6 +356,8 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     description:
       'You turned your back on the Order of the Fork and have spent your life fighting it, or eluding its retribution. You kept its powers; the Order has not forgotten.',
     skillProficiencies: ['acrobatics', 'deception'],
+    // Stesse armi dell'adepto: il rinnegato viene dallo stesso addestramento.
+    weaponProficiencies: ['Bright cudgel', 'Double bright cudgel'],
     toolProficiencies: [],
     languages: 0,
     equipment: ['An outfit useful to conceal yourself', 'Forged documents', 'A pouch containing 15 sp'],
@@ -417,6 +423,9 @@ export const brancaloniaBackgrounds: readonly Background[] = [
     description:
       'Gunpowder is new to the Kingdom of the Bounty and nobody quite trusts it — least of all the people who make it. You are one of them.',
     skillProficiencies: ['insight', 'history'],
+    // Il polveriere è l'unico background del Regno competente nelle armi da
+    // fuoco, ed è la cosa che lo definisce.
+    weaponProficiencies: ['Firearms'],
     toolProficiencies: ['Gunpowder jug'],
     languages: 0,
     // La borsa non c'è. Sia l'edizione italiana sia quella inglese de L'Impero

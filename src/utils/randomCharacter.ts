@@ -315,7 +315,13 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     skillExpertise: [],
     savingThrowProficiencies: [...cls.savingThrows],
     languages,
-    proficienciesOther: [...cls.armorProficiencies, ...cls.weaponProficiencies, ...cls.toolProficiencies],
+    // Anche il background concede competenze: trenta su quarantatré ne
+    // dichiarano, in tutte e quattro le varianti, e finora non arrivavano mai
+    // al personaggio — il passo Background le mostrava soltanto.
+    proficienciesOther: [...new Set([
+      ...cls.armorProficiencies, ...cls.weaponProficiencies, ...cls.toolProficiencies,
+      ...bg.toolProficiencies, ...(bg.weaponProficiencies ?? []),
+    ])],
     weapons,
     armor: armorName,
     shield: useShield,

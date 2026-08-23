@@ -50,6 +50,9 @@ const chosenSkills = ref<string[][]>([])
 // piatto condiviso con classe e razza: senza memoria di ciò che è nostro non
 // si può togliere il background precedente senza portarsi via il resto.
 let appliedSkills: string[] = []
+// Le competenze in strumenti e armi che il background concede. Le mostrava
+// soltanto: nel personaggio non ci finivano, e sulla scheda non comparivano.
+let appliedProficiencies: string[] = []
 
 function resetSkillChoices(bg: Background | null) {
   chosenSkills.value = (bg?.skillChoices ?? []).map(c => Array(c.count).fill(''))
@@ -245,6 +248,19 @@ function applySkills() {
   }
   characterStore.character.skillProficiencies = next
   appliedSkills = granted
+  applyProficiencies(bg)
+}
+
+/** Competenze in strumenti e armi, con lo stesso dare-e-togliere delle abilità. */
+function applyProficiencies(bg: Background) {
+  const granted = [...bg.toolProficiencies, ...(bg.weaponProficiencies ?? [])]
+  const next = characterStore.character.proficienciesOther
+    .filter(p => !appliedProficiencies.includes(p) || granted.includes(p))
+  for (const p of granted) {
+    if (!next.includes(p)) next.push(p)
+  }
+  characterStore.character.proficienciesOther = next
+  appliedProficiencies = granted
 }
 
 function selectBackground(bg: Background) {

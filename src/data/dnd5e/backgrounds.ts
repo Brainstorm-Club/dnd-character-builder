@@ -25,7 +25,22 @@ export interface Background {
    */
   skillChoices?: { count: number; from: string[] }[]
   toolProficiencies: string[]
+  /**
+   * Competenze nelle armi concesse dal background. Nel 2014 e nel 2024 nessun
+   * background ne dà, ma tre di Brancalonia sì — gli adepti della Forca col
+   * randello lucente, il polveriere con le armi da fuoco — e senza questo
+   * campo sparivano dai dati senza che nulla lo segnalasse.
+   */
+  weaponProficiencies?: string[]
+  /** Quanti linguaggi concede. */
   languages: number
+  /**
+   * I linguaggi per nome, quando il manuale li nomina invece di lasciarli a
+   * scelta. Il solo conteggio faceva sorteggiare al generatore linguaggi che
+   * quel background non insegna: un adepto della Forca deve parlare
+   * Maccheronico, non una lingua a caso.
+   */
+  languageNames?: string[]
   equipment: string[]
   feature: BackgroundFeature
   suggestedCharacteristics?: {
