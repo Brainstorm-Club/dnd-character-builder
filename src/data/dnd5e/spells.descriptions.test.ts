@@ -7,9 +7,26 @@ import { spells } from './spells'
  * descrizione scavalca la pagina. Nove ne erano rimaste segnate, e Fulmine
  * si fermava a "A creature takes 8d6" perdendo il tipo di danno.
  *
+ * Ogni pagina dello SRD porta però due righe di piè di pagina, non una: sopra
+ * al numero di pagina c'è la nota di licenza ("Not for resale. Permission
+ * granted…"), e altri undici incantesimi se l'erano portata dentro.
+ *
  * Come per i privilegi del 2024, qui si controlla la forma del testo: è lì
  * che un'estrazione andata storta si riconosce senza riaprire il manuale.
  */
+
+/** Tutto ciò che nello SRD sta nel piè di pagina e non nella descrizione. */
+const BOILERPLATE = [
+  /(System )?Reference Document/i,
+  /Not for resale/i,
+  /Permission granted/i,
+  /photocopy/i,
+  /personal use only/i,
+  /Open Game License/i,
+  /All rights reserved/i,
+  /Wizards of the Coast/i,
+]
+
 describe.each(spells.map(s => [s.name, s.description] as const))('%s', (_nome, testo) => {
   it('comincia da capo, non a metà frase', () => {
     expect(testo.trim()).toMatch(/^[A-Z“"'(]/)
@@ -19,7 +36,7 @@ describe.each(spells.map(s => [s.name, s.description] as const))('%s', (_nome, t
     expect(testo.trim()).toMatch(/[.!?”"')]$/)
   })
 
-  it('non si porta dentro il piè di pagina del manuale', () => {
-    expect(testo).not.toMatch(/(System )?Reference Document/)
+  it.each(BOILERPLATE)('non si porta dentro il piè di pagina del manuale (%s)', pezzo => {
+    expect(testo).not.toMatch(pezzo)
   })
 })
