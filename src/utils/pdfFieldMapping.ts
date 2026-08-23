@@ -417,6 +417,12 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   fields['Classe'] = pdfClassName(char.className, 'brancalonia')
   fields['Liv'] = String(char.level)
   fields['Background'] = translateGameTerm(char.background, 'it', 'background')
+  // La casella della razza si chiama 'Nome 1' nel modello: un nome sbagliato
+  // rimasto nel PDF originale. È quella a destra di Background, sotto
+  // l'etichetta stampata "Razza" (oggetto 307R per chi la ispeziona con pdf.js).
+  const razza = translateGameTerm(char.race, 'it', 'race')
+  const sottorazza = char.subrace ? translateGameTerm(char.subrace, 'it', 'subrace') : ''
+  fields['Nome 1'] = sottorazza ? `${razza} (${sottorazza})` : razza
   fields['Nome Giocatore'] = char.playerName
   fields['Allineamento'] = translateGameTerm(char.alignment, 'it', 'alignment')
   fields['Taglia'] = translateGameTerm(char.size || 'Medium', 'it', 'size')
@@ -502,9 +508,13 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   fields['Malefatte'] = char.misdeeds || ''
 
   // Coins (silver standard)
+  // Le quattro caselle del borsello, da sinistra: MR, MA, MF, MO. Il manuale
+  // (Ambientazione, "Il denaro") le scioglie così: spicci di rame, denaro
+  // d'argento, soldo di ferro -- "l'electrum non esiste, e al suo posto
+  // abbiamo il soldo di ferro" -- e oro. Argento e ferro erano scambiati.
   fields['MR'] = String(char.coins.cp || '')
-  fields['MF '] = String(char.coins.sp || '')
-  fields['MA'] = String(char.coins.ep || '')
+  fields['MA'] = String(char.coins.sp || '')
+  fields['MF '] = String(char.coins.ep || '')
   fields['MO'] = String(char.coins.gp || '')
 
   // Spellcasting

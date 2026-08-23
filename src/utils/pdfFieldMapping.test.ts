@@ -20,6 +20,53 @@ function mappingFor(char: CharacterData, locale = 'it') {
     : getDnd5eFieldMapping(char, locale)
 }
 
+/**
+ * La razza non finiva sulla scheda brancaloniana: la casella esiste, ma nel
+ * modello si chiama 'Nome 1' -- un nome sbagliato rimasto nel PDF originale --
+ * e nessuno ci scriveva. Sulla scheda è quella a destra di Background, sotto
+ * l'etichetta stampata "Razza".
+ */
+describe('scheda di Brancalonia: dati che si perdevano', () => {
+  beforeAll(async () => {
+    setActivePinia(createPinia())
+    await preloadVariantData('brancalonia')
+  })
+
+  it('scrive sempre la razza, per qualunque personaggio', () => {
+    for (let i = 0; i < 30; i++) {
+      const c = generateRandomCharacter('brancalonia', 1 + (i % 6))
+      const m = getBrancaloniaFieldMapping(c)
+      expect(m['Nome 1'], `${c.race} lv${c.level}: razza assente dalla scheda`).toBeTruthy()
+      expect(String(m['Nome 1'])).not.toMatch(RAW_ID)
+    }
+  })
+
+  it('mette la sottorazza fra parentesi accanto alla razza', () => {
+    const c = generateRandomCharacter('brancalonia', 3)
+    c.race = 'marionette'
+    c.subrace = 'pupo'
+    const m = getBrancaloniaFieldMapping(c)
+    expect(m['Nome 1']).toBe('Marionetta (Pupo)')
+  })
+
+  /**
+   * Le quattro caselle del borsello sono, da sinistra, MR MA MF MO. Il manuale
+   * di Ambientazione le scioglie in spicci di rame, denaro d'argento, soldo di
+   * ferro e oro, e dice che "l'electrum non esiste, e al suo posto abbiamo il
+   * soldo di ferro": quindi l'electrum va in MF, non in MA. Erano scambiati, e
+   * l'argento del personaggio finiva nella casella del ferro.
+   */
+  it('mette ogni moneta nella propria casella', () => {
+    const c = generateRandomCharacter('brancalonia', 3)
+    c.coins = { cp: 11, sp: 22, ep: 33, gp: 44, pp: 55 }
+    const m = getBrancaloniaFieldMapping(c)
+    expect(m['MR'], 'rame').toBe('11')
+    expect(m['MA'], 'argento').toBe('22')
+    expect(m['MF '], 'ferro, al posto dell’electrum').toBe('33')
+    expect(m['MO'], 'oro').toBe('44')
+  })
+})
+
 describe('mappa dei campi della scheda PDF', () => {
   beforeAll(async () => {
     setActivePinia(createPinia())
