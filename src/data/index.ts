@@ -89,13 +89,17 @@ let _toDnd24Spells: ((base: readonly Spell[]) => Spell[]) | null = null
 // Semi-incantatori 2024: paladino e ranger hanno una tabella di slot propria
 // (primo slot al 1º livello, non al 2º), che non sta nel modulo 2014.
 let _dnd24HalfCasterSlots: ((level: number) => Record<number, number>) | null = null
+// Nel multiclasse 2024 i livelli dei semi-incantatori si arrotondano per
+// eccesso, non per difetto: il conto e' un altro e vive nel modulo 2024.
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let _dnd24MulticlassSpellSlots: ((classes: any[]) => { slots: Record<number, number>; pactSlots: Record<number, number> }) | null = null
 let _pDnd24: Promise<void> | null = null
 
 function ensureDnd2024(): Promise<void> {
   // `_toDnd24Spells` fa parte della condizione: senza di lui getSpells('dnd2024')
   // ricade sulla lista 2014, ed è esattamente quello che succedeva alla seconda
   // visita, quando i dati arrivavano dalla cache.
-  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt && _toDnd24Spells && _dnd24HalfCasterSlots) return Promise.resolve()
+  if (_dnd24Species && _dnd24Classes && _dnd24Backgrounds && _dnd24FeatureIt && _toDnd24Spells && _dnd24HalfCasterSlots && _dnd24MulticlassSpellSlots) return Promise.resolve()
   if (_pDnd24) return _pDnd24
   const cs = lsGet<Race[]>('dnd24-species')
   const cc = lsGet<CharacterClass[]>('dnd24-classes')
@@ -112,6 +116,7 @@ function ensureDnd2024(): Promise<void> {
       _dnd24Species = cs; _dnd24Classes = cc; _dnd24Backgrounds = cb; _dnd24FeatureIt = ci
       _toDnd24Spells = sp.toDnd2024Spells
       _dnd24HalfCasterSlots = ru.getHalfCasterSlotsForLevel2024
+      _dnd24MulticlassSpellSlots = ru.getMulticlassSpellSlots2024
     })
     return _pDnd24
   }
@@ -133,6 +138,7 @@ function ensureDnd2024(): Promise<void> {
     lsSet('dnd24-feature-it', itMod.dnd2024FeatureDescriptionsIt)
     _toDnd24Spells = sp.toDnd2024Spells
     _dnd24HalfCasterSlots = ru.getHalfCasterSlotsForLevel2024
+    _dnd24MulticlassSpellSlots = ru.getMulticlassSpellSlots2024
   })
   return _pDnd24
 }
@@ -884,7 +890,11 @@ export function getSpellsKnownCount(
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function getMulticlassSpellSlots(
   classes: { classId: string; level: number; casterType: any }[],
+  variant: GameVariant = 'dnd5e',
 ): { slots: Record<number, number>; pactSlots: Record<number, number> } {
+  // Il 2024 conta i semi-incantatori per eccesso: senza la variante un
+  // paladino 1/mago 1 restava un incantatore di 1º livello invece che di 2º.
+  if (variant === 'dnd2024' && _dnd24MulticlassSpellSlots) return _dnd24MulticlassSpellSlots(classes)
   if (!_dnd5eGetMulticlassSpellSlots) return { slots: {}, pactSlots: {} }
   return _dnd5eGetMulticlassSpellSlots(classes)
 }
@@ -936,6 +946,7 @@ export function _resetCaches(): void {
   _dnd24FeatureIt = null
   _toDnd24Spells = null
   _dnd24HalfCasterSlots = null
+  _dnd24MulticlassSpellSlots = null
   _pDnd24 = null
   _pDnd5eRaces = _pDnd5eClasses = _pDnd5eBackgrounds = _pDnd5eSpells = _pDnd5eEquipment = _pDnd5eRules = null
   _pBrancaRaces = _pBrancaClasses = _pBrancaBackgrounds = _pBrancaRules = _pBrancaSpells = null

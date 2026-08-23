@@ -58,7 +58,7 @@ const casterClassEntries = computed(() =>
 // Spell slots: use multiclass calculation when multiclassed
 const spellSlots = computed(() => {
   void dataReady.value
-  if (isMulticlass.value) return getMulticlassSpellSlots(casterClassEntries.value).slots
+  if (isMulticlass.value) return getMulticlassSpellSlots(casterClassEntries.value, characterStore.character.variant).slots
   // Key off spellcastingClass, not className: it is set only when the
   // character genuinely casts, which for Fighter and Rogue means a caster
   // subclass was chosen.
@@ -73,7 +73,7 @@ const spellSlots = computed(() => {
 const pactSlots = computed(() => {
   void dataReady.value
   if (!isMulticlass.value) return {}
-  return getMulticlassSpellSlots(casterClassEntries.value).pactSlots
+  return getMulticlassSpellSlots(casterClassEntries.value, characterStore.character.variant).pactSlots
 })
 
 const hasPactSlots = computed(() => Object.keys(pactSlots.value).length > 0)

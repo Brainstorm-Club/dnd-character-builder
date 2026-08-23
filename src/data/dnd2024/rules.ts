@@ -5,6 +5,7 @@
  * telaio resta quello di `src/data/dnd5e/rules.ts`, su cui poggiano anche
  * Brancalonia e Apocalisse.
  */
+import { getMulticlassSpellSlots, type CasterType } from '../dnd5e/rules'
 
 /**
  * Slot incantesimo dei semi-incantatori 2024 (paladino e ranger).
@@ -51,4 +52,24 @@ export function getHalfCasterSlotsForLevel2024(level: number): Record<number, nu
     if (count > 0) result[i + 1] = count
   }
   return result
+}
+
+/**
+ * Slot incantesimo di un personaggio multiclasse secondo l'SRD 5.2.1
+ * (p. 28, «Incantesimi» → «Slot incantesimo»).
+ *
+ * Rispetto al 2014 cambia una parola sola, e pesa: metà dei livelli di
+ * paladino e ranger si arrotonda **per eccesso**, non per difetto. Un
+ * paladino 1/mago 1 nel 2014 conta come incantatore di 1º livello, nel 2024
+ * come incantatore di 2º.
+ *
+ * Il resto del conto non cambia: la tabella «Incantatore multiclasse» ripete
+ * riga per riga quella dell'incantatore pieno, la magia del patto del warlock
+ * resta un serbatoio a parte, e il terzo incantatore nel 2024 non esiste
+ * (guerriero e ladro non hanno il privilegio Incantesimi nei dati 2024).
+ */
+export function getMulticlassSpellSlots2024(
+  classes: { classId: string; level: number; casterType: CasterType | null }[],
+): { slots: Record<number, number>; pactSlots: Record<number, number> } {
+  return getMulticlassSpellSlots(classes, { halfCasterRounding: 'up' })
 }
