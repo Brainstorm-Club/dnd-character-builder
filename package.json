@@ -11,7 +11,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "audit:a11y": "lhci autorun",
-    "audit:sci": "npx tsx scripts/sci-benchmark.ts"
+    "audit:sci": "npx tsx --tsconfig tsconfig.app.json scripts/sci-benchmark.ts"
   },
   "dependencies": {
     "@pdf-lib/fontkit": "^1.1.1",

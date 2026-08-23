@@ -501,4 +501,32 @@ export const dnd2024FeatureDescriptionsIt: Record<string, string> = {
     'Quando lancia un incantesimo della scuola di Invocazione, il mago può aggiungere il suo modificatore di Intelligenza a un tiro per i danni.',
   overchannel:
     'Quando lancia con uno slot dal 1° al 5° livello un incantesimo che infligge danni, il mago può infliggerne il massimo. La prima volta non subisce alcun effetto avverso; se lo rifà prima di completare un riposo lungo subisce 2d12 danni necrotici per livello dell\'incantesimo, che ignorano resistenze e immunità e aumentano di 1d12 a ogni ulteriore utilizzo.',
+
+  // ─── Descrizioni delle sottoclassi ───────────────────────────────
+  // Il sottotitolo del manuale e il paragrafo di apertura, come per i
+  // corrispettivi inglesi in classes.ts.
+  'path-of-the-berserker':
+    'Incanala l\'ira in furia violenta. L\'ira dei barbari che percorrono il Cammino del berserker è diretta principalmente verso la violenza. È un cammino di furia indiscriminata in cui i barbari si esaltano nel caos della battaglia, lasciando che l\'ira si impadronisca di loro e li renda più forti.',
+  'college-of-lore':
+    'Scandaglia le profondità della conoscenza magica. I bardi del Collegio della Sapienza accumulano incantesimi e segreti da varie fonti, come tomi accademici, riti mistici e racconti della tradizione contadina. I membri del collegio si riuniscono nelle biblioteche e nelle università per condividere la loro sapienza con gli altri. Si incontrano anche in occasione di feste popolari e ricevimenti di stato, dove possono denunciare casi di corruzione, smascherare bugie e farsi beffe dei più pomposi esponenti delle autorità.',
+  'life-domain':
+    'Allevia le ferite del mondo. Il Dominio della Vita si concentra sull\'energia positiva che aiuta a sostenere ogni essere vivente del multiverso. I chierici che attingono a questo dominio sono maestri della guarigione e usano la forza vitale per curare molte ferite. L\'esistenza stessa si basa sull\'energia positiva associata a questo dominio, rendendolo adatto a pressoché qualsiasi tradizione religiosa. Questo dominio è associato in particolare alle divinità dell\'agricoltura, agli dèi della guarigione o della resistenza e agli dèi della casa e della comunità. La magia di questo dominio viene cercata anche dagli ordini religiosi dei guaritori.',
+  'circle-of-the-land':
+    'Celebra la connessione con il mondo naturale. Il Circolo della Terra è composto da mistici e sapienti che preservano i riti e le conoscenze dei tempi antichi. Questi druidi si incontrano all\'interno di circoli sacri di alberi o monoliti, per rivelarsi in Druidico i segreti primordiali che hanno appreso. I più saggi membri del circolo presiedono come sommi sacerdoti delle comunità.',
+  'champion':
+    'Raggiungi l\'eccellenza fisica nel combattimento. Il campione si concentra sullo sviluppo delle abilità marziali in un\'incessante ricerca della vittoria. Unisce un rigoroso addestramento a una condizione fisica eccellente per infliggere colpi devastanti, resistere ai pericoli e ottenere la gloria. Che si tratti di gare atletiche o di battaglie sanguinose, i campioni lottano per la corona del vincitore.',
+  'thief':
+    'Vai a caccia di tesori nei panni di un autentico avventuriero. Grazie alle capacità da scassinatore, cacciatore di tesori ed esploratore, il personaggio ormai rappresenta l\'avventuriero per antonomasia. Oltre a vantare agilità e furtività migliorate, ottiene abilità utili per addentrarsi in rovine inesplorate e acquisire il massimo beneficio dagli oggetti magici al loro interno.',
+  'evoker':
+    'Crea effetti elementali esplosivi. Un invocatore concentra i suoi studi sulle magie che generano potenti effetti elementali come un freddo pungente, una fiamma incandescente, un rombo di tuono, un fulmine crepitante o un acido sfrigolante. Alcuni invocatori prestano servizio nelle forze militari come unità di artiglieria in grado di colpire gli eserciti nemici da lontano. Altri usano i loro poteri per proteggere il prossimo, mentre altri ancora li sfruttano per il proprio tornaconto personale.',
+  'warrior-of-the-open-hand':
+    'Padroneggia le tecniche di combattimento senz\'armi. I Guerrieri della Mano Aperta sono i maestri del combattimento senz\'armi. Apprendono tecniche speciali per spingere e sbilanciare i loro avversari e manipolano la propria energia per proteggersi dai danni.',
+  'oath-of-devotion':
+    'Tieni fede agli ideali di giustizia e ordine. Il Giuramento di devozione vincola i paladini agli ideali di giustizia e ordine, avvicinandoli all\'archetipo del "cavaliere senza macchia e senza paura". Si considerano modelli esemplari di condotta e alcuni di loro, nel bene e nel male, applicano gli stessi parametri al resto del mondo. Molti di coloro che prestano questo giuramento sono devoti agli dèi della legalità e del bene, e usano i dettami delle loro divinità come misura della propria devozione. Altri, invece, prendono gli angeli come esempi dei propri ideali e integrano immagini di ali angeliche nei propri elmi o stemmi. Condividono i seguenti dettami: • Che la tua parola sia vincolante come una promessa. • Proteggi i deboli e non aver mai paura di agire. • Che le tue onorevoli gesta siano da esempio per gli altri.',
+  'hunter':
+    'Proteggi la natura e le persone dalla distruzione. Bracchi la preda sia nelle terre selvagge che in ogni altro luogo, utilizzando le tue abilità di cacciatore per proteggere la natura e le persone dalle forze che intendono distruggerle.',
+  'draconic-sorcery':
+    'Lasciati inebriare dalla magia dei draghi. La magia innata dello stregone proviene dal dono di un drago. Potrebbe averla ereditata da un drago antico che, prossimo alla morte, ha conferito il proprio potere magico a lui o a un suo antenato, o magari l\'ha assorbito da un luogo pregno di energia draconica o da uno dei tesori di queste creature. Oppure uno dei suoi antenati era un drago.',
+  'fiend-patron':
+    'Stringi un patto con i Piani Inferiori. Grazie al patto stretto, il warlock attinge i suoi poteri dai Piani Inferiori, ovvero i regni della perdizione. Potrebbe aver stipulato un accordo con un signore dei demoni, un arcidiavolo o un altro immondo particolarmente potente. Il patrono ha obiettivi malvagi, come la corruzione o la distruzione di tutto (incluso il warlock stesso) e il percorso del personaggio sarà plasmato dalla misura in cui si batterà per sabotarli.',
 }

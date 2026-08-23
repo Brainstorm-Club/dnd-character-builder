@@ -9,6 +9,9 @@ function allFeatureIds(): string[] {
   for (const cls of dnd2024Classes) {
     for (const f of cls.features) ids.add(f.id)
     for (const sub of cls.subclasses ?? []) {
+      // Anche la sottoclasse ha una descrizione, e la schermata di scelta la
+      // cerca in questa stessa mappa passando il suo id.
+      ids.add(sub.id)
       for (const f of sub.features ?? []) ids.add(f.id)
     }
   }

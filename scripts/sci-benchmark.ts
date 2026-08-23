@@ -69,6 +69,27 @@ const r2 = await profileTool(
 )
 results.push(r2)
 
+// La variante 2024 e' la quarta: senza di lei il report misurava tre quarti
+// dei dati che l'app carica davvero.
+const r2b = await profileTool(
+  'data-load-dnd2024',
+  async () => {
+    const r = await import('../src/data/dnd2024/races')
+    const c = await import('../src/data/dnd2024/classes')
+    const b = await import('../src/data/dnd2024/backgrounds')
+    const sp = await import('../src/data/dnd2024/spells-new')
+    const ft = await import('../src/data/dnd2024/feats')
+    return {
+      species: r.dnd2024Species.length,
+      classes: c.dnd2024Classes.length,
+      bgs: b.dnd2024Backgrounds.length,
+      spells: sp.dnd2024OnlySpells.length,
+      feats: ft.dnd2024Feats.length,
+    }
+  },
+)
+results.push(r2b)
+
 const r3 = await profileTool(
   'data-load-apocalisse',
   async () => {

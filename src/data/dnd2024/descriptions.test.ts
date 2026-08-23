@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import { dnd2024Classes } from './classes'
+import { dnd2024FeatureDescriptionsIt } from './classes-it'
 
 /**
  * I testi del 2024 sono stati estratti dallo SRD 5.2.1, che è impaginato su
@@ -28,6 +29,15 @@ describe('descrizioni delle sottoclassi 2024', () => {
     for (const s of sottoclassi) {
       expect(s.description).not.toMatch(/subclass from the SRD/)
       expect(s.description.length).toBeGreaterThan(80)
+    }
+  })
+
+  it('esistono anche in italiano: chi legge in italiano non deve trovare l’inglese', () => {
+    for (const s of sottoclassi) {
+      const it = dnd2024FeatureDescriptionsIt[s.id]
+      expect(it, `${s.id} senza descrizione italiana`).toBeDefined()
+      expect(it!.length).toBeGreaterThan(80)
+      expect(it!.trim()).toMatch(/[.!?»]$/)
     }
   })
 
