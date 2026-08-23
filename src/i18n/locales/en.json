@@ -184,7 +184,9 @@
     "ritual": "Ritual",
     "levelShort": "Lv.",
     "slots": "slots",
-    "showDetail": "{name} details"
+    "showDetail": "{name} details",
+    "atHigherLevels": "At Higher Levels",
+    "srdCredit": "Italian text from the Wizards of the Coast SRD, CC-BY-4.0 —"
   },
   "details": {
     "title": "Character Details",
@@ -298,7 +300,9 @@
     "discardConfirm": "Discard and start over",
     "close": "Close",
     "changeLanguage": "Change language",
-    "availableLanguages": "Available languages"
+    "availableLanguages": "Available languages",
+    "srdNoItalian": "The SRD has no description for this entry.",
+    "srdEnglishOnly": "Original SRD text, in English."
   },
   "validation": {
     "selectRace": "Select a race before continuing",
@@ -311,6 +315,7 @@
     "brainstorm": "Brainstorm Club",
     "brainstormTitle": "The Faenza tabletop gaming association behind this project",
     "privacy": "Privacy Policy",
+    "credits": "Credits",
     "license": "MIT License",
     "wsg": "Web Sustainability",
     "wsgTitle": "This site follows W3C Web Sustainability Guidelines",
@@ -338,6 +343,19 @@
     "lcaSource": "LCA Source",
     "methodology": "Methodology",
     "methodologyText": "Each operation is profiled by measuring real wall-clock time via performance.now(). Energy (E) is derived from execution time and device power draw, carbon intensity (I) uses the European grid median, and embodied emissions (M) are amortized over the device lifetime. The SCI score follows the GSF spec: SCI = ((E x I) + M) / R, where R = 1 operation."
+  },
+  "credits": {
+    "title": "Credits",
+    "intro": "The full Italian spell text comes from the Italian editions of the Wizards of the Coast SRDs, published under the Creative Commons Attribution 4.0 International licence. The licence asks that the attribution sits where the material is read — here it is, in the wording the publisher requires (Italian, verbatim).",
+    "srd51Title": "D&D 5e — 2014 rules (SRD 5.1)",
+    "srd51": "Questo lavoro include materiale del System Reference Document 5.1 (“SRD 5.1”) di Wizards of the Coast LLC disponibile al sito https://dnd.wizards.com/it/resources/systems-reference-document. L'SRD 5.1 è concesso in licenza sotto l'Attribuzione 4.0 Internazionale di Creative Commons disponibile al sito https://creativecommons.org/licenses/by/4.0/legalcode.it.",
+    "srd521Title": "D&D 2024 (SRD 5.2.1)",
+    "srd521": "Quest'opera include materiale tratto dal System Reference Document 5.2.1 (\"SRD 5.2.1\") di Wizards of the Coast LLC, disponibile all'indirizzo https://www.dndbeyond.com/srd. Il SRD 5.2.1 è concesso in licenza ai sensi della licenza di attribuzione 4.0 Internazionale di Creative Commons, disponibile all'indirizzo https://creativecommons.org/licenses/by/4.0/legalcode.",
+    "missingTitle": "What is missing",
+    "missing": "Blade Ward and Hex are in the Player's Handbook, not in SRD 5.1: the app shows their name and the short English description, with no full text. Brancalonia and Apocalisse spells are Acheron Games material and carry their own description in their data.",
+    "moreTitle": "All sources",
+    "more": "The full list of what the app ships and where it comes from is in DATA-SOURCES.md, in the repository.",
+    "moreLink": "See DATA-SOURCES.md"
   },
   "privacy": {
     "title": "Privacy Policy",
@@ -1171,5 +1189,13 @@
     "characterNotFound": "Character Not Found",
     "bioTitle": "Bio",
     "goldPieces": "gp"
+  },
+  "conditions": {
+    "explain": "What does “{name}” mean?",
+    "noText": "The Italian SRD 5.1 does not publish this condition's text: the appendix stops short of it. The name stands, the text does not — and the 2024 one belongs to different rules.",
+    "editorialNote": "Editorial note:",
+    "source2014": "System Reference Document 5.1 (CC-BY-4.0).",
+    "source2024": "System Reference Document 5.2.1 (CC-BY-4.0).",
+    "italianOnly": "Text from the Italian edition."
   }
 }

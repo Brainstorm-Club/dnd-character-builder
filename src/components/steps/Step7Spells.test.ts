@@ -208,23 +208,34 @@ describe('passo incantesimi', () => {
       expect(heading).not.toContain('spells.knownSpells')
     })
 
-    it('non stampa il numero del 2014 al posto della colonna «Prepared Spells» che manca', async () => {
+    it('nel 2024 stampa il numero della colonna «Incantesimi preparati», non quello del 2014', async () => {
       const mounted = await mountStep({ variant: 'dnd2024', className: 'bard', ability: 'cha', level: 5 })
       wrapper = mounted.wrapper
       const heading = mounted.wrapper.get('#spells-known-heading').text()
-      expect(heading).toContain('/—')
+      expect(heading).toContain('/9') // tabella del bardo 2024 al 5° livello
       expect(heading).not.toContain('/8') // conteggio del bardo 2014
+      expect(heading).not.toContain('/—')
     })
 
-    it('senza un tetto noto la scelta resta libera invece di bloccarsi', async () => {
+    it('il tetto del 2024 vale davvero: il decimo incantesimo del bardo è inerte', async () => {
       const { store, wrapper: w } = await mountStep({ variant: 'dnd2024', className: 'bard', ability: 'cha', level: 5 })
       wrapper = w
       const rows = w.findAll(`${SPELL_GROUP} > div > button[aria-pressed]`)
       expect(rows.length).toBeGreaterThan(9)
-      // Più del conteggio 2014 (8): con il tetto ignoto nessun comando è inerte.
       for (let i = 0; i < 9; i++) await rows[i]!.trigger('click')
       expect(store.character.spellsKnown.length).toBe(9)
-      expect(rows[9]!.attributes('aria-disabled')).toBe('false')
+      expect(rows[9]!.attributes('aria-disabled')).toBe('true')
+      await rows[9]!.trigger('click')
+      expect(store.character.spellsKnown.length).toBe(9)
+    })
+
+    it('il mago del 2024 al 14° livello segue la sua colonna, non quella degli altri', async () => {
+      // 18 preparati: gli altri incantatori pieni ne hanno 17 allo stesso
+      // livello, e il conto 2014 (INT +0) ne darebbe 14.
+      const mounted = await mountStep({ variant: 'dnd2024', className: 'wizard', ability: 'int', level: 14 })
+      wrapper = mounted.wrapper
+      const heading = mounted.wrapper.get('#spells-known-heading').text()
+      expect(heading).toContain('/18')
     })
 
     it('un tiro esplicito rimette un tetto anche nel 2024', async () => {

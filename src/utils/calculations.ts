@@ -1,5 +1,5 @@
 import type { CharacterData } from '@/stores/character'
-import { armor as armorTable } from '@/data/dnd5e/equipment'
+import { armor as armorTable, type ArmorData } from '@/data/dnd5e/equipment'
 
 /** Calculate ability modifier from score */
 export function modifier(score: number): number {
@@ -35,13 +35,43 @@ export function baseAC(dexMod: number): number {
 }
 
 /**
+ * Slug stabile di un'armatura, ricavato dal suo nome di listino:
+ * 'Chain Mail' → 'chain-mail', 'Half Plate' → 'half-plate'.
+ *
+ * Serve a chi legge un export: `armor` porta il nome inglese di
+ * visualizzazione, e due grafie diverse dello stesso oggetto ('Chain Mail' e
+ * 'Chain mail') fanno fallire in silenzio il calcolo della CA — un guerriero
+ * in cotta di maglia risultava senza armatura, con CA 11 invece di 16.
+ */
+export function armorSlug(name: string): string {
+  return name.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+}
+
+/**
+ * Slug dell'armatura indossata, o '' se il nome non corrisponde a nessuna
+ * armatura del listino (campo libero, nome tradotto, scheda a mano).
+ */
+export function armorIdFromName(name: string): string {
+  if (!name) return ''
+  const slug = armorSlug(name)
+  return armorTable.some(a => armorSlug(a.name) === slug) ? slug : ''
+}
+
+/** L'armatura del listino che porta questo slug. */
+export function findArmorById(armorId: string): ArmorData | undefined {
+  if (!armorId) return undefined
+  return armorTable.find(a => armorSlug(a.name) === armorId)
+}
+
+/**
  * Il minimo di cui ha bisogno il calcolo della CA. La classe serve per la
  * Difesa senza Armatura di monaco e barbaro ed è facoltativa: chi non la passa
- * ottiene il calcolo di prima.
+ * ottiene il calcolo di prima. `armorId` è altrettanto facoltativo: le schede
+ * salvate prima della sua introduzione non ce l'hanno.
  */
 export type ArmorClassInput =
   Pick<CharacterData, 'armor' | 'shield' | 'abilityScores' | 'racialBonuses'>
-  & Partial<Pick<CharacterData, 'className' | 'classes'>>
+  & Partial<Pick<CharacterData, 'className' | 'classes' | 'armorId'>>
 
 /**
  * Classe Armatura completa: armatura indossata, limite di Destrezza della sua
@@ -51,7 +81,11 @@ export type ArmorClassInput =
  */
 export function computeArmorClass(char: ArmorClassInput): number {
   const dexMod = modifier(char.abilityScores.dex + (char.racialBonuses.dex || 0))
-  const armorData = char.armor ? armorTable.find(a => a.name === char.armor) : undefined
+  // Il nome resta la fonte primaria, così il risultato è identico a quello di
+  // prima per ogni scheda già esistente; lo slug interviene solo dove il nome
+  // non risolve — una scheda che arriva da fuori con il solo `armorId`.
+  const armorData = (char.armor ? armorTable.find(a => a.name === char.armor) : undefined)
+    ?? findArmorById(char.armorId ?? '')
   let ac: number
   if (!armorData) {
     // Senza armatura: 10 + mod DES, più la Difesa senza Armatura se la classe

@@ -1,4 +1,5 @@
 import type { CharacterData, AbilityScores, Weapon } from '@/stores/character'
+import { migrateCharacter } from '@/stores/character'
 import type { GameVariant } from '@/stores/app'
 import type { AbilityKey, CharacterClass } from '@/data/dnd5e/classes'
 import { getRaces, getClasses, getBackgrounds, getSpells, getSpellSlots, getCantripsKnown, getSpellsKnownCount, getAvailableLanguages, getMaxLevel, getApocalisseRules } from '@/data'
@@ -304,7 +305,7 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   const name = pick(FANTASY_NAMES)
   const archetype = pickRandomArchetype()
 
-  return {
+  const generated: CharacterData = {
     id: crypto.randomUUID(),
     variant,
     name,
@@ -372,6 +373,12 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     sessionNotes: '',
     classes: [],
   }
+
+  // Slug d'armatura e voci strutturate dei privilegi si ricavano da quello che
+  // è appena stato generato, invece di essere costruiti una seconda volta qui:
+  // due costruzioni separate finiscono per divergere.
+  migrateCharacter(generated)
+  return generated
 }
 
 /**

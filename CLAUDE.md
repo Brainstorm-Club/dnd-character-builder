@@ -66,11 +66,23 @@ When adding a new feature, follow these steps in order:
 | Metric | Limit |
 |--------|-------|
 | Initial JS (gzipped) | < 170 KB |
-| Total JS (all chunks, gzipped) | < 760 KB |
+| Total JS (all chunks, gzipped) | < 950 KB |
 | CSS (gzipped) | < 15 KB |
 | Lighthouse Accessibility | >= 90 |
 | Lighthouse Performance | >= 80 |
 | Lighthouse Best Practices | >= 90 |
+
+Il tetto del **totale** è passato da 760 a 950 KB gz quando è entrato il testo
+italiano integrale degli incantesimi: sono 166 KB gz, ma divisi in due chunk
+per edizione (`game-dnd5e-spells-it`, `game-dnd24-spells-it`) di cui **una
+sessione ne scarica al massimo uno**, solo con interfaccia italiana e solo nel
+passo incantesimi. Chi gioca in inglese non ne scarica nessuno. Entrambi sono
+fuori dal precache del service worker — se un giorno ci rientrassero,
+`src/vite-config.test.ts` diventa rosso.
+
+Il totale resta la metrica sbagliata da leggere da sola: somma pdf-lib, i due
+file di lingua e i dati di quattro varianti, che nessun visitatore scarica
+tutti insieme. La riga che vincola davvero l'avvio è la prima.
 
 ## Sustainability Principles
 

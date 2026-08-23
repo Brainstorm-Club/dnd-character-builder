@@ -2,7 +2,8 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
-import { getRaces, getTraitDescription } from '@/data'
+import { getRaces } from '@/data'
+import { testoTratto, type TestoSrd } from '@/data/srdText'
 import { getAvailableFeats } from '@/data/brancalonia/feats'
 import { getDnd2024FeatDescription } from '@/data/dnd2024/feats-it'
 import { translateGameTerm } from '@/i18n/gameTerms'
@@ -12,13 +13,35 @@ import type { AbilityScores } from '@/stores/character'
 import { formatModifier, feetToMeters } from '@/utils/calculations'
 import { useGameTerms } from '@/composables/useGameTerms'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
+import ConditionText from '@/components/shared/ConditionText.vue'
 
 const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
 const gt = useGameTerms()
 
+function statoTratto(traitId: string): TestoSrd {
+  return testoTratto(characterStore.character.variant, traitId, locale.value)
+}
+
 function traitDescription(traitId: string): string {
-  return getTraitDescription(characterStore.character.variant, traitId, locale.value)
+  const testo = statoTratto(traitId)
+  return testo.stato === 'assente' ? '' : testo.testo
+}
+
+/**
+ * La riga che dichiara com'è messo il testo di un tratto, o '' se non serve.
+ *
+ * I tratti razziali di D&D non hanno descrizione in nessuna delle due edizioni
+ * dell'SRD: finché la lista mostrava il solo nome, quel vuoto sembrava una
+ * dimenticanza dell'app invece che un'assenza della fonte. Brancalonia e
+ * Apocalisse li descrivono, ma non sempre in italiano, e l'inglese va
+ * etichettato invece di essere spacciato per traduzione.
+ */
+function traitNote(traitId: string): string {
+  const testo = statoTratto(traitId)
+  if (testo.stato === 'assente') return t('common.srdNoItalian')
+  if (testo.stato === 'soloInglese') return t('common.srdEnglishOnly')
+  return ''
 }
 
 const races = computed(() => getRaces(characterStore.character.variant))
@@ -236,7 +259,10 @@ function bonusString(bonuses: Record<string, number>): string {
         <ul class="text-stone-400 text-sm space-y-2">
           <li v-for="trait in selectedRace.traits" :key="trait">
             <span class="text-stone-300">&bull; {{ gt.trait(trait) }}</span>
-            <span v-if="traitDescription(trait)" class="block ml-3 text-stone-400/80">{{ traitDescription(trait) }}</span>
+            <span v-if="traitDescription(trait)" class="block ml-3">
+              <ConditionText :text="traitDescription(trait)" :variant="characterStore.character.variant" text-class="text-stone-400/80" />
+            </span>
+            <span v-if="traitNote(trait)" class="block ml-3 text-stone-500 text-xs">{{ traitNote(trait) }}</span>
           </li>
         </ul>
       </div>
@@ -294,7 +320,10 @@ function bonusString(bonuses: Record<string, number>): string {
             <ul class="text-stone-400 space-y-2">
               <li v-for="trait in selectedSubraceObj.traits" :key="trait">
                 <span class="text-stone-300">&bull; {{ gt.trait(trait) }}</span>
-                <span v-if="traitDescription(trait)" class="block ml-3 text-stone-400/80">{{ traitDescription(trait) }}</span>
+                <span v-if="traitDescription(trait)" class="block ml-3">
+                  <ConditionText :text="traitDescription(trait)" :variant="characterStore.character.variant" text-class="text-stone-400/80" />
+                </span>
+                <span v-if="traitNote(trait)" class="block ml-3 text-stone-500 text-xs">{{ traitNote(trait) }}</span>
               </li>
             </ul>
           </div>

@@ -1,0 +1,108 @@
+// Condizioni di D&D 2024 — System Reference Document 5.2.1, traduzione
+// italiana, Wizards of the Coast, CC-BY-4.0.
+//
+// FILE GENERATO da `scripts/import-conditions.mjs`. Non modificarlo a mano:
+// rigeneralo. Fonte: dnd-companion, `data/rules/2024.json`
+// (generato il 2026-08-23T13:49:45+02:00, commit e70c710).
+//
+// Tutte e quindici hanno il testo. «Incapacitato» lo ha sbagliato — la
+// traduzione italiana apre parlando di «paralizzato» — ed è riportato lo
+// stesso, verbatim: non si corregge una fonte, la si cita e la si annota.
+// L'avvertenza sta in `note`, che l'interfaccia tiene visibilmente staccata
+// dal testo dell'SRD.
+
+import type { Condition } from '../dnd5e/conditions'
+
+export const dnd2024Conditions: readonly Condition[] = [
+  {
+    id: 'blinded',
+    name: 'Blinded',
+    nameIt: 'Accecato',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "accecato", subisce i seguenti effetti: Non è in grado di vedere. Il personaggio non è in grado di vedere e fallisce automaticamente qualsiasi prova di caratteristica che richieda l\'uso della vista. Influenza sugli attacchi. I tiri per colpire contro il personaggio dispongono di vantaggio, mentre i suoi tiri per colpire subiscono svantaggio.',
+  },
+  {
+    id: 'charmed',
+    name: 'Charmed',
+    nameIt: 'Affascinato',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "affascinato", subisce i seguenti effetti: Non può attaccare chi lo ha affascinato. Il personaggio non può attaccare chi lo ha affascinato né bersagliarlo con abilità o effetti magici dannosi. Vantaggio sociale. Chi ha affascinato il personaggio dispone di vantaggio a qualsiasi prova di caratteristica effettuata per interagire socialmente con il personaggio.',
+  },
+  {
+    id: 'deafened',
+    name: 'Deafened',
+    nameIt: 'Assordato',
+    descriptionIt: 'Quando il personaggio ha la condizione "assordato", subisce il seguente effetto: Non è in grado di sentire. Il personaggio non è in grado di sentire e fallisce automaticamente qualsiasi prova di caratteristica che richieda l\'uso dell\'udito.',
+  },
+  {
+    id: 'exhaustion',
+    name: 'Exhaustion',
+    nameIt: 'Indebolimento',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "indebolimento", subisce i seguenti effetti: Livelli di indebolimento. Questa condizione è cumulativa. Ogni volta che il personaggio la riceve, ottiene 1 livello di indebolimento. Il personaggio muore se il suo livello di indebolimento è pari a 6. Influenza sulle prove con d20. Quando effettui una prova con d20, il risultato ottenuto è ridotto del doppio del livello di indebolimento del personaggio. Velocità ridotta. La velocità del personaggio è ridotta di una quantità di metri pari a 1,5 × il suo livello di indebolimento. Rimozione dei livelli di indebolimento. Terminando un riposo lungo, il personaggio perde 1 livello di indebolimento. Quando l\'indebolimento raggiunge il livello 0, la condizione termina.',
+  },
+  {
+    id: 'frightened',
+    name: 'Frightened',
+    nameIt: 'Spaventato',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "spaventato", subisce i seguenti effetti: Influenza sulle prove di caratteristica e sugli attacchi. Il personaggio subisce svantaggio alle prove di caratteristica e ai tiri per colpire finché la fonte della sua paura è nel suo campo visivo. Non è in grado di avvicinarsi. Il personaggio non è in grado di avvicinarsi volontariamente alla fonte della sua paura.',
+  },
+  {
+    id: 'grappled',
+    name: 'Grappled',
+    nameIt: 'Afferrato',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "afferrato", subisce i seguenti effetti: Velocità 0. La velocità del personaggio è pari a 0 e non può aumentare. Influenza sugli attacchi. Il personaggio subisce svantaggio ai tiri per colpire contro qualsiasi bersaglio che non sia chi lo ha afferrato. Movibile. Chi ha afferrato il personaggio, muovendosi, può trascinarlo o spostarlo, ma ogni 30 centimetri di movimento costano 30 centimetri extra, a meno che il personaggio non sia Minuscolo o più piccolo di due taglie o più rispetto a chi lo ha afferrato.',
+  },
+  {
+    id: 'incapacitated',
+    name: 'Incapacitated',
+    nameIt: 'Incapacitato',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "paralizzato", subisce i seguenti effetti: Inattività. Il personaggio non è in grado di effettuare azioni, azioni bonus o reazioni. Nessuna concentrazione. La concentrazione del personaggio è interrotta. Senza parole. Il personaggio non è in grado di parlare. Sorpresa. Se il personaggio è incapacitato quando tira per l\'iniziativa, subisce svantaggio al tiro.',
+    note: 'L’edizione italiana dell’SRD 5.2.1 apre questa voce con «ha la condizione "paralizzato"»: è un errore di traduzione, nell’originale la condizione è «incapacitated». Il testo qui sopra resta quello pubblicato, parola per parola; questa nota è dell’app, non della fonte.',
+  },
+  {
+    id: 'invisible',
+    name: 'Invisible',
+    nameIt: 'Invisibile',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "invisibile", subisce i seguenti effetti: Sorpresa. Se il personaggio è invisibile quando tira per l\'iniziativa, dispone di vantaggio al tiro. Occultamento. Il personaggio non è influenzato da alcun effetto che richieda la vista del bersaglio, a meno che il creatore dell\'effetto non riesca in qualche modo a vederlo. Anche l\'equipaggiamento che il personaggio indossa o trasporta è occultato. Influenza sugli attacchi. I tiri per colpire contro il personaggio subiscono svantaggio, mentre i suoi tiri per colpire dispongono di vantaggio. Se una creatura è in grado di vederlo, il personaggio non ottiene questo beneficio in relazione a quella creatura.',
+  },
+  {
+    id: 'paralyzed',
+    name: 'Paralyzed',
+    nameIt: 'Paralizzato',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "paralizzato", subisce i seguenti effetti: Incapacitato. Il personaggio ha la condizione "incapacitato". Velocità 0. La velocità del personaggio è pari a 0 e non può aumentare. Influenza sui tiri salvezza. Il personaggio fallisce automaticamente i tiri salvezza su Forza e Destrezza. Influenza sugli attacchi. I tiri per colpire contro il personaggio dispongono di vantaggio. Colpi critici automatici. Ogni tiro per colpire che colpisce il personaggio è un colpo critico se l\'attaccante si trova entro 1,5 metri dal personaggio.',
+  },
+  {
+    id: 'petrified',
+    name: 'Petrified',
+    nameIt: 'Pietrificato',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "pietrificato", subisce i seguenti effetti: Trasformazione in sostanza inanimata. Il personaggio viene trasformato, insieme a tutti gli oggetti non magici che indossa e trasporta, in una sostanza solida inanimata (solitamente in pietra). Il personaggio cessa di invecchiare e il suo peso viene decuplicato. Incapacitato. Il personaggio ha la condizione "incapacitato". Velocità 0. La velocità del personaggio è pari a 0 e non può aumentare. Influenza sugli attacchi. I tiri per colpire contro il personaggio dispongono di vantaggio. Influenza sui tiri salvezza. Il personaggio fallisce automaticamente i tiri salvezza su Forza e Destrezza. Resistenza ai danni. Il personaggio è resistente a tutti i danni. Immunità ai veleni. Il personaggio è immune alla condizione "avvelenato".',
+  },
+  {
+    id: 'poisoned',
+    name: 'Poisoned',
+    nameIt: 'Avvelenato',
+    descriptionIt: 'Quando il personaggio ha la condizione "avvelenato", subisce il seguente effetto: Influenza sulle prove di caratteristica e sugli attacchi. Il personaggio subisce svantaggio ai tiri per colpire e alle prove di caratteristica.',
+  },
+  {
+    id: 'prone',
+    name: 'Prone',
+    nameIt: 'Prono',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "prono", subisce i seguenti effetti: Movimento limitato. Le uniche possibilità di movimento del personaggio sono strisciare o spendere una quantità di movimento pari alla metà della sua velocità (arrotondata per difetto) per rialzarsi e, quindi, porre fine alla condizione. Se la sua velocità è pari a 0, il personaggio non può rialzarsi. Influenza sugli attacchi. Il personaggio subisce svantaggio ai tiri per colpire. Un tiro per colpire contro il personaggio dispone di vantaggio se l\'attaccante si trova entro 1,5 metri dal personaggio. Altrimenti, il tiro per colpire subisce svantaggio.',
+  },
+  {
+    id: 'restrained',
+    name: 'Restrained',
+    nameIt: 'Trattenuto',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "trattenuto", subisce i seguenti effetti: Velocità 0. La velocità del personaggio è pari a 0 e non può aumentare. Influenza sugli attacchi. I tiri per colpire contro il personaggio dispongono di vantaggio, mentre i suoi tiri per colpire subiscono svantaggio. Influenza sui tiri salvezza. Il personaggio subisce svantaggio ai tiri salvezza su Destrezza.',
+  },
+  {
+    id: 'stunned',
+    name: 'Stunned',
+    nameIt: 'Stordito',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "stordito", subisce i seguenti effetti: Incapacitato. Il personaggio ha la condizione "incapacitato". Influenza sui tiri salvezza. Il personaggio fallisce automaticamente i tiri salvezza su Forza e Destrezza. Influenza sugli attacchi. I tiri per colpire contro il personaggio dispongono di vantaggio.',
+  },
+  {
+    id: 'unconscious',
+    name: 'Unconscious',
+    nameIt: 'Privo di sensi',
+    descriptionIt: 'Quando il tuo personaggio ha la condizione "privo di sensi", subisce i seguenti effetti: Inerte. Il personaggio ha le condizioni "incapacitato" e "prono", e lascia cadere qualsiasi cosa stia impugnando. Quando la condizione termina, il personaggio resta prono. Velocità 0. La velocità del personaggio è pari a 0 e non può aumentare. Influenza sugli attacchi. I tiri per colpire contro il personaggio dispongono di vantaggio. Influenza sui tiri salvezza. Il personaggio fallisce automaticamente i tiri salvezza su Forza e Destrezza. Colpi critici automatici. Ogni tiro per colpire che colpisce il personaggio è un colpo critico se l\'attaccante si trova entro 1,5 metri dal personaggio. Ignaro. Il personaggio non è consapevole di ciò che lo circonda.',
+  },
+]

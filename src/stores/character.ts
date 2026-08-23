@@ -2,8 +2,8 @@ import { defineStore } from 'pinia'
 import { ref, computed, watch } from 'vue'
 import type { GameVariant } from './app'
 import { GAME_VARIANTS } from './app'
-import { modifier, proficiencyBonus, hpPerLevel, totalHp, computeArmorClass } from '@/utils/calculations'
-import { getMaxLevel, getClasses, getRaces } from '@/data'
+import { modifier, proficiencyBonus, hpPerLevel, totalHp, computeArmorClass, armorIdFromName } from '@/utils/calculations'
+import { getMaxLevel, getClasses, getRaces, getBackgrounds } from '@/data'
 
 export interface AbilityScores {
   str: number
@@ -25,6 +25,50 @@ export interface ClassEntry {
   subclass: string
   level: number
   hitDie: number
+}
+
+/**
+ * Versione dello schema della scheda.
+ *
+ * 1 = tutto ciò che è stato salvato fino a `featuresTraits` e `armor` da soli.
+ * 2 = aggiunge `featureEntries` e `armorId`, i due campi agganciabili da fuori.
+ *
+ * Una scheda senza il campo vale 1. La migrazione è additiva: i campi vecchi
+ * restano dove sono e continuano a funzionare, quindi un salvataggio o un link
+ * di prima resta leggibile anche da chi non conosce lo schema 2.
+ */
+export const CHARACTER_SCHEMA_VERSION = 2
+
+/** Da dove arriva un privilegio. `unknown` = non riconducibile ai dati di gioco. */
+export type FeatureSource = 'race' | 'subrace' | 'class' | 'subclass' | 'background' | 'unknown'
+
+/**
+ * Una voce dell'elenco privilegi, in forma leggibile senza indovinare.
+ *
+ * `featuresTraits` è un sacco misto: mescola id di tratti razziali
+ * ('draconic-ancestry') e nomi inglesi di privilegi ('Reckless Attack'), e
+ * ripete la stessa riga quando un privilegio si ottiene due volte
+ * (un barbaro di 10° ha due "Ability Score Improvement"). Chi legge un export
+ * non può né stamparlo né agganciarlo: deve indovinare se una voce è un id o
+ * un nome, e deduplicare a mano.
+ *
+ * Qui ogni voce dice id stabile, nome di visualizzazione, provenienza e
+ * livello. I doppioni si distinguono per livello (le due ASI del barbaro
+ * stanno a 4 e a 8); quando anche il livello coincide si contano in `count`.
+ */
+export interface FeatureEntry {
+  /** Identificatore stabile: l'id del privilegio nei dati, o quello del tratto razziale. */
+  id: string
+  /** Nome di visualizzazione, esattamente la stringa che finisce in `featuresTraits`. */
+  name: string
+  /** Chi lo concede. */
+  source: FeatureSource
+  /** Id della classe / sottoclasse / specie / sottorazza / background che lo concede. */
+  sourceId: string
+  /** Livello a cui si ottiene. 0 per i tratti di specie e di background, che si hanno da subito. */
+  level: number
+  /** Quante volte la stessa voce si ottiene a quel livello. Quasi sempre 1. */
+  count: number
 }
 
 export interface CharacterData {
@@ -50,7 +94,14 @@ export interface CharacterData {
   languages: string[]
   proficienciesOther: string[]
   weapons: Weapon[]
+  /** Nome di listino inglese dell'armatura indossata ('Chain Mail'). Resta la fonte primaria. */
   armor: string
+  /**
+   * Slug stabile della stessa armatura ('chain-mail'), per chi legge la scheda
+   * da fuori. Sempre derivato da `armor`; assente nelle schede salvate prima
+   * della sua introduzione, dove va ricavato dalla migrazione.
+   */
+  armorId?: string
   shield: boolean
   equipment: string[]
   coins: { cp: number; sp: number; ep: number; gp: number; pp: number }
@@ -58,7 +109,18 @@ export interface CharacterData {
   ideals: string
   bonds: string
   flaws: string
+  /**
+   * Elenco piatto dei privilegi, così com'è sempre stato: id di tratti razziali
+   * e nomi inglesi di privilegi mescolati, ripetizioni comprese. Continua a
+   * essere quello che stampano il riepilogo e la scheda PDF.
+   */
   featuresTraits: string[]
+  /**
+   * Gli stessi privilegi in forma strutturata. Invariante: espandendo ogni voce
+   * `count` volte si riottiene `featuresTraits` identico, ordine compreso.
+   * Assente nelle schede salvate prima della sua introduzione.
+   */
+  featureEntries?: FeatureEntry[]
   backstory: string
   age: string
   height: string
@@ -100,6 +162,8 @@ export interface CharacterData {
   sessionNotes: string
   // Multiclass (D&D 5e only) — empty array = single class
   classes: ClassEntry[]
+  /** Versione dello schema con cui la scheda è stata scritta. Assente = 1. */
+  schemaVersion?: number
 }
 
 function createEmptyCharacter(): CharacterData {
@@ -126,6 +190,7 @@ function createEmptyCharacter(): CharacterData {
     proficienciesOther: [],
     weapons: [],
     armor: '',
+    armorId: '',
     shield: false,
     equipment: [],
     coins: { cp: 0, sp: 0, ep: 0, gp: 0, pp: 0 },
@@ -134,6 +199,7 @@ function createEmptyCharacter(): CharacterData {
     bonds: '',
     flaws: '',
     featuresTraits: [],
+    featureEntries: [],
     backstory: '',
     age: '',
     height: '',
@@ -165,6 +231,7 @@ function createEmptyCharacter(): CharacterData {
     humanity: 10,
     sessionNotes: '',
     classes: [],
+    schemaVersion: CHARACTER_SCHEMA_VERSION,
   }
 }
 
@@ -213,11 +280,49 @@ function classEntriesOf(char: CharacterData): { classId: string; subclass: strin
 }
 
 /** Tratti concessi dalla specie e dalla sottorazza del personaggio. */
-function racialTraitsOf(char: CharacterData): string[] {
+function racialTraitEntries(char: CharacterData): FeatureEntry[] {
   const race = getRaces(char.variant).find(r => r.id === char.race)
   if (!race) return []
   const subrace = race.subraces.find(s => s.id === char.subrace)
-  return [...race.traits, ...(subrace?.traits ?? [])]
+  // I tratti razziali nei dati sono soltanto id: l'id è anche il nome che
+  // finisce in `featuresTraits`, ed è quello che le traduzioni sanno cercare.
+  return [
+    ...race.traits.map(id => entry(id, id, 'race', race.id, 0)),
+    ...(subrace?.traits ?? []).map(id => entry(id, id, 'subrace', subrace!.id, 0)),
+  ]
+}
+
+function entry(id: string, name: string, source: FeatureSource, sourceId: string, level: number): FeatureEntry {
+  return { id, name, source, sourceId, level, count: 1 }
+}
+
+/** Chiave di identità di una voce: due voci con la stessa chiave sono la stessa cosa. */
+function entryKey(e: FeatureEntry): string {
+  return `${e.source}|${e.sourceId}|${e.id}|${e.level}`
+}
+
+/**
+ * Fonde in `count` le voci identiche consecutive. Solo consecutive: l'ordine di
+ * `featuresTraits` è quello che si vede sul riepilogo e sulla scheda PDF, e
+ * accorpare a distanza sposterebbe una riga.
+ */
+function collapseRepeats(entries: FeatureEntry[]): FeatureEntry[] {
+  const out: FeatureEntry[] = []
+  for (const e of entries) {
+    const last = out[out.length - 1]
+    if (last && entryKey(last) === entryKey(e)) last.count += 1
+    else out.push({ ...e })
+  }
+  return out
+}
+
+/** Espande le voci nell'elenco piatto di sempre. Inverso esatto di collapseRepeats. */
+export function featureNames(entries: readonly FeatureEntry[]): string[] {
+  const out: string[] = []
+  for (const e of entries) {
+    for (let i = 0; i < Math.max(1, e.count); i++) out.push(e.name)
+  }
+  return out
 }
 
 /**
@@ -231,17 +336,32 @@ function racialTraitsOf(char: CharacterData): string[] {
  * solo conservati perché la procedura guidata non li ha mai scritti: senza,
  * un elfo restava senza Scurovisione tanto nel riepilogo quanto nel PDF.
  */
-function computeFeatures(char: CharacterData): string[] {
+export function computeFeatureEntries(char: CharacterData): FeatureEntry[] {
   const allClasses = getClasses(char.variant)
-  const out: string[] = [...racialTraitsOf(char)]
-  for (const entry of classEntriesOf(char)) {
-    const cls = allClasses.find(c => c.id === entry.classId)
+  const out: FeatureEntry[] = [...racialTraitEntries(char)]
+  for (const ce of classEntriesOf(char)) {
+    const cls = allClasses.find(c => c.id === ce.classId)
     if (!cls) continue
-    out.push(...cls.features.filter(f => f.level <= entry.level).map(f => f.name))
-    const sub = cls.subclasses.find(s => s.id === entry.subclass)
-    if (sub) out.push(...sub.features.filter(f => f.level <= entry.level).map(f => f.name))
+    out.push(...cls.features.filter(f => f.level <= ce.level)
+      .map(f => entry(f.id, f.name, 'class', cls.id, f.level)))
+    const sub = cls.subclasses.find(s => s.id === ce.subclass)
+    if (sub) {
+      out.push(...sub.features.filter(f => f.level <= ce.level)
+        .map(f => entry(f.id, f.name, 'subclass', sub.id, f.level)))
+    }
   }
-  return out
+  return collapseRepeats(out)
+}
+
+/**
+ * Riscrive insieme le due forme dell'elenco privilegi, così non possono
+ * divergere: qualunque percorso ricalcoli i privilegi passa di qui.
+ */
+function applyComputedFeatures(char: CharacterData): void {
+  const entries = computeFeatureEntries(char)
+  char.featureEntries = entries
+  char.featuresTraits = featureNames(entries)
+  char.schemaVersion = CHARACTER_SCHEMA_VERSION
 }
 
 /**
@@ -279,15 +399,116 @@ function featureDiff(from: string[], to: string[]): string[] {
 }
 
 /**
+ * Tutte le provenienze possibili di un privilegio per questo personaggio, in
+ * ordine di ricerca. Serve alla migrazione, che deve risalire dalla stringa
+ * salvata a chi la concede.
+ */
+function candidateEntries(char: CharacterData): FeatureEntry[] {
+  const out: FeatureEntry[] = [...racialTraitEntries(char)]
+  const allClasses = getClasses(char.variant)
+  for (const ce of classEntriesOf(char)) {
+    const cls = allClasses.find(c => c.id === ce.classId)
+    if (!cls) continue
+    out.push(...cls.features.map(f => entry(f.id, f.name, 'class', cls.id, f.level)))
+    for (const sub of cls.subclasses) {
+      if (sub.id !== ce.subclass) continue
+      out.push(...sub.features.map(f => entry(f.id, f.name, 'subclass', sub.id, f.level)))
+    }
+  }
+  const bg = getBackgrounds(char.variant).find(b => b.id === char.background)
+  if (bg) out.push(entry(bg.id, bg.feature.name, 'background', bg.id, 0))
+  return out
+}
+
+/**
+ * Ricostruisce le voci strutturate a partire dall'elenco piatto **già salvato**,
+ * senza ricalcolarlo dai dati di gioco.
+ *
+ * È deliberato: `featuresTraits` di una scheda salvata può non coincidere con
+ * quello che i dati produrrebbero oggi — una scheda ritoccata a mano, una
+ * riportata sotto il tetto di livello (dove i privilegi restano quelli
+ * guadagnati, per scelta di clampToMaxLevel), un personaggio del blog scritto a
+ * mano. Ricalcolare farebbe divergere le due forme; qui invece la
+ * corrispondenza è uno a uno e `featuresTraits` non viene toccato.
+ *
+ * Le ripetizioni si risolvono per livello: la prima "Ability Score Improvement"
+ * prende il livello 4, la seconda il livello 8. Ciò che non si aggancia a
+ * nessun dato resta come voce `unknown`, col nome intatto: meglio una voce
+ * onesta che una attribuzione inventata.
+ */
+export function deriveFeatureEntries(char: CharacterData): FeatureEntry[] {
+  const candidates = candidateEntries(char)
+  // Un cursore per nome: le occorrenze successive dello stesso nome prendono
+  // le corrispondenze successive, in ordine di livello crescente.
+  const byName = new Map<string, FeatureEntry[]>()
+  for (const c of candidates) {
+    const list = byName.get(c.name) ?? []
+    list.push(c)
+    byName.set(c.name, list)
+  }
+  for (const list of byName.values()) list.sort((a, b) => a.level - b.level)
+  const used = new Map<string, number>()
+
+  const out: FeatureEntry[] = []
+  for (const name of char.featuresTraits) {
+    const list = byName.get(name)
+    const i = used.get(name) ?? 0
+    const match = list?.[i] ?? list?.[list.length - 1]
+    used.set(name, i + 1)
+    out.push(match ? { ...match } : entry(name, name, 'unknown', '', 0))
+  }
+  return collapseRepeats(out)
+}
+
+/**
+ * Le due forme dell'elenco privilegi dicono ancora la stessa cosa? È
+ * l'invariante che rende `featureEntries` affidabile: espandendo le voci si
+ * deve riottenere `featuresTraits` tale e quale, ordine compreso.
+ */
+function entriesMatchNames(c: CharacterData): boolean {
+  if (!Array.isArray(c.featureEntries)) return false
+  const flat = featureNames(c.featureEntries)
+  return flat.length === c.featuresTraits.length && flat.every((n, i) => n === c.featuresTraits[i])
+}
+
+/** I dati della variante sono già in memoria? Senza, ogni voce finirebbe `unknown`. */
+function variantDataReady(char: CharacterData): boolean {
+  return getClasses(char.variant).length > 0 && getRaces(char.variant).length > 0
+}
+
+/**
  * Porta una singola scheda allo schema corrente. Estratta perché non è più solo
  * l'archivio a tornare dal localStorage: anche il personaggio in corso viene
  * persistito, e senza questa funzione applicata a entrambi rientrava dallo
  * storage un oggetto che nessuna migrazione toccava.
+ *
+ * Aggiunge, non sostituisce: `featuresTraits` e `armor` restano esattamente
+ * come sono stati salvati, e i due campi nuovi si affiancano.
  */
-function migrateOne(c: CharacterData) {
+export function syncDerivedFields(c: CharacterData): void {
+  if (!Array.isArray((c as any).featuresTraits)) (c as any).featuresTraits = []
+
+  // Schema 1 → 2. Lo slug d'armatura si ricava sempre: la tabella delle
+  // armature è importata staticamente, non dipende dal caricamento della
+  // variante. `armor` non viene toccato: resta lui la fonte primaria.
+  c.armorId = armorIdFromName(c.armor)
+
+  if ((c.schemaVersion ?? 1) < CHARACTER_SCHEMA_VERSION || !entriesMatchNames(c)) {
+    c.featureEntries = deriveFeatureEntries(c)
+    // La migrazione si dichiara conclusa solo se i dati della variante erano
+    // caricati: all'idratazione dal localStorage spesso non lo sono ancora, e
+    // marcarla finita congelerebbe un elenco di sole voci `unknown`. Lasciando
+    // la versione a 1 il prossimo passaggio — salvataggio, export, apertura
+    // della scheda — la rifà con i dati veri.
+    c.schemaVersion = variantDataReady(c) ? CHARACTER_SCHEMA_VERSION : 1
+  }
+}
+
+export function migrateCharacter(c: CharacterData) {
   if ((c as any).sessionNotes === undefined) (c as any).sessionNotes = ''
   if (!Array.isArray((c as any).classes)) (c as any).classes = []
   if (typeof (c as any).spellsKnownLimit !== 'number') (c as any).spellsKnownLimit = 0
+  syncDerivedFields(c)
   clampToMaxLevel(c)
 }
 
@@ -333,7 +554,7 @@ function applyLevelUp(char: CharacterData, classId?: string): { hpGained: number
   // Caratteristica, Attacco Extra, i privilegi d'archetipo) vengono contate
   // tutte, e la lista resta identica a quella di syncClassAndLevel.
   const before = [...char.featuresTraits]
-  char.featuresTraits = computeFeatures(char)
+  applyComputedFeatures(char)
   const newFeatures = featureDiff(char.featuresTraits, before)
 
   return { hpGained, newFeatures }
@@ -346,7 +567,7 @@ export const useCharacterStore = defineStore('character', () => {
   // Migration: add new fields to existing saved characters
   // Runs as a watcher so it fires AFTER pinia-plugin-persistedstate hydrates from localStorage
   function migrateCharacters() {
-    for (const c of savedCharacters.value) migrateOne(c)
+    for (const c of savedCharacters.value) migrateCharacter(c)
   }
   migrateCharacters()
   // Not `{ once: true }`: another tab or a manual restore can replace the
@@ -389,6 +610,11 @@ export const useCharacterStore = defineStore('character', () => {
   const MAX_STORAGE_BYTES = 5 * 1024 * 1024
 
   function saveCharacter() {
+    // I campi derivati vanno riallineati prima di congelare la copia: quando la
+    // scheda è rientrata dal localStorage senza i dati della variante caricati,
+    // `featureEntries` è ancora l'elenco di ripiego. Solo i derivati: il
+    // controllo sul tetto di livello resta dov'era, all'idratazione e all'import.
+    syncDerivedFields(character.value)
     const idx = savedCharacters.value.findIndex(c => c.id === character.value.id)
     const copy = JSON.parse(JSON.stringify(character.value))
 
@@ -412,6 +638,7 @@ export const useCharacterStore = defineStore('character', () => {
     const found = savedCharacters.value.find(c => c.id === id)
     if (found) {
       character.value = JSON.parse(JSON.stringify(found))
+      syncDerivedFields(character.value)
     }
   }
 
@@ -479,7 +706,7 @@ export const useCharacterStore = defineStore('character', () => {
     // levelDown: senza, la nuova classe non porta in dote nemmeno il proprio
     // 1° livello, e il riepilogo resta a quelli della sola classe di partenza
     revokeUnearnedSubclasses(char)
-    char.featuresTraits = computeFeatures(char)
+    applyComputedFeatures(char)
   }
 
   /**
@@ -520,7 +747,7 @@ export const useCharacterStore = defineStore('character', () => {
     // Come in addMulticlass: togliere la classe deve togliere anche i suoi
     // privilegi, altrimenti restano nel riepilogo e finiscono sulla scheda
     revokeUnearnedSubclasses(char)
-    char.featuresTraits = computeFeatures(char)
+    applyComputedFeatures(char)
   }
 
   /**
@@ -554,7 +781,7 @@ export const useCharacterStore = defineStore('character', () => {
     // allo stesso livello (Pact Boon del warlock e di Lilith in Apocalisse), e
     // la lista finiva diversa da quella di syncClassAndLevel.
     const before = [...char.featuresTraits]
-    char.featuresTraits = computeFeatures(char)
+    applyComputedFeatures(char)
     const newFeatures = featureDiff(char.featuresTraits, before)
     const removedFeatures = featureDiff(before, char.featuresTraits)
 
@@ -588,7 +815,7 @@ export const useCharacterStore = defineStore('character', () => {
 
     char.hitDie = cls.hitDie
     revokeUnearnedSubclasses(char)
-    char.featuresTraits = computeFeatures(char)
+    applyComputedFeatures(char)
 
     const conMod = modifier(char.abilityScores.con + (char.racialBonuses.con || 0))
     char.maxHp = totalHp(cls.hitDie, conMod, char.level)
@@ -675,7 +902,7 @@ export const useCharacterStore = defineStore('character', () => {
     // l'unica occorrenza rimasta di un privilegio ripetuto (un guerriero di 7°
     // ha due "Ability Score Improvement") anche quando spettava ancora.
     const before = [...char.featuresTraits]
-    char.featuresTraits = computeFeatures(char)
+    applyComputedFeatures(char)
     const removedFeatures = featureDiff(before, char.featuresTraits)
 
     // Auto-save if the character exists in saved list
@@ -688,6 +915,10 @@ export const useCharacterStore = defineStore('character', () => {
   }
 
   function exportJson(): string {
+    // L'export è il formato che leggono gli altri: qui i campi agganciabili
+    // devono esserci ed essere aggiornati, non nella forma di ripiego che
+    // l'idratazione può aver lasciato.
+    syncDerivedFields(character.value)
     return JSON.stringify(character.value, null, 2)
   }
 
@@ -798,6 +1029,18 @@ export const useCharacterStore = defineStore('character', () => {
       )
     }
 
+    // Validate featureEntries array contents. Un import è testo che arriva da
+    // fuori: le voci malformate si scartano invece di finire nella scheda, e
+    // quel che resta viene comunque riallineato dalla migrazione qui sotto.
+    if (Array.isArray(safeRaw.featureEntries)) {
+      safeRaw.featureEntries = (safeRaw.featureEntries as unknown[]).filter((e): e is FeatureEntry =>
+        typeof e === 'object' && e !== null &&
+        typeof (e as Record<string, unknown>).id === 'string' &&
+        typeof (e as Record<string, unknown>).name === 'string' &&
+        typeof (e as Record<string, unknown>).level === 'number'
+      )
+    }
+
     // Truncate long strings to prevent abuse
     for (const [key, value] of Object.entries(safeRaw)) {
       if (typeof value === 'string' && value.length > 5000) {
@@ -815,6 +1058,9 @@ export const useCharacterStore = defineStore('character', () => {
     // Characters exported before a variant's level cap was lowered are clamped,
     // not rejected, so an older sheet still imports.
     if (clampToMaxLevel(data)) warnings.push('WARN_LEVEL_CLAMPED')
+    // Un export scritto con lo schema 1 non ha né lo slug d'armatura né le voci
+    // strutturate: si ricavano da quello che c'è, senza toccare gli originali.
+    syncDerivedFields(data)
 
     // Add warnings for optional missing fields
     if (!data.name) warnings.push('WARN_NO_NAME')
@@ -859,7 +1105,7 @@ export const useCharacterStore = defineStore('character', () => {
     // ref, quindi un `watch` su `character` non scatterebbe mai: la migrazione
     // di ciò che rientra dallo storage va agganciata qui.
     afterHydrate: ({ store }) => {
-      migrateOne((store as unknown as { character: CharacterData }).character)
+      migrateCharacter((store as unknown as { character: CharacterData }).character)
     },
   },
 })

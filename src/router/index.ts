@@ -41,6 +41,11 @@ const router = createRouter({
       component: () => import('@/views/PrivacyView.vue'),
     },
     {
+      path: '/credits',
+      name: 'credits',
+      component: () => import('@/views/CreditsView.vue'),
+    },
+    {
       path: '/sci-report',
       name: 'sci-report',
       component: () => import('@/views/SciReportView.vue'),

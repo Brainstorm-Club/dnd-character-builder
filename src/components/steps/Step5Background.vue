@@ -6,6 +6,8 @@ import { getBackgrounds } from '@/data'
 import type { Background } from '@/data/dnd5e/backgrounds'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
+import { getDnd2024FeatDescription } from '@/data/dnd2024/feats-it'
+import { testoPrivilegioBackground, type TestoSrd } from '@/data/srdText'
 import { translateGameTerm } from '@/i18n/gameTerms'
 import type { AbilityKey } from '@/data/dnd5e/classes'
 import {
@@ -80,6 +82,39 @@ const originFeatLabel = computed(() => {
   const tradotto = translateGameTerm(base, locale.value, 'feature')
   return parentesi ? `${tradotto} ${parentesi}` : tradotto
 })
+/**
+ * Il testo del privilegio concesso dal background, e in che lingua è.
+ *
+ * Nei dati quel privilegio ha il solo testo inglese, in tutte e quattro le
+ * varianti, e il passo lo stampava così com'era in mezzo a un'interfaccia
+ * italiana. Ora l'inglese resta ma viene etichettato — e nel 2024 non serve
+ * nemmeno: lì il privilegio del background **è** il talento d'origine, che
+ * l'SRD 5.2.1 italiano descrive e il builder ha già tradotto in `feats-it`.
+ * Si passa quel testo a `testoPrivilegioBackground`, che lo preferisce
+ * all'inglese senza che questo passo debba conoscere l'ordine di precedenza.
+ */
+const testoPrivilegioIt = computed<TestoSrd>(() => {
+  const bg = selectedBg.value
+  if (!bg?.feature) return { stato: 'assente' }
+  const featId = originFeatId(bg, getFeatsByCategory('origin'))
+  const daTalento = featId ? getDnd2024FeatDescription(featId, 'it', '') : ''
+  return testoPrivilegioBackground(
+    characterStore.character.variant,
+    bg.feature.name,
+    locale.value,
+    bg.feature.description,
+    daTalento,
+  )
+})
+
+/** La riga che dichiara com'è messo quel testo, o '' se non serve. */
+const notaPrivilegio = computed(() => {
+  const testo = testoPrivilegioIt.value
+  if (testo.stato === 'assente') return t('common.srdNoItalian')
+  if (testo.stato === 'soloInglese') return t('common.srdEnglishOnly')
+  return ''
+})
+
 const originChoice = ref<OriginChoice>({ ...NO_ORIGIN_CHOICE })
 
 // Ciò che questo passo ha già concesso, per poterlo togliere. `racialBonuses` è
@@ -366,7 +401,8 @@ function selectBackground(bg: Background) {
         </div>
         <div>
           <h4 class="font-semibold text-stone-300">{{ gt.feature(selectedBg.feature.name) }}</h4>
-          <p class="text-stone-400">{{ selectedBg.feature.description }}</p>
+          <p v-if="testoPrivilegioIt.stato !== 'assente'" class="text-stone-400">{{ testoPrivilegioIt.testo }}</p>
+          <p v-if="notaPrivilegio" class="text-stone-500 text-xs">{{ notaPrivilegio }}</p>
         </div>
       </div>
     </div>

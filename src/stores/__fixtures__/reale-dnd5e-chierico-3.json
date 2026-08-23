@@ -1,0 +1,135 @@
+{
+  "id": "4f79fa8f-4631-433a-ac12-51ee28dcae6b",
+  "variant": "dnd5e",
+  "name": "Ulric",
+  "playerName": "",
+  "race": "dragonborn",
+  "subrace": "",
+  "feat": "",
+  "className": "cleric",
+  "subclass": "life",
+  "level": 3,
+  "background": "sailor",
+  "alignment": "tn",
+  "experiencePoints": 0,
+  "abilityScores": {
+    "str": 12,
+    "dex": 13,
+    "con": 15,
+    "int": 12,
+    "wis": 17,
+    "cha": 13
+  },
+  "racialBonuses": {
+    "str": 2,
+    "cha": 1
+  },
+  "skillProficiencies": [
+    "persuasion",
+    "history",
+    "athletics",
+    "perception"
+  ],
+  "skillExpertise": [],
+  "savingThrowProficiencies": [
+    "wis",
+    "cha"
+  ],
+  "languages": [
+    "Common",
+    "Draconic"
+  ],
+  "proficienciesOther": [
+    "light",
+    "medium",
+    "shields",
+    "simple",
+    "Navigator's tools",
+    "Vehicles (water)"
+  ],
+  "weapons": [
+    {
+      "name": "Javelin",
+      "attackBonus": 4,
+      "damage": "1d6+2"
+    }
+  ],
+  "armor": "Half Plate",
+  "shield": false,
+  "equipment": [
+    "mace",
+    "scale mail",
+    "light crossbow and 20 bolts",
+    "priest-pack",
+    "shield",
+    "holy symbol",
+    "A belaying pin (club)",
+    "50 feet of silk rope",
+    "A lucky charm such as a rabbit's foot or a small stone with a hole in the center",
+    "A set of common clothes",
+    "A belt pouch containing 10 gp"
+  ],
+  "coins": {
+    "cp": 0,
+    "sp": 0,
+    "ep": 0,
+    "gp": 38,
+    "pp": 0
+  },
+  "personalityTraits": "I see signs and omens in everyday events. My faith gives me strength in dark times.",
+  "ideals": "Faith. The divine has a plan, and I am its instrument.",
+  "bonds": "I will do anything to protect my temple and its congregation.",
+  "flaws": "I judge others harshly who do not share my beliefs.",
+  "featuresTraits": [
+    "draconic-ancestry",
+    "breath-weapon",
+    "damage-resistance",
+    "Spellcasting",
+    "Divine Domain",
+    "Channel Divinity",
+    "Channel Divinity: Turn Undead",
+    "Bonus Proficiency",
+    "Disciple of Life"
+  ],
+  "backstory": "",
+  "age": "105",
+  "height": "6'7\"",
+  "weight": "167 lbs",
+  "eyes": "Hazel",
+  "hair": "Silver",
+  "skin": "Green",
+  "allies": "",
+  "treasure": "",
+  "spellcastingClass": "cleric",
+  "spellcastingAbility": "wis",
+  "cantrips": [
+    "guidance",
+    "mending",
+    "light"
+  ],
+  "spellsKnown": [
+    "1-protection-from-evil-and-good",
+    "2-locate-object",
+    "1-cure-wounds",
+    "2-find-traps",
+    "2-calm-emotions",
+    "2-gentle-repose"
+  ],
+  "spellsPrepared": [],
+  "hitDie": 8,
+  "maxHp": 24,
+  "currentHp": 24,
+  "tempHp": 0,
+  "speed": 30,
+  "brawlingMoves": [],
+  "misdeeds": "",
+  "size": "Medium",
+  "whacksLevel": 0,
+  "mark": "",
+  "markSpirit": "",
+  "virtue": "",
+  "sin": "",
+  "humanity": 10,
+  "sessionNotes": "",
+  "classes": []
+}

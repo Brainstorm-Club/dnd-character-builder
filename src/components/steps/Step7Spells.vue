@@ -6,11 +6,12 @@ import { getSpells, getSpellSlots, getSpellcastingProfile, getClasses, getMultic
 import type { SpellcastingMode } from '@/data'
 import type { CasterType } from '@/data/dnd5e/classes'
 import { useGameTerms } from '@/composables/useGameTerms'
+import { ensureSpellTextsIt, getSpellTextIt } from '@/data/spells-it'
 import type { Spell } from '@/data/dnd5e/spells'
 import { rollDice } from '@/utils/diceRoller'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
 const gt = useGameTerms()
 
@@ -22,7 +23,21 @@ const dataReady = ref(false)
 onMounted(async () => {
   await ensureSpellData(characterStore.character.variant)
   dataReady.value = true
+  void prefetchTestiIt()
 })
+
+// ─── Testo italiano integrale ─────────────────────────────────────────────
+// I nomi li traduce già `gt.spell()`; il testo segue la stessa logica di
+// locale, ma non può stare nello stesso modulo: sono ~300 KB per edizione.
+// Si scarica solo in italiano e solo qui, senza bloccare la lista — quando
+// arriva, `testiItReady` fa ricalcolare il riquadro di dettaglio.
+const testiItReady = ref(false)
+
+async function prefetchTestiIt() {
+  if (locale.value !== 'it') return
+  await ensureSpellTextsIt(characterStore.character.variant)
+  testiItReady.value = true
+}
 
 const allSpells = computed(() => { void dataReady.value; return getSpells(characterStore.character.variant) })
 const allClasses = computed(() => { void dataReady.value; return getClasses(characterStore.character.variant) })
@@ -125,10 +140,11 @@ const spellsMode = computed<SpellcastingMode>(() => {
 const spellsListLabel = computed(() =>
   spellsMode.value === 'prepared' ? t('spells.preparedSpells') : t('spells.knownSpells'))
 
-// Numero da manuale di incantesimi che la scheda può portare.
-// `null` = il dato non c'è (nel 2024 viene dalla colonna «Prepared Spells»
-// della tabella di classe, che non è ancora nei dati): meglio non mostrare
-// nessun numero che mostrare quello del 2014.
+// Numero da manuale di incantesimi che la scheda può portare: nel 2014 la
+// formula «modificatore + livello», nel 2024 la colonna «Incantesimi
+// preparati» della tabella di classe. `null` = il dato non c'è ancora (i dati
+// della variante stanno arrivando): meglio non mostrare nessun numero che
+// mostrare quello di un'altra edizione.
 const rawSpellsCount = computed<number | null>(() => {
   let total = 0
   for (const e of casterProfiles.value) {
@@ -242,10 +258,33 @@ const detailDialogEl = ref<HTMLElement | null>(null)
 // finire sul <body> lasciando chi naviga da tastiera a ripartire da capo.
 const detailOpener = ref<HTMLElement | null>(null)
 
+/**
+ * Il testo da stampare nel riquadro: l'italiano integrale quando c'è, la
+ * descrizione inglese dei dati altrimenti.
+ *
+ * «Altrimenti» sono tre casi veri: interfaccia in inglese; *Blade Ward* e
+ * *Hex*, che stanno nel Player's Handbook e non nell'SRD; gli incantesimi di
+ * Brancalonia e Apocalisse, la cui descrizione è già italiana nei loro dati.
+ */
+const detailText = computed<{ corpo: string; aLivelliSuperiori?: string; it: boolean }>(() => {
+  const spell = selectedSpellDetail.value
+  if (!spell) return { corpo: '', it: false }
+  void testiItReady.value
+  if (locale.value === 'it') {
+    const testo = getSpellTextIt(characterStore.character.variant, spell.id)
+    if (testo) return { corpo: testo.testo, aLivelliSuperiori: testo.aLivelliSuperiori, it: true }
+  }
+  return { corpo: spell.description, it: false }
+})
+
 async function showDetail(spell: Spell, opener?: EventTarget | null) {
   detailOpener.value = (opener as HTMLElement | null)
     ?? (document.activeElement as HTMLElement | null)
   selectedSpellDetail.value = spell
+  // Se il prefetch non è ancora arrivato (o il passo è stato raggiunto senza
+  // passare da onMounted), il riquadro parte con la descrizione inglese e si
+  // riscrive appena il modulo italiano è pronto.
+  void prefetchTestiIt()
   await nextTick()
   // Il riquadro è modale: senza spostarci il fuoco un lettore di schermo
   // continuerebbe a leggere la lista sotto, che nel frattempo è inerte.
@@ -478,7 +517,21 @@ function onDetailKeydown(e: KeyboardEvent) {
             <p><strong>{{ t('spells.range') }}:</strong> {{ selectedSpellDetail.range }}</p>
             <p><strong>{{ t('spells.components') }}:</strong> {{ selectedSpellDetail.components }}</p>
             <p><strong>{{ t('spells.duration') }}:</strong> {{ selectedSpellDetail.duration }}</p>
-            <p class="mt-3">{{ selectedSpellDetail.description }}</p>
+            <!--
+              whitespace-pre-line e non <p> spezzati: i ritorni a capo del
+              testo SRD separano i capoversi, ma in 48 incantesimi su 653
+              tengono in piedi una tabella o un elenco puntato. Lasciandoli
+              passare così restano leggibili senza doverli reinterpretare.
+            -->
+            <p class="mt-3" :class="{ 'whitespace-pre-line': detailText.it }">{{ detailText.corpo }}</p>
+            <p v-if="detailText.aLivelliSuperiori" class="mt-3 whitespace-pre-line">
+              <strong>{{ t('spells.atHigherLevels') }}:</strong> {{ detailText.aLivelliSuperiori }}
+            </p>
+            <!-- CC-BY-4.0: l'attribuzione va dove il testo si legge. -->
+            <p v-if="detailText.it" class="mt-4 pt-3 border-t border-stone-700 text-xs text-stone-500">
+              {{ t('spells.srdCredit') }}
+              <router-link to="/credits" class="text-amber-500 hover:text-amber-400 transition-colors">{{ t('credits.title') }}</router-link>
+            </p>
           </div>
         </div>
       </div>
