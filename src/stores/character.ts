@@ -146,6 +146,19 @@ export interface CharacterData {
   maxHp: number
   currentHp: number
   tempHp: number
+  /**
+   * I PF sono stati scritti a mano e non vanno ricalcolati. Serve a chi
+   * ricopia una scheda già giocata: il totale sulla carta viene dai tiri del
+   * dado vita fatti al tavolo, non dalla media che usa il generatore, e senza
+   * questo interruttore bastava ripassare dal livello per cancellarlo.
+   * Assente = falso, cioè il comportamento di sempre.
+   */
+  hpManual?: boolean
+  /**
+   * CA dichiarata a mano ('la scheda dice 18'). 0 o assente = la si calcola da
+   * armatura, scudo e Destrezza come sempre.
+   */
+  armorClassOverride?: number
   speed: number
   // Brancalonia specific
   brawlingMoves: string[]
@@ -219,6 +232,8 @@ function createEmptyCharacter(): CharacterData {
     maxHp: 0,
     currentHp: 0,
     tempHp: 0,
+    hpManual: false,
+    armorClassOverride: 0,
     speed: 30,
     brawlingMoves: [],
     misdeeds: '',
@@ -508,6 +523,11 @@ export function migrateCharacter(c: CharacterData) {
   if ((c as any).sessionNotes === undefined) (c as any).sessionNotes = ''
   if (!Array.isArray((c as any).classes)) (c as any).classes = []
   if (typeof (c as any).spellsKnownLimit !== 'number') (c as any).spellsKnownLimit = 0
+  // Una scheda salvata prima della trascrizione a mano non li ha: i valori di
+  // partenza sono quelli che lasciano tutto com'era, cioè PF ricalcolati e
+  // CA calcolata.
+  if (typeof (c as any).hpManual !== 'boolean') (c as any).hpManual = false
+  if (typeof (c as any).armorClassOverride !== 'number') (c as any).armorClassOverride = 0
   syncDerivedFields(c)
   clampToMaxLevel(c)
 }
@@ -725,7 +745,9 @@ export const useCharacterStore = defineStore('character', () => {
     // Recalculate total level
     char.level = char.classes.reduce((sum, c) => sum + c.level, 0)
 
-    // Recalculate total HP from scratch
+    // Recalculate total HP from scratch — tranne per i PF dichiarati a mano,
+    // che sono un dato del giocatore e non un derivato (come in
+    // syncClassAndLevel).
     const conMod = modifier(
       char.abilityScores.con + (char.racialBonuses.con || 0),
     )
@@ -741,8 +763,10 @@ export const useCharacterStore = defineStore('character', () => {
         }
       }
     }
-    char.maxHp = Math.max(hp, 1)
-    char.currentHp = char.maxHp
+    if (!char.hpManual) {
+      char.maxHp = Math.max(hp, 1)
+      char.currentHp = char.maxHp
+    }
 
     // Come in addMulticlass: togliere la classe deve togliere anche i suoi
     // privilegi, altrimenti restano nel riepilogo e finiscono sulla scheda
@@ -816,6 +840,11 @@ export const useCharacterStore = defineStore('character', () => {
     char.hitDie = cls.hitDie
     revokeUnearnedSubclasses(char)
     applyComputedFeatures(char)
+
+    // PF scritti a mano: il ricalcolo integrale li cancellerebbe. Il livello,
+    // il dado vita e i privilegi si riallineano lo stesso — è solo il totale
+    // dei PF a restare quello dichiarato dal giocatore.
+    if (char.hpManual) return
 
     const conMod = modifier(char.abilityScores.con + (char.racialBonuses.con || 0))
     char.maxHp = totalHp(cls.hitDie, conMod, char.level)
@@ -1039,6 +1068,16 @@ export const useCharacterStore = defineStore('character', () => {
         typeof (e as Record<string, unknown>).name === 'string' &&
         typeof (e as Record<string, unknown>).level === 'number'
       )
+    }
+
+    // I due campi della trascrizione a mano arrivano dal whitelist come tutti
+    // gli altri, ma senza tipo: un `hpManual: "si"` congelerebbe i PF di
+    // chiunque apra quel file, e una CA negativa finirebbe stampata sul PDF.
+    if (typeof safeRaw.hpManual !== 'boolean') delete safeRaw.hpManual
+    if (!Number.isInteger(safeRaw.armorClassOverride) ||
+        (safeRaw.armorClassOverride as number) < 0 ||
+        (safeRaw.armorClassOverride as number) > 99) {
+      delete safeRaw.armorClassOverride
     }
 
     // Truncate long strings to prevent abuse

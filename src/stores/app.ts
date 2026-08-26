@@ -51,6 +51,12 @@ export const useAppStore = defineStore('app', () => {
   const currentStep = ref(0)
   const totalSteps = ref(STEP_KEYS.length)
   const theme = ref<ThemeMode>('auto')
+  /**
+   * Si sta ricopiando una scheda che esiste già invece di crearne una da zero.
+   * Non cambia i dati del personaggio: cambia solo cosa il generatore propone
+   * per primo, cioè i punteggi da scrivere invece dei dadi da tirare.
+   */
+  const transcribing = ref(false)
 
   function setLocale(lang: string) {
     locale.value = lang
@@ -62,6 +68,11 @@ export const useAppStore = defineStore('app', () => {
 
   function setStep(step: number) {
     currentStep.value = step
+  }
+
+  /** Entra (o esce) dalla trascrizione di una scheda già esistente. */
+  function setTranscribing(on: boolean) {
+    transcribing.value = on
   }
 
   function nextStep() {
@@ -92,13 +103,16 @@ export const useAppStore = defineStore('app', () => {
   }
 
   return {
-    locale, currentStep, totalSteps, theme,
-    setLocale, setTheme, setStep, nextStep, prevStep, resetSteps, clampStepToProgress,
+    locale, currentStep, totalSteps, theme, transcribing,
+    setLocale, setTheme, setStep, setTranscribing, nextStep, prevStep, resetSteps, clampStepToProgress,
   }
 }, {
   persist: {
     // `currentStep` è persistito perché ricaricando la pagina si tornava al
-    // primo passo pur avendo ancora il personaggio in corso.
-    pick: ['locale', 'theme', 'currentStep'],
+    // primo passo pur avendo ancora il personaggio in corso. `transcribing`
+    // sta con lui: il personaggio in corso sopravvive al ricaricamento, e
+    // ritrovarsi il tiro di dadi al posto dei campi da riempire a metà
+    // trascrizione sarebbe la stessa perdita di contesto.
+    pick: ['locale', 'theme', 'currentStep', 'transcribing'],
   },
 })

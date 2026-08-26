@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
+import { useAppStore } from '@/stores/app'
 import type { AbilityScores } from '@/stores/character'
 import { rollAbilityScores, STANDARD_ARRAY, POINT_BUY_COSTS, pointBuyRemaining } from '@/utils/diceRoller'
 import { getMaxLevel } from '@/data'
@@ -11,6 +12,7 @@ import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 const { t } = useI18n()
 const characterStore = useCharacterStore()
+const appStore = useAppStore()
 
 // The starting level is picked here because the class step needs it to know
 // whether the character has reached its subclass level yet.
@@ -22,8 +24,13 @@ function clampLevel() {
   characterStore.syncClassAndLevel()
 }
 
-type Method = 'standard' | 'pointbuy' | 'roll'
-const method = ref<Method>('standard')
+// 'manual' = i punteggi si scrivono, non si generano: è il modo di ricopiare
+// una scheda che esiste già su carta, dove i tiri sono stati fatti al tavolo.
+type Method = 'standard' | 'pointbuy' | 'roll' | 'manual'
+// Chi è entrato da "Ricopia una scheda" ha i punteggi già davanti: trovarsi
+// l'array standard e doverlo scavalcare a ogni scheda era il pedaggio che
+// quel pulsante serve a togliere.
+const method = ref<Method>(appStore.transcribing ? 'manual' : 'standard')
 const abilities: (keyof AbilityScores)[] = ['str', 'dex', 'con', 'int', 'wis', 'cha']
 const rolledScores = ref<number[]>([])
 const assignedRolls = ref<Record<keyof AbilityScores, number | null>>({
@@ -139,6 +146,20 @@ function setMethod(m: Method) {
       characterStore.character.abilityScores[a] = pointBuyScores.value[a]
     }
   }
+  // 'manual' non tocca nulla di proposito: chi arriva qui ha già dei punteggi
+  // (di partenza, tirati o comprati) e li corregge uno per uno. Azzerarli
+  // costringerebbe a riscrivere anche quelli che erano già giusti.
+}
+
+/**
+ * Punteggio scritto a mano. Il campo numerico lascia passare di tutto —
+ * vuoto, testo, 200, -3 — e quel che entra qui finisce nei modificatori, nella
+ * CA e sul PDF: si limita a 1-30, la stessa finestra che l'import già impone.
+ */
+function setManualScore(ability: keyof AbilityScores, raw: string) {
+  const parsed = Number.parseInt(raw, 10)
+  if (Number.isNaN(parsed)) return
+  characterStore.character.abilityScores[ability] = Math.min(30, Math.max(1, parsed))
 }
 </script>
 
@@ -156,9 +177,9 @@ function setMethod(m: Method) {
     </div>
 
     <!-- Method Selection -->
-    <div class="flex gap-2 mb-6" role="radiogroup" :aria-label="t('abilities.method')">
+    <div class="flex flex-wrap gap-2 mb-6" role="radiogroup" :aria-label="t('abilities.method')">
       <button
-        v-for="m in (['standard', 'pointbuy', 'roll'] as Method[])"
+        v-for="m in (['standard', 'pointbuy', 'roll', 'manual'] as Method[])"
         :key="m"
         @click="setMethod(m)"
         class="px-4 py-2 rounded-lg text-sm font-medium transition-colors cursor-pointer"
@@ -166,9 +187,12 @@ function setMethod(m: Method) {
         role="radio"
         :aria-checked="method === m"
       >
-        {{ t(`abilities.${m === 'pointbuy' ? 'pointBuy' : m === 'standard' ? 'standardArray' : 'roll'}`) }}
+        {{ t(`abilities.${m === 'pointbuy' ? 'pointBuy' : m === 'standard' ? 'standardArray' : m === 'manual' ? 'manualEntry' : 'roll'}`) }}
       </button>
     </div>
+
+    <!-- Manual entry hint -->
+    <p v-if="method === 'manual'" class="mb-4 text-sm text-stone-400">{{ t('abilities.manualHint') }}</p>
 
     <!-- Point Buy remaining -->
     <div v-if="method === 'pointbuy'" class="mb-4 text-sm font-medium"
@@ -252,6 +276,21 @@ function setMethod(m: Method) {
               {{ rolledScores[assignedRolls[ability]!] }} (current)
             </option>
           </select>
+        </div>
+
+        <!-- Manual entry: il punteggio della scheda, scritto com'è -->
+        <div v-else-if="method === 'manual'">
+          <input
+            :id="`manual-${ability}`"
+            :value="characterStore.character.abilityScores[ability]"
+            @input="setManualScore(ability, ($event.target as HTMLInputElement).value)"
+            type="number"
+            min="1"
+            max="30"
+            inputmode="numeric"
+            class="w-full bg-stone-700 text-stone-200 rounded px-2 py-1 text-sm"
+            :aria-label="t(`abilities.${ability}`)"
+          />
         </div>
 
         <!-- Calculated Values -->

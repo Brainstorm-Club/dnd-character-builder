@@ -168,6 +168,38 @@ describe('computeArmorClass', () => {
     expect(computeArmorClass(withArmor('', 16, true))).toBe(15)
   })
 
+  /**
+   * La CA scritta a mano serve a ricopiare una scheda che esiste già, dove il
+   * numero viene da oggetti che qui non ci sono. Deve vincere sul listino, ma
+   * solo quando è stata davvero dichiarata: 0 e assente valgono "calcolala".
+   */
+  describe('CA dichiarata a mano', () => {
+    it('vince sul calcolo da armatura e scudo', () => {
+      const char = withArmor('Leather', 12) as CharacterData // calcolata: 11 + 1 = 12
+      expect(computeArmorClass(char)).toBe(12)
+      char.armorClassOverride = 18
+      expect(computeArmorClass(char)).toBe(18)
+    })
+
+    it('vince anche sulla Difesa senza Armatura', () => {
+      const char = withArmor('', 16) as CharacterData
+      char.className = 'monk'
+      char.abilityScores.wis = 16
+      expect(computeArmorClass(char)).toBe(16)
+      char.armorClassOverride = 21
+      expect(computeArmorClass(char)).toBe(21)
+    })
+
+    it('0 e assente lasciano il calcolo di sempre', () => {
+      const char = withArmor('Plate', 16, true) as CharacterData
+      expect(computeArmorClass(char)).toBe(20)
+      char.armorClassOverride = 0
+      expect(computeArmorClass(char)).toBe(20)
+      delete char.armorClassOverride
+      expect(computeArmorClass(char)).toBe(20)
+    })
+  })
+
   it('tiene conto dei bonus razziali alla Destrezza', () => {
     const char = withArmor('Leather', 14) as CharacterData
     char.racialBonuses = { dex: 2 }

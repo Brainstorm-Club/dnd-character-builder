@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
 import { getRaces, getApocalisseRules, getWhacksLevels, getMaxLevel } from '@/data'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
+import ManualSheetValues from '@/components/shared/ManualSheetValues.vue'
 import { useGameTerms } from '@/composables/useGameTerms'
 
 const { t, locale } = useI18n()
@@ -174,20 +175,9 @@ function updateLevel() {
         class="bsc-input bg-stone-800 border-stone-700 rounded-lg p-3 text-stone-200 text-sm focus:border-amber-500 focus:outline-none" />
     </div>
 
-    <!-- HP Summary -->
-    <div class="mt-6 bg-stone-800 border border-stone-700 rounded-lg p-4">
-      <h3 class="font-gothic font-semibold text-stone-300 mb-2">{{ t('review.hp') }}</h3>
-      <div class="flex gap-6 text-sm">
-        <div>
-          <span class="text-stone-400">{{ t('review.maxHp') }}:</span>
-          <span class="text-amber-400 font-bold ml-1">{{ characterStore.character.maxHp }}</span>
-        </div>
-        <div>
-          <span class="text-stone-400">{{ t('review.hitDie') }}:</span>
-          <span class="text-stone-200 ml-1">{{ characterStore.character.level }}d{{ characterStore.character.hitDie }}</span>
-        </div>
-      </div>
-    </div>
+    <!-- Valori della scheda: il riepilogo dei PF era di sola lettura, e chi
+         ricopiava una scheda esistente non aveva dove scrivere i propri. -->
+    <ManualSheetValues />
 
     <!-- ═══ BRANCALONIA: Brawling & Size ═══ -->
     <div v-if="isBrancalonia" class="mt-6 bg-stone-800 border border-amber-700/30 rounded-lg p-4" role="region" :aria-label="t('details.brawling')">

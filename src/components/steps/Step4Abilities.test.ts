@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCharacterStore } from '@/stores/character'
+import { useAppStore } from '@/stores/app'
 import type { AbilityScores } from '@/stores/character'
 import { preloadVariantData } from '@/data'
 import Step4Abilities from './Step4Abilities.vue'
@@ -119,3 +120,103 @@ describe('passo Caratteristiche — da dove viene il bonus', () => {
     expect(wrapper.text()).not.toContain('abilities.backgroundBonus')
   })
 })
+
+
+/**
+ * Il metodo "a mano" esiste per ricopiare una scheda che c'è già: i punteggi
+ * si scrivono, non si generano. Prima l'unico modo di ottenere un 17 era
+ * tirarlo, e chi trascriveva una scheda restava fermo.
+ */
+describe('passo Caratteristiche — punteggi scritti a mano', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+  })
+  beforeEach(() => setActivePinia(createPinia()))
+
+  /** I sei campi numerici del metodo a mano, nell'ordine FOR DES COS INT SAG CAR. */
+  function manualInputs(wrapper: ReturnType<typeof mountStep>['wrapper']) {
+    return wrapper.findAll('input[id^="manual-"]')
+  }
+
+  it('offre un quarto metodo accanto ad array, acquisto e tiro', () => {
+    const { wrapper } = mountStep()
+    const buttons = methodButtons(wrapper)
+    expect(buttons).toHaveLength(4)
+    expect(buttons[3]!.text()).toContain('abilities.manualEntry')
+  })
+
+  it('scriverli li porta in scheda uno per uno', async () => {
+    const { store, wrapper } = mountStep()
+    await methodButtons(wrapper)[3]!.trigger('click')
+
+    const inputs = manualInputs(wrapper)
+    expect(inputs).toHaveLength(6)
+
+    const scheda = [17, 15, 14, 12, 10, 8]
+    for (let i = 0; i < inputs.length; i++) {
+      await inputs[i]!.setValue(String(scheda[i]))
+    }
+
+    expect(store.character.abilityScores).toEqual({
+      str: 17, dex: 15, con: 14, int: 12, wis: 10, cha: 8,
+    })
+  })
+
+  it('non richiede nessun tiro di dadi', async () => {
+    const { wrapper } = mountStep()
+    await methodButtons(wrapper)[3]!.trigger('click')
+    expect(wrapper.text()).not.toContain('abilities.rollDice')
+  })
+
+  it('sceglierlo non azzera i punteggi già in scheda', async () => {
+    const { store, wrapper } = mountStep()
+    store.character.abilityScores = { str: 15, dex: 14, con: 13, int: 12, wis: 10, cha: 8 }
+    await methodButtons(wrapper)[3]!.trigger('click')
+    expect(store.character.abilityScores).toEqual({
+      str: 15, dex: 14, con: 13, int: 12, wis: 10, cha: 8,
+    })
+  })
+
+  it('taglia a 1-30 quello che il campo numerico lascia passare', async () => {
+    const { store, wrapper } = mountStep()
+    await methodButtons(wrapper)[3]!.trigger('click')
+    const inputs = manualInputs(wrapper)
+
+    await inputs[0]!.setValue('200')
+    expect(store.character.abilityScores.str).toBe(30)
+
+    await inputs[1]!.setValue('-4')
+    expect(store.character.abilityScores.dex).toBe(1)
+  })
+
+  it('un campo svuotato lascia in scheda l\'ultimo valore buono', async () => {
+    // Cancellando la cifra per riscriverla il campo passa '' un istante: uno
+    // zero scritto in scheda a metà digitazione sarebbe un punteggio illegale.
+    const { store, wrapper } = mountStep()
+    store.character.abilityScores.str = 16
+    await methodButtons(wrapper)[3]!.trigger('click')
+
+    await manualInputs(wrapper)[0]!.setValue('')
+
+    expect(store.character.abilityScores.str).toBe(16)
+  })
+
+  it('chi entra da "Ricopia una scheda" lo trova già scelto', () => {
+    // Senza questo il pulsante in home portava comunque all'array standard, e
+    // il metodo andava scavalcato a mano a ogni scheda ricopiata.
+    useAppStore().setTranscribing(true)
+    const { wrapper } = mountStep()
+
+    expect(wrapper.findAll('input[id^="manual-"]')).toHaveLength(6)
+    expect(methodButtons(wrapper)[3]!.attributes('aria-checked')).toBe('true')
+  })
+
+  it('chi entra da "Da Zero" trova l\'array standard come sempre', () => {
+    useAppStore().setTranscribing(false)
+    const { wrapper } = mountStep()
+
+    expect(wrapper.findAll('input[id^="manual-"]')).toHaveLength(0)
+    expect(methodButtons(wrapper)[0]!.attributes('aria-checked')).toBe('true')
+  })
+})
+
