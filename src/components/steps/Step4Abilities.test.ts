@@ -3,6 +3,7 @@ import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCharacterStore } from '@/stores/character'
+import { useAppStore } from '@/stores/app'
 import type { AbilityScores } from '@/stores/character'
 import { preloadVariantData } from '@/data'
 import Step4Abilities from './Step4Abilities.vue'
@@ -199,4 +200,23 @@ describe('passo Caratteristiche — punteggi scritti a mano', () => {
 
     expect(store.character.abilityScores.str).toBe(16)
   })
+
+  it('chi entra da "Ricopia una scheda" lo trova già scelto', () => {
+    // Senza questo il pulsante in home portava comunque all'array standard, e
+    // il metodo andava scavalcato a mano a ogni scheda ricopiata.
+    useAppStore().setTranscribing(true)
+    const { wrapper } = mountStep()
+
+    expect(wrapper.findAll('input[id^="manual-"]')).toHaveLength(6)
+    expect(methodButtons(wrapper)[3]!.attributes('aria-checked')).toBe('true')
+  })
+
+  it('chi entra da "Da Zero" trova l\'array standard come sempre', () => {
+    useAppStore().setTranscribing(false)
+    const { wrapper } = mountStep()
+
+    expect(wrapper.findAll('input[id^="manual-"]')).toHaveLength(0)
+    expect(methodButtons(wrapper)[0]!.attributes('aria-checked')).toBe('true')
+  })
 })
+

@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
+import { useAppStore } from '@/stores/app'
 import type { AbilityScores } from '@/stores/character'
 import { rollAbilityScores, STANDARD_ARRAY, POINT_BUY_COSTS, pointBuyRemaining } from '@/utils/diceRoller'
 import { getMaxLevel } from '@/data'
@@ -11,6 +12,7 @@ import VariantPromo from '@/components/shared/VariantPromo.vue'
 
 const { t } = useI18n()
 const characterStore = useCharacterStore()
+const appStore = useAppStore()
 
 // The starting level is picked here because the class step needs it to know
 // whether the character has reached its subclass level yet.
@@ -25,7 +27,10 @@ function clampLevel() {
 // 'manual' = i punteggi si scrivono, non si generano: è il modo di ricopiare
 // una scheda che esiste già su carta, dove i tiri sono stati fatti al tavolo.
 type Method = 'standard' | 'pointbuy' | 'roll' | 'manual'
-const method = ref<Method>('standard')
+// Chi è entrato da "Ricopia una scheda" ha i punteggi già davanti: trovarsi
+// l'array standard e doverlo scavalcare a ogni scheda era il pedaggio che
+// quel pulsante serve a togliere.
+const method = ref<Method>(appStore.transcribing ? 'manual' : 'standard')
 const abilities: (keyof AbilityScores)[] = ['str', 'dex', 'con', 'int', 'wis', 'cha']
 const rolledScores = ref<number[]>([])
 const assignedRolls = ref<Record<keyof AbilityScores, number | null>>({

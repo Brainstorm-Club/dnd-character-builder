@@ -22,9 +22,12 @@ const fileInputBrancalonia = ref<HTMLInputElement | null>(null)
 const fileInputApocalisse = ref<HTMLInputElement | null>(null)
 const importMessage = ref<{ type: 'error' | 'warning' | 'success'; text: string } | null>(null)
 
-async function startNew(variant: GameVariant) {
+async function startNew(variant: GameVariant, transcribe = false) {
   characterStore.resetCharacter()
   characterStore.character.variant = variant
+  // Ricopiare una scheda e crearne una da zero sono lo stesso percorso: cambia
+  // il punto di partenza delle caratteristiche, scritte invece che generate.
+  appStore.setTranscribing(transcribe)
   // WSG 3.8: Load only race data for Step 2 (rest loaded per step)
   await ensureStepData(variant, 1)
   // Skip Step1 (variant selection) — already chosen from the home card
@@ -33,6 +36,9 @@ async function startNew(variant: GameVariant) {
 }
 
 async function randomChar(variant: GameVariant) {
+  // Un personaggio tirato a sorte non è una scheda da ricopiare: il modo va
+  // spento, altrimenti resterebbe acceso da una visita precedente.
+  appStore.setTranscribing(false)
   // WSG 3.8: Preload data before generating random character
   await preloadVariantData(variant)
   const char = generateRandomCharacter(variant)
@@ -43,6 +49,8 @@ async function randomChar(variant: GameVariant) {
 
 function triggerImport(variant: GameVariant) {
   importMessage.value = null
+  // Vale anche per il JSON: la scheda arriva già completa, non si trascrive.
+  appStore.setTranscribing(false)
   const refs = { dnd5e: fileInputDnd5e, dnd2024: fileInputDnd2024, brancalonia: fileInputBrancalonia, apocalisse: fileInputApocalisse }
   refs[variant].value?.click()
 }
@@ -163,6 +171,13 @@ const variants = HOME_VARIANT_ORDER.map(v => VARIANT_INFO[v])
             :class="['w-full px-4 py-2.5 font-semibold rounded-lg transition-colors cursor-pointer text-sm', v.button]"
           >
             <span aria-hidden="true">✨</span> {{ t('home.newFrom') }}
+          </button>
+
+          <button
+            @click="startNew(v.id, true)"
+            class="w-full px-4 py-2 bg-stone-700 hover:bg-stone-600 text-stone-200 rounded-lg transition-colors cursor-pointer text-sm border border-stone-600"
+          >
+            <span aria-hidden="true">📝</span> {{ t('home.copySheet') }}
           </button>
 
           <button

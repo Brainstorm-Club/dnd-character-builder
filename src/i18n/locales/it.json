@@ -21,7 +21,8 @@
     "savedCharacters": "Personaggi Salvati",
     "importJson": "Importa JSON",
     "newFrom": "Da Zero",
-    "randomDnd2024": "D&D 2024 casuale"
+    "randomDnd2024": "D&D 2024 casuale",
+    "copySheet": "Ricopia una Scheda"
   },
   "import": {
     "parseError": "Il file non contiene JSON valido. Assicurati che sia un file .json esportato dall'app.",

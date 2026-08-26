@@ -21,7 +21,8 @@
     "savedCharacters": "Saved Characters",
     "importJson": "Import JSON",
     "newFrom": "From Scratch",
-    "randomDnd2024": "Random D&D 2024"
+    "randomDnd2024": "Random D&D 2024",
+    "copySheet": "Copy a Sheet"
   },
   "import": {
     "parseError": "The file does not contain valid JSON. Make sure it is a .json file exported from this app.",

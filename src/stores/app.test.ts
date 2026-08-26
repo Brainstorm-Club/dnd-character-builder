@@ -94,6 +94,35 @@ describe('useAppStore', () => {
     expect(useAppStore().currentStep).toBe(5)
   })
 
+  describe('trascrizione di una scheda esistente', () => {
+    it('parte spenta', () => {
+      expect(useAppStore().transcribing).toBe(false)
+    })
+
+    it('si accende e si spegne', () => {
+      const store = useAppStore()
+      store.setTranscribing(true)
+      expect(store.transcribing).toBe(true)
+      store.setTranscribing(false)
+      expect(store.transcribing).toBe(false)
+    })
+
+    /**
+     * Il personaggio in corso sopravvive al ricaricamento: se il modo non lo
+     * facesse, chi ricarica a metà trascrizione ritroverebbe il tiro di dadi
+     * al posto dei campi da riempire.
+     */
+    it('sopravvive a un ricaricamento come il passo', async () => {
+      const storage = memoryStorage()
+      reload(storage)
+      useAppStore().setTranscribing(true)
+      await nextTick()
+
+      reload(storage)
+      expect(useAppStore().transcribing).toBe(true)
+    })
+  })
+
   describe('riallineamento del passo al personaggio', () => {
     it('senza variante non si va oltre il primo passo', () => {
       expect(furthestAllowedStep({})).toBe(0)
