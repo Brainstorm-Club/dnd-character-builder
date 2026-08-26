@@ -124,7 +124,9 @@
     "wis": "Wisdom",
     "cha": "Charisma",
     "startingLevel": "Starting Level",
-    "startingLevelHint": "From 1 to {max}. It decides which subclasses the Class step can offer."
+    "startingLevelHint": "From 1 to {max}. It decides which subclasses the Class step can offer.",
+    "manualEntry": "Enter by Hand",
+    "manualHint": "Type the scores exactly as they appear on the sheet you are copying. From 1 to 30, nothing to roll."
   },
   "background": {
     "title": "Choose Background",
@@ -1207,5 +1209,18 @@
     "source2014": "System Reference Document 5.1 (CC-BY-4.0).",
     "source2024": "System Reference Document 5.2.1 (CC-BY-4.0).",
     "italianOnly": "Text from the Italian edition."
+  },
+  "manual": {
+    "title": "Values from your sheet",
+    "hint": "Copying a sheet you already have? Fill in the values the builder would work out on its own: what you type here is what stays.",
+    "currentHp": "Current HP",
+    "tempHp": "Temporary HP",
+    "hpManualNotice": "HP entered by hand: no longer recalculated.",
+    "recomputeHp": "Recalculate from hit die",
+    "hpAutoNotice": "HP worked out from the hit die ({die}) and Constitution. Type one and it becomes yours.",
+    "acHint": "Leave 0 to use the one worked out from armor and shield: {ac}.",
+    "experiencePoints": "Experience Points",
+    "proficiencies": "Saving throw and skill proficiencies",
+    "proficienciesHint": "Class and background already grant some: add or remove whatever your sheet has on top of those."
   }
 }

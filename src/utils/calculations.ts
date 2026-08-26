@@ -71,7 +71,7 @@ export function findArmorById(armorId: string): ArmorData | undefined {
  */
 export type ArmorClassInput =
   Pick<CharacterData, 'armor' | 'shield' | 'abilityScores' | 'racialBonuses'>
-  & Partial<Pick<CharacterData, 'className' | 'classes' | 'armorId'>>
+  & Partial<Pick<CharacterData, 'className' | 'classes' | 'armorId' | 'armorClassOverride'>>
 
 /**
  * Classe Armatura completa: armatura indossata, limite di Destrezza della sua
@@ -80,6 +80,13 @@ export type ArmorClassInput =
  * ignorando del tutto armatura e scudo).
  */
 export function computeArmorClass(char: ArmorClassInput): number {
+  // Chi ricopia una scheda di carta ha davanti una CA già scritta, spesso
+  // figlia di oggetti magici che qui non esistono: se l'ha dichiarata, vale
+  // quella e il listino delle armature non ha voce in capitolo. 0 o assente =
+  // nessuna dichiarazione, si calcola come sempre.
+  const override = char.armorClassOverride ?? 0
+  if (override > 0) return override
+
   const dexMod = modifier(char.abilityScores.dex + (char.racialBonuses.dex || 0))
   // Il nome resta la fonte primaria, così il risultato è identico a quello di
   // prima per ogni scheda già esistente; lo slug interviene solo dove il nome

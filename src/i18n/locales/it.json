@@ -124,7 +124,9 @@
     "wis": "Saggezza",
     "cha": "Carisma",
     "startingLevel": "Livello di Partenza",
-    "startingLevelHint": "Da 1 a {max}. Determina quali sottoclassi potrai scegliere al passo Classe."
+    "startingLevelHint": "Da 1 a {max}. Determina quali sottoclassi potrai scegliere al passo Classe.",
+    "manualEntry": "A Mano",
+    "manualHint": "Scrivi i punteggi come sono sulla scheda che stai ricopiando. Da 1 a 30, senza tirare nulla."
   },
   "background": {
     "title": "Scegli il Background",
@@ -1207,5 +1209,18 @@
     "source2014": "System Reference Document 5.1 (CC-BY-4.0).",
     "source2024": "System Reference Document 5.2.1 (CC-BY-4.0).",
     "italianOnly": "Testo dall'edizione italiana."
+  },
+  "manual": {
+    "title": "Valori dalla scheda",
+    "hint": "Stai ricopiando una scheda che esiste già? Qui scrivi tu i valori che il generatore calcolerebbe da solo: restano quelli che hai scritto.",
+    "currentHp": "PF Attuali",
+    "tempHp": "PF Temporanei",
+    "hpManualNotice": "PF scritti a mano: non vengono più ricalcolati.",
+    "recomputeHp": "Ricalcola dal dado vita",
+    "hpAutoNotice": "PF calcolati dal dado vita ({die}) e dalla Costituzione. Scrivendone uno diventano tuoi.",
+    "acHint": "Lascia 0 per usare quella calcolata da armatura e scudo: {ac}.",
+    "experiencePoints": "Punti Esperienza",
+    "proficiencies": "Competenze in tiri salvezza e abilità",
+    "proficienciesHint": "Classe e background ne hanno già concesse: qui aggiungi o togli quelle che la tua scheda ha in più o in meno."
   }
 }

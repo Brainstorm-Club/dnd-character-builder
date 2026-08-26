@@ -843,3 +843,148 @@ describe('hasUnsavedWork', () => {
     expect(store.hasUnsavedWork).toBe(false)
   })
 })
+
+
+/**
+ * Trascrizione di una scheda già esistente: i punti ferita scritti a mano sono
+ * un dato del giocatore, non un derivato. Sulla carta vengono dai dadi tirati
+ * al tavolo, che quasi mai coincidono con la media usata dal generatore, e
+ * prima bastava ripassare dal livello per cancellarli.
+ */
+describe('PF scritti a mano', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+  })
+  beforeEach(() => setActivePinia(createPinia()))
+
+  /** Guerriero di 5° con COS 13 (+1), PF calcolati dal generatore. */
+  function fighterAt5() {
+    const store = useCharacterStore()
+    store.resetCharacter()
+    store.character.variant = 'dnd5e'
+    store.character.className = 'fighter'
+    store.character.abilityScores = { str: 16, dex: 14, con: 13, int: 10, wis: 12, cha: 8 }
+    store.character.level = 5
+    store.syncClassAndLevel()
+    return store
+  }
+
+  it('una scheda nuova nasce con i PF calcolati, non dichiarati', () => {
+    const store = useCharacterStore()
+    expect(store.character.hpManual).toBe(false)
+    expect(store.character.armorClassOverride).toBe(0)
+  })
+
+  it('syncClassAndLevel non li tocca più, ma riallinea livello e privilegi', () => {
+    const store = fighterAt5()
+    const calcolati = store.character.maxHp
+    expect(calcolati).toBeGreaterThan(0)
+
+    // Il giocatore ricopia il 47 che ha sulla scheda
+    store.character.maxHp = 47
+    store.character.currentHp = 47
+    store.character.hpManual = true
+
+    store.character.level = 6
+    store.syncClassAndLevel()
+
+    expect(store.character.maxHp).toBe(47)
+    expect(store.character.level).toBe(6)
+    expect(store.character.hitDie).toBe(10)
+    expect(store.character.maxHp).not.toBe(calcolati)
+  })
+
+  it('senza il contrassegno il ricalcolo resta quello di sempre', () => {
+    const store = fighterAt5()
+    store.character.maxHp = 47
+    store.character.level = 6
+    store.syncClassAndLevel()
+    expect(store.character.maxHp).not.toBe(47)
+  })
+
+  it('la salita di livello aggiunge il suo incremento anche ai PF dichiarati', () => {
+    // Al tavolo si tira comunque: il totale scritto a mano è la base, non un
+    // valore congelato.
+    const store = fighterAt5()
+    store.character.maxHp = 47
+    store.character.currentHp = 47
+    store.character.hpManual = true
+
+    const result = store.levelUp()
+    expect(result).not.toBeNull()
+    expect(store.character.maxHp).toBe(47 + result!.hpGained)
+  })
+
+  it('removeMulticlass riporta il livello ma lascia stare i PF dichiarati', () => {
+    const store = fighterAt5()
+    store.addMulticlass('wizard')
+    store.character.maxHp = 52
+    store.character.currentHp = 52
+    store.character.hpManual = true
+
+    store.removeMulticlass('wizard')
+
+    expect(store.character.level).toBe(5)
+    expect(store.character.maxHp).toBe(52)
+  })
+
+  it('togliendo il contrassegno i PF tornano quelli del dado vita', () => {
+    const store = fighterAt5()
+    const calcolati = store.character.maxHp
+    store.character.maxHp = 47
+    store.character.hpManual = true
+
+    store.character.hpManual = false
+    store.syncClassAndLevel()
+
+    expect(store.character.maxHp).toBe(calcolati)
+  })
+
+  it('una scheda salvata prima della trascrizione a mano prende i valori neutri', async () => {
+    const store = useCharacterStore()
+    const vecchia = { ...store.character, id: 'vecchia' } as Record<string, unknown>
+    delete vecchia.hpManual
+    delete vecchia.armorClassOverride
+    store.savedCharacters = [vecchia as unknown as CharacterData]
+    // La migrazione è un watcher: scatta al tick dopo l'idratazione.
+    await nextTick()
+
+    expect(store.savedCharacters[0]!.hpManual).toBe(false)
+    expect(store.savedCharacters[0]!.armorClassOverride).toBe(0)
+  })
+})
+
+/**
+ * L'import è testo che arriva da fuori: i due campi della trascrizione a mano
+ * hanno il whitelist ma non il tipo, e un `hpManual: "si"` congelerebbe i PF
+ * di chiunque apra quel file.
+ */
+describe('import dei valori scritti a mano', () => {
+  beforeAll(async () => {
+    await preloadVariantData('dnd5e')
+  })
+  beforeEach(() => setActivePinia(createPinia()))
+
+  function importa(extra: Record<string, unknown>) {
+    const store = useCharacterStore()
+    return store.importJson(JSON.stringify({ ...makeMinimalCharacter(), ...extra })).data
+  }
+
+  it('accetta i valori ben formati', () => {
+    const data = importa({ hpManual: true, armorClassOverride: 18 })
+    expect(data.hpManual).toBe(true)
+    expect(data.armorClassOverride).toBe(18)
+  })
+
+  it('scarta i tipi sbagliati tornando ai valori neutri', () => {
+    const data = importa({ hpManual: 'si', armorClassOverride: 'tanta' })
+    expect(data.hpManual).toBe(false)
+    expect(data.armorClassOverride).toBe(0)
+  })
+
+  it('scarta una CA fuori scala o non intera', () => {
+    expect(importa({ armorClassOverride: -3 }).armorClassOverride).toBe(0)
+    expect(importa({ armorClassOverride: 500 }).armorClassOverride).toBe(0)
+    expect(importa({ armorClassOverride: 12.5 }).armorClassOverride).toBe(0)
+  })
+})
