@@ -15,7 +15,10 @@ export const brancaloniaSpells: readonly Spell[] = [
     id: 'dreadful-tale',
     name: 'Dreadful Tale',
     level: 1,
-    school: 'Transmutation',
+    // Macaronicon 2.2: la tabella riassuntiva e l'intestazione della scheda
+    // dicono tutt'e due «Ammaliamento». Qui c'era Transmutation, e il
+    // companion se l'e' portata dietro nel suo pacchetto di Brancalonia.
+    school: 'Enchantment',
     castingTime: '1 bonus action',
     range: '90 feet',
     components: 'V',

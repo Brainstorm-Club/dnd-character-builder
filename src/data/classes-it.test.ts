@@ -18,6 +18,41 @@ const brancaIds = [
 ]
 
 describe('descrizioni italiane di sottoclassi e privilegi', () => {
+  /**
+   * Tre id sono condivisi da due classi diverse — `archetype-feature-7` e
+   * `-15` fra guerriero e ranger, `tradition-feature-6` fra monaco e mago —
+   * e questa mappa è indicizzata per solo id. Una descrizione che lì nomina
+   * una sottoclasse ne nomina una sbagliata per una delle due: il mago si
+   * leggeva «un privilegio concesso dal suo Tradizione Monastica».
+   */
+  it('non nomina una sottoclasse dove l\'id è condiviso da due classi', async () => {
+    const { classes } = await import('./dnd5e/classes')
+    const { dnd5eFeatureDescriptionsIt: d } = await import('./dnd5e/classes-it')
+
+    const classiPerId = new Map<string, string[]>()
+    for (const c of classes) {
+      for (const f of c.features ?? []) {
+        classiPerId.set(f.id, [...(classiPerId.get(f.id) ?? []), c.id])
+      }
+    }
+
+    const sottoclassi = [
+      'Cammino Primordiale', 'Collegio Bardico', 'Dominio Divino', 'Circolo Druidico',
+      'Archetipo Marziale', 'Archetipo del Ladro', 'Archetipo del Ranger',
+      'Tradizione Arcana', 'Tradizione Monastica', 'Giuramento Sacro',
+      'Origine Stregonesca', 'Patrono Ultraterreno',
+    ]
+    const colpevoli: string[] = []
+    for (const [id, cls] of classiPerId) {
+      if (cls.length < 2) continue
+      const testo = d[id]
+      if (!testo) continue
+      const nominata = sottoclassi.find(s => testo.includes(s))
+      if (nominata) colpevoli.push(`${id} (${cls.join(', ')}) dice «${nominata}»`)
+    }
+    expect(colpevoli).toEqual([])
+  })
+
   it('copre ogni sottoclasse e privilegio di Apocalisse', () => {
     for (const id of apoIds) {
       expect(apocalisseFeatureDescriptionsIt[id], `manca la descrizione di ${id}`).toBeDefined()

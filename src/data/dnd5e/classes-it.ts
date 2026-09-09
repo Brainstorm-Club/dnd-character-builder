@@ -25,6 +25,23 @@ const EXTRA_ATTACK =
 const subclassFeature = (cls: string, lv: number) =>
   `Il personaggio ottiene un privilegio concesso dal suo ${cls} al ${lv}° livello.`
 
+/**
+ * Lo stesso privilegio, senza nominare la sottoclasse.
+ *
+ * Questa mappa è indicizzata per **solo id**, e tre id sono condivisi da due
+ * classi diverse: `archetype-feature-7` e `-15` fra guerriero e ranger,
+ * `tradition-feature-6` fra monaco e mago. Nominare lì una sottoclasse vuol
+ * dire nominarne una sbagliata per una delle due — il mago si leggeva «un
+ * privilegio concesso dal suo Tradizione Monastica».
+ *
+ * Gli id non si possono rinominare: stanno dentro i personaggi già salvati.
+ * Quindi dove sono ambigui la descrizione dice il vero senza specificare, e il
+ * nome della riga — che viene da `gameTerms` e *è* distinto per classe —
+ * continua a dire di quale sottoclasse si tratta.
+ */
+const subclassFeatureAmbigua = (lv: number) =>
+  `Il personaggio ottiene un privilegio concesso dalla sua sottoclasse al ${lv}° livello.`
+
 export const dnd5eFeatureDescriptionsIt: Record<string, string> = {
   // ═══ Barbaro ══════════════════════════════════════════════════════
   rage:
@@ -168,7 +185,7 @@ export const dnd5eFeatureDescriptionsIt: Record<string, string> = {
     'Il guerriero sceglie un archetipo marziale che cerca di emulare nei propri stili e nelle proprie tecniche di combattimento.',
   'extra-attack-fighter': EXTRA_ATTACK,
   'asi-6': ASI,
-  'archetype-feature-7': subclassFeature('Archetipo Marziale', 7),
+  'archetype-feature-7': subclassFeatureAmbigua(7),      // anche del ranger
   'indomitable-1':
     'Il guerriero può ripetere un tiro salvezza fallito e deve usare il nuovo risultato. Recupera l\'utilizzo con un riposo lungo.',
   'archetype-feature-10': subclassFeature('Archetipo Marziale', 10),
@@ -177,7 +194,7 @@ export const dnd5eFeatureDescriptionsIt: Record<string, string> = {
   'indomitable-2':
     'Il guerriero può usare Indomabile due volte fra un riposo lungo e l\'altro.',
   'asi-14': ASI,
-  'archetype-feature-15': subclassFeature('Archetipo Marziale', 15),
+  'archetype-feature-15': subclassFeatureAmbigua(15),    // anche del ranger
   'action-surge-2':
     'Il guerriero può usare Azione Impetuosa due volte prima di un riposo, ma solo una volta per turno.',
   'indomitable-3':
@@ -250,7 +267,7 @@ export const dnd5eFeatureDescriptionsIt: Record<string, string> = {
     'Quando colpisce un\'altra creatura con un attacco in mischia con un\'arma, il monaco può spendere 1 punto ki per tentare un colpo stordente. Il bersaglio deve superare un tiro salvezza su Costituzione, altrimenti è stordito fino alla fine del turno successivo del monaco.',
   'ki-empowered-strikes':
     'I colpi senz\'armi del monaco contano come magici ai fini del superamento della resistenza e dell\'immunità ad attacchi e danni non magici.',
-  'tradition-feature-6': subclassFeature('Tradizione Monastica', 6),
+  'tradition-feature-6': subclassFeatureAmbigua(6),      // anche del mago
   'evasion-monk':
     'Quando il monaco è soggetto a un effetto che consente un tiro salvezza su Destrezza per dimezzare i danni, non subisce alcun danno se lo supera e ne subisce metà se lo fallisce.',
   'stillness-of-mind':
