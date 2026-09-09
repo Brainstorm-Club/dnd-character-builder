@@ -50,6 +50,8 @@ export interface AttaccoArma {
   name: string
   attackBonus: number
   damage: string
+  /** Bonus magico dell'arma; assente per le armi comuni. */
+  magicBonus?: number
 }
 
 /**
@@ -120,14 +122,20 @@ export function formattaDanno(danno: string, mod: number): string {
  * stringa del danno. Dà per scontata la competenza nell'arma, come facevano
  * entrambe le implementazioni che questa funzione sostituisce.
  */
-export function calcolaAttacco(arma: ArmaBase, mods: ModificatoriAttacco): AttaccoArma {
+export function calcolaAttacco(
+  arma: ArmaBase,
+  mods: ModificatoriAttacco,
+  magicBonus = 0,
+): AttaccoArma {
   const daMonaco = mods.artiMarziali === true && isArmaDaMonaco(arma.name, arma.properties)
   const mod = modificatoreAttacco(arma.properties, mods.strMod, mods.dexMod, { armaDaMonaco: daMonaco })
-  return {
+  const result: AttaccoArma = {
     name: arma.name,
-    attackBonus: mods.proficiencyBonus + mod,
-    damage: formattaDanno(arma.damage, mod),
+    attackBonus: mods.proficiencyBonus + mod + magicBonus,
+    damage: formattaDanno(arma.damage, mod + magicBonus),
   }
+  if (magicBonus > 0) result.magicBonus = magicBonus
+  return result
 }
 
 /**
@@ -141,9 +149,10 @@ export function attaccoPerNome(
   name: string,
   catalogo: readonly ArmaBase[],
   mods: ModificatoriAttacco,
+  magicBonus = 0,
 ): AttaccoArma {
   const arma = catalogo.find(w => w.name === name)
-  return calcolaAttacco(arma ?? { name, damage: '', properties: [] }, mods)
+  return calcolaAttacco(arma ?? { name, damage: '', properties: [] }, mods, magicBonus)
 }
 
 /**
@@ -165,6 +174,6 @@ export function ricalcolaArmi(
 ): AttaccoArma[] {
   return weapons.map(w => {
     const arma = catalogo.find(c => c.name === w.name)
-    return arma ? calcolaAttacco(arma, mods) : { ...w }
+    return arma ? calcolaAttacco(arma, mods, w.magicBonus) : { ...w }
   })
 }

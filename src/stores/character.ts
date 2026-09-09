@@ -18,6 +18,8 @@ export interface Weapon {
   name: string
   attackBonus: number
   damage: string
+  /** Bonus magico dell'arma (+1, +2 o +3), già incluso in attacco e danno. */
+  magicBonus?: number
 }
 
 export interface ClassEntry {
@@ -1042,11 +1044,18 @@ export const useCharacterStore = defineStore('character', () => {
 
     // Validate weapons array contents
     if (Array.isArray(safeRaw.weapons)) {
-      safeRaw.weapons = (safeRaw.weapons as unknown[]).filter((w): w is Weapon =>
-        typeof w === 'object' && w !== null &&
-        typeof (w as Record<string, unknown>).name === 'string' &&
-        typeof (w as Record<string, unknown>).damage === 'string'
-      )
+      safeRaw.weapons = (safeRaw.weapons as unknown[])
+        .filter((w): w is Weapon =>
+          typeof w === 'object' && w !== null &&
+          typeof (w as Record<string, unknown>).name === 'string' &&
+          typeof (w as Record<string, unknown>).damage === 'string'
+        )
+        .map(w => {
+          const bonus = w.magicBonus
+          return bonus === 1 || bonus === 2 || bonus === 3
+            ? w
+            : { name: w.name, attackBonus: w.attackBonus, damage: w.damage }
+        })
     }
 
     // Validate classes array contents

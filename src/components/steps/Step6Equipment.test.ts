@@ -98,4 +98,22 @@ describe('passo Equipaggiamento — la scheda caricata non viene cancellata', ()
     expect(weaponButton(wrapper, first!.name).attributes('aria-pressed')).toBe('true')
     expect(weaponButton(wrapper, second!.name).attributes('aria-pressed')).toBe('false')
   })
+
+  it("applica il bonus di un'arma magica al tiro per colpire e al danno", async () => {
+    const eq = getEquipment('dnd5e')
+    const weapon = eq.simpleWeapons[0]!
+    const { store, wrapper } = mountStep()
+    store.character.level = 1
+    store.character.abilityScores.str = 16
+
+    await weaponButton(wrapper, weapon.name).trigger('click')
+    await wrapper.find('select[id^="magic-bonus-"]').setValue('1')
+
+    expect(store.character.weapons[0]).toEqual({
+      name: weapon.name,
+      attackBonus: 6,
+      damage: `${weapon.damage}+4`,
+      magicBonus: 1,
+    })
+  })
 })

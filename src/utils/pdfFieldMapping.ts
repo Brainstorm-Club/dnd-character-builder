@@ -307,7 +307,7 @@ export function getDnd5eFieldMapping(char: CharacterData, uiLocale = 'en'): Reco
   const WPN_DMG = ['Wpn1 Damage', 'Wpn2 Damage ', 'Wpn3 Damage ', 'Wpn4 Damage', 'Wpn5 Damage']
   for (let i = 0; i < Math.min(char.weapons.length, 5); i++) {
     const wpn = char.weapons[i]!
-    fields[WPN_NAME[i]!] = translateGameTerm(wpn.name, loc, 'weapon')
+    fields[WPN_NAME[i]!] = `${translateGameTerm(wpn.name, loc, 'weapon')}${wpn.magicBonus ? ` +${wpn.magicBonus}` : ''}`
     // attackBonus is already the final number, proficiency and ability included
     fields[WPN_ATK[i]!] = formatModifier(wpn.attackBonus)
     fields[WPN_DMG[i]!] = wpn.damage
@@ -520,7 +520,7 @@ export function getBrancaloniaFieldMapping(char: CharacterData): Record<string, 
   // Weapons (up to 3)
   for (let i = 0; i < Math.min(char.weapons.length, 3); i++) {
     const wpn = char.weapons[i]!
-    fields[`Arma ${i + 1}`] = translateGameTerm(wpn.name, 'it', 'weapon')
+    fields[`Arma ${i + 1}`] = `${translateGameTerm(wpn.name, 'it', 'weapon')}${wpn.magicBonus ? ` +${wpn.magicBonus}` : ''}`
     fields[`Bonus ${i + 1}`] = formatModifier(wpn.attackBonus)
     fields[`Danno ${i + 1}`] = wpn.damage
   }
@@ -657,7 +657,7 @@ export function getApocalisseFieldMapping(char: CharacterData): Record<string, s
   // ── Armi: la scheda ne stampa tre ──
   for (let i = 0; i < 3; i++) {
     const w = char.weapons[i]
-    f[`arma${i + 1}-nome`] = w ? it(w.name, 'weapon') : ''
+    f[`arma${i + 1}-nome`] = w ? `${it(w.name, 'weapon')}${w.magicBonus ? ` +${w.magicBonus}` : ''}` : ''
     f[`arma${i + 1}-bonus`] = w ? formatModifier(w.attackBonus) : ''
     f[`arma${i + 1}-danni`] = w ? w.damage : ''
   }
