@@ -127,7 +127,8 @@
     "startingLevel": "Livello di Partenza",
     "startingLevelHint": "Da 1 a {max}. Determina quali sottoclassi potrai scegliere al passo Classe.",
     "manualEntry": "A Mano",
-    "manualHint": "Scrivi i punteggi come sono sulla scheda che stai ricopiando. Da 1 a 30, senza tirare nulla."
+    "manualHint": "Scrivi i punteggi di partenza, prima dei bonus di specie: quelli li aggiunge l'app.",
+    "manualHintTranscribing": "Scrivi i punteggi come sono sulla scheda, bonus di specie compresi. Se scegli la specie dopo, i totali non si muovono."
   },
   "background": {
     "title": "Scegli il Background",

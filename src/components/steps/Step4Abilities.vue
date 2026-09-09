@@ -156,10 +156,22 @@ function setMethod(m: Method) {
  * vuoto, testo, 200, -3 — e quel che entra qui finisce nei modificatori, nella
  * CA e sul PDF: si limita a 1-30, la stessa finestra che l'import già impone.
  */
+/**
+ * Il numero scritto a mano.
+ *
+ * Ricopiando una scheda è il **totale**, bonus di specie compreso: è quello
+ * che c'è sulla carta, ed è quello che il suggerimento chiede di scrivere.
+ * Prima finiva nella base e il bonus veniva contato due volte — una perché era
+ * già dentro il numero copiato, una perché l'app ce lo sommava. Creando un
+ * personaggio da zero, invece, il punteggio scritto è quello di partenza e il
+ * bonus arriva dopo: sono due cose diverse, e adesso i due suggerimenti lo
+ * dicono.
+ */
 function setManualScore(ability: keyof AbilityScores, raw: string) {
   const parsed = Number.parseInt(raw, 10)
   if (Number.isNaN(parsed)) return
-  characterStore.character.abilityScores[ability] = Math.min(30, Math.max(1, parsed))
+  if (appStore.transcribing) characterStore.setTotalAbilityScore(ability, parsed)
+  else characterStore.character.abilityScores[ability] = Math.min(30, Math.max(1, parsed))
 }
 </script>
 
@@ -192,7 +204,9 @@ function setManualScore(ability: keyof AbilityScores, raw: string) {
     </div>
 
     <!-- Manual entry hint -->
-    <p v-if="method === 'manual'" class="mb-4 text-sm text-stone-400">{{ t('abilities.manualHint') }}</p>
+    <p v-if="method === 'manual'" class="mb-4 text-sm text-stone-400">
+      {{ appStore.transcribing ? t('abilities.manualHintTranscribing') : t('abilities.manualHint') }}
+    </p>
 
     <!-- Point Buy remaining -->
     <div v-if="method === 'pointbuy'" class="mb-4 text-sm font-medium"
@@ -282,7 +296,7 @@ function setManualScore(ability: keyof AbilityScores, raw: string) {
         <div v-else-if="method === 'manual'">
           <input
             :id="`manual-${ability}`"
-            :value="characterStore.character.abilityScores[ability]"
+            :value="appStore.transcribing ? totalScore(ability) : characterStore.character.abilityScores[ability]"
             @input="setManualScore(ability, ($event.target as HTMLInputElement).value)"
             type="number"
             min="1"

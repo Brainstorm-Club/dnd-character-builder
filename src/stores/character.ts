@@ -624,6 +624,42 @@ export const useCharacterStore = defineStore('character', () => {
     return base + bonus
   }
 
+  const ABILITA = ['str', 'dex', 'con', 'int', 'wis', 'cha'] as const
+
+  /**
+   * Scrive un punteggio partendo dal **totale**, non dalla base.
+   *
+   * Chi ricopia una scheda già giocata ha davanti i totali, bonus di specie
+   * compresi: è quello che c'è scritto sulla carta. Scrivendoli nella base il
+   * bonus finiva contato due volte — una perché era già nel numero copiato,
+   * una perché l'app ce lo sommava.
+   */
+  function setTotalAbilityScore(ability: keyof AbilityScores, total: number) {
+    const bonus = character.value.racialBonuses[ability] || 0
+    const t = Math.min(30, Math.max(1, Math.trunc(total)))
+    character.value.abilityScores[ability] = Math.min(30, Math.max(1, t - bonus))
+  }
+
+  /**
+   * Sostituisce i bonus di specie.
+   *
+   * Con `keepTotals` i totali non si muovono: cambia solo da dove viene la
+   * parte di bonus. Serve a chi sta ricopiando — sulla sua scheda c'è scritto
+   * 16, e deve restare 16 anche se sceglie la specie dopo aver scritto i
+   * punteggi, che è l'ordine in cui il percorso di creazione li chiede.
+   */
+  function setRacialBonuses(nuovi: Partial<AbilityScores>, opts: { keepTotals?: boolean } = {}) {
+    const vecchi = { ...character.value.racialBonuses }
+    character.value.racialBonuses = { ...nuovi }
+    if (!opts.keepTotals) return
+    for (const a of ABILITA) {
+      const delta = (vecchi[a] || 0) - (character.value.racialBonuses[a] || 0)
+      if (!delta) continue
+      const base = character.value.abilityScores[a] + delta
+      character.value.abilityScores[a] = Math.min(30, Math.max(1, base))
+    }
+  }
+
   function resetCharacter() {
     character.value = createEmptyCharacter()
   }
@@ -1129,6 +1165,8 @@ export const useCharacterStore = defineStore('character', () => {
     passivePerception,
     hasUnsavedWork,
     totalAbilityScore,
+    setTotalAbilityScore,
+    setRacialBonuses,
     resetCharacter,
     saveCharacter,
     loadCharacter,
