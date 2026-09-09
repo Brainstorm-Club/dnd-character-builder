@@ -152,7 +152,10 @@
     "tools": "Tools",
     "coins": "Coins",
     "other": "Other Equipment",
-    "addItem": "Add item..."
+    "addItem": "Add item...",
+    "magicWeapons": "Magic weapons",
+    "magicBonusFor": "Magic bonus for {weapon}",
+    "noMagicBonus": "Normal"
   },
   "spells": {
     "title": "Spells",

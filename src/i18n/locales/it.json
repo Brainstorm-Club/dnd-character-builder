@@ -152,7 +152,10 @@
     "tools": "Strumenti",
     "coins": "Monete",
     "other": "Altro Equipaggiamento",
-    "addItem": "Aggiungi oggetto..."
+    "addItem": "Aggiungi oggetto...",
+    "magicWeapons": "Armi magiche",
+    "magicBonusFor": "Bonus magico per {weapon}",
+    "noMagicBonus": "Normale"
   },
   "spells": {
     "title": "Incantesimi",

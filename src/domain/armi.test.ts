@@ -112,6 +112,11 @@ describe('calcolo completo', () => {
     expect(calcolaAttacco(spadone, { strMod: -1, dexMod: 0, proficiencyBonus: 2 }))
       .toEqual({ name: 'Greatsword', attackBonus: 1, damage: '2d6-1' })
   })
+
+  it("un'arma +1 somma il bonus magico al tiro e al danno", () => {
+    expect(calcolaAttacco(spadone, { strMod: 3, dexMod: 1, proficiencyBonus: 2 }, 1))
+      .toEqual({ name: 'Greatsword', attackBonus: 6, damage: '2d6+4', magicBonus: 1 })
+  })
 })
 
 describe('ricerca per nome nel catalogo', () => {
@@ -158,6 +163,15 @@ describe('ricalcolo delle armi già in scheda', () => {
     expect(uno[0]!.damage).toBe('2d6+3')
     const due = ricalcolaArmi(uno, CATALOGO, { strMod: 3, dexMod: 0, proficiencyBonus: 2 })
     expect(due[0]!.damage).toBe('2d6+3')
+  })
+
+  it('conserva il bonus magico durante il ricalcolo', () => {
+    const out = ricalcolaArmi(
+      [{ name: 'Rapier', attackBonus: 6, damage: '1d8+4', magicBonus: 1 }],
+      CATALOGO,
+      { strMod: 0, dexMod: 4, proficiencyBonus: 3 },
+    )
+    expect(out[0]).toEqual({ name: 'Rapier', attackBonus: 8, damage: '1d8+5', magicBonus: 1 })
   })
 
   it("lascia intatta l'arma che nel catalogo non c'è, invece di svuotarne il danno", () => {

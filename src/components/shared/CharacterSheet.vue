@@ -329,7 +329,7 @@ const haPersonalita = computed(() => Boolean(
       <ul v-if="char.weapons.length" class="grid grid-cols-1 sm:grid-cols-2 gap-1 text-sm">
         <li v-for="(w, i) in char.weapons" :key="i" class="flex items-center gap-2 text-stone-300">
           <span class="text-stone-500" aria-hidden="true">&bull;</span>
-          <span class="flex-1">{{ gt.weapon(w.name) }}</span>
+          <span class="flex-1">{{ gt.weapon(w.name) }}{{ w.magicBonus ? ` +${w.magicBonus}` : '' }}</span>
           <span class="text-amber-400 font-medium">{{ formatModifier(w.attackBonus) }}</span>
           <span class="text-stone-400">{{ w.damage }}</span>
         </li>

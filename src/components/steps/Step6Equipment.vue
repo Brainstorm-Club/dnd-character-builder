@@ -64,6 +64,7 @@ function toggleWeapon(weaponName: string) {
 }
 
 function updateCharacterWeapons() {
+  const currentByName = new Map(characterStore.character.weapons.map(w => [w.name, w]))
   characterStore.character.weapons = selectedWeapons.value.map(name => {
     // La regola del bonus di attacco sta in `src/domain/armi.ts` e non qui:
     // quando era scritta anche qui, il generatore casuale ne teneva una
@@ -78,8 +79,16 @@ function updateCharacterWeapons() {
       // Arti Marziali: col bastone ferrato o la spada corta il monaco tira di
       // Destrezza, pur non essendo armi accurate.
       artiMarziali: characterStore.character.className === 'monk',
-    })
+    }, currentByName.get(name)?.magicBonus)
   })
+}
+
+function setMagicBonus(weaponName: string, event: Event) {
+  const value = Number((event.target as HTMLSelectElement).value)
+  const weapon = characterStore.character.weapons.find(w => w.name === weaponName)
+  if (!weapon) return
+  weapon.magicBonus = value === 1 || value === 2 || value === 3 ? value : undefined
+  updateCharacterWeapons()
 }
 
 function selectArmor(armorName: string) {
@@ -146,6 +155,26 @@ function removeItem(idx: number) {
           >
             {{ gt.weapon(wpn.name) }} ({{ wpn.damage }}){{ masteryLabel(wpn.name) }}
           </button>
+        </div>
+      </div>
+
+      <div v-if="selectedWeapons.length" class="mt-4 space-y-2" aria-labelledby="magic-weapons-heading">
+        <h4 id="magic-weapons-heading" class="text-sm font-medium text-stone-400">
+          {{ t('equipment.magicWeapons') }}
+        </h4>
+        <div v-for="(weaponName, idx) in selectedWeapons" :key="weaponName"
+          class="flex items-center justify-between gap-3 max-w-sm text-sm text-stone-300">
+          <span>{{ gt.weapon(weaponName) }}</span>
+          <label :for="`magic-bonus-${idx}`" class="sr-only">
+            {{ t('equipment.magicBonusFor', { weapon: gt.weapon(weaponName) }) }}
+          </label>
+          <select :id="`magic-bonus-${idx}`"
+            :value="characterStore.character.weapons.find(w => w.name === weaponName)?.magicBonus || 0"
+            @change="setMagicBonus(weaponName, $event)"
+            class="bg-stone-700 text-stone-200 rounded px-2 py-1 text-sm">
+            <option :value="0">{{ t('equipment.noMagicBonus') }}</option>
+            <option v-for="bonus in [1, 2, 3]" :key="bonus" :value="bonus">+{{ bonus }}</option>
+          </select>
         </div>
       </div>
     </div>
