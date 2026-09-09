@@ -23,6 +23,32 @@ describe('brancalonia spells', () => {
     }
   })
 
+  /**
+   * The schools, pinned against the Macaronicon's own summary table.
+   *
+   * Dreadful Tale was filed under Transmutation here while both the table and
+   * the spell's own heading say Enchantment — and the companion inherited the
+   * mistake into its Brancalonia pack. A school is one word in a data file and
+   * nobody re-reads it; this test is the thing that re-reads it.
+   */
+  it('files the Macaronicon spells under the schools the book prints', () => {
+    const printed: Record<string, string> = {
+      'quality-stamp': 'Transmutation',
+      'incandescent-mark': 'Transmutation',
+      'dreadful-tale': 'Enchantment',
+      exorcism: 'Abjuration',
+      insurance: 'Evocation',
+      'poormans-feast': 'Conjuration',
+      'angelic-emanation': 'Abjuration',
+      cleanse: 'Evocation',
+    }
+    for (const [id, school] of Object.entries(printed)) {
+      const spell = brancaloniaSpells.find(s => s.id === id)
+      expect(spell, id).toBeDefined()
+      expect(spell!.school, id).toBe(school)
+    }
+  })
+
   it('provides every spell the subclasses name with an asterisk in the books', () => {
     // These are referenced by the Exorcist's domain list, the Rat Catcher's
     // ranger spells and the Talismancer's expanded list.
