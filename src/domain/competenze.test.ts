@@ -10,6 +10,8 @@ import {
   getExpertiseCount,
   getExpertiseOptions,
   reconcileExpertise,
+  competenzeConcesse,
+  mezzaCompetenza,
 } from './competenze'
 
 function classById(list: readonly CharacterClass[], id: string): CharacterClass {
@@ -222,5 +224,99 @@ describe('riallineamento della scelta', () => {
 
   it('con zero slot svuota la scelta', () => {
     expect(reconcileExpertise(['stealth'], ['stealth'], 0)).toEqual([])
+  })
+})
+
+describe('competenze concesse d\'ufficio da un privilegio', () => {
+  it('il Guappo di Brancalonia dà Intimidire', () => {
+    // Il difetto segnalato: il privilegio compariva nell'elenco della scheda,
+    // ma accanto a Intimidire restava il numero di chi non è competente.
+    expect(competenzeConcesse(['competence-bonus'], 'brancalonia')).toEqual(['intimidation'])
+  })
+
+  it('e gli altri privilegi che concedono senza far scegliere', () => {
+    expect(competenzeConcesse(['brigandage'], 'brancalonia')).toEqual(['nature', 'survival'])
+    expect(competenzeConcesse(['treasure-seeker'], 'brancalonia')).toEqual(['investigation', 'perception'])
+    expect(competenzeConcesse(['disheartening-presence'], 'brancalonia')).toEqual(['intimidation'])
+    expect(competenzeConcesse(['master-of-performance'], 'brancalonia')).toEqual(['animal-handling', 'performance'])
+    expect(competenzeConcesse(['improved-perception'], 'apocalisse')).toEqual(['perception'])
+  })
+
+  it('non ne dà due volte quando due privilegi concedono la stessa', () => {
+    expect(competenzeConcesse(['competence-bonus', 'disheartening-presence'], 'brancalonia'))
+      .toEqual(['intimidation'])
+  })
+
+  it('un privilegio di un\'altra ambientazione non vale in questa', () => {
+    // Brancalonia e Apocalisse partono dalle stesse classi base: due
+    // sottoclassi diverse possono avere privilegi con lo stesso id, e una
+    // tabella sola prima o poi pescherebbe quello sbagliato.
+    expect(competenzeConcesse(['improved-perception'], 'brancalonia')).toEqual([])
+    expect(competenzeConcesse(['competence-bonus'], 'apocalisse')).toEqual([])
+    expect(competenzeConcesse(['competence-bonus'], 'dnd5e')).toEqual([])
+  })
+
+  it('ogni abilità della tabella esiste davvero', () => {
+    // Un id storto qui non fallisce: concede una competenza che non compare in
+    // nessuna riga della scheda, e sparisce senza dire niente.
+    const varianti: GameVariant[] = ['dnd5e', 'dnd2024', 'brancalonia', 'apocalisse']
+    const ids = [
+      'brigandage', 'competence-bonus', 'disheartening-presence',
+      'master-of-performance', 'treasure-seeker', 'improved-perception',
+    ]
+    for (const v of varianti) {
+      for (const s of competenzeConcesse(ids, v)) expect(allSkillIds).toContain(s)
+    }
+  })
+
+  it('ogni privilegio della tabella esiste nei dati della sua variante', async () => {
+    // Se i dati rinominano un privilegio, la competenza smette di arrivare in
+    // silenzio: qui invece il test cade.
+    await preloadVariantData('brancalonia')
+    await preloadVariantData('apocalisse')
+    /** @type {Record<GameVariant, string[]>} */
+    const attesi: Partial<Record<GameVariant, string[]>> = {
+      brancalonia: [
+        'brigandage', 'competence-bonus', 'disheartening-presence',
+        'master-of-performance', 'treasure-seeker',
+      ],
+      apocalisse: ['improved-perception'],
+    }
+    for (const [variante, ids] of Object.entries(attesi) as [GameVariant, string[]][]) {
+      const presenti = new Set(
+        getClasses(variante).flatMap(c => [
+          ...c.features.map(f => f.id),
+          ...c.subclasses.flatMap(s => s.features.map(f => f.id)),
+        ]),
+      )
+      for (const id of ids) expect(presenti, `${variante}: ${id}`).toContain(id)
+    }
+  })
+})
+
+describe('mezza competenza (Factotum)', () => {
+  it('metà del bonus di competenza, arrotondata per difetto', () => {
+    // Bonus di competenza +2 fino al 4°, +3 dal 5°: metà fa 1 in entrambi i
+    // casi, e 2 solo dal 9° in poi.
+    expect(mezzaCompetenza({ level: 2, featureEntries: [{ id: 'jack-of-all-trades' }] })).toBe(1)
+    expect(mezzaCompetenza({ level: 5, featureEntries: [{ id: 'jack-of-all-trades' }] })).toBe(1)
+    expect(mezzaCompetenza({ level: 9, featureEntries: [{ id: 'jack-of-all-trades' }] })).toBe(2)
+  })
+
+  it('senza il privilegio non aggiunge niente', () => {
+    expect(mezzaCompetenza({ level: 9, featureEntries: [{ id: 'expertise-bard' }] })).toBe(0)
+    expect(mezzaCompetenza({ level: 9 })).toBe(0)
+  })
+
+  it('riconosce anche una scheda vecchia, che ha solo i nomi', () => {
+    // `featureEntries` è arrivato dopo: le schede salvate prima portano ancora
+    // il solo elenco piatto dei nomi inglesi, e devono contare lo stesso.
+    expect(mezzaCompetenza({ level: 2, featuresTraits: ['Jack of All Trades'] })).toBe(1)
+    expect(mezzaCompetenza({ level: 2, featuresTraits: ['Song of Rest'] })).toBe(0)
+  })
+
+  it('il bardo lo prende al livello che dicono i dati', () => {
+    const bardo = classById(dnd5eClasses, 'bard')
+    expect(featureLevel(bardo, 'jack-of-all-trades')).toBe(2)
   })
 })

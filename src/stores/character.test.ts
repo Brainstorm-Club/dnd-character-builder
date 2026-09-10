@@ -168,6 +168,87 @@ describe('useCharacterStore', () => {
     })
   })
 
+  /**
+   * Alcune sottoclassi concedono una competenza senza far scegliere niente.
+   * La scheda mostrava il privilegio in elenco — «Competenze Bonus» per il
+   * Guappo — e accanto a Intimidire il numero di chi non è competente.
+   */
+  describe('competenze concesse da un privilegio', () => {
+    function guappoDiTerzo() {
+      const store = useCharacterStore()
+      store.character.variant = 'brancalonia'
+      store.character.className = 'bard'
+      store.character.level = 3
+      store.syncClassAndLevel()
+      store.setSubclass('guappo')
+      return store
+    }
+
+    it('il Guappo di Brancalonia arriva competente in Intimidire', () => {
+      expect(guappoDiTerzo().character.skillProficiencies).toContain('intimidation')
+    })
+
+    it('cambiando collegio la competenza se ne va con lui', () => {
+      const store = guappoDiTerzo()
+      store.setSubclass('')
+      expect(store.character.skillProficiencies).not.toContain('intimidation')
+    })
+
+    it('ma non porta via quelle che vengono da altro', () => {
+      // Toglie solo ciò che il collegio precedente concedeva: le competenze di
+      // classe e di background vivono nello stesso elenco piatto, e una
+      // sostituzione secca le cancellerebbe.
+      const store = useCharacterStore()
+      store.character.variant = 'brancalonia'
+      store.character.className = 'bard'
+      store.character.level = 3
+      store.character.skillProficiencies = ['persuasion', 'deception']
+      store.syncClassAndLevel()
+      store.setSubclass('guappo')
+      store.setSubclass('')
+      expect(store.character.skillProficiencies).toEqual(['persuasion', 'deception'])
+    })
+
+    it("cambiando collegio se ne va anche se il giocatore l'aveva scelta lui", () => {
+      // Limite noto e accettato: l'elenco è piatto e non dice da dove viene
+      // ciascuna voce, quindi «tolgo quel che il collegio dava» non sa
+      // distinguere il caso in cui il giocatore l'aveva presa anche come
+      // competenza di classe. Si ricompra con un tocco nel passo Classe, dove
+      // Intimidire è fra le scelte del bardo; l'alternativa — non togliere mai
+      // — lascerebbe sulla scheda una competenza che il personaggio non ha,
+      // che è l'errore peggiore dei due.
+      const store = useCharacterStore()
+      store.character.variant = 'brancalonia'
+      store.character.className = 'bard'
+      store.character.level = 3
+      store.character.skillProficiencies = ['intimidation', 'persuasion']
+      store.syncClassAndLevel()
+      store.setSubclass('guappo')
+      store.setSubclass('')
+      expect(store.character.skillProficiencies).toEqual(['persuasion'])
+    })
+
+    it('e non la concede due volte se il personaggio l\'aveva già', () => {
+      const store = useCharacterStore()
+      store.character.variant = 'brancalonia'
+      store.character.className = 'bard'
+      store.character.level = 3
+      store.character.skillProficiencies = ['intimidation']
+      store.syncClassAndLevel()
+      store.setSubclass('guappo')
+      expect(store.character.skillProficiencies.filter(s => s === 'intimidation')).toHaveLength(1)
+    })
+
+    it('scendendo sotto il livello del privilegio la competenza si perde', () => {
+      // La sottoclasse del Guappo scatta al 3°: a livello 2 non c'è più né il
+      // privilegio né quello che concede.
+      const store = guappoDiTerzo()
+      store.character.level = 2
+      store.syncClassAndLevel()
+      expect(store.character.skillProficiencies).not.toContain('intimidation')
+    })
+  })
+
   describe('save/load/delete', () => {
     it('saves and loads a character', () => {
       const store = useCharacterStore()

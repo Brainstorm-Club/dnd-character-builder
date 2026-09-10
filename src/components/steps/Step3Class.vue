@@ -9,7 +9,7 @@ import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { getClassBlurb } from '@/data/classBlurbs'
 import { THIRD_CASTER_SUBCLASSES } from '@/data/spellcasting'
-import { getExpertiseCount, getExpertiseOptions, reconcileExpertise } from '@/domain/competenze'
+import { competenzeConcesse, getExpertiseCount, getExpertiseOptions, reconcileExpertise } from '@/domain/competenze'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import ConditionText from '@/components/shared/ConditionText.vue'
 
@@ -211,12 +211,17 @@ function toggleSkill(skill: string) {
  * background, che nel modello vivono nello stesso elenco.
  */
 function applyClassSkills() {
-  const next = characterStore.character.skillProficiencies
-    .filter(s => !appliedSkills.includes(s) || selectedSkills.value.includes(s))
-  for (const skill of selectedSkills.value) {
+  const char = characterStore.character
+  // Quelle concesse d'ufficio da un privilegio non sono una scelta di questo
+  // passo: se il giocatore toglie la spunta a Intimidire, il Guappo continua ad
+  // averla lo stesso, e non deve aspettare il prossimo ricalcolo dei privilegi.
+  const concesse = competenzeConcesse((char.featureEntries ?? []).map(e => e.id), char.variant)
+  const next = char.skillProficiencies
+    .filter(s => !appliedSkills.includes(s) || selectedSkills.value.includes(s) || concesse.includes(s))
+  for (const skill of [...selectedSkills.value, ...concesse]) {
     if (!next.includes(skill)) next.push(skill)
   }
-  characterStore.character.skillProficiencies = next
+  char.skillProficiencies = next
   appliedSkills = [...selectedSkills.value]
 }
 
