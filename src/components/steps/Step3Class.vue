@@ -139,7 +139,7 @@ const scelteDisponibili = computed(() => competenzeDaScegliere(
 ))
 
 /** privilegio → abilità scelte per quel privilegio */
-const scelte = ref(/** @type {Record<string, string[]>} */ ({}))
+const scelte = ref<Record<string, string[]>>({})
 
 /** Come `appliedSkills`: per togliere dall'elenco piatto solo ciò che ha messo questo blocco. */
 let appliedScelte: string[] = []
@@ -147,7 +147,7 @@ let appliedScelte: string[] = []
 function nomePrivilegio(featureId: string): string {
   const dai = selectedClass.value?.subclasses.find(sc => sc.id === selectedSubclass.value)
   const f = dai?.features.find(x => x.id === featureId) ?? selectedClass.value?.features.find(x => x.id === featureId)
-  return f ? getFeatureName(f.id, f.name, locale.value) : featureId
+  return f ? getFeatureName(variant.value, f.id, locale.value, f.name) : featureId
 }
 
 function toggleScelta(featureId: string, skill: string) {
@@ -208,9 +208,12 @@ function restoreFromCharacter() {
   // candidate, una per privilegio, senza prendersele in carico: `appliedScelte`
   // resta vuoto, così un tocco sui chip non cancella niente che non sia suo.
   const gia = new Set(characterStore.character.skillProficiencies)
-  scelte.value = Object.fromEntries(scelteDisponibili.value
-    .map(s => [s.featureId, s.candidate.filter(c => gia.has(c)).slice(0, s.quante)])
-    .filter(([, v]) => v.length))
+  const riprese: Record<string, string[]> = {}
+  for (const s of scelteDisponibili.value) {
+    const sue = s.candidate.filter(c => gia.has(c)).slice(0, s.quante)
+    if (sue.length) riprese[s.featureId] = sue
+  }
+  scelte.value = riprese
   appliedScelte = []
 }
 restoreFromCharacter()
