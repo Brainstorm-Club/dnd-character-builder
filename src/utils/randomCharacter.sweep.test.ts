@@ -68,14 +68,28 @@ describe.each(GAME_VARIANTS)('personaggi generati — %s', variante => {
 
       // La CA può scendere sotto 10 con Destrezza negativa: è regolare. Quello
       // che non deve succedere è che non torni con armatura e Destrezza.
+      //
+      // Senza armatura la Difesa Senza Armatura di barbaro e monaco *sostituisce*
+      // il calcolo, e con Costituzione o Saggezza negative lo abbassa: un
+      // barbaro con COS 8 e DES 8 ha CA 8, non 9. Il minimo va calcolato con
+      // quel modificatore dentro, altrimenti il test cade su un personaggio
+      // regolare — cosa che faceva, in un giro su dieci.
       const ca = computeArmorClass(c)
       const dexMod = modifier(c.abilityScores.dex + (c.racialBonuses.dex || 0))
       const arm = c.armor ? armorTable.find(a => a.name === c.armor) : undefined
+      const idClassi = [c.className, ...(c.classes ?? []).map(x => x.classId)]
+      const senzArmatura: number[] = []
+      if (idClassi.includes('monk') && !c.shield) {
+        senzArmatura.push(modifier(c.abilityScores.wis + (c.racialBonuses.wis || 0)))
+      }
+      if (idClassi.includes('barbarian')) {
+        senzArmatura.push(modifier(c.abilityScores.con + (c.racialBonuses.con || 0)))
+      }
       const atteso = arm
         ? (arm.maxDexBonus === 0 ? arm.baseAC
           : arm.maxDexBonus !== null ? arm.baseAC + Math.min(dexMod, arm.maxDexBonus)
             : arm.baseAC + dexMod)
-        : 10 + dexMod
+        : 10 + dexMod + (senzArmatura.length ? Math.max(...senzArmatura) : 0)
       expect(ca, `${chi}: CA ${ca} non torna con ${c.armor ?? 'nessuna armatura'} e DES ${dexMod}`)
         .toBeGreaterThanOrEqual(atteso + (c.shield ? 2 : 0))
     }
