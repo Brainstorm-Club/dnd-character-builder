@@ -115,6 +115,59 @@ describe('useCharacterStore', () => {
     })
   })
 
+  describe('ricopiare una scheda che esiste già', () => {
+    /**
+     * Il numero sulla carta è il **totale**, bonus di specie compreso.
+     * Scriverlo nella base lo faceva contare due volte — una perché era già
+     * nel numero copiato, una perché l'app ce lo sommava — e chi ricopiava una
+     * scheda si ritrovava un personaggio più forte di quello che gioca.
+     */
+    it('il punteggio scritto è il totale, non la base', () => {
+      const store = useCharacterStore()
+      store.character.racialBonuses = { str: 2, dex: 0, con: 1, int: 0, wis: 0, cha: 0 }
+
+      store.setTotalAbilityScore('str', 16)
+      expect(store.totalAbilityScore('str')).toBe(16)
+      expect(store.character.abilityScores.str).toBe(14)
+    })
+
+    it('e i totali non si muovono cambiando specie dopo averli scritti', () => {
+      // È l'ordine in cui il percorso di creazione li chiede: prima i
+      // punteggi, poi la specie. Sulla scheda c'è 16, e deve restare 16.
+      const store = useCharacterStore()
+      store.setRacialBonuses({ str: 2, con: 1 })
+      store.setTotalAbilityScore('str', 16)
+      store.setTotalAbilityScore('con', 14)
+
+      store.setRacialBonuses({ dex: 2, wis: 1 }, { keepTotals: true })
+
+      expect(store.totalAbilityScore('str')).toBe(16)
+      expect(store.totalAbilityScore('con')).toBe(14)
+      expect(store.character.abilityScores.str).toBe(16)   // il bonus non c'è più
+    })
+
+    it('creando da zero, invece, cambiare specie cambia i totali', () => {
+      // Qui il punteggio scritto è quello di partenza e il bonus arriva dopo:
+      // è un'altra cosa, e deve restare tale.
+      const store = useCharacterStore()
+      store.character.abilityScores.str = 15
+      store.setRacialBonuses({ str: 2 })
+      expect(store.totalAbilityScore('str')).toBe(17)
+
+      store.setRacialBonuses({ str: 1 })
+      expect(store.totalAbilityScore('str')).toBe(16)
+    })
+
+    it('non si esce dai limiti nemmeno con bonus assurdi', () => {
+      const store = useCharacterStore()
+      store.setRacialBonuses({ str: 0 })
+      store.setTotalAbilityScore('str', 1)
+      expect(store.character.abilityScores.str).toBe(1)
+      store.setTotalAbilityScore('str', 99)
+      expect(store.totalAbilityScore('str')).toBe(30)
+    })
+  })
+
   describe('save/load/delete', () => {
     it('saves and loads a character', () => {
       const store = useCharacterStore()

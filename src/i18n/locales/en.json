@@ -127,7 +127,8 @@
     "startingLevel": "Starting Level",
     "startingLevelHint": "From 1 to {max}. It decides which subclasses the Class step can offer.",
     "manualEntry": "Enter by Hand",
-    "manualHint": "Type the scores exactly as they appear on the sheet you are copying. From 1 to 30, nothing to roll."
+    "manualHint": "Enter the starting scores, before species bonuses: the app adds those.",
+    "manualHintTranscribing": "Enter the scores as they are on the sheet, species bonuses included. If you pick the species later, the totals won't move."
   },
   "background": {
     "title": "Choose Background",

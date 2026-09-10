@@ -2,6 +2,7 @@
 import { ref, computed, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useCharacterStore } from '@/stores/character'
+import { useAppStore } from '@/stores/app'
 import { getRaces } from '@/data'
 import { testoTratto, type TestoSrd } from '@/data/srdText'
 import { getAvailableFeats } from '@/data/brancalonia/feats'
@@ -17,6 +18,7 @@ import ConditionText from '@/components/shared/ConditionText.vue'
 
 const { t, locale } = useI18n()
 const characterStore = useCharacterStore()
+const appStore = useAppStore()
 const gt = useGameTerms()
 
 function statoTratto(traitId: string): TestoSrd {
@@ -130,13 +132,18 @@ function chooseBonus(tierIdx: number, slotIdx: number, ability: string) {
 function applyRace(race: Race, subraceId: string) {
   characterStore.character.race = race.id
   characterStore.character.subrace = subraceId
-  characterStore.character.racialBonuses = { ...race.abilityBonuses }
+
+  // I bonus si compongono a parte e si scrivono in un colpo solo: chi ricopia
+  // una scheda ha già i totali sulla carta, e lo store deve poter tenere fermi
+  // quelli spostando la base. Scrivendoli a pezzi non saprebbe da dove sono
+  // partiti.
+  const bonuses = { ...race.abilityBonuses } as Partial<typeof characterStore.character.racialBonuses>
   if (subraceId && race.subraces) {
     const sub = race.subraces.find(s => s.id === subraceId)
     if (sub?.abilityBonuses) {
       for (const [key, val] of Object.entries(sub.abilityBonuses)) {
         const k = key as keyof typeof characterStore.character.racialBonuses
-        characterStore.character.racialBonuses[k] = (characterStore.character.racialBonuses[k] || 0) + (val || 0)
+        bonuses[k] = (bonuses[k] || 0) + (val || 0)
       }
     }
   }
@@ -144,10 +151,10 @@ function applyRace(race: Race, subraceId: string) {
   tiers.forEach((tier, ti) => {
     for (const ability of chosenBonuses.value[ti] ?? []) {
       if (!ability) continue
-      const bonuses = characterStore.character.racialBonuses
       bonuses[ability] = (bonuses[ability] || 0) + tier.amount
     }
   })
+  characterStore.setRacialBonuses(bonuses, { keepTotals: appStore.transcribing })
   characterStore.character.speed = race.speed
   characterStore.character.languages = [...race.languages]
 }
