@@ -410,6 +410,28 @@ describe('data loader', () => {
       }
     })
 
+    /**
+     * I link all'editore portavano un codice di affiliazione, e uno puntava al
+     * negozio di Acheron Games — cioè l'app incassava una commissione sulle
+     * vendite di chi le presta i contenuti, mentre in home dichiara «senza
+     * pubblicità». Rimetterlo dev'essere una decisione, non una svista.
+     */
+    it('nessun link porta un codice di affiliazione', () => {
+      for (const v of GAME_VARIANTS) {
+        const { publisherUrl, amazonUrl } = VARIANT_INFO[v]
+        for (const url of [publisherUrl, amazonUrl]) {
+          expect(url, `${v}: ${url}`).not.toMatch(/affiliate|[?&]tag=|amzn\.to/i)
+        }
+      }
+    })
+
+    it('le due ambientazioni Acheron mandano a casa loro, non a un rivenditore', () => {
+      for (const v of ['brancalonia', 'apocalisse'] as const) {
+        expect(VARIANT_INFO[v].publisherUrl, v).toMatch(/^https:\/\/www\.acheron\.it\//)
+        expect(VARIANT_INFO[v].publisherLabel, v).toBe('Acheron Games')
+      }
+    })
+
     it('ricade su dnd5e per i personaggi salvati prima delle varianti', () => {
       expect(variantInfo(undefined).id).toBe('dnd5e')
     })

@@ -36,7 +36,18 @@ export interface DescrittoreVariante {
   readonly amazonUrl: string
 }
 
-const DRIVETHRU_WOTC = 'https://www.drivethrurpg.com/en/publisher/44/wizards-of-the-coast?affiliate_id=2960765'
+/**
+ * Le pagine dell'editore, senza codice di affiliazione.
+ *
+ * C'era, e portava una commissione a noi su ogni acquisto — anche su quelli
+ * fatti nel negozio di Acheron Games, di cui questa app mostra il materiale.
+ * Un'app che dice «niente pubblicità, nessun modello di business» e intanto
+ * incassa sulle vendite di chi le presta i contenuti dice due cose diverse.
+ *
+ * Per Brancalonia e Apocalisse il link va **al sito di Acheron Games**, non a
+ * un rivenditore: è casa loro, e chi arriva di lì ci arriva per intero.
+ */
+const DRIVETHRU_WOTC = 'https://www.drivethrurpg.com/en/publisher/44/wizards-of-the-coast'
 
 /**
  * `Record<GameVariant, ...>` e non `Record<string, ...>`: aggiungere una quinta
@@ -55,7 +66,8 @@ export const VARIANT_INFO: Record<GameVariant, DescrittoreVariante> = {
     button: 'bg-amber-600 hover:bg-amber-500 text-stone-900',
     publisherUrl: DRIVETHRU_WOTC,
     publisherLabel: 'DriveThruRPG',
-    amazonUrl: 'https://amzn.to/4uwKY7w',
+    // I link `amzn.to` erano accorciatori di affiliazione: tolti tutti.
+    amazonUrl: '',
   },
   dnd2024: {
     id: 'dnd2024',
@@ -85,9 +97,9 @@ export const VARIANT_INFO: Record<GameVariant, DescrittoreVariante> = {
     promoBorder: 'border-emerald-700/20',
     link: 'text-emerald-400 hover:text-emerald-300',
     button: 'bg-emerald-600 hover:bg-emerald-500 text-stone-900',
-    publisherUrl: 'https://www.drivethrurpg.com/en/browse?affiliate_id=2960765&keyword=brancalonia',
-    publisherLabel: 'DriveThruRPG',
-    amazonUrl: 'https://amzn.to/4b8f8F3',
+    publisherUrl: 'https://www.acheron.it/brancalonia/',
+    publisherLabel: 'Acheron Games',
+    amazonUrl: '',
   },
   apocalisse: {
     id: 'apocalisse',
@@ -99,9 +111,9 @@ export const VARIANT_INFO: Record<GameVariant, DescrittoreVariante> = {
     promoBorder: 'border-red-700/20',
     link: 'text-red-400 hover:text-red-300',
     button: 'bg-red-600 hover:bg-red-500 text-stone-100',
-    publisherUrl: 'https://www.drivethrurpg.com/en/publisher/9086/acheron-games/category/44511/apocalisse?affiliate_id=2960765',
-    publisherLabel: 'DriveThruRPG',
-    amazonUrl: 'https://amzn.to/4cwNjc1',
+    publisherUrl: 'https://www.acheron.it/apocalisse/',
+    publisherLabel: 'Acheron Games',
+    amazonUrl: '',
   },
 }
 
