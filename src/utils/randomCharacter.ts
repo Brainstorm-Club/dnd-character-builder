@@ -10,7 +10,7 @@ import { pickRandomArchetype } from '@/data/personalityArchetypes'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
 import { castsSpells } from '@/data/spellcasting'
 import { calcolaAttacco, isADistanza, isAccurata } from '@/domain/armi'
-import { competenzeConcesse, getExpertiseCount, getExpertiseOptions } from '@/domain/competenze'
+import { competenzeConcesse, raddoppiConcessi, getExpertiseCount, getExpertiseOptions } from '@/domain/competenze'
 
 function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!
@@ -210,10 +210,16 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
   // seconda scritta qui. Il generatore non le assegnava affatto, e un bardo o
   // un ladro sorteggiati uscivano con il privilegio in elenco e nessuna abilità
   // raddoppiata — cioè con i numeri di due abilità sbagliati in meno.
-  const skillExpertise = pickN(
-    getExpertiseOptions(cls, variant, level, allSkillIds),
-    getExpertiseCount(cls, variant, level),
-  )
+  // I raddoppi che un privilegio concede da sé stanno fuori dal sorteggio e non
+  // spendono uno slot: Matador e Bastione li hanno scritti nel privilegio.
+  const raddoppiDufficio = raddoppiConcessi(featureIds, variant)
+  const skillExpertise = [
+    ...raddoppiDufficio,
+    ...pickN(
+      getExpertiseOptions(cls, variant, level, allSkillIds, raddoppiDufficio),
+      getExpertiseCount(cls, variant, level),
+    ),
+  ]
 
   // Languages
   // Quando il manuale NOMINA i linguaggi del background sono quelli e non altri:

@@ -9,7 +9,7 @@ import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { getClassBlurb } from '@/data/classBlurbs'
 import { THIRD_CASTER_SUBCLASSES } from '@/data/spellcasting'
-import { competenzeConcesse, getExpertiseCount, getExpertiseOptions, reconcileExpertise } from '@/domain/competenze'
+import { competenzeConcesse, raddoppiConcessi, getExpertiseCount, getExpertiseOptions, reconcileExpertise } from '@/domain/competenze'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import ConditionText from '@/components/shared/ConditionText.vue'
 
@@ -57,6 +57,12 @@ const expertiseMax = computed(() =>
 )
 
 /** Fra quali abilità si può scegliere: solo quelle in cui è già competente */
+/** Quelle che un privilegio raddoppia già da sé: non si scelgono, e non si ri-scelgono. */
+const raddoppiDufficio = computed(() => raddoppiConcessi(
+  (characterStore.character.featureEntries ?? []).map(e => e.id),
+  characterStore.character.variant,
+))
+
 const expertiseOptions = computed(() =>
   selectedClass.value
     ? getExpertiseOptions(
@@ -64,6 +70,7 @@ const expertiseOptions = computed(() =>
         variant.value,
         classLevel(selectedClass.value.id),
         characterStore.character.skillProficiencies,
+        raddoppiDufficio.value,
       )
     : [],
 )
@@ -94,9 +101,10 @@ function toggleExpertise(skill: string) {
 
 /** Riversa la selezione nel personaggio, togliendo solo quanto aveva scritto. */
 function applyExpertise() {
+  const concessi = raddoppiDufficio.value
   const next = characterStore.character.skillExpertise
-    .filter(s => !appliedExpertise.includes(s) || selectedExpertise.value.includes(s))
-  for (const skill of selectedExpertise.value) {
+    .filter(s => !appliedExpertise.includes(s) || selectedExpertise.value.includes(s) || concessi.includes(s))
+  for (const skill of [...selectedExpertise.value, ...concessi]) {
     if (!next.includes(skill)) next.push(skill)
   }
   characterStore.character.skillExpertise = next

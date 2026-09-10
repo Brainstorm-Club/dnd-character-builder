@@ -152,6 +152,7 @@ export function getExpertiseOptions(
   variant: GameVariant,
   level: number,
   skillProficiencies: readonly string[],
+  giaRaddoppiate: readonly string[] = [],
 ): string[] {
   const grants = getExpertiseGrants(cls, variant, level)
   if (grants.length === 0) return []
@@ -165,10 +166,14 @@ export function getExpertiseOptions(
     ? new Set(grants.flatMap(g => [...(g.restrictedTo ?? [])]))
     : null
 
+  // Quelle che un privilegio raddoppia già d'ufficio escono dall'elenco:
+  // offrirle vorrebbe dire far spendere uno slot per un raddoppio che il
+  // personaggio ha comunque.
   const owned = new Set(skillProficiencies)
+  const doppie = new Set(giaRaddoppiate)
   return SKILLS
     .map(s => s.id)
-    .filter(id => owned.has(id) && (!allowed || allowed.has(id)))
+    .filter(id => owned.has(id) && !doppie.has(id) && (!allowed || allowed.has(id)))
 }
 
 /**
@@ -224,6 +229,59 @@ const COMPETENZE_CONCESSE: Partial<Record<GameVariant, Record<string, readonly s
 }
 
 /**
+ * Due di quei privilegi non si fermano alla competenza: la **raddoppiano**
+ * anche. Sono le stesse abilità che la riga qui sopra concede — il privilegio
+ * le dà e le raddoppia in un colpo solo.
+ *
+ * Il raddoppio concesso non è una scelta e non deve consumare uno slot di
+ * Maestria: chi lo mettesse nello stesso mucchio delle scelte farebbe pagare
+ * due volte la stessa cosa, e il selettore offrirebbe di raddoppiare
+ * un'abilità già raddoppiata.
+ */
+const RADDOPPI_CONCESSI: Partial<Record<GameVariant, Record<string, readonly string[]>>> = {
+  brancalonia: {
+    // Matador: «ottieni competenza in Addestrare Animali e Intrattenere se non
+    // l'hai già, e il tuo bonus di competenza raddoppia in ogni prova che usi
+    // una delle due».
+    'master-of-performance': ['animal-handling', 'performance'],
+  },
+  apocalisse: {
+    // Bastione: «ottieni competenza in Percezione, e il tuo bonus di competenza
+    // raddoppia in ogni prova che la usi».
+    'improved-perception': ['perception'],
+  },
+}
+
+/** @param tabella una delle due qui sopra */
+function concesse(
+  tabella: Partial<Record<GameVariant, Record<string, readonly string[]>>>,
+  featureIds: readonly string[],
+  variant: GameVariant,
+): string[] {
+  const perFeature = tabella[variant]
+  if (!perFeature) return []
+  const out = new Set<string>()
+  for (const id of featureIds) {
+    for (const skill of perFeature[id] ?? []) out.add(skill)
+  }
+  return [...out]
+}
+
+/**
+ * Le abilità che i privilegi già maturati raddoppiano d'ufficio, senza far
+ * scegliere e senza spendere slot di Maestria.
+ *
+ * @param {readonly string[]} featureIds
+ * @param {GameVariant} variant
+ */
+export function raddoppiConcessi(
+  featureIds: readonly string[],
+  variant: GameVariant,
+): string[] {
+  return concesse(RADDOPPI_CONCESSI, featureIds, variant)
+}
+
+/**
  * Le abilità che i privilegi già maturati concedono d'ufficio.
  *
  * Prende gli **id** dei privilegi e non le classi perché i due chiamanti
@@ -235,13 +293,7 @@ export function competenzeConcesse(
   featureIds: readonly string[],
   variant: GameVariant,
 ): string[] {
-  const tabella = COMPETENZE_CONCESSE[variant]
-  if (!tabella) return []
-  const out = new Set<string>()
-  for (const id of featureIds) {
-    for (const skill of tabella[id] ?? []) out.add(skill)
-  }
-  return [...out]
+  return concesse(COMPETENZE_CONCESSE, featureIds, variant)
 }
 
 // ─── Mezza competenza (Factotum) ────────────────────────────────────────────
