@@ -9,7 +9,10 @@ import { SKILLS } from '@/data/dnd5e/skills'
 import { useGameTerms } from '@/composables/useGameTerms'
 import { getClassBlurb } from '@/data/classBlurbs'
 import { THIRD_CASTER_SUBCLASSES } from '@/data/spellcasting'
-import { competenzeConcesse, raddoppiConcessi, getExpertiseCount, getExpertiseOptions, reconcileExpertise } from '@/domain/competenze'
+import {
+  competenzeConcesse, raddoppiConcessi, competenzeDaScegliere, riallineaScelte,
+  getExpertiseCount, getExpertiseOptions, reconcileExpertise,
+} from '@/domain/competenze'
 import VariantPromo from '@/components/shared/VariantPromo.vue'
 import ConditionText from '@/components/shared/ConditionText.vue'
 
@@ -122,6 +125,64 @@ watch([expertiseOptions, expertiseMax], () => {
   }
 })
 
+// ── Competenze a scelta ─────────────────────────────────────────────────────
+// Il Guerriero Formidabile del Furioso, in Apocalisse, non concede una
+// competenza: ne fa
+// scegliere una fra quattro. Finora il privilegio compariva in elenco e non
+// succedeva niente, e chi lo prendeva doveva ricordarsi a mente quale abilità
+// aveva scelto.
+
+/** Le scelte aperte dai privilegi che il personaggio ha davvero. */
+const scelteDisponibili = computed(() => competenzeDaScegliere(
+  (characterStore.character.featureEntries ?? []).map(e => e.id),
+  characterStore.character.variant,
+))
+
+/** privilegio → abilità scelte per quel privilegio */
+const scelte = ref<Record<string, string[]>>({})
+
+/** Come `appliedSkills`: per togliere dall'elenco piatto solo ciò che ha messo questo blocco. */
+let appliedScelte: string[] = []
+
+function nomePrivilegio(featureId: string): string {
+  const dai = selectedClass.value?.subclasses.find(sc => sc.id === selectedSubclass.value)
+  const f = dai?.features.find(x => x.id === featureId) ?? selectedClass.value?.features.find(x => x.id === featureId)
+  return f ? getFeatureName(variant.value, f.id, locale.value, f.name) : featureId
+}
+
+function toggleScelta(featureId: string, skill: string) {
+  const regola = scelteDisponibili.value.find(s => s.featureId === featureId)
+  if (!regola) return
+  const prese = scelte.value[featureId] ?? []
+  const i = prese.indexOf(skill)
+  if (i >= 0) prese.splice(i, 1)
+  else if (prese.length < regola.quante) prese.push(skill)
+  else return
+  scelte.value = { ...scelte.value, [featureId]: prese }
+  applyScelte()
+}
+
+/** Riversa le scelte nell'elenco piatto, togliendo solo quelle di prima. */
+function applyScelte() {
+  const volute = Object.values(scelte.value).flat()
+  const next = characterStore.character.skillProficiencies
+    .filter(s => !appliedScelte.includes(s) || volute.includes(s))
+  for (const skill of volute) if (!next.includes(skill)) next.push(skill)
+  characterStore.character.skillProficiencies = next
+  appliedScelte = [...volute]
+}
+
+// Il privilegio se ne va — cambio di sottoclasse, livello che scende — e la
+// competenza che concedeva se ne deve andare con lui: lasciarla scritta
+// significherebbe una competenza che il personaggio non ha.
+watch(scelteDisponibili, () => {
+  const next = riallineaScelte(scelte.value, scelteDisponibili.value)
+  if (JSON.stringify(next) !== JSON.stringify(scelte.value)) {
+    scelte.value = next
+    applyScelte()
+  }
+})
+
 // Restore the pickers when the user comes back to this step
 function restoreFromCharacter() {
   const storedClass = classes.value.find(c => c.id === characterStore.character.className)
@@ -142,6 +203,18 @@ function restoreFromCharacter() {
   selectedExpertise.value = characterStore.character.skillExpertise
     .filter(s => expertiseOptions.value.includes(s))
   appliedExpertise = [...selectedExpertise.value]
+  // Le competenze a scelta non si possono ricostruire dall'elenco piatto — non
+  // dice chi ha messo cosa — quindi si riparte da quelle già presenti fra le
+  // candidate, una per privilegio, senza prendersele in carico: `appliedScelte`
+  // resta vuoto, così un tocco sui chip non cancella niente che non sia suo.
+  const gia = new Set(characterStore.character.skillProficiencies)
+  const riprese: Record<string, string[]> = {}
+  for (const s of scelteDisponibili.value) {
+    const sue = s.candidate.filter(c => gia.has(c)).slice(0, s.quante)
+    if (sue.length) riprese[s.featureId] = sue
+  }
+  scelte.value = riprese
+  appliedScelte = []
 }
 restoreFromCharacter()
 
@@ -457,6 +530,35 @@ function featureLabel(feature: { id?: string; name: string }): string {
                 : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
             :aria-pressed="selectedExpertise.includes(skill)"
             :aria-disabled="!selectedExpertise.includes(skill) && selectedExpertise.length >= expertiseMax"
+          >
+            {{ skillDisplayName(skill) }}
+          </button>
+        </div>
+      </div>
+
+      <!-- Competenze a scelta concesse da un privilegio -->
+      <div
+        v-for="scelta in scelteDisponibili"
+        :key="scelta.featureId"
+        class="mt-4"
+      >
+        <h4 :id="`class-scelta-${scelta.featureId}`" class="font-semibold text-stone-300 mb-2">
+          {{ nomePrivilegio(scelta.featureId) }}
+          <span class="text-stone-500">({{ (scelte[scelta.featureId] ?? []).length }}/{{ scelta.quante }})</span>
+        </h4>
+        <div class="flex flex-wrap gap-2" role="group" :aria-labelledby="`class-scelta-${scelta.featureId}`">
+          <button
+            v-for="skill in scelta.candidate"
+            :key="skill"
+            @click="toggleScelta(scelta.featureId, skill)"
+            class="px-3 py-1 rounded text-xs transition-colors cursor-pointer"
+            :class="(scelte[scelta.featureId] ?? []).includes(skill)
+              ? 'bg-amber-600 text-stone-900 font-medium'
+              : (scelte[scelta.featureId] ?? []).length >= scelta.quante
+                ? 'bg-stone-800 text-stone-600 cursor-not-allowed'
+                : 'bg-stone-700 text-stone-300 hover:bg-stone-600'"
+            :aria-pressed="(scelte[scelta.featureId] ?? []).includes(skill)"
+            :aria-disabled="!(scelte[scelta.featureId] ?? []).includes(skill) && (scelte[scelta.featureId] ?? []).length >= scelta.quante"
           >
             {{ skillDisplayName(skill) }}
           </button>

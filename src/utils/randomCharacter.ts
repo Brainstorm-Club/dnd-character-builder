@@ -10,7 +10,10 @@ import { pickRandomArchetype } from '@/data/personalityArchetypes'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
 import { castsSpells } from '@/data/spellcasting'
 import { calcolaAttacco, isADistanza, isAccurata } from '@/domain/armi'
-import { competenzeConcesse, raddoppiConcessi, getExpertiseCount, getExpertiseOptions } from '@/domain/competenze'
+import {
+  competenzeConcesse, raddoppiConcessi, competenzeDaScegliere,
+  getExpertiseCount, getExpertiseOptions,
+} from '@/domain/competenze'
 
 function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!
@@ -200,10 +203,16 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     ...cls.features.filter(f => f.level <= level).map(f => f.id),
     ...(subclass?.features.filter(f => f.level <= level).map(f => f.id) ?? []),
   ]
+  // Anche le scelte che un privilegio apre vanno sorteggiate: lasciarle vuote
+  // ripeterebbe la storia della Maestria, dove la regola c'era nella procedura
+  // guidata e il generatore la ignorava.
+  const scelteDaPrivilegi = competenzeDaScegliere(featureIds, variant)
+    .flatMap(sc => pickN(sc.candidate, sc.quante))
   const allSkillIds = [...new Set([
     ...classSkills,
     ...bg.skillProficiencies,
     ...competenzeConcesse(featureIds, variant),
+    ...scelteDaPrivilegi,
   ])]
 
   // Competenze raddoppiate: la regola è quella della procedura guidata, non una

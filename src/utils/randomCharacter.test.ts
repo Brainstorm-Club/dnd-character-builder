@@ -201,3 +201,29 @@ describe('linguaggi nominati dal background', () => {
     })
   }
 })
+
+describe('la competenza che un privilegio fa scegliere', () => {
+  beforeAll(async () => {
+    setActivePinia(createPinia())
+    for (const v of GAME_VARIANTS) await preloadVariantData(v)
+  })
+
+  /**
+   * Il Guerriero Formidabile di Apocalisse fa scegliere una competenza fra
+   * quattro. Il generatore non sceglieva: il privilegio finiva in elenco e
+   * l'abilità restava quella di chi non è competente.
+   */
+  it("il Furioso sorteggiato ne ha una delle quattro", () => {
+    const CANDIDATE = ['athletics', 'intimidation', 'survival', 'history']
+    let visti = 0
+    for (let i = 0; i < 2000 && visti < 5; i++) {
+      const c = generateRandomCharacter('apocalisse')
+      if (c.subclass !== 'furioso' || c.level < 3) continue
+      visti++
+      const chi = `furioso liv.${c.level}`
+      const sue = CANDIDATE.filter(s => c.skillProficiencies.includes(s))
+      expect(sue.length, `${chi}: nessuna delle quattro`).toBeGreaterThanOrEqual(1)
+    }
+    expect(visti, 'nessun furioso in 2000 tiri').toBeGreaterThan(0)
+  })
+})
