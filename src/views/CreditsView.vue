@@ -7,6 +7,15 @@
 // stanno in `credits.srd51` e `credits.srd521` **verbatim**, in italiano anche
 // nella versione inglese dell'interfaccia: sono avvisi di licenza, non testo
 // dell'applicazione, e tradurli vorrebbe dire riscriverli.
+//
+// Poi ci sono Brancalonia e Apocalisse, che un obbligo del genere non ce
+// l'hanno — non sono CC-BY, sono di Acheron Games — e che proprio per questo
+// erano finite fuori: la pagina le nominava di sfuggita in «Cosa non c'è»,
+// mentre l'app ne spedisce classi, sottoclassi, razze, background, talenti e
+// incantesimi. Le attribuzioni sono quelle che scrivono i manuali, parola per
+// parola: Brancalonia non è «un gioco di Longo, Mana e Marolla» come si legge
+// spesso in giro — loro tre hanno creato Zappa e Spada — ed è il manuale a
+// dirlo. Restano in italiano per lo stesso motivo delle due sopra.
 import { useI18n } from 'vue-i18n'
 
 const { t } = useI18n()
@@ -33,6 +42,28 @@ const { t } = useI18n()
         <blockquote lang="it" class="text-sm text-stone-400 border-l-2 border-stone-600 pl-4">
           {{ t('credits.srd521') }}
         </blockquote>
+      </div>
+
+      <div class="bsc-card border border-stone-700 rounded-lg">
+        <h3 class="font-gothic text-amber-400 mb-2">{{ t('credits.acheronTitle') }}</h3>
+        <p class="text-sm text-stone-400 mb-4">{{ t('credits.acheron') }}</p>
+
+        <h4 class="font-gothic text-stone-300 text-sm mb-1">{{ t('credits.brancaloniaTitle') }}</h4>
+        <blockquote lang="it" class="text-sm text-stone-400 border-l-2 border-stone-600 pl-4 mb-4">
+          {{ t('credits.brancalonia') }}
+        </blockquote>
+
+        <h4 class="font-gothic text-stone-300 text-sm mb-1">{{ t('credits.apocalisseTitle') }}</h4>
+        <blockquote lang="it" class="text-sm text-stone-400 border-l-2 border-stone-600 pl-4 mb-4">
+          {{ t('credits.apocalisse') }}
+        </blockquote>
+
+        <a
+          href="https://www.acheron.it"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="text-sm text-amber-400 hover:text-amber-300 transition-colors"
+        >{{ t('credits.acheronLink') }}</a>
       </div>
 
       <div class="bsc-card border border-stone-700 rounded-lg">
