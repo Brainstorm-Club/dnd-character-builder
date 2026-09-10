@@ -93,6 +93,60 @@ describe('generatore casuale', () => {
  * Questi test pinnano i nomi letti dai manuali e il fatto che il generatore li
  * assegni davvero.
  */
+describe('quel che il generatore non assegnava', () => {
+  beforeAll(async () => {
+    setActivePinia(createPinia())
+    for (const v of GAME_VARIANTS) await preloadVariantData(v)
+  })
+
+  /**
+   * Il generatore scriveva `skillExpertise: []` e basta: un bardo o un ladro
+   * sorteggiati uscivano con «Maestria» fra i privilegi e nessuna abilità
+   * raddoppiata — due numeri sbagliati sulla scheda, e nessun modo di
+   * accorgersene se non contando a mano.
+   */
+  it('un ladro o un bardo sorteggiati hanno le abilità raddoppiate che spettano', () => {
+    let visti = 0
+    for (let i = 0; i < 600 && visti < 12; i++) {
+      const c = generateRandomCharacter('dnd5e')
+      const soglia = c.className === 'rogue' ? 1 : c.className === 'bard' ? 3 : 0
+      if (!soglia || c.level < soglia) continue
+      visti++
+      const chi = `${c.className} liv.${c.level}`
+      expect(c.skillExpertise.length, chi).toBeGreaterThanOrEqual(2)
+      // Si raddoppia un bonus che deve esistere: mai un'abilità in cui il
+      // personaggio non è nemmeno competente.
+      for (const s of c.skillExpertise) expect(c.skillProficiencies, chi).toContain(s)
+      expect(new Set(c.skillExpertise).size, `${chi}: doppioni`).toBe(c.skillExpertise.length)
+    }
+    expect(visti, 'nessun ladro o bardo sorteggiato in 600 tiri').toBeGreaterThan(0)
+  })
+
+  it('chi non ha il privilegio non raddoppia niente', () => {
+    for (let i = 0; i < 300; i++) {
+      const c = generateRandomCharacter('dnd5e')
+      if (c.className === 'rogue' || c.className === 'bard') continue
+      expect(c.skillExpertise, `${c.className} liv.${c.level}`).toEqual([])
+    }
+  })
+
+  /**
+   * Stessa storia per le competenze che un privilegio concede d'ufficio: il
+   * Guappo usciva dal generatore con «Competenze Bonus» in elenco e Intimidire
+   * scritto come chi non è competente.
+   */
+  it('il Guappo sorteggiato è competente in Intimidire', () => {
+    let visti = 0
+    for (let i = 0; i < 1500 && visti < 5; i++) {
+      const c = generateRandomCharacter('brancalonia')
+      if (c.subclass !== 'guappo') continue
+      visti++
+      expect(c.skillProficiencies, `guappo liv.${c.level}`).toContain('intimidation')
+    }
+    expect(visti, 'nessun guappo sorteggiato in 1500 tiri').toBeGreaterThan(0)
+  })
+})
+
 describe('linguaggi nominati dal background', () => {
   beforeAll(async () => {
     setActivePinia(createPinia())

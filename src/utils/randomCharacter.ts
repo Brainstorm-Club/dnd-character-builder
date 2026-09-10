@@ -10,6 +10,7 @@ import { pickRandomArchetype } from '@/data/personalityArchetypes'
 import { getFeatsByCategory } from '@/data/dnd2024/feats'
 import { castsSpells } from '@/data/spellcasting'
 import { calcolaAttacco, isADistanza, isAccurata } from '@/domain/armi'
+import { competenzeConcesse, getExpertiseCount, getExpertiseOptions } from '@/domain/competenze'
 
 function pick<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!
@@ -192,7 +193,27 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
 
   // Skill proficiencies: from class + background (deduplicated)
   const classSkills = pickN(cls.skillChoices, cls.numSkillChoices)
-  const allSkillIds = [...new Set([...classSkills, ...bg.skillProficiencies])]
+  // Ci sono anche quelle che un privilegio concede d'ufficio: senza, il Guappo
+  // sorteggiato usciva con il privilegio «Competenze Bonus» in elenco e
+  // Intimidire scritto come chi non è competente.
+  const featureIds = [
+    ...cls.features.filter(f => f.level <= level).map(f => f.id),
+    ...(subclass?.features.filter(f => f.level <= level).map(f => f.id) ?? []),
+  ]
+  const allSkillIds = [...new Set([
+    ...classSkills,
+    ...bg.skillProficiencies,
+    ...competenzeConcesse(featureIds, variant),
+  ])]
+
+  // Competenze raddoppiate: la regola è quella della procedura guidata, non una
+  // seconda scritta qui. Il generatore non le assegnava affatto, e un bardo o
+  // un ladro sorteggiati uscivano con il privilegio in elenco e nessuna abilità
+  // raddoppiata — cioè con i numeri di due abilità sbagliati in meno.
+  const skillExpertise = pickN(
+    getExpertiseOptions(cls, variant, level, allSkillIds),
+    getExpertiseCount(cls, variant, level),
+  )
 
   // Languages
   // Quando il manuale NOMINA i linguaggi del background sono quelli e non altri:
@@ -322,7 +343,7 @@ export function generateRandomCharacter(variant: GameVariant, forcedLevel?: numb
     abilityScores,
     racialBonuses,
     skillProficiencies: allSkillIds,
-    skillExpertise: [],
+    skillExpertise,
     savingThrowProficiencies: [...cls.savingThrows],
     languages,
     // Anche il background concede competenze: trenta su quarantatré ne

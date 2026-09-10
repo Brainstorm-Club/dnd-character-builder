@@ -17,6 +17,7 @@
 import type { GameVariant } from '@/stores/app'
 import type { CharacterClass } from '@/data/dnd5e/classes'
 import { SKILLS } from '@/data/dnd5e/skills'
+import { proficiencyBonus } from '@/utils/calculations'
 
 /** Un privilegio di competenza raddoppiata già maturato dal personaggio. */
 export interface ExpertiseGrant {
@@ -189,4 +190,84 @@ export function reconcileExpertise(
     if (allowed.has(skill) && !kept.includes(skill) && kept.length < max) kept.push(skill)
   }
   return kept
+}
+
+// ─── Competenze concesse d'ufficio ──────────────────────────────────────────
+
+/**
+ * Alcuni privilegi non fanno scegliere niente: la competenza la danno e basta.
+ * Il Guappo di Brancalonia concede Intimidire, il Brigante Natura e
+ * Sopravvivenza, il Guiscardo Indagare e Percezione. La scheda non ne teneva
+ * conto: il privilegio compariva nell'elenco, ma accanto all'abilità restava il
+ * numero di chi non è competente.
+ *
+ * La chiave è la **variante** e non il rules set perché Brancalonia e
+ * Apocalisse partono dalle stesse classi base: due sottoclassi di ambientazioni
+ * diverse possono avere privilegi con lo stesso id, e cercarli in un'unica
+ * tabella prima o poi pescherebbe quello sbagliato.
+ *
+ * Restano fuori i privilegi che fanno scegliere fra più abilità (l'Acciaio
+ * Turbinante di Apocalisse: «una a tua scelta fra Atletica, Intimidire,
+ * Sopravvivenza o Storia»): quelli vogliono un selettore, non una tabella.
+ */
+const COMPETENZE_CONCESSE: Partial<Record<GameVariant, Record<string, readonly string[]>>> = {
+  brancalonia: {
+    'brigandage': ['nature', 'survival'],                          // Brigante
+    'competence-bonus': ['intimidation'],                          // Guappo
+    'disheartening-presence': ['intimidation'],                    // Bravo
+    'master-of-performance': ['animal-handling', 'performance'],   // Matador
+    'treasure-seeker': ['investigation', 'perception'],            // Guiscardo
+  },
+  apocalisse: {
+    'improved-perception': ['perception'],                         // Bastione
+  },
+}
+
+/**
+ * Le abilità che i privilegi già maturati concedono d'ufficio.
+ *
+ * Prende gli **id** dei privilegi e non le classi perché i due chiamanti
+ * arrivano da direzioni opposte: lo store ha `featureEntries` (che i privilegi
+ * li ha già filtrati per livello e sottoclasse), il generatore casuale ha gli
+ * oggetti dei dati. Con gli id in mezzo la regola resta una sola.
+ */
+export function competenzeConcesse(
+  featureIds: readonly string[],
+  variant: GameVariant,
+): string[] {
+  const tabella = COMPETENZE_CONCESSE[variant]
+  if (!tabella) return []
+  const out = new Set<string>()
+  for (const id of featureIds) {
+    for (const skill of tabella[id] ?? []) out.add(skill)
+  }
+  return [...out]
+}
+
+// ─── Mezza competenza (Factotum) ────────────────────────────────────────────
+
+/**
+ * Il Factotum del bardo aggiunge metà del bonus di competenza, arrotondata per
+ * difetto, a **ogni** prova di caratteristica che non includa già la
+ * competenza. Non è una competenza in più: non si può scegliere, non si può
+ * raddoppiare, e vale anche per l'iniziativa.
+ *
+ * Si riconosce dai privilegi che il personaggio ha davvero, non da una tabella
+ * di livelli scritta qui: `featureEntries` porta gli id dei dati, e una scheda
+ * salvata prima che quel campo esistesse porta ancora i nomi inglesi in
+ * `featuresTraits`. Si guardano entrambi perché una scheda importata da fuori
+ * può avere solo il secondo.
+ */
+const MEZZA_COMPETENZA = new Set(['jack-of-all-trades', 'Jack of All Trades'])
+
+/** Quanto aggiungere alle prove senza competenza: 0 se il privilegio non c'è. */
+export function mezzaCompetenza(char: {
+  level: number
+  featureEntries?: { id: string }[]
+  featuresTraits?: string[]
+}): number {
+  const daEntries = (char.featureEntries ?? []).some(e => MEZZA_COMPETENZA.has(e.id))
+  const daNomi = (char.featuresTraits ?? []).some(n => MEZZA_COMPETENZA.has(n))
+  if (!daEntries && !daNomi) return 0
+  return Math.floor(proficiencyBonus(char.level) / 2)
 }

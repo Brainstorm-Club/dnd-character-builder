@@ -4,6 +4,7 @@ import type { GameVariant } from './app'
 import { GAME_VARIANTS } from './app'
 import { modifier, proficiencyBonus, hpPerLevel, totalHp, computeArmorClass, armorIdFromName } from '@/utils/calculations'
 import { getMaxLevel, getClasses, getRaces, getBackgrounds } from '@/data'
+import { competenzeConcesse } from '@/domain/competenze'
 
 export interface AbilityScores {
   str: number
@@ -373,12 +374,34 @@ export function computeFeatureEntries(char: CharacterData): FeatureEntry[] {
 /**
  * Riscrive insieme le due forme dell'elenco privilegi, così non possono
  * divergere: qualunque percorso ricalcoli i privilegi passa di qui.
+ *
+ * È anche il punto in cui entrano le competenze che un privilegio concede
+ * d'ufficio — il Guappo dà Intimidire, il Brigante Natura e Sopravvivenza.
+ * Vanno messe qui e non nel passo Classe perché non è solo la procedura
+ * guidata a scegliere una sottoclasse: ci passano anche il generatore casuale,
+ * il salire e lo scendere di livello. Il confronto è fra i privilegi di prima e
+ * quelli di adesso, così cambiando collegio si toglie ciò che il collegio
+ * precedente concedeva e nient'altro — competenze di classe e di background,
+ * che vivono nello stesso elenco piatto, restano dove sono.
+ *
+ * L'elenco però non dice da dove viene ciascuna voce: se il giocatore aveva
+ * scelto Intimidire *anche* come competenza di classe, cambiando collegio se ne
+ * va lo stesso e va ripresa nel passo Classe. È il meno peggio dei due errori:
+ * l'alternativa — non togliere mai — lascia sulla scheda una competenza che il
+ * personaggio non ha.
  */
 function applyComputedFeatures(char: CharacterData): void {
+  const prima = competenzeConcesse((char.featureEntries ?? []).map(e => e.id), char.variant)
   const entries = computeFeatureEntries(char)
+  const dopo = competenzeConcesse(entries.map(e => e.id), char.variant)
+
   char.featureEntries = entries
   char.featuresTraits = featureNames(entries)
   char.schemaVersion = CHARACTER_SCHEMA_VERSION
+
+  const perse = prima.filter(s => !dopo.includes(s))
+  const rimaste = char.skillProficiencies.filter(s => !perse.includes(s))
+  char.skillProficiencies = [...rimaste, ...dopo.filter(s => !rimaste.includes(s))]
 }
 
 /**

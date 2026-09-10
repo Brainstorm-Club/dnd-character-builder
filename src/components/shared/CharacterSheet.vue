@@ -3,7 +3,7 @@ import { computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import type { CharacterData } from '@/stores/character'
 import { formatModifier, feetToMeters, proficiencyBonus, computeArmorClass, spellSaveDC, spellAttackBonus } from '@/utils/calculations'
-import { CARATTERISTICHE, punteggioTotale, modificatori, tiroSalvezza, bonusAbilita } from '@/domain/scheda'
+import { CARATTERISTICHE, punteggioTotale, modificatori, tiroSalvezza, bonusAbilita, iniziativa } from '@/domain/scheda'
 import { SKILLS } from '@/data/dnd5e/skills'
 import { getSpells, getApocalisseRules, getWhacksLevels } from '@/data'
 import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
@@ -253,7 +253,7 @@ const haPersonalita = computed(() => Boolean(
       </div>
       <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
         <p class="bsc-stat__label normal-case">{{ t('review.initiative') }}</p>
-        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ formatModifier(mods.dex) }}</p>
+        <p class="bsc-stat__value text-2xl font-bold text-stone-200">{{ formatModifier(iniziativa(char)) }}</p>
       </div>
       <div class="bsc-stat bg-stone-800 border-stone-700 rounded-lg">
         <p class="bsc-stat__label normal-case">{{ t('review.speed') }}</p>

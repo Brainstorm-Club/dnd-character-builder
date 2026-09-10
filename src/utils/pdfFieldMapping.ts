@@ -5,6 +5,7 @@ import { getBrancaloniaFeatById } from '@/data/brancalonia/feats'
 import { getDnd2024Feat } from '@/data/dnd2024/feats'
 import { getMoveSlots, getKnownMoveCount, getBrawlClassFeature, getBrawlAce } from '@/data/brancalonia/brawl'
 import { getSpells, getClasses, getSpellSlots, getMulticlassSpellSlots } from '@/data'
+import { mezzaCompetenza } from '@/domain/competenze'
 import {
   classNamesIt, brancaloniaClassNamesIt, apocalisseClassNamesIt,
   equipmentNamesIt, weaponNamesIt, armorNamesIt, equipmentPacksIt,
@@ -188,7 +189,10 @@ function abilityMod(char: CharacterData, ability: keyof AbilityScores): number {
 
 function skillBonus(char: CharacterData, skillId: string, ability: keyof AbilityScores): number {
   const mod = abilityMod(char, ability)
-  const prof = char.skillProficiencies.includes(skillId) ? proficiencyBonus(char.level) : 0
+  // Metà competenza dove la competenza piena non c'è: è il Factotum del bardo.
+  const prof = char.skillProficiencies.includes(skillId)
+    ? proficiencyBonus(char.level)
+    : mezzaCompetenza(char)
   const expert = char.skillExpertise.includes(skillId) ? proficiencyBonus(char.level) : 0
   return mod + prof + expert
 }
@@ -627,7 +631,7 @@ export function getApocalisseFieldMapping(char: CharacterData): Record<string, s
 
   // ── Combattimento ──
   f['classe-armatura'] = String(computeArmorClass(char))
-  f['iniziativa'] = formatModifier(abilityMod(char, 'dex'))
+  f['iniziativa'] = formatModifier(abilityMod(char, 'dex') + mezzaCompetenza(char))
   f['velocita'] = `${feetToMeters(char.speed)}m`
   f['pf-attuali'] = String(char.currentHp || char.maxHp)
   f['pf-temporanei'] = String(char.tempHp || '')

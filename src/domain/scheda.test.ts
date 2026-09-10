@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest'
 import {
-  CARATTERISTICHE, punteggioTotale, modificatore, modificatori, tiroSalvezza, bonusAbilita,
+  CARATTERISTICHE, punteggioTotale, modificatore, modificatori, tiroSalvezza, bonusAbilita, iniziativa,
 } from './scheda'
 import type { CharacterData } from '@/stores/character'
 
@@ -41,5 +41,40 @@ describe('valori derivati della scheda', () => {
     expect(bonusAbilita(base, 'athletics', 'str'), 'competente').toBe(6)
     expect(bonusAbilita(base, 'stealth', 'dex'), 'raddoppiata: +2 e due volte +3').toBe(8)
     expect(bonusAbilita(base, 'arcana', 'int'), 'né l’una né l’altra').toBe(1)
+  })
+})
+
+/**
+ * Il Factotum del bardo: metà competenza su ogni prova che non includa già la
+ * competenza. Il difetto era che la scheda non ne teneva conto affatto — su un
+ * arlecchino di 3° quattordici abilità su diciotto portavano il numero
+ * sbagliato, e l'iniziativa pure.
+ */
+const factotum = {
+  ...base,
+  level: 3,
+  skillProficiencies: ['athletics'],
+  skillExpertise: [],
+  featureEntries: [{ id: 'jack-of-all-trades', name: 'Jack of All Trades' }],
+} as unknown as CharacterData
+
+describe('mezza competenza sulla scheda', () => {
+  it('si aggiunge dove la competenza piena non c\'è', () => {
+    // Furtività: DES 14 → +2, più 1 di mezza competenza.
+    expect(bonusAbilita(factotum, 'stealth', 'dex')).toBe(3)
+  })
+
+  it('ma non si somma a quella piena', () => {
+    // Atletica: FOR 17 → +3, più 2 di competenza. Non 2 + 1.
+    expect(bonusAbilita(factotum, 'athletics', 'str')).toBe(5)
+  })
+
+  it('e vale anche per l\'iniziativa, che è una prova di Destrezza', () => {
+    expect(iniziativa(factotum)).toBe(3)
+    expect(iniziativa(base), 'chi non ha il privilegio resta al modificatore').toBe(2)
+  })
+
+  it('senza il privilegio le abilità non competenti restano al modificatore', () => {
+    expect(bonusAbilita(base, 'acrobatics', 'dex')).toBe(2)
   })
 })

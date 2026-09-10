@@ -1,5 +1,6 @@
 import type { CharacterData, AbilityScores } from '@/stores/character'
 import { modifier, proficiencyBonus } from '@/utils/calculations'
+import { mezzaCompetenza } from '@/domain/competenze'
 
 /**
  * I valori derivati di una scheda, calcolati dal solo personaggio.
@@ -42,6 +43,10 @@ export function tiroSalvezza(char: CharacterData, a: Caratteristica): number {
 /**
  * Bonus di un'abilità: modificatore, più competenza se c'è, più un'altra volta
  * la competenza se l'abilità è raddoppiata.
+ *
+ * Dove la competenza non c'è può esserci **metà**: il Factotum del bardo la
+ * aggiunge a ogni prova che non la includa già. Sulla scheda di un arlecchino
+ * quattordici abilità su diciotto erano scritte con il numero sbagliato.
  */
 export function bonusAbilita(
   char: CharacterData,
@@ -49,7 +54,17 @@ export function bonusAbilita(
   caratteristica: Caratteristica,
 ): number {
   const pb = proficiencyBonus(char.level)
-  const comp = char.skillProficiencies.includes(skillId) ? pb : 0
+  const competente = char.skillProficiencies.includes(skillId)
+  const comp = competente ? pb : mezzaCompetenza(char)
   const raddoppio = char.skillExpertise.includes(skillId) ? pb : 0
   return modificatore(char, caratteristica) + comp + raddoppio
+}
+
+/**
+ * Bonus di iniziativa. È una prova di Destrezza come le altre, quindi il
+ * Factotum ci entra: mostrare +0 accanto a un bardo che tira +1 rendeva la
+ * casella del riepilogo l'unica a non tornare con il resto della scheda.
+ */
+export function iniziativa(char: CharacterData): number {
+  return modificatore(char, 'dex') + mezzaCompetenza(char)
 }
