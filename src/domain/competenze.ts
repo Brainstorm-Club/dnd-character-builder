@@ -211,9 +211,9 @@ export function reconcileExpertise(
  * diverse possono avere privilegi con lo stesso id, e cercarli in un'unica
  * tabella prima o poi pescherebbe quello sbagliato.
  *
- * Restano fuori i privilegi che fanno scegliere fra più abilità (l'Acciaio
- * Turbinante di Apocalisse: «una a tua scelta fra Atletica, Intimidire,
- * Sopravvivenza o Storia»): quelli vogliono un selettore, non una tabella.
+ * Restano fuori i privilegi che fanno scegliere fra più abilità (il Guerriero
+ * Formidabile del Furioso, in Apocalisse): quelli hanno la loro tabella e il
+ * loro selettore, più in basso.
  */
 const COMPETENZE_CONCESSE: Partial<Record<GameVariant, Record<string, readonly string[]>>> = {
   brancalonia: {
@@ -294,6 +294,82 @@ export function competenzeConcesse(
   variant: GameVariant,
 ): string[] {
   return concesse(COMPETENZE_CONCESSE, featureIds, variant)
+}
+
+// ─── Competenze a scelta ────────────────────────────────────────────────────
+
+/**
+ * Un privilegio che non concede e non raddoppia: **fa scegliere**.
+ *
+ * È un'altra cosa dalle due tabelle qui sopra, e non ci si può schiacciare
+ * dentro. Lì la competenza è scritta nel privilegio e l'app la applica da sé;
+ * qui la decide il giocatore, va ricordata nella scheda e va potuta cambiare —
+ * il che la rende parente del selettore di Maestria, non della tabella.
+ */
+export interface SceltaCompetenza {
+  /** id del privilegio nei dati, per distinguere due selettori sulla stessa scheda */
+  featureId: string
+  /** fra queste, e non fra tutte e diciotto */
+  candidate: readonly string[]
+  /** quante se ne prendono */
+  quante: number
+}
+
+const COMPETENZE_A_SCELTA: Partial<Record<GameVariant, Record<string, Omit<SceltaCompetenza, 'featureId'>>>> = {
+  apocalisse: {
+    // Guerriero Formidabile (Furioso, il guerriero di Apocalisse): «competenza
+    // in un'abilità a tua scelta fra Atletica, Intimidire, Sopravvivenza o
+    // Storia». «Acciaio Turbinante» è un altro privilegio dello stesso
+    // archetipo, non l'archetipo.
+    'formidable-warrior': {
+      candidate: ['athletics', 'intimidation', 'survival', 'history'],
+      quante: 1,
+    },
+  },
+}
+
+/**
+ * Le scelte di competenza aperte dai privilegi già maturati, nell'ordine in cui
+ * i privilegi arrivano — così i selettori non si scambiano di posto.
+ */
+export function competenzeDaScegliere(
+  featureIds: readonly string[],
+  variant: GameVariant,
+): SceltaCompetenza[] {
+  const tabella = COMPETENZE_A_SCELTA[variant]
+  if (!tabella) return []
+  const out: SceltaCompetenza[] = []
+  const visti = new Set<string>()
+  for (const id of featureIds) {
+    const regola = tabella[id]
+    if (!regola || visti.has(id)) continue
+    visti.add(id)
+    out.push({ featureId: id, ...regola })
+  }
+  return out
+}
+
+/**
+ * Riallinea una scelta già fatta: butta ciò che non è più fra le candidate — il
+ * privilegio è cambiato, o non c'è più — e taglia l'eccedenza. Stessa forma di
+ * `reconcileExpertise`, e per lo stesso motivo: una scelta che sopravvive al
+ * privilegio che la concedeva è una competenza che il personaggio non ha.
+ */
+export function riallineaScelte(
+  scelte: Readonly<Record<string, readonly string[]>>,
+  disponibili: readonly SceltaCompetenza[],
+): Record<string, string[]> {
+  /** @type {Record<string, string[]>} */
+  const out: Record<string, string[]> = {}
+  for (const s of disponibili) {
+    const ammesse = new Set(s.candidate)
+    const tenute: string[] = []
+    for (const skill of scelte[s.featureId] ?? []) {
+      if (ammesse.has(skill) && !tenute.includes(skill) && tenute.length < s.quante) tenute.push(skill)
+    }
+    if (tenute.length) out[s.featureId] = tenute
+  }
+  return out
 }
 
 // ─── Mezza competenza (Factotum) ────────────────────────────────────────────

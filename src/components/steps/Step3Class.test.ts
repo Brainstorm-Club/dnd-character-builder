@@ -514,3 +514,88 @@ describe('Step3Class — competenze raddoppiate (Expertise)', () => {
     expect(premuti).toEqual([skillDisplay(scelto)])
   })
 })
+
+/**
+ * Il Combattente Formidabile del Furioso, in Apocalisse, non concede una
+ * competenza: ne fa **scegliere** una fra quattro. Prima il privilegio
+ * compariva nell'elenco e non succedeva niente — nessun selettore, nessuna
+ * competenza in più — e chi lo prendeva doveva ricordarsi a mente cosa aveva
+ * scelto.
+ */
+describe('Step3Class — competenza a scelta di un privilegio', () => {
+  beforeAll(async () => {
+    await preloadVariantData('apocalisse')
+  })
+  beforeEach(() => {
+    setActivePinia(createPinia())
+  })
+
+  const CANDIDATE = ['athletics', 'intimidation', 'survival', 'history']
+
+  function gruppoScelta(wrapper: Wrapper) {
+    return wrapper.find('[aria-labelledby="class-scelta-formidable-warrior"]')
+  }
+
+  async function furiosoDiTerzo(livello = 3) {
+    const guerriero = getClasses('apocalisse').find(c => c.id === 'fighter')!
+    const furioso = guerriero.subclasses.find(s => s.id === 'furioso')!
+    const { store, wrapper } = mountStep('apocalisse', livello)
+    await selectClass(wrapper, guerriero)
+    if (livello >= guerriero.subclassLevel) await clickSubclass(wrapper, furioso)
+    return { store, wrapper, guerriero, furioso }
+  }
+
+  it('mostra il selettore con le quattro candidate, e non con tutte le abilità', async () => {
+    const { wrapper } = await furiosoDiTerzo()
+    const gruppo = gruppoScelta(wrapper)
+    expect(gruppo.exists(), 'il selettore deve esserci').toBe(true)
+    expect(gruppo.findAll('button').map(b => b.text()).sort())
+      .toEqual(CANDIDATE.map(id => SKILLS.find(s => s.id === id)!.name).sort())
+  })
+
+  it('la scelta finisce fra le competenze del personaggio', async () => {
+    const { store, wrapper } = await furiosoDiTerzo()
+    const bottone = gruppoScelta(wrapper).findAll('button')
+      .find(b => b.text() === SKILLS.find(s => s.id === 'history')!.name)!
+    await bottone.trigger('click')
+    expect(store.character.skillProficiencies).toContain('history')
+  })
+
+  it('e se ne prende una sola: la seconda non entra', async () => {
+    const { store, wrapper } = await furiosoDiTerzo()
+    const bottoni = gruppoScelta(wrapper).findAll('button')
+    await bottoni[0]!.trigger('click')
+    await bottoni[1]!.trigger('click')
+    expect(CANDIDATE.filter(s => store.character.skillProficiencies.includes(s))).toHaveLength(1)
+  })
+
+  it('ri-toccando la stessa la si toglie', async () => {
+    const { store, wrapper } = await furiosoDiTerzo()
+    const bottone = gruppoScelta(wrapper).findAll('button')[0]!
+    await bottone.trigger('click')
+    const presa = CANDIDATE.filter(s => store.character.skillProficiencies.includes(s))
+    expect(presa).toHaveLength(1)
+    await bottone.trigger('click')
+    expect(CANDIDATE.filter(s => store.character.skillProficiencies.includes(s))).toHaveLength(0)
+  })
+
+  it('senza il privilegio non c\'è nessun selettore', async () => {
+    // Al 2° la sottoclasse non è ancora scelta: il privilegio non c'è, e non
+    // deve esserci nemmeno la scelta che apre.
+    const { wrapper } = await furiosoDiTerzo(2)
+    expect(gruppoScelta(wrapper).exists()).toBe(false)
+  })
+
+  it('e cambiando archetipo la competenza scelta se ne va con lui', async () => {
+    // Una scelta che sopravvive al privilegio che la concedeva è una
+    // competenza che il personaggio non ha.
+    const { store, wrapper } = await furiosoDiTerzo()
+    await gruppoScelta(wrapper).findAll('button')[0]!.trigger('click')
+    expect(CANDIDATE.filter(s => store.character.skillProficiencies.includes(s))).toHaveLength(1)
+
+    store.setSubclass('')
+    await wrapper.vm.$nextTick()
+    expect(gruppoScelta(wrapper).exists(), 'il selettore sparisce').toBe(false)
+    expect(CANDIDATE.filter(s => store.character.skillProficiencies.includes(s))).toHaveLength(0)
+  })
+})

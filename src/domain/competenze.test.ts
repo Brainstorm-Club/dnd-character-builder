@@ -12,6 +12,8 @@ import {
   reconcileExpertise,
   competenzeConcesse,
   raddoppiConcessi,
+  competenzeDaScegliere,
+  riallineaScelte,
   mezzaCompetenza,
 } from './competenze'
 
@@ -359,5 +361,65 @@ describe('raddoppi concessi d\'ufficio', () => {
       .toEqual(['acrobatics', 'perception', 'stealth'])
     expect(getExpertiseOptions(ladro, 'brancalonia', 1, competente, ['perception']))
       .toEqual(['acrobatics', 'stealth'])
+  })
+})
+
+describe('competenze che un privilegio fa scegliere', () => {
+  it('il Guerriero Formidabile apre una scelta fra quattro abilità', () => {
+    // Non concede e non raddoppia: fa scegliere. Finora il privilegio
+    // compariva in elenco e non succedeva niente.
+    expect(competenzeDaScegliere(['formidable-warrior'], 'apocalisse')).toEqual([
+      { featureId: 'formidable-warrior', candidate: ['athletics', 'intimidation', 'survival', 'history'], quante: 1 },
+    ])
+  })
+
+  it('non è la stessa cosa di una concessa d\'ufficio', () => {
+    // Se finisse nella tabella delle concesse, l'app sceglierebbe al posto del
+    // giocatore — e sceglierebbe tutte e quattro.
+    expect(competenzeConcesse(['formidable-warrior'], 'apocalisse')).toEqual([])
+    expect(raddoppiConcessi(['formidable-warrior'], 'apocalisse')).toEqual([])
+  })
+
+  it('e vale solo nella sua ambientazione', () => {
+    expect(competenzeDaScegliere(['formidable-warrior'], 'brancalonia')).toEqual([])
+    expect(competenzeDaScegliere(['formidable-warrior'], 'dnd5e')).toEqual([])
+  })
+
+  it('le candidate sono abilità vere, e il privilegio esiste nei dati', async () => {
+    await preloadVariantData('apocalisse')
+    const presenti = new Set(getClasses('apocalisse').flatMap(c => [
+      ...c.features.map(f => f.id),
+      ...c.subclasses.flatMap(sc => sc.features.map(f => f.id)),
+    ]))
+    for (const s of competenzeDaScegliere(['formidable-warrior'], 'apocalisse')) {
+      expect(presenti, s.featureId).toContain(s.featureId)
+      for (const c of s.candidate) expect(allSkillIds, c).toContain(c)
+    }
+  })
+
+  describe('riallineare una scelta già fatta', () => {
+    const scelta = competenzeDaScegliere(['formidable-warrior'], 'apocalisse')
+
+    it('tiene quella valida', () => {
+      expect(riallineaScelte({ 'formidable-warrior': ['history'] }, scelta))
+        .toEqual({ 'formidable-warrior': ['history'] })
+    })
+
+    it('butta quella che non è fra le candidate', () => {
+      expect(riallineaScelte({ 'formidable-warrior': ['stealth'] }, scelta)).toEqual({})
+    })
+
+    it('e tutto, se il privilegio non c\'è più', () => {
+      // Una scelta che sopravvive al privilegio che la concedeva è una
+      // competenza che il personaggio non ha.
+      expect(riallineaScelte({ 'formidable-warrior': ['history'] }, [])).toEqual({})
+    })
+
+    it('taglia l\'eccedenza e i doppioni', () => {
+      expect(riallineaScelte({ 'formidable-warrior': ['history', 'athletics'] }, scelta))
+        .toEqual({ 'formidable-warrior': ['history'] })
+      expect(riallineaScelte({ 'formidable-warrior': ['history', 'history'] }, scelta))
+        .toEqual({ 'formidable-warrior': ['history'] })
+    })
   })
 })
