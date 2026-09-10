@@ -11,6 +11,7 @@ import {
   getExpertiseOptions,
   reconcileExpertise,
   competenzeConcesse,
+  raddoppiConcessi,
   mezzaCompetenza,
 } from './competenze'
 
@@ -318,5 +319,45 @@ describe('mezza competenza (Factotum)', () => {
   it('il bardo lo prende al livello che dicono i dati', () => {
     const bardo = classById(dnd5eClasses, 'bard')
     expect(featureLevel(bardo, 'jack-of-all-trades')).toBe(2)
+  })
+})
+
+describe('raddoppi concessi d\'ufficio', () => {
+  it('Matador e Bastione raddoppiano le stesse che concedono', () => {
+    expect(raddoppiConcessi(['master-of-performance'], 'brancalonia'))
+      .toEqual(['animal-handling', 'performance'])
+    expect(raddoppiConcessi(['improved-perception'], 'apocalisse')).toEqual(['perception'])
+  })
+
+  it('gli altri privilegi concedono la competenza e basta', () => {
+    // Il Guappo dà Intimidire, non la raddoppia: confonderli renderebbe due
+    // sottoclassi più forti di quanto dice il manuale.
+    for (const id of ['competence-bonus', 'brigandage', 'disheartening-presence', 'treasure-seeker']) {
+      expect(competenzeConcesse([id], 'brancalonia'), id).not.toEqual([])
+      expect(raddoppiConcessi([id], 'brancalonia'), id).toEqual([])
+    }
+  })
+
+  it('ciò che si raddoppia si è anche competenti a farlo', () => {
+    // Un raddoppio senza competenza non è un bonus: è una riga che non torna.
+    for (const [v, ids] of [
+      ['brancalonia', ['master-of-performance']],
+      ['apocalisse', ['improved-perception']],
+    ] as [GameVariant, string[]][]) {
+      for (const s of raddoppiConcessi(ids, v)) {
+        expect(competenzeConcesse(ids, v), `${v}/${s}`).toContain(s)
+      }
+    }
+  })
+
+  it('il selettore non offre di raddoppiare ciò che è già raddoppiato', () => {
+    // Altrimenti si spende uno slot di Maestria per un raddoppio che il
+    // personaggio ha comunque.
+    const ladro = classById(dnd5eClasses, 'rogue')
+    const competente = ['stealth', 'perception', 'acrobatics']
+    expect(getExpertiseOptions(ladro, 'brancalonia', 1, competente))
+      .toEqual(['acrobatics', 'perception', 'stealth'])
+    expect(getExpertiseOptions(ladro, 'brancalonia', 1, competente, ['perception']))
+      .toEqual(['acrobatics', 'stealth'])
   })
 })

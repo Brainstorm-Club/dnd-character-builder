@@ -249,6 +249,45 @@ describe('useCharacterStore', () => {
     })
   })
 
+  /**
+   * Matador e Bastione non concedono solo la competenza: la raddoppiano anche.
+   * Il raddoppio è scritto nel privilegio, non scelto, quindi non deve spendere
+   * uno slot di Maestria né comparire fra le opzioni del selettore.
+   */
+  describe('raddoppi concessi da un privilegio', () => {
+    function matadorDiTerzo() {
+      const store = useCharacterStore()
+      store.character.variant = 'brancalonia'
+      store.character.className = 'ranger'
+      store.character.level = 3
+      store.syncClassAndLevel()
+      store.setSubclass('mattatore')
+      return store
+    }
+
+    it('il Matador arriva competente e raddoppiato nelle due abilità', () => {
+      const store = matadorDiTerzo()
+      expect(store.character.skillProficiencies).toEqual(
+        expect.arrayContaining(['animal-handling', 'performance']))
+      expect(store.character.skillExpertise).toEqual(
+        expect.arrayContaining(['animal-handling', 'performance']))
+    })
+
+    it('cambiando cammino il raddoppio se ne va con la competenza', () => {
+      const store = matadorDiTerzo()
+      store.setSubclass('')
+      expect(store.character.skillExpertise).not.toContain('performance')
+      expect(store.character.skillProficiencies).not.toContain('performance')
+    })
+
+    it('e non porta via una Maestria scelta dal giocatore', () => {
+      const store = matadorDiTerzo()
+      store.character.skillExpertise = [...store.character.skillExpertise, 'stealth']
+      store.setSubclass('')
+      expect(store.character.skillExpertise).toEqual(['stealth'])
+    })
+  })
+
   describe('save/load/delete', () => {
     it('saves and loads a character', () => {
       const store = useCharacterStore()

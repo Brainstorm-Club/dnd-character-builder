@@ -4,7 +4,7 @@ import type { GameVariant } from './app'
 import { GAME_VARIANTS } from './app'
 import { modifier, proficiencyBonus, hpPerLevel, totalHp, computeArmorClass, armorIdFromName } from '@/utils/calculations'
 import { getMaxLevel, getClasses, getRaces, getBackgrounds } from '@/data'
-import { competenzeConcesse } from '@/domain/competenze'
+import { competenzeConcesse, raddoppiConcessi } from '@/domain/competenze'
 
 export interface AbilityScores {
   str: number
@@ -391,17 +391,42 @@ export function computeFeatureEntries(char: CharacterData): FeatureEntry[] {
  * personaggio non ha.
  */
 function applyComputedFeatures(char: CharacterData): void {
-  const prima = competenzeConcesse((char.featureEntries ?? []).map(e => e.id), char.variant)
+  const idPrima = (char.featureEntries ?? []).map(e => e.id)
   const entries = computeFeatureEntries(char)
-  const dopo = competenzeConcesse(entries.map(e => e.id), char.variant)
+  const idDopo = entries.map(e => e.id)
 
   char.featureEntries = entries
   char.featuresTraits = featureNames(entries)
   char.schemaVersion = CHARACTER_SCHEMA_VERSION
 
+  char.skillProficiencies = riallinea(
+    char.skillProficiencies,
+    competenzeConcesse(idPrima, char.variant),
+    competenzeConcesse(idDopo, char.variant),
+  )
+  // Matador e Bastione non concedono solo la competenza: la raddoppiano. Il
+  // raddoppio non passa dal selettore e non spende uno slot di Maestria — è
+  // scritto nel privilegio, non scelto.
+  char.skillExpertise = riallinea(
+    char.skillExpertise,
+    raddoppiConcessi(idPrima, char.variant),
+    raddoppiConcessi(idDopo, char.variant),
+  )
+}
+
+/**
+ * Un elenco piatto in cui convivono le voci scelte dal giocatore e quelle
+ * concesse da un privilegio: toglie solo ciò che il privilegio *di prima* dava
+ * e adesso non dà più, e aggiunge il resto senza doppioni.
+ */
+function riallinea(
+  attuale: readonly string[],
+  prima: readonly string[],
+  dopo: readonly string[],
+): string[] {
   const perse = prima.filter(s => !dopo.includes(s))
-  const rimaste = char.skillProficiencies.filter(s => !perse.includes(s))
-  char.skillProficiencies = [...rimaste, ...dopo.filter(s => !rimaste.includes(s))]
+  const rimaste = attuale.filter(s => !perse.includes(s))
+  return [...rimaste, ...dopo.filter(s => !rimaste.includes(s))]
 }
 
 /**
